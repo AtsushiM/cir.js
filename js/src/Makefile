@@ -1,6 +1,6 @@
-SRC = namespace.js utility.js ExternalInterface.js HashController.js NumberImage.js
-COMBINE = m.combine.js
-COMPRESS = ../m.js
+SRC = namespace.js utility.js Event.js ExternalInterface.js HashController.js Mobile.js NumberImage.js
+COMBINE = src.combine.js
+COMPRESS = ../hybrid.js
 
 $(COMBINE) : $(SRC)
 	cat $^ > $@

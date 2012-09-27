@@ -1,8 +1,10 @@
 /* Test: "../../spec/_src/src/utility/test.js" */
-(function() {
+(function(win, doc) {
 'use strict';
 
 Global.utility = {
+    root: win,
+    doc: doc,
     $: function(selector) {
         return document.querySelector(selector);
     },
@@ -37,4 +39,4 @@ Global.utility = {
     }
 };
 
-}());
+}(window, document));

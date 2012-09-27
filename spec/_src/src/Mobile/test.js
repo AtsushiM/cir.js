@@ -1,72 +1,52 @@
-/* Class: "../../../../js/src/utility.js" */
-describe('utilityは', function() {
-    var util;
+/* Class: "../../../../js/src/Mobile.js" */
+describe('Mobileは', function() {
+    var mb;
 
     beforeEach(function() {
         // init
-        util = Global.utility;
+        mb = new Global.Mobile();
     });
     afterEach(function() {
         // clear
-        util.showElement(util.$('body'));
     });
 
-    it('windowをrootプロパティとして持つ', function() {
-        expect(utility.root).toBe(window);
+    it('isAndroid()でAndroid端末かどうかチェック', function() {
+        expect(mb.isAndroid()).toBeFalsy();
+        expect(mb.isAndroid('Android')).toBeTruthy();
+        expect(mb.isAndroid('PC')).toBeFalsy();
     });
 
-    it('documentをdocプロパティとして持つ', function() {
-        expect(utility.doc).toBe(document);
+    it('isIOS()でiOS端末かどうかチェック', function() {
+        expect(mb.isIOS()).toBeFalsy();
+        expect(mb.isIOS('iPhone')).toBeTruthy();
+        expect(mb.isIOS('iPad')).toBeTruthy();
+        expect(mb.isIOS('iPod')).toBeTruthy();
+        expect(mb.isIOS('PC')).toBeFalsy();
     });
 
-    it('$(selector)で対象のelement一つを返す', function() {
-        expect(util.$('body')).toBeDefined();
+    it('isWindows()でWindowsモバイル端末かどうかチェック', function() {
+        expect(mb.isWindows()).toBeFalsy();
+        expect(mb.isWindows('IEMobile')).toBeTruthy();
+        expect(mb.isWindows('PC')).toBeFalsy();
     });
 
-    it('$$(selector)で対象のelementを配列に入れて返す', function() {
-        var scripts = util.$$('script');
-        expect(scripts.length).toBeDefined();
+    it('isMobile()でモバイル端末かどうかチェック', function() {
+        spyOn(mb, 'isAndroid').andCallThrough();
+        spyOn(mb, 'isIOS').andCallThrough();
+        spyOn(mb, 'isWindows').andCallThrough();
+
+        expect(mb.isMobile()).toBeFalsy();
+        expect(mb.isAndroid).toHaveBeenCalled();
+        expect(mb.isIOS).toHaveBeenCalled();
+        expect(mb.isWindows).toHaveBeenCalled();
     });
 
-    it('hideElement(element)で対象のelementのstyle.displayを"none"にする', function() {
-        var $body = util.$('body');
-
-        util.hideElement($body);
-        expect($body.style.display).toEqual('none');
+    it('hideAddress()でアドレスバーを非表示にする', function() {
+        mb.hideAddress();
     });
 
-    it('showElement(element)で対象のelementのstyle.displayを"block"にする', function() {
-        var $body = util.$('body');
-
-        util.hideElement($body);
-        util.showElement($body);
-        expect($body.style.display).toEqual('block');
-    });
-
-    it('override(targetObj, varObj)でtargetObjにvarObjのプロパティを上書きする', function() {
-        var target = {},
-            vars = {
-                test1: 1,
-                test2: 'aaa',
-                test3: {
-                    test: 'Test'
-                },
-                test4: function() {
-                    return true;
-                }
-            };
-
-        target = util.override(target, vars);
-
-        expect(target).toEqual(vars);
-    });
-
-    it('replaceAll(targetext, needle, replacetext)はtargettext中のneedleをreplacetextに置換する', function() {
-        var text = 'ABCDEAFGHIA';
-
-        text = util.replaceAll(text, 'A', 'Z');
-
-        expect(text).toEqual('ZBCDEZFGHIZ');
+    it('killScroll()でスクロールを禁止する', function() {
+        mb.killScroll();
     });
 });
 /*

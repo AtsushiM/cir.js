@@ -1,72 +1,29 @@
-/* Class: "../../../../js/src/utility.js" */
-describe('utilityは', function() {
-    var util;
+/* Class: "../../../../js/src/Event.js" */
+describe('Eventは', function() {
+    var e;
 
     beforeEach(function() {
         // init
-        util = Global.utility;
+        e = new Global.Event({
+            isMobile: function() {
+                return false;
+            }
+        });
     });
     afterEach(function() {
         // clear
-        util.showElement(util.$('body'));
     });
 
-    it('windowをrootプロパティとして持つ', function() {
-        expect(utility.root).toBe(window);
-    });
-
-    it('documentをdocプロパティとして持つ', function() {
-        expect(utility.doc).toBe(document);
-    });
-
-    it('$(selector)で対象のelement一つを返す', function() {
-        expect(util.$('body')).toBeDefined();
-    });
-
-    it('$$(selector)で対象のelementを配列に入れて返す', function() {
-        var scripts = util.$$('script');
-        expect(scripts.length).toBeDefined();
-    });
-
-    it('hideElement(element)で対象のelementのstyle.displayを"none"にする', function() {
-        var $body = util.$('body');
-
-        util.hideElement($body);
-        expect($body.style.display).toEqual('none');
-    });
-
-    it('showElement(element)で対象のelementのstyle.displayを"block"にする', function() {
-        var $body = util.$('body');
-
-        util.hideElement($body);
-        util.showElement($body);
-        expect($body.style.display).toEqual('block');
-    });
-
-    it('override(targetObj, varObj)でtargetObjにvarObjのプロパティを上書きする', function() {
-        var target = {},
-            vars = {
-                test1: 1,
-                test2: 'aaa',
-                test3: {
-                    test: 'Test'
-                },
-                test4: function() {
+    it('PCとスマートフォンでイベントを切り替える', function() {
+        var eSP = new Global.Event({
+                isMobile: function() {
                     return true;
                 }
-            };
+            });
 
-        target = util.override(target, vars);
-
-        expect(target).toEqual(vars);
-    });
-
-    it('replaceAll(targetext, needle, replacetext)はtargettext中のneedleをreplacetextに置換する', function() {
-        var text = 'ABCDEAFGHIA';
-
-        text = util.replaceAll(text, 'A', 'Z');
-
-        expect(text).toEqual('ZBCDEZFGHIZ');
+        for (var i in e) {
+            expect(eSP[i]).toBeDefined();
+        }
     });
 });
 /*
