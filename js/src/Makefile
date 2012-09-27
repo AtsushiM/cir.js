@@ -1,4 +1,4 @@
-SRC = namespace.js utility.js Event.js ExternalInterface.js HashController.js Mobile.js NumberImage.js
+SRC = namespace.js utility.js DataStore.js Event.js ExternalInterface.js HashController.js Mobile.js NumberImage.js Observer.js
 COMBINE = src.combine.js
 COMPRESS = ../hybrid.js
 
