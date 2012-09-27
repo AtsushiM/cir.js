@@ -12,11 +12,11 @@ describe('utilityは', function() {
     });
 
     it('windowをrootプロパティとして持つ', function() {
-        expect(utility.root).toBe(window);
+        expect(util.root).toBe(window);
     });
 
     it('documentをdocプロパティとして持つ', function() {
-        expect(utility.doc).toBe(document);
+        expect(util.doc).toBe(document);
     });
 
     it('$(selector)で対象のelement一つを返す', function() {
