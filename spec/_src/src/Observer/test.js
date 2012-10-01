@@ -36,6 +36,22 @@ describe('Observerは', function() {
         expect(getobj.test1[0]).not.toBe(dammy);
     });
 
+    it('adds()でオブジェクトに纏めた関数を登録する', function() {
+        var args = {
+                test1: function() {
+                },
+                test2: function() {
+                }
+            };
+
+        observer.adds(args);
+
+        var observed = observer.getObserved();
+
+        expect(args.test1).toBe(observed.test1[0]);
+        expect(args.test2).toBe(observed.test2[0]);
+    });
+
     it('remove()でイベントを削除する', function() {
         var dammy1 = function() {
             },
@@ -56,6 +72,22 @@ describe('Observerは', function() {
 
         expect(getobj.test1).not.toBeDefined();
         expect(getobj.test2[0]).toBe(dammy2);
+    });
+
+    it('removes()でオブジェクトに纏めた関数を登録解除する', function() {
+        var args = {
+                test1: function() {
+                },
+                test2: function() {
+                }
+            };
+
+        observer.adds(args);
+        observer.removes(args);
+
+        var observed = observer.getObserved();
+
+        expect(observed).toEqual({});
     });
 
     it('fire()でイベントを発火する', function() {

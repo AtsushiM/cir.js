@@ -46,6 +46,11 @@ Global.Observer = function() {
 
                 return false;
             },
+            removes: function(obj) {
+                for (var i in obj) {
+                    instanse.remove(i, obj[i]);
+                }
+            },
             fire: function(key, config) {
                 var target = observed[key],
                     func;
