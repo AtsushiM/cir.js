@@ -2,7 +2,7 @@
 Global.Mobile = function() {
     'use strict';
 
-    var root = Global.utility.root,
+    var win = Global.utility.win,
         doc = Global.utility.doc,
         userAgent = navigator.userAgent,
         mobile = {
@@ -32,8 +32,8 @@ Global.Mobile = function() {
                 });
             },
             hideAddress: function() {
-                root.addEventListener('load', hideAddressHandler, false);
-                root.onorientationchange = hideAddressHandler;
+                win.addEventListener('load', hideAddressHandler, false);
+                win.onorientationchange = hideAddressHandler;
             }
         };
 
@@ -46,8 +46,8 @@ Global.Mobile = function() {
     }
 
     function doScroll() {
-        if (root.pageYOffset === 0) {
-            root.scrollTo(0, 1);
+        if (win.pageYOffset === 0) {
+            win.scrollTo(0, 1);
         }
     }
     function hideAddressHandler() {

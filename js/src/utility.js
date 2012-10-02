@@ -3,7 +3,7 @@
 'use strict';
 
 Global.utility = {
-    root: win,
+    win: win,
     doc: doc,
     $: function(selector) {
         return document.querySelector(selector);

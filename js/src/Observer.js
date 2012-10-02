@@ -7,19 +7,19 @@ Global.Observer = function() {
             getObserved: function() {
                 return observed;
             },
-            add: function(key, func) {
+            on: function(key, func) {
                 if (!observed[key]) {
                     observed[key] = [];
                 }
 
                 observed[key].push(func);
             },
-            adds: function(obj) {
+            forOn: function(obj) {
                 for (var i in obj) {
-                    instanse.add(i, obj[i]);
+                    instanse.on(i, obj[i]);
                 }
             },
-            remove: function(key, func) {
+            off: function(key, func) {
                 if (!func) {
                     deleteKey(key);
 
@@ -46,9 +46,9 @@ Global.Observer = function() {
 
                 return false;
             },
-            removes: function(obj) {
+            forOff: function(obj) {
                 for (var i in obj) {
-                    instanse.remove(i, obj[i]);
+                    instanse.off(i, obj[i]);
                 }
             },
             fire: function(key, config) {

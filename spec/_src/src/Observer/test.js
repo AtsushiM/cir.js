@@ -14,29 +14,29 @@ describe('Observerは', function() {
         expect(observer.getObserved()).toBeDefined();
     });
 
-    it('add()でイベントを登録する', function() {
+    it('on()でイベントを登録する', function() {
         var dammy = function() {
             },
             getobj;
 
-        observer.add('test', dammy);
+        observer.on('test', dammy);
 
         getobj = observer.getObserved();
         expect(getobj.test[0]).toBe(dammy);
 
-        observer.add('test', dammy);
+        observer.on('test', dammy);
 
         getobj = observer.getObserved();
         expect(getobj.test[1]).toBe(dammy);
 
-        observer.add('test1', function() {
+        observer.on('test1', function() {
         });
 
         getobj = observer.getObserved();
         expect(getobj.test1[0]).not.toBe(dammy);
     });
 
-    it('adds()でオブジェクトに纏めた関数を登録する', function() {
+    it('forOn()でオブジェクトに纏めた関数を登録する', function() {
         var args = {
                 test1: function() {
                 },
@@ -44,7 +44,7 @@ describe('Observerは', function() {
                 }
             };
 
-        observer.adds(args);
+        observer.forOn(args);
 
         var observed = observer.getObserved();
 
@@ -52,29 +52,29 @@ describe('Observerは', function() {
         expect(args.test2).toBe(observed.test2[0]);
     });
 
-    it('remove()でイベントを削除する', function() {
+    it('off()でイベントを削除する', function() {
         var dammy1 = function() {
             },
             dammy2 = function() {
             },
             getobj;
 
-        observer.add('test', dammy1);
-        observer.remove('test');
+        observer.on('test', dammy1);
+        observer.off('test');
         getobj = observer.getObserved();
 
         expect(getobj).toEqual({});
 
-        observer.add('test1', dammy1);
-        observer.add('test2', dammy2);
-        observer.remove('test1', dammy1);
+        observer.on('test1', dammy1);
+        observer.on('test2', dammy2);
+        observer.off('test1', dammy1);
         getobj = observer.getObserved();
 
         expect(getobj.test1).not.toBeDefined();
         expect(getobj.test2[0]).toBe(dammy2);
     });
 
-    it('removes()でオブジェクトに纏めた関数を登録解除する', function() {
+    it('forOff()でオブジェクトに纏めた関数を登録解除する', function() {
         var args = {
                 test1: function() {
                 },
@@ -82,8 +82,8 @@ describe('Observerは', function() {
                 }
             };
 
-        observer.adds(args);
-        observer.removes(args);
+        observer.forOn(args);
+        observer.forOff(args);
 
         var observed = observer.getObserved();
 
@@ -100,8 +100,8 @@ describe('Observerは', function() {
                 ret2++;
             };
 
-        observer.add('test1', dammy1);
-        observer.add('test2', dammy2);
+        observer.on('test1', dammy1);
+        observer.on('test2', dammy2);
 
         observer.fire('test1');
 
@@ -113,7 +113,7 @@ describe('Observerは', function() {
         expect(ret1).toEqual(1);
         expect(ret2).toEqual(1);
 
-        observer.add('test1', dammy2);
+        observer.on('test1', dammy2);
 
         observer.fire('test1');
 

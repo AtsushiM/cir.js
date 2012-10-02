@@ -11,8 +11,8 @@ describe('utilityは', function() {
         util.showElement(util.$('body'));
     });
 
-    it('windowをrootプロパティとして持つ', function() {
-        expect(util.root).toBe(window);
+    it('windowをwinプロパティとして持つ', function() {
+        expect(util.win).toBe(window);
     });
 
     it('documentをdocプロパティとして持つ', function() {
