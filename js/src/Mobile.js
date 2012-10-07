@@ -26,16 +26,44 @@ Global.Mobile = function() {
                 );
             },
             killScroll: function() {
-                doc.addEventListener('touchmove', function(ev) {
-                    ev.preventDefault();
-                    return false;
-                });
+                doc.addEventListener('touchmove', preventDefault);
             },
             hideAddress: function() {
                 win.addEventListener('load', hideAddressHandler, false);
-                win.onorientationchange = hideAddressHandler;
+                win.addEventListener('orientationchange', hideAddressHandler, false);
+
+                function doScroll() {
+                    if (win.pageYOffset === 0) {
+                        win.scrollTo(0, 1);
+                    }
+                }
+                function hideAddressHandler() {
+                    setTimeout(doScroll, 100);
+                }
+            },
+            orientationChange: function(vars) {
+                win.addEventListener('load', change);
+                win.addEventListener('orientationchange', change);
+                win.addEventListener('resize', change);
+
+                function change() {
+                    if (
+                        Math.abs(win.orientation) !== 90 &&
+                        win.innerWidth < win.innerHeight
+                    ) {
+                        vars.portrait();
+                        return true;
+                    }
+
+                    vars.landscape();
+                }
             }
         };
+
+    function preventDefault(e) {
+        e.preventDefault();
+        return false;
+    }
 
     function checkUA(ua) {
         if (ua) {
@@ -43,15 +71,6 @@ Global.Mobile = function() {
         }
 
         return userAgent;
-    }
-
-    function doScroll() {
-        if (win.pageYOffset === 0) {
-            win.scrollTo(0, 1);
-        }
-    }
-    function hideAddressHandler() {
-        setTimeout(doScroll, 100);
     }
 
     return mobile;

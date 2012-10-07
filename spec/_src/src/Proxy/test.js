@@ -1,62 +1,61 @@
-/* Class: "../../../../js/src/Mobile.js" */
-describe('Mobileは', function() {
-    var mb;
+/* Class: "../../../../js/src/Proxy.js" */
+describe('Proxyは', function() {
+    var proxy,
+        dammy = {
+            callback: function() {
+            }
+        };
+
+    function before() {
+        // init
+        proxy = new Global.Proxy({
+            delay: 20,
+            callback: dammy.callback
+        });
+    }
 
     beforeEach(function() {
-        // init
-        mb = new Global.Mobile();
     });
     afterEach(function() {
         // clear
     });
 
-    it('isAndroid()でAndroid端末かどうかチェック', function() {
-        expect(mb.isAndroid()).toBeFalsy();
-        expect(mb.isAndroid('Android')).toBeTruthy();
-        expect(mb.isAndroid('PC')).toBeFalsy();
+    it('flush()で引数callback()を実行する', function() {
+        spyOn(dammy, 'callback').andCallThrough();
+        before();
+        proxy.flush();
+        expect(dammy.callback).toHaveBeenCalled();
     });
 
-    it('isIOS()でiOS端末かどうかチェック', function() {
-        expect(mb.isIOS()).toBeFalsy();
-        expect(mb.isIOS('iPhone')).toBeTruthy();
-        expect(mb.isIOS('iPad')).toBeTruthy();
-        expect(mb.isIOS('iPod')).toBeTruthy();
-        expect(mb.isIOS('PC')).toBeFalsy();
+    it('request()でdelayミリ秒遅延させてflush()を実行する', function() {
+        spyOn(dammy, 'callback').andCallThrough();
+        before();
+        spyOn(proxy, 'flush').andCallThrough();
+
+        runs(function() {
+            proxy.request('a');
+        });
+        waits(10);
+        runs(function() {
+            proxy.request('b');
+        });
+        waits(30);
+        runs(function() {
+            expect(dammy.callback).toHaveBeenCalledWith('b');
+            expect(proxy.flush.callCount).toEqual(1);
+        });
     });
 
-    it('isWindows()でWindowsモバイル端末かどうかチェック', function() {
-        expect(mb.isWindows()).toBeFalsy();
-        expect(mb.isWindows('IEMobile')).toBeTruthy();
-        expect(mb.isWindows('PC')).toBeFalsy();
-    });
+    it('clear()でrequest()をキャンセルする', function() {
+        spyOn(dammy, 'callback').andCallThrough();
+        before();
 
-    it('isMobile()でモバイル端末かどうかチェック', function() {
-        spyOn(mb, 'isAndroid').andCallThrough();
-        spyOn(mb, 'isIOS').andCallThrough();
-        spyOn(mb, 'isWindows').andCallThrough();
+        proxy.request();
+        proxy.clear();
 
-        expect(mb.isMobile()).toBeFalsy();
-        expect(mb.isAndroid).toHaveBeenCalled();
-        expect(mb.isIOS).toHaveBeenCalled();
-        expect(mb.isWindows).toHaveBeenCalled();
-    });
-
-    it('hideAddress()でアドレスバーを非表示にする', function() {
-        mb.hideAddress();
-    });
-
-    it('killScroll()でスクロールを禁止する', function() {
-        mb.killScroll();
-    });
-
-    it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
-        mb.orientationChange({
-            landscape: function() {
-                // 横
-            },
-            portrait: function() {
-                // 縦
-            }
+        waits(30);
+        runs(function() {
+            expect(dammy.callback).not.toHaveBeenCalled();
         });
     });
 });

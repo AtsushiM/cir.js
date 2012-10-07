@@ -1,63 +1,33 @@
-/* Class: "../../../../js/src/Mobile.js" */
-describe('Mobileは', function() {
-    var mb;
+/* Class: "../../../../js/src/Loading.js" */
+describe('Loadingは', function() {
 
-    beforeEach(function() {
-        // init
-        mb = new Global.Mobile();
-    });
-    afterEach(function() {
-        // clear
-    });
-
-    it('isAndroid()でAndroid端末かどうかチェック', function() {
-        expect(mb.isAndroid()).toBeFalsy();
-        expect(mb.isAndroid('Android')).toBeTruthy();
-        expect(mb.isAndroid('PC')).toBeFalsy();
-    });
-
-    it('isIOS()でiOS端末かどうかチェック', function() {
-        expect(mb.isIOS()).toBeFalsy();
-        expect(mb.isIOS('iPhone')).toBeTruthy();
-        expect(mb.isIOS('iPad')).toBeTruthy();
-        expect(mb.isIOS('iPod')).toBeTruthy();
-        expect(mb.isIOS('PC')).toBeFalsy();
-    });
-
-    it('isWindows()でWindowsモバイル端末かどうかチェック', function() {
-        expect(mb.isWindows()).toBeFalsy();
-        expect(mb.isWindows('IEMobile')).toBeTruthy();
-        expect(mb.isWindows('PC')).toBeFalsy();
-    });
-
-    it('isMobile()でモバイル端末かどうかチェック', function() {
-        spyOn(mb, 'isAndroid').andCallThrough();
-        spyOn(mb, 'isIOS').andCallThrough();
-        spyOn(mb, 'isWindows').andCallThrough();
-
-        expect(mb.isMobile()).toBeFalsy();
-        expect(mb.isAndroid).toHaveBeenCalled();
-        expect(mb.isIOS).toHaveBeenCalled();
-        expect(mb.isWindows).toHaveBeenCalled();
-    });
-
-    it('hideAddress()でアドレスバーを非表示にする', function() {
-        mb.hideAddress();
-    });
-
-    it('killScroll()でスクロールを禁止する', function() {
-        mb.killScroll();
-    });
-
-    it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
-        mb.orientationChange({
-            landscape: function() {
-                // 横
+    var dammy = {
+            before: {
+                onloadret: false,
+                onload: function() {
+                    dammy.before.onloadret = true;
+                    console.log('before');
+                }
             },
-            portrait: function() {
-                // 縦
+            after: {
+                onloadret: false,
+                onload: function() {
+                    dammy.after.onloadret = true;
+                    console.log('after');
+                }
             }
+        },
+        loading_after = new Global.Loading(),
+        loading_before = new Global.Loading({
+            onload: dammy.before.onload
         });
+
+    loading_after.onload(dammy.after.onload);
+
+    it('ページ読み込み時にローディング処理を実行する', function() {
+        //  この時点で既に読み込みは完了してる
+        expect(dammy.before.onloadret).toBeTruthy();
+        expect(dammy.after.onloadret).toBeTruthy();
     });
 });
 /*

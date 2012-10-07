@@ -2,14 +2,20 @@
 (function(win, doc) {
 'use strict';
 
+if (!Date.now) {
+    Date.now = function now() {
+        return +(new Date);
+    };
+}
+
 Global.utility = {
     win: win,
     doc: doc,
     $: function(selector) {
-        return document.querySelector(selector);
+        return doc.querySelector(selector);
     },
     $$: function(selector) {
-        var eles = document.querySelectorAll(selector),
+        var eles = doc.querySelectorAll(selector),
             arys = [];
 
         for (var i = 0, len = eles.length; i < len; i++) {

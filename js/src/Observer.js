@@ -1,9 +1,21 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global.Observer = function() {
+Global.Observer = function(config) {
     'use strict';
 
+    var Mine = Global.Observer,
+        override = Global.utility.override;
+
+    config = override({
+        single: false
+    }, config);
+
+    // singleton
+    if (config.single && Mine.instance) {
+        return Mine.instance;
+    }
+
     var observed = {},
-        instanse = {
+        instance = {
             getObserved: function() {
                 return observed;
             },
@@ -16,8 +28,16 @@ Global.Observer = function() {
             },
             forOn: function(obj) {
                 for (var i in obj) {
-                    instanse.on(i, obj[i]);
+                    instance.on(i, obj[i]);
                 }
+            },
+            one: function(key, func) {
+                wrapfunc = function(vars) {
+                    func(vars);
+                    instance.off(key, wrapfunc);
+                };
+
+                instance.on(key, wrapfunc);
             },
             off: function(key, func) {
                 if (!func) {
@@ -31,6 +51,7 @@ Global.Observer = function() {
                 if (!target) {
                     return false;
                 }
+
 
                 for (var i = 0, len = target.length; i < len; i++) {
                     if (func === target[i]) {
@@ -48,10 +69,10 @@ Global.Observer = function() {
             },
             forOff: function(obj) {
                 for (var i in obj) {
-                    instanse.off(i, obj[i]);
+                    instance.off(i, obj[i]);
                 }
             },
-            fire: function(key, config) {
+            fire: function(key, vars) {
                 var target = observed[key],
                     func;
 
@@ -62,7 +83,7 @@ Global.Observer = function() {
                 for (var i = 0, len = target.length; i < len; i++) {
                     func = target[i];
                     if (func) {
-                        func(config);
+                        func(vars);
                     }
                 }
 
@@ -74,5 +95,9 @@ Global.Observer = function() {
         delete observed[key];
     }
 
-    return instanse;
+    if (config.single) {
+        Mine.instance = instance;
+    }
+
+    return instance;
 };

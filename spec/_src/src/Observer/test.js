@@ -10,6 +10,17 @@ describe('Observerは', function() {
         // clear
     });
 
+    it('singleオプションでsingletonになる', function() {
+        var observer1 = new Global.Observer({
+                single: true
+            }),
+            observer2 = new Global.Observer({
+                single: true
+            });
+
+        expect(observer1).toBe(observer2);
+    });
+
     it('getObserved()で登録イベント一覧を取得する', function() {
         expect(observer.getObserved()).toBeDefined();
     });
@@ -50,6 +61,21 @@ describe('Observerは', function() {
 
         expect(args.test1).toBe(observed.test1[0]);
         expect(args.test2).toBe(observed.test2[0]);
+    });
+
+    it('one()で一度のみ発火するイベントを登録する', function() {
+        var args = {
+                one: function() {
+                }
+            };
+
+        spyOn(args, 'one').andCallThrough();
+
+        observer.one('one', args.one);
+        observer.fire('one');
+        observer.fire('one');
+
+        expect(args.one.callCount).toEqual(1);
     });
 
     it('off()でイベントを削除する', function() {

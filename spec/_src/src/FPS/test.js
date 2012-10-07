@@ -1,62 +1,91 @@
-/* Class: "../../../../js/src/Mobile.js" */
-describe('Mobileは', function() {
-    var mb;
+/* Class: "../../../../js/src/FPS.js" */
+describe('FPSは', function() {
+    var fps,
+        dammy = {
+            enterframe: function(vars) {
+            }
+        };
+
+    function setFPS() {
+        fps = new Global.FPS({
+            criterion: 20,
+            enterframe: dammy.enterframe
+        });
+    }
 
     beforeEach(function() {
         // init
-        mb = new Global.Mobile();
+        setFPS();
     });
     afterEach(function() {
         // clear
+        fps.stop();
     });
 
-    it('isAndroid()でAndroid端末かどうかチェック', function() {
-        expect(mb.isAndroid()).toBeFalsy();
-        expect(mb.isAndroid('Android')).toBeTruthy();
-        expect(mb.isAndroid('PC')).toBeFalsy();
+    it('singleオプションでsingletonになる', function() {
+        var fps1 = new Global.FPS({
+                single: true,
+                enterframe: dammy.enterframe
+            }),
+            fps2 = new Global.FPS({
+                single: true,
+                enterframe: dammy.enterframe
+            });
+
+        expect(fps1).toBe(fps2);
     });
 
-    it('isIOS()でiOS端末かどうかチェック', function() {
-        expect(mb.isIOS()).toBeFalsy();
-        expect(mb.isIOS('iPhone')).toBeTruthy();
-        expect(mb.isIOS('iPad')).toBeTruthy();
-        expect(mb.isIOS('iPod')).toBeTruthy();
-        expect(mb.isIOS('PC')).toBeFalsy();
+    it('getCriterion()で目標FPSを取得する', function() {
+        expect(fps.getCriterion()).toEqual(20);
     });
 
-    it('isWindows()でWindowsモバイル端末かどうかチェック', function() {
-        expect(mb.isWindows()).toBeFalsy();
-        expect(mb.isWindows('IEMobile')).toBeTruthy();
-        expect(mb.isWindows('PC')).toBeFalsy();
+    it('getSurver()で現在FPSを取得する', function() {
+        expect(fps.getSurver()).toEqual(fps.getCriterion());
     });
 
-    it('isMobile()でモバイル端末かどうかチェック', function() {
-        spyOn(mb, 'isAndroid').andCallThrough();
-        spyOn(mb, 'isIOS').andCallThrough();
-        spyOn(mb, 'isWindows').andCallThrough();
-
-        expect(mb.isMobile()).toBeFalsy();
-        expect(mb.isAndroid).toHaveBeenCalled();
-        expect(mb.isIOS).toHaveBeenCalled();
-        expect(mb.isWindows).toHaveBeenCalled();
+    it('getFrameTime()で1フレームあたりのミリ秒数を取得する', function() {
+        expect(fps.getFrameTime()).toEqual(1000 / 20);
     });
 
-    it('hideAddress()でアドレスバーを非表示にする', function() {
-        mb.hideAddress();
+    it('enter()で毎フレーム実行するメソッドを実行する', function() {
+        spyOn(dammy, 'enterframe').andCallThrough();
+        setFPS();
+        fps.enter();
+
+        expect(dammy.enterframe).toHaveBeenCalledWith({
+            criterion: fps.getCriterion(),
+            surver: fps.getSurver()
+        });
     });
 
-    it('killScroll()でスクロールを禁止する', function() {
-        mb.killScroll();
+    it('start()でフレームごとの実行を開始する', function() {
+        spyOn(dammy, 'enterframe').andCallThrough();
+        setFPS();
+        fps.start();
+
+        waits(fps.getFrameTime() + 10);
+        runs(function() {
+            expect(dammy.enterframe.callCount).toEqual(1);
+        });
+        waits(fps.getFrameTime());
+        runs(function() {
+            expect(dammy.enterframe.callCount).toEqual(2);
+        });
     });
 
-    it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
-        mb.orientationChange({
-            landscape: function() {
-                // 横
-            },
-            portrait: function() {
-                // 縦
-            }
+    it('stop()でフレームごとの実行を停止する', function() {
+        spyOn(dammy, 'enterframe').andCallThrough();
+        setFPS();
+        fps.start();
+        fps.stop();
+
+        waits(fps.getFrameTime() + 10);
+        runs(function() {
+            expect(dammy.enterframe.callCount).toEqual(0);
+        });
+        waits(fps.getFrameTime());
+        runs(function() {
+            expect(dammy.enterframe.callCount).toEqual(0);
         });
     });
 });

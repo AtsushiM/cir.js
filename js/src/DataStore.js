@@ -2,37 +2,47 @@
 Global.DataStore = function(config) {
     'use strict';
 
-    var data = {},
-        store = {
-            setData: function(key, val) {
-                data[key] = val;
-                return true;
-            },
-            getData: function(key) {
-                if (key) {
-                    return data[key];
-                }
+    var Mine = Global.DataStore,
+        override = Global.utility.override,
+        data,
+        store;
 
-                var ret = {};
-                for (var i in data) {
-                    ret[i] = data[i];
-                }
-
-                return ret;
-            },
-            resetData: function() {
-                data = {};
-                return true;
-            }
-        };
+    config = override({
+        single: false
+    }, config);
 
     // singleton
-    function getInstance() {
-        return store;
+    if (config.single && Mine.instance) {
+        return Mine.instance;
     }
-    Global.DataStore = function() {
-        return getInstance();
-    };
-    return getInstance();
-};
 
+    data = {},
+    store = {
+        setData: function(key, val) {
+            data[key] = val;
+            return true;
+        },
+        getData: function(key) {
+            if (key) {
+                return data[key];
+            }
+
+            var ret = {};
+            for (var i in data) {
+                ret[i] = data[i];
+            }
+
+            return ret;
+        },
+        resetData: function() {
+            data = {};
+            return true;
+        }
+    };
+
+    if (config.single) {
+        Mine.instance = store;
+    }
+
+    return store;
+};

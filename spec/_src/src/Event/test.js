@@ -14,6 +14,17 @@ describe('Eventは', function() {
         // clear
     });
 
+    it('singleオプションでsingletonになる', function() {
+        var e1 = new Global.Event({
+                single: true
+            }),
+            e2 = new Global.Event({
+                single: true
+            });
+
+        expect(e1).toBe(e2);
+    });
+
     it('PCとスマートフォンでイベントを切り替える', function() {
         var eSP = new Global.Event({
                 isMobile: function() {

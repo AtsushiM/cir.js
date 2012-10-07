@@ -9,9 +9,13 @@ describe('Global.DataStoreは', function() {
         store.resetData();
     });
 
-    it('singletonである', function() {
-        var store1 = new Global.DataStore(),
-            store2 = new Global.DataStore();
+    it('singleオプションでsingletonになる', function() {
+        var store1 = new Global.DataStore({
+                single: true
+            }),
+            store2 = new Global.DataStore({
+                single: true
+            });
 
         expect(store1).toBe(store2);
     });
