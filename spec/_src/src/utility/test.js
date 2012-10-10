@@ -28,6 +28,11 @@ describe('utilityは', function() {
         expect(scripts.length).toBeDefined();
     });
 
+    it('$id(id)で対象のidのelementを返す', function() {
+        var id = util.$id('jasmineClassList');
+        expect(id).toBeDefined();
+    });
+
     it('hideElement(element)で対象のelementのstyle.displayを"none"にする', function() {
         var $body = util.$('body');
 

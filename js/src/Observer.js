@@ -53,7 +53,7 @@ Global.Observer = function(config) {
                 }
 
 
-                for (var i = 0, len = target.length; i < len; i++) {
+                for (var i = target.length; i--;) {
                     if (func === target[i]) {
                         target.splice(i, 1);
 
@@ -80,7 +80,7 @@ Global.Observer = function(config) {
                     return false;
                 }
 
-                for (var i = 0, len = target.length; i < len; i++) {
+                for (var i = target.length; i--;) {
                     func = target[i];
                     if (func) {
                         func(vars);

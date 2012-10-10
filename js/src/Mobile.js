@@ -7,16 +7,13 @@ Global.Mobile = function() {
         userAgent = navigator.userAgent,
         mobile = {
             isAndroid: function(ua) {
-                ua = checkUA(ua);
-                return ua.match(/Android/i) ? true : false;
+                return checkUA(ua, /Android/i);
             },
             isIOS: function(ua) {
-                ua = checkUA(ua);
-                return ua.match(/iPhone|iPad|iPod/i) ? true : false;
+                return checkUA(ua, /iPhone|iPad|iPod/i);
             },
             isWindows: function(ua) {
-                ua = checkUA(ua);
-                return ua.match(/IEMobile/i) ? true : false;
+                return checkUA(ua, /IEMobile/i);
             },
             isMobile: function() {
                 return (
@@ -26,7 +23,12 @@ Global.Mobile = function() {
                 );
             },
             killScroll: function() {
+                scrollTop();
                 doc.addEventListener('touchmove', preventDefault);
+            },
+            revivalScroll: function() {
+                scrollTop();
+                doc.removeEventListener('touchmove', preventDefault);
             },
             hideAddress: function() {
                 win.addEventListener('load', hideAddressHandler, false);
@@ -34,7 +36,7 @@ Global.Mobile = function() {
 
                 function doScroll() {
                     if (win.pageYOffset === 0) {
-                        win.scrollTo(0, 1);
+                        scrollTop();
                     }
                 }
                 function hideAddressHandler() {
@@ -65,12 +67,14 @@ Global.Mobile = function() {
         return false;
     }
 
-    function checkUA(ua) {
-        if (ua) {
-            return ua;
-        }
+    function scrollTop() {
+        win.scrollTo(0, 1);
+    }
 
-        return userAgent;
+    function checkUA(ua, pattern) {
+        ua = ua ? ua : userAgent;
+
+        return ua.match(pattern) ? true : false;
     }
 
     return mobile;

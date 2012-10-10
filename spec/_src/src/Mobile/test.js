@@ -49,6 +49,10 @@ describe('Mobileは', function() {
         mb.killScroll();
     });
 
+    it('revivalScroll()でスクロールを復活する', function() {
+        mb.revivalScroll();
+    });
+
     it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
         mb.orientationChange({
             landscape: function() {

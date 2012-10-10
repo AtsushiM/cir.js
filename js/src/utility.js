@@ -24,6 +24,9 @@ Global.utility = {
 
         return arys;
     },
+    $id: function(id) {
+        return doc.getElementById(id);
+    },
     showElement: function(element) {
         element.style.display = 'block';
     },

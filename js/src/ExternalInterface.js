@@ -30,16 +30,16 @@ Global.ExternalInterface = function(config) {
             if (isAndroid) {
                 // Android
                 returned = {
-                    call: function(config) {
+                    'call': function(config) {
                         android[config.mode](hashCtrl.makeHash(config));
                     },
-                    addCallback: function(name, func) {
+                    'addCallback': function(name, func) {
                         Global.EXTERNAL[name] = function(vars) {
                             var objs = hashCtrl.parseHash(vars);
                             return func(objs.vars);
                         };
                     },
-                    removeCallback: function(name) {
+                    'removeCallback': function(name) {
                         delete Global.EXTERNAL[name];
                     }
                 };
