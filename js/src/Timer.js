@@ -14,6 +14,9 @@ Global.Timer = function(config) {
         preformedtime = getPreformedNum(limit),
         loopid,
         instanse = {
+            getLimit: function() {
+                return limit;
+            },
             getTime: function() {
                 return preformedtime;
             },
@@ -91,7 +94,7 @@ Global.Timer = function(config) {
             deff = digit - num.length;
 
         if (!isFew) {
-            if (deff > 0) {
+            if (deff > -1) {
                 return makeFill(deff, 0) + num;
             }
 
@@ -140,3 +143,4 @@ Global.Timer = function(config) {
 
     return instanse;
 };
+

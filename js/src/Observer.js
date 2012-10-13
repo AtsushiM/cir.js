@@ -27,7 +27,8 @@ Global.Observer = function(config) {
                 observed[key].push(func);
             },
             forOn: function(obj) {
-                for (var i in obj) {
+                var i;
+                for (i in obj) {
                     instance.on(i, obj[i]);
                 }
             },
@@ -46,14 +47,15 @@ Global.Observer = function(config) {
                     return true;
                 }
 
-                var target = observed[key];
+                var target = observed[key],
+                    i;
 
                 if (!target) {
                     return false;
                 }
 
 
-                for (var i = target.length; i--;) {
+                for (i = target.length; i--;) {
                     if (func === target[i]) {
                         target.splice(i, 1);
 
@@ -68,19 +70,21 @@ Global.Observer = function(config) {
                 return false;
             },
             forOff: function(obj) {
-                for (var i in obj) {
+                var i;
+                for (i in obj) {
                     instance.off(i, obj[i]);
                 }
             },
             fire: function(key, vars) {
                 var target = observed[key],
-                    func;
+                    func,
+                    i;
 
                 if (!target) {
                     return false;
                 }
 
-                for (var i = target.length; i--;) {
+                for (i = target.length; i--;) {
                     func = target[i];
                     if (func) {
                         func(vars);

@@ -6,12 +6,12 @@ Global.NumberImage = function(config) {
         extension = config.extension,
         numimg = {
             make: function(x) {
-                // 1文字ずつに分割
                 var aryX = ('' + x).split(''),
-                    tags = '';
+                    tags = '',
+                    i;
 
-                for (var i = 0, len = aryX.length; i < len; i++) {
-                    tags += make1Digit(aryX[i]);
+                for (i = aryX.length; i--;) {
+                    tags = make1Digit(aryX[i]) + tags;
                 }
 
                 return tags;

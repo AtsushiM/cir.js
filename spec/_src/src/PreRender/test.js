@@ -1,71 +1,26 @@
-/* Class: "../../../../js/src/Mobile.js" */
-describe('Mobileは', function() {
-    var mb;
+/* Class: "../../../../js/src/PreRender.js" */
+describe('PreRenderは', function() {
+    var prerender,
+        $body = document.querySelector('body');
 
     beforeEach(function() {
         // init
-        mb = new Global.Mobile();
-    });
-    afterEach(function() {
-        // clear
-    });
-
-    it('isAndroid()でAndroid端末かどうかチェック', function() {
-        expect(mb.isAndroid()).toBeFalsy();
-        expect(mb.isAndroid('Android')).toBeTruthy();
-        expect(mb.isAndroid('PC')).toBeFalsy();
-    });
-
-    it('isIOS()でiOS端末かどうかチェック', function() {
-        expect(mb.isIOS()).toBeFalsy();
-        expect(mb.isIOS('iPhone')).toBeTruthy();
-        expect(mb.isIOS('iPad')).toBeTruthy();
-        expect(mb.isIOS('iPod')).toBeTruthy();
-        expect(mb.isIOS('PC')).toBeFalsy();
-    });
-
-    it('isWindows()でWindowsモバイル端末かどうかチェック', function() {
-        expect(mb.isWindows()).toBeFalsy();
-        expect(mb.isWindows('IEMobile')).toBeTruthy();
-        expect(mb.isWindows('PC')).toBeFalsy();
-    });
-
-    it('isMobile()でモバイル端末かどうかチェック', function() {
-        spyOn(mb, 'isAndroid').andCallThrough();
-        spyOn(mb, 'isIOS').andCallThrough();
-        spyOn(mb, 'isWindows').andCallThrough();
-
-        expect(mb.isMobile()).toBeFalsy();
-        expect(mb.isAndroid).toHaveBeenCalled();
-        expect(mb.isIOS).toHaveBeenCalled();
-        expect(mb.isWindows).toHaveBeenCalled();
-    });
-
-    it('hideAddress()でアドレスバーを非表示にする', function() {
-        mb.hideAddress();
-    });
-
-    it('killScroll()でスクロールを禁止する', function() {
-        mb.killScroll();
-    });
-
-    it('revivalScroll()でスクロールを復活する', function() {
-        mb.revivalScroll();
-    });
-
-    it('orientationCheck()で画面の向きをチェックする', function() {
-        mb.orientationCheck();
-    });
-
-    it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
-        mb.orientationChange({
-            landscape: function() {
-                // 横
-            },
-            portrait: function() {
-                // 縦
+        prerender = new Global.PreRender({
+            elements: [$body],
+            guesslimit: 10,
+            looptime: 10,
+            loopblur: 5,
+            onrendered: function() {
+                $body.style.display = 'block';
             }
         });
+    });
+    afterEach(function() {
+    });
+
+    it('start()でelementsで指定したエレメントのプリレンダリングを開始する', function() {
+        prerender.start();
+        expect(0).toEqual(0);
     });
 });
 /*
@@ -145,3 +100,4 @@ describe('XXXは', function() {
     });
 });
 */
+

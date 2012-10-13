@@ -27,8 +27,9 @@ Global.DataStore = function(config) {
                 return data[key];
             }
 
-            var ret = {};
-            for (var i in data) {
+            var ret = {},
+                i;
+            for (i in data) {
                 ret[i] = data[i];
             }
 

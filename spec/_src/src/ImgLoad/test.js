@@ -1,71 +1,28 @@
-/* Class: "../../../../js/src/Mobile.js" */
-describe('Mobileは', function() {
-    var mb;
+/* Class: "../../../../js/src/ImgLoad.js" */
+describe('ImgLoadは', function() {
+    var imgload;
 
     beforeEach(function() {
         // init
-        mb = new Global.Mobile();
+        imgload = new Global.ImgLoad({
+            srcs: [
+                // img path
+            ],
+            onload: function() {}
+        });
     });
     afterEach(function() {
         // clear
     });
 
-    it('isAndroid()でAndroid端末かどうかチェック', function() {
-        expect(mb.isAndroid()).toBeFalsy();
-        expect(mb.isAndroid('Android')).toBeTruthy();
-        expect(mb.isAndroid('PC')).toBeFalsy();
+    it('start()で画像の先読みを開始する', function() {
+        imgload.start();
+        expect(0).toEqual(0);
     });
 
-    it('isIOS()でiOS端末かどうかチェック', function() {
-        expect(mb.isIOS()).toBeFalsy();
-        expect(mb.isIOS('iPhone')).toBeTruthy();
-        expect(mb.isIOS('iPad')).toBeTruthy();
-        expect(mb.isIOS('iPod')).toBeTruthy();
-        expect(mb.isIOS('PC')).toBeFalsy();
-    });
-
-    it('isWindows()でWindowsモバイル端末かどうかチェック', function() {
-        expect(mb.isWindows()).toBeFalsy();
-        expect(mb.isWindows('IEMobile')).toBeTruthy();
-        expect(mb.isWindows('PC')).toBeFalsy();
-    });
-
-    it('isMobile()でモバイル端末かどうかチェック', function() {
-        spyOn(mb, 'isAndroid').andCallThrough();
-        spyOn(mb, 'isIOS').andCallThrough();
-        spyOn(mb, 'isWindows').andCallThrough();
-
-        expect(mb.isMobile()).toBeFalsy();
-        expect(mb.isAndroid).toHaveBeenCalled();
-        expect(mb.isIOS).toHaveBeenCalled();
-        expect(mb.isWindows).toHaveBeenCalled();
-    });
-
-    it('hideAddress()でアドレスバーを非表示にする', function() {
-        mb.hideAddress();
-    });
-
-    it('killScroll()でスクロールを禁止する', function() {
-        mb.killScroll();
-    });
-
-    it('revivalScroll()でスクロールを復活する', function() {
-        mb.revivalScroll();
-    });
-
-    it('orientationCheck()で画面の向きをチェックする', function() {
-        mb.orientationCheck();
-    });
-
-    it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
-        mb.orientationChange({
-            landscape: function() {
-                // 横
-            },
-            portrait: function() {
-                // 縦
-            }
-        });
+    it('completeCheck()で画像の読み込みが終了したかチェックする', function() {
+        imgload.completeCheck();
+        expect(0).toEqual(0);
     });
 });
 /*

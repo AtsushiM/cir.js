@@ -9,23 +9,16 @@ Global.HashController = function() {
             makeHash: function(config) {
                 var hash = '#' + config.mode,
                     vars = config.vars,
-                    sign = '?';
+                    sign = '?',
+                    i;
 
-                for (var i in vars) {
-                    /* if (i !== fireHashKey) { */
-                        hash +=
-                            sign +
-                            i + '=' +
-                            JSON.stringify(vars[i]);
-                        sign = '&';
-                    /* } */
+                for (i in vars) {
+                    hash +=
+                        sign +
+                        i + '=' +
+                        JSON.stringify(vars[i]);
+                    sign = '&';
                 }
-
-                // 発火回数を追加
-                // if (!config.once) {
-                //     hash += sign + fireHashKey + '=' + firingCount;
-                //     firingCount++;
-                // }
 
                 return encodeURI(hash);
             },
@@ -39,11 +32,9 @@ Global.HashController = function() {
                     varsHash,
                     vars = null;
 
-                // hash = [mode, contents]
                 hash = decodeURI(hashvars)
                        .split('#')[1];
 
-                // hashが存在しない場合終了
                 if (!hash) {
                     return false;
                 }
@@ -60,7 +51,7 @@ Global.HashController = function() {
                     (function() {
                         var splitVar;
 
-                        for (var i = 0, len = varsHash.length; i < len; i++) {
+                        for (var i = varsHash.length; i--;) {
                             if (varsHash[i]) {
                                 splitVar = varsHash[i].split('=');
                                 vars[splitVar[0]] = typeCast(splitVar[1]);

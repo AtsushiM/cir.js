@@ -43,20 +43,54 @@ Global.Mobile = function() {
                     setTimeout(doScroll, 100);
                 }
             },
+            orientationCheck: function() {
+                if (
+                    Math.abs(win.orientation) !== 90 &&
+                    win.innerWidth < win.innerHeight
+                ) {
+                    return {
+                        portrait: true,
+                        landscape: false
+                    };
+                }
+
+                return {
+                    portrait: false,
+                    landscape: true
+                };
+            },
             orientationChange: function(vars) {
+                if (vars.immediately) {
+                    change();
+                }
+
+                if (vars.one) {
+                    win.addEventListener('load', onechange);
+                    win.addEventListener('orientationchange', onechange);
+                    win.addEventListener('resize', onechange);
+
+                    return true;
+                }
+
                 win.addEventListener('load', change);
                 win.addEventListener('orientationchange', change);
                 win.addEventListener('resize', change);
 
+                function onechange() {
+                    change();
+
+                    win.removeEventListener('load', onechange);
+                    win.removeEventListener('orientationchange', onechange);
+                    win.removeEventListener('resize', onechange);
+                }
+
                 function change() {
                     if (
-                        Math.abs(win.orientation) !== 90 &&
-                        win.innerWidth < win.innerHeight
+                        mobile.orientationCheck().portrait
                     ) {
                         vars.portrait();
                         return true;
                     }
-
                     vars.landscape();
                 }
             }
@@ -79,3 +113,4 @@ Global.Mobile = function() {
 
     return mobile;
 };
+

@@ -1,4 +1,4 @@
-SRC = namespace.js utility.js DataStore.js Event.js ExternalInterface.js FPS.js HashController.js Loading.js Mobile.js NumberImage.js Observer.js Proxy.js Timer.js
+SRC = namespace.js utility.js DataStore.js Event.js ExternalInterface.js FPS.js HashController.js ImgLoad.js Loading.js Mobile.js NumberImage.js Observer.js PreRender.js Proxy.js Timer.js
 COMBINE = ../hyapp.combine.js
 COMPRESS = ../hyapp.js
 

@@ -17,9 +17,10 @@ Global.utility = {
     },
     $$: function(selector) {
         var eles = doc.querySelectorAll(selector),
-            arys = [];
+            arys = [],
+            i;
 
-        for (var i = 0, len = eles.length; i < len; i++) {
+        for (i = 0, len = eles.length; i < len; i++) {
             arys[i] = eles[i];
         }
 
@@ -35,7 +36,9 @@ Global.utility = {
         element.style.display = 'none';
     },
     override: function(target, vars) {
-        for (var i in vars) {
+        var i;
+
+        for (i in vars) {
             target[i] = vars[i];
         }
 
@@ -79,8 +82,9 @@ Global.DataStore = function(config) {
                 return data[key];
             }
 
-            var ret = {};
-            for (var i in data) {
+            var ret = {},
+                i;
+            for (i in data) {
                 ret[i] = data[i];
             }
 
@@ -299,23 +303,16 @@ Global.HashController = function() {
             makeHash: function(config) {
                 var hash = '#' + config.mode,
                     vars = config.vars,
-                    sign = '?';
+                    sign = '?',
+                    i;
 
-                for (var i in vars) {
-                    /* if (i !== fireHashKey) { */
-                        hash +=
-                            sign +
-                            i + '=' +
-                            JSON.stringify(vars[i]);
-                        sign = '&';
-                    /* } */
+                for (i in vars) {
+                    hash +=
+                        sign +
+                        i + '=' +
+                        JSON.stringify(vars[i]);
+                    sign = '&';
                 }
-
-                // 発火回数を追加
-                // if (!config.once) {
-                //     hash += sign + fireHashKey + '=' + firingCount;
-                //     firingCount++;
-                // }
 
                 return encodeURI(hash);
             },
@@ -329,11 +326,9 @@ Global.HashController = function() {
                     varsHash,
                     vars = null;
 
-                // hash = [mode, contents]
                 hash = decodeURI(hashvars)
                        .split('#')[1];
 
-                // hashが存在しない場合終了
                 if (!hash) {
                     return false;
                 }
@@ -350,7 +345,7 @@ Global.HashController = function() {
                     (function() {
                         var splitVar;
 
-                        for (var i = 0, len = varsHash.length; i < len; i++) {
+                        for (var i = varsHash.length; i--;) {
                             if (varsHash[i]) {
                                 splitVar = varsHash[i].split('=');
                                 vars[splitVar[0]] = typeCast(splitVar[1]);
@@ -394,6 +389,43 @@ Global.HashController = function() {
     }
 
     return controller;
+};
+/* Test: "../../spec/_src/src/ImgLoad/test.js" */
+Global.ImgLoad = function(config) {
+    'use strict';
+
+    var Mine = Global.ImgLoad,
+        srcs = config.srcs,
+        srccount = srcs.length,
+        onload = config.onload,
+        loadcount = 0,
+        instanse = {
+            start: function() {
+                var img,
+                    i;
+
+                for (i = srccount; i--;) {
+                    img = new Image();
+                    img.src = srcs[i];
+                    img.onload = instanse.imgloaded;
+                }
+            },
+            completeCheck: function() {
+                if (loadcount >= srccount) {
+                    onload();
+                    return true;
+                }
+
+                return false;
+            }
+        };
+
+    function imgloaded() {
+        loadcount++;
+        instanse.completeCheck();
+    }
+
+    return instanse;
 };
 /* Test: "../../spec/_src/src/Loading/test.js" */
 Global.Loading = function(config) {
@@ -459,20 +491,54 @@ Global.Mobile = function() {
                     setTimeout(doScroll, 100);
                 }
             },
+            orientationCheck: function() {
+                if (
+                    Math.abs(win.orientation) !== 90 &&
+                    win.innerWidth < win.innerHeight
+                ) {
+                    return {
+                        portrait: true,
+                        landscape: false
+                    };
+                }
+
+                return {
+                    portrait: false,
+                    landscape: true
+                };
+            },
             orientationChange: function(vars) {
+                if (vars.immediately) {
+                    change();
+                }
+
+                if (vars.one) {
+                    win.addEventListener('load', onechange);
+                    win.addEventListener('orientationchange', onechange);
+                    win.addEventListener('resize', onechange);
+
+                    return true;
+                }
+
                 win.addEventListener('load', change);
                 win.addEventListener('orientationchange', change);
                 win.addEventListener('resize', change);
 
+                function onechange() {
+                    change();
+
+                    win.removeEventListener('load', onechange);
+                    win.removeEventListener('orientationchange', onechange);
+                    win.removeEventListener('resize', onechange);
+                }
+
                 function change() {
                     if (
-                        Math.abs(win.orientation) !== 90 &&
-                        win.innerWidth < win.innerHeight
+                        mobile.orientationCheck().portrait
                     ) {
                         vars.portrait();
                         return true;
                     }
-
                     vars.landscape();
                 }
             }
@@ -495,6 +561,7 @@ Global.Mobile = function() {
 
     return mobile;
 };
+
 /* Test: "../../spec/_src/src/NumberImage/test.js" */
 Global.NumberImage = function(config) {
     'use strict';
@@ -503,12 +570,12 @@ Global.NumberImage = function(config) {
         extension = config.extension,
         numimg = {
             make: function(x) {
-                // 1文字ずつに分割
                 var aryX = ('' + x).split(''),
-                    tags = '';
+                    tags = '',
+                    i;
 
-                for (var i = 0, len = aryX.length; i < len; i++) {
-                    tags += make1Digit(aryX[i]);
+                for (i = aryX.length; i--;) {
+                    tags = make1Digit(aryX[i]) + tags;
                 }
 
                 return tags;
@@ -554,7 +621,8 @@ Global.Observer = function(config) {
                 observed[key].push(func);
             },
             forOn: function(obj) {
-                for (var i in obj) {
+                var i;
+                for (i in obj) {
                     instance.on(i, obj[i]);
                 }
             },
@@ -573,14 +641,15 @@ Global.Observer = function(config) {
                     return true;
                 }
 
-                var target = observed[key];
+                var target = observed[key],
+                    i;
 
                 if (!target) {
                     return false;
                 }
 
 
-                for (var i = target.length; i--;) {
+                for (i = target.length; i--;) {
                     if (func === target[i]) {
                         target.splice(i, 1);
 
@@ -595,19 +664,21 @@ Global.Observer = function(config) {
                 return false;
             },
             forOff: function(obj) {
-                for (var i in obj) {
+                var i;
+                for (i in obj) {
                     instance.off(i, obj[i]);
                 }
             },
             fire: function(key, vars) {
                 var target = observed[key],
-                    func;
+                    func,
+                    i;
 
                 if (!target) {
                     return false;
                 }
 
-                for (var i = target.length; i--;) {
+                for (i = target.length; i--;) {
                     func = target[i];
                     if (func) {
                         func(vars);
@@ -628,6 +699,66 @@ Global.Observer = function(config) {
 
     return instance;
 };
+/* Test: "../../spec/_src/src/PreRender/test.js" */
+Global.PreRender = function(config) {
+    'use strict';
+
+    var util = Global.utility,
+        override = util.override;
+
+    config = override({
+        elements: [],
+        guesslimit: 30,
+        looptime: 100,
+        loopblur: 20,
+        onrendered: function() {}
+    }, config);
+
+    var Mine = Global.PreRender,
+        util = Global.utility,
+        $ = util.$,
+        show = util.showElement,
+        hide = util.hideElement,
+        elements = config.elements,
+        guesslimit = config.guesslimit,
+        onrendered = config.onrendered,
+        looptime = config.looptime,
+        loopblur = looptime + config.loopblur,
+        loopid,
+        prevtime,
+        instanse = {
+            start: function() {
+                for (var i = elements.length; i--;) {
+                    show(elements[i]);
+                }
+                prevtime = Date.now();
+                loopid = setInterval(instanse.check, looptime);
+            },
+            check: function() {
+                var gettime = Date.now(),
+                    diff = gettime - prevtime;
+
+                prevtime = gettime;
+
+                if (diff < loopblur) {
+                    guesslimit--;
+
+                    if (guesslimit < 1) {
+                        clearInterval(loopid);
+
+                        for (var i = elements.length; i--;) {
+                            hide(elements[i]);
+                        }
+
+                        onrendered();
+                    }
+                }
+            }
+        };
+
+    return instanse;
+};
+
 /* Test: "../../spec/_src/src/Proxy/test.js" */
 Global.Proxy = function(config) {
     'use strict';
@@ -668,6 +799,9 @@ Global.Timer = function(config) {
         preformedtime = getPreformedNum(limit),
         loopid,
         instanse = {
+            getLimit: function() {
+                return limit;
+            },
             getTime: function() {
                 return preformedtime;
             },
@@ -745,7 +879,7 @@ Global.Timer = function(config) {
             deff = digit - num.length;
 
         if (!isFew) {
-            if (deff > 0) {
+            if (deff > -1) {
                 return makeFill(deff, 0) + num;
             }
 
@@ -794,3 +928,4 @@ Global.Timer = function(config) {
 
     return instanse;
 };
+

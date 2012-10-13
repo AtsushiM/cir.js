@@ -16,9 +16,10 @@ Global.utility = {
     },
     $$: function(selector) {
         var eles = doc.querySelectorAll(selector),
-            arys = [];
+            arys = [],
+            i;
 
-        for (var i = 0, len = eles.length; i < len; i++) {
+        for (i = 0, len = eles.length; i < len; i++) {
             arys[i] = eles[i];
         }
 
@@ -34,7 +35,9 @@ Global.utility = {
         element.style.display = 'none';
     },
     override: function(target, vars) {
-        for (var i in vars) {
+        var i;
+
+        for (i in vars) {
             target[i] = vars[i];
         }
 

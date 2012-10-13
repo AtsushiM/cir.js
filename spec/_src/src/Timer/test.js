@@ -25,6 +25,10 @@ describe('Timerは', function() {
         timer.stop();
     });
 
+    it('getLimit()でlimitプロパティで指定した数値を秒数を取得する', function() {
+        expect(timer.getLimit()).toEqual(20);
+    });
+
     it('getTime()で現在のカウントを取得する', function() {
         expect(timer.getTime()).toEqual('020.000');
     });
