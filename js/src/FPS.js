@@ -15,7 +15,9 @@ Global.FPS = function(config) {
         return Mine.instance;
     }
 
-    var criterion = config.criterion,
+    var util = Global.utility,
+        win = util.win,
+        criterion = config.criterion,
         surver = criterion,
         enterframe = config.enterframe,
         msecFrame = getFrame(criterion),
@@ -34,8 +36,8 @@ Global.FPS = function(config) {
             },
             enter: function() {
                 enterframe({
-                    criterion: fps.getCriterion(),
-                    surver: fps.getSurver()
+                    criterion: criterion,
+                    surver: surver
                 });
             },
             start: function() {
@@ -44,11 +46,44 @@ Global.FPS = function(config) {
             },
             stop: function() {
                 clearInterval(loopid);
+                loopid = 0;
             }
-        };
+        },
+        animationFrameCount = 0,
+        animationFrameWait = Math.round(60 / criterion) + 1,
+        requestAnimationFrame = (function() {
+            return win.requestAnimationFrame ||
+                win.webkitRequestAnimationFrame ||
+                win.mozRequestAnimationFrame ||
+                win.oRequestAnimationFrame ||
+                win.msRequestAnimationFrame ||
+                false;
+                // function(callback, element){
+                //         window.setTimeout(callback, 1000 / 60);
+                //       };
+        }());
+
+    function animationFrame() {
+        animationFrameCount++;
+
+        if (animationFrameCount === animationFrameWait) {
+            animationFrameCount = 0;
+            _loop();
+        }
+
+        if (loopid === 1) {
+            requestAnimationFrame(animationFrame);
+        }
+    }
 
     function loop() {
-        loopid = setInterval(_loop, msecFrame);
+        if (requestAnimationFrame) {
+            loopid = 1;
+            animationFrame();
+        }
+        else {
+            loopid = setInterval(_loop, msecFrame);
+        }
     }
     function _loop() {
         nowtime = Date.now();

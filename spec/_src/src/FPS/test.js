@@ -4,11 +4,12 @@ describe('FPSは', function() {
         dammy = {
             enterframe: function(vars) {
             }
-        };
+        },
+        criterion = 10;
 
     function setFPS() {
         fps = new Global.FPS({
-            criterion: 20,
+            criterion: criterion,
             enterframe: dammy.enterframe
         });
     }
@@ -36,7 +37,7 @@ describe('FPSは', function() {
     });
 
     it('getCriterion()で目標FPSを取得する', function() {
-        expect(fps.getCriterion()).toEqual(20);
+        expect(fps.getCriterion()).toEqual(criterion);
     });
 
     it('getSurver()で現在FPSを取得する', function() {
@@ -44,7 +45,7 @@ describe('FPSは', function() {
     });
 
     it('getFrameTime()で1フレームあたりのミリ秒数を取得する', function() {
-        expect(fps.getFrameTime()).toEqual(1000 / 20);
+        expect(fps.getFrameTime()).toEqual(1000 / criterion);
     });
 
     it('enter()で毎フレーム実行するメソッドを実行する', function() {
@@ -63,13 +64,10 @@ describe('FPSは', function() {
         setFPS();
         fps.start();
 
-        waits(fps.getFrameTime() + 10);
+        waits(fps.getFrameTime() * 4);
         runs(function() {
-            expect(dammy.enterframe.callCount).toEqual(1);
-        });
-        waits(fps.getFrameTime());
-        runs(function() {
-            expect(dammy.enterframe.callCount).toEqual(2);
+            expect(dammy.enterframe.callCount).toBeGreaterThan(1);
+            expect(dammy.enterframe.callCount).toBeLessThan(4);
         });
     });
 
