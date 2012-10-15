@@ -548,25 +548,34 @@ Global.Mobile = function() {
                 }
 
                 if (vars.one) {
-                    win.addEventListener('load', onechange);
-                    win.addEventListener('orientationchange', onechange);
-                    win.addEventListener('resize', onechange);
+                    add(onechange);
 
-                    return true;
+                    return function() {
+                        remove(onechange);
+                    };
                 }
 
-                win.addEventListener('load', change);
-                win.addEventListener('orientationchange', change);
-                win.addEventListener('resize', change);
+                add(change);
 
+                return function() {
+                    remove(change);
+                };
+
+                function add(func) {
+                    set('add', func);
+                }
+                function remove(func) {
+                    set('remove', func);
+                }
+                function set(mode, func) {
+                    win[mode + 'EventListener']('load', func);
+                    win[mode + 'EventListener']('orientationchange', func);
+                    win[mode + 'EventListener']('resize', func);
+                }
                 function onechange() {
                     change();
-
-                    win.removeEventListener('load', onechange);
-                    win.removeEventListener('orientationchange', onechange);
-                    win.removeEventListener('resize', onechange);
+                    remove(onechange);
                 }
-
                 function change() {
                     if (
                         mobile.orientationCheck().portrait

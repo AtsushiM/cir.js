@@ -43,18 +43,22 @@ describe('Mobileは', function() {
 
     it('hideAddress()でアドレスバーを非表示にする', function() {
         mb.hideAddress();
+        expect(0).toEqual(0);
     });
 
     it('killScroll()でスクロールを禁止する', function() {
         mb.killScroll();
+        expect(0).toEqual(0);
     });
 
     it('revivalScroll()でスクロールを復活する', function() {
         mb.revivalScroll();
+        expect(0).toEqual(0);
     });
 
     it('orientationCheck()で画面の向きをチェックする', function() {
         mb.orientationCheck();
+        expect(0).toEqual(0);
     });
 
     it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
@@ -66,6 +70,21 @@ describe('Mobileは', function() {
                 // 縦
             }
         });
+        expect(0).toEqual(0);
+    });
+
+    it('orientationChange()は画面向きチェックに紐付けたイベントを削除する関数を返す', function() {
+        var remove = mb.orientationChange({
+            landscape: function() {
+                // 横
+            },
+            portrait: function() {
+                // 縦
+            }
+        });
+        remove();
+
+        expect(0).toEqual(0);
     });
 });
 /*
