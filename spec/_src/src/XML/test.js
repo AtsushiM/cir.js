@@ -1,44 +1,39 @@
-/* Class: "../../../../js/src/Ajax.js" */
-describe('Ajaxは', function() {
-    var ajax;
+/* Class: "../../../../js/src/XML.js" */
+describe('XMLは', function() {
+    var xml,
+        data = '<?xml version="1.0" encoding="UTF-8"?><testdata><data>aaaa</data><data>bbbb</data></testdata>';
 
     beforeEach(function() {
         // init
-        ajax = new Global.Ajax();
+        xml = new Global.XML({
+            data: data
+        });
     });
     afterEach(function() {
         // clear
     });
 
-    it('request({url, callback})で非同期でurlの実行結果を取得する', function() {
-        var data = '';
-        ajax.request({
-            url: '/spec/common/test.xml',
-            callback: function(d) {
-                data = d;
-            }
-        });
-
-        waits(100);
-        runs(function() {
-            expect(data).not.toEqual('');
-        });
+    it('getData()でXMLのテキストデータを取得する', function() {
+        expect(xml.getData()).toEqual(data);
     });
 
-    it('abort()で非同期通信を停止する', function() {
-        var data = '';
-        ajax.request({
-            url: '/sp/spec/common/test.xml',
-            callback: function(d) {
-                data = d;
-            }
-        });
-        ajax.abort();
+    it('setData()でXMLのテキストデータを設定する', function() {
+        xml.setData('dammy');
 
-        waits(10);
-        runs(function() {
-            expect(data).toEqual('');
-        });
+        expect(xml.getData()).not.toEqual(data);
+    });
+
+    it('$(selector)でXMLからelement形式でデータを取得する', function() {
+        var data = xml.$('data');
+
+        expect(data.innerHTML).toEqual('aaaa');
+    });
+
+    it('$$(selector)でXMLからelement形式でデータを配列で取得する', function() {
+        var data = xml.$$('data');
+
+        expect(data[0].innerHTML).toEqual('aaaa');
+        expect(data[1].innerHTML).toEqual('bbbb');
     });
 });
 /*

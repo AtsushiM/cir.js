@@ -16,6 +16,7 @@ src/PreRender/\n\
 src/Proxy/\n\
 src/Timer/\n\
 src/Twitter/\n\
+src/XML/\n\
 src/utility/\n\
 </script>\
 <script type="text/template" id="jasmineClassList">\
@@ -35,6 +36,7 @@ src/utility/\n\
 ../../js/src/Proxy.js\n\
 ../../js/src/Timer.js\n\
 ../../js/src/Twitter.js\n\
+../../js/src/XML.js\n\
 ../../js/src/utility.js\n\
 </script>\
 <script type="text/template" id="jasmineTestList">\
@@ -54,6 +56,7 @@ src/utility/\n\
 ../_src/src/Proxy/test.js\n\
 ../_src/src/Timer/test.js\n\
 ../_src/src/Twitter/test.js\n\
+../_src/src/XML/test.js\n\
 ../_src/src/utility/test.js\n\
 </script>\
 ');
