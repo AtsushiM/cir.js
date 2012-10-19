@@ -12,28 +12,32 @@ if (!Date.now) {
 Global.utility = {
     win: win,
     doc: doc,
+    body: $('body', doc),
     $: function(selector) {
-        return doc.querySelector(selector);
+        return $(selector, doc);
     },
     $$: function(selector) {
-        var eles = doc.querySelectorAll(selector),
-            arys = [],
-            i;
-
-        for (i = 0, len = eles.length; i < len; i++) {
-            arys[i] = eles[i];
-        }
-
-        return arys;
+        return $$(selector, doc);
     },
+    $child: $,
+    $$child: $$,
     $id: function(id) {
         return doc.getElementById(id);
     },
+    onEvent: function(element, eventname, handler) {
+        element.addEventListener(eventname, handler);
+    },
+    offEvent: function(element, eventname, handler) {
+        element.removeEventListener(eventname, handler);
+    },
+    createElement: function(tagname) {
+        return doc.createElement(tagname);
+    },
     showElement: function(element) {
-        element.style.display = 'block';
+        setStyleDisplay(element, 'block');
     },
     hideElement: function(element) {
-        element.style.display = 'none';
+        setStyleDisplay(element, 'none');
     },
     override: function(target, vars) {
         var i;
@@ -49,10 +53,70 @@ Global.utility = {
 
         text = text.join(replacetext);
         return text;
+    },
+    windowOpen: function(url, windowname) {
+        return win.open(url, windowname);
     }
 };
 
+function setStyleDisplay(element, value) {
+    element.style.display = value;
+}
+function $(selector, element) {
+    return element.querySelector(selector);
+}
+function $$(selector, element) {
+    var eles = element.querySelectorAll(selector),
+        arys = [],
+        i,
+        len;
+
+    for (i = 0, len = eles.length; i < len; i++) {
+        arys[i] = eles[i];
+    }
+
+    return arys;
+}
+
 }(window, document));
+/* Test: "../../spec/_src/src/Ajax/test.js" */
+Global.Ajax = function(config) {
+    'use strict';
+
+    var Mine = Global.Ajax,
+        xhr,
+        instanse = {
+            request: function(vars) {
+                var url = vars.url,
+                    callback = vars.callback;
+
+                if (!vars.cash) {
+                    if (url.match(/\?/)) {
+                        url += '&';
+                    }
+                    else {
+                        url += '?';
+                    }
+
+                    url += 'ajaxcash' + Date.now() + '=0';
+                }
+
+                xhr = new XMLHttpRequest();
+
+                xhr.onload = function() {
+                    callback(xhr.responseText);
+                };
+
+                xhr.open('GET', url);
+                xhr.send(null);
+            },
+            abort: function() {
+                xhr.abort();
+            }
+        };
+
+    return instanse;
+};
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 Global.DataStore = function(config) {
     'use strict';
@@ -221,6 +285,43 @@ Global.ExternalInterface = function(config) {
         }());
 
     return external;
+};
+/* Test: "../../spec/_src/src/Facebook/test.js" */
+Global.Facebook = function() {
+    'use strict';
+
+    var Mine = Global.Facebook,
+        instanse = {
+            getShareURL: function(vars) {
+                var shareURL = 'https://www.facebook.com/dialog/feed?',
+                    app_id = vars.app_id,
+                    redirect_uri = vars.redirect_uri,
+                    link = vars.link,
+                    picture = vars.picture,
+                    name = vars.name,
+                    caption = vars.caption,
+                    description = vars.description,
+                    url = shareURL +
+                        'app_id=' + app_id + '&' +
+                        'redirect_uri=' + redirect_uri;
+
+                urlParam('link', link);
+                urlParam('picture', picture);
+                urlParam('name', name);
+                urlParam('caption', caption);
+                urlParam('description', description);
+
+                function urlParam(key, val) {
+                    if (val) {
+                        url += '&' + key + '=' + encodeURI(val);
+                    }
+                }
+
+                return url;
+            }
+        };
+
+    return instanse;
 };
 /* Test: "../../spec/_src/src/FPS/test.js" */
 Global.FPS = function(config) {
@@ -442,23 +543,16 @@ Global.ImgLoad = function(config) {
                 for (i = srccount; i--;) {
                     img = new Image();
                     img.src = srcs[i];
-                    img.onload = instanse.imgloaded;
+                    img.onload = instanse.completeCheck;
                 }
             },
             completeCheck: function() {
+                loadcount++;
                 if (loadcount >= srccount) {
                     onload();
-                    return true;
                 }
-
-                return false;
             }
         };
-
-    function imgloaded() {
-        loadcount++;
-        instanse.completeCheck();
-    }
 
     return instanse;
 };
@@ -485,8 +579,11 @@ Global.Loading = function(config) {
 Global.Mobile = function() {
     'use strict';
 
-    var win = Global.utility.win,
-        doc = Global.utility.doc,
+    var util = Global.utility,
+        win = util.win,
+        doc = util.doc,
+        onEvent = util.onEvent,
+        offEvent = util.offEvent,
         userAgent = navigator.userAgent,
         mobile = {
             isAndroid: function(ua) {
@@ -505,17 +602,18 @@ Global.Mobile = function() {
                     mobile.isWindows()
                 );
             },
+            scrollTop: scrollTop,
             killScroll: function() {
                 scrollTop();
-                doc.addEventListener('touchmove', preventDefault);
+                onEvent(doc, 'touchmove', preventDefault);
             },
             revivalScroll: function() {
                 scrollTop();
-                doc.removeEventListener('touchmove', preventDefault);
+                offEvent(doc, 'touchmove', preventDefault);
             },
             hideAddress: function() {
-                win.addEventListener('load', hideAddressHandler, false);
-                win.addEventListener('orientationchange', hideAddressHandler, false);
+                onEvent(win, 'load', hideAddressHandler, false);
+                onEvent(win, 'orientationchange', hideAddressHandler, false);
 
                 function doScroll() {
                     if (win.pageYOffset === 0) {
@@ -562,15 +660,15 @@ Global.Mobile = function() {
                 };
 
                 function add(func) {
-                    set('add', func);
+                    set(onEvent, func);
                 }
                 function remove(func) {
-                    set('remove', func);
+                    set(offEvent, func);
                 }
-                function set(mode, func) {
-                    win[mode + 'EventListener']('load', func);
-                    win[mode + 'EventListener']('orientationchange', func);
-                    win[mode + 'EventListener']('resize', func);
+                function set(setfunc, handler) {
+                    setfunc(win, 'load', handler);
+                    setfunc(win, 'orientationchange', handler);
+                    setfunc(win, 'resize', handler);
                 }
                 function onechange() {
                     change();
@@ -605,7 +703,6 @@ Global.Mobile = function() {
 
     return mobile;
 };
-
 /* Test: "../../spec/_src/src/NumberImage/test.js" */
 Global.NumberImage = function(config) {
     'use strict';
@@ -776,33 +873,33 @@ Global.PreRender = function(config) {
                     show(elements[i]);
                 }
                 prevtime = Date.now();
-                loopid = setInterval(instanse.check, looptime);
-            },
-            check: function() {
-                var gettime = Date.now(),
-                    diff = gettime - prevtime;
-
-                prevtime = gettime;
-
-                if (diff < loopblur) {
-                    guesslimit--;
-
-                    if (guesslimit < 1) {
-                        clearInterval(loopid);
-
-                        for (var i = elements.length; i--;) {
-                            hide(elements[i]);
-                        }
-
-                        onrendered();
-                    }
-                }
+                loopid = setInterval(check, looptime);
             }
         };
 
+    function check() {
+        var gettime = Date.now(),
+            diff = gettime - prevtime;
+
+        prevtime = gettime;
+
+        if (diff < loopblur) {
+            guesslimit--;
+
+            if (guesslimit < 1) {
+                clearInterval(loopid);
+
+                for (var i = elements.length; i--;) {
+                    hide(elements[i]);
+                }
+
+                onrendered();
+            }
+        }
+    }
+
     return instanse;
 };
-
 /* Test: "../../spec/_src/src/Proxy/test.js" */
 Global.Proxy = function(config) {
     'use strict';
@@ -972,4 +1069,39 @@ Global.Timer = function(config) {
 
     return instanse;
 };
+/* Test: "../../spec/_src/src/Twitter/test.js" */
+Global.Twitter = function(config) {
+    'use strict';
 
+    var Mine = Global.Twitter,
+        instanse = {
+            getShareURL: function(vars) {
+                var shareURL = 'https://twitter.com/intent/tweet?',
+                    redirect_uri = vars.redirect_uri,
+                    caption = vars.caption || '',
+                    name = vars.name || '',
+                    hash = vars.hash || '',
+                    url = shareURL;
+
+                if (name) {
+                    name = ' 「' + name + '」';
+                }
+                if (hash) {
+                    hash = ' ' + hash;
+                }
+
+                urlParam('url', redirect_uri);
+                urlParam('text', caption + name + hash);
+
+                function urlParam(key, val) {
+                    if (val) {
+                        url += '&' + key + '=' + encodeURIComponent(val);
+                    }
+                }
+
+                return url;
+            }
+        };
+
+    return instanse;
+};

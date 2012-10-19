@@ -2,8 +2,11 @@
 Global.Mobile = function() {
     'use strict';
 
-    var win = Global.utility.win,
-        doc = Global.utility.doc,
+    var util = Global.utility,
+        win = util.win,
+        doc = util.doc,
+        onEvent = util.onEvent,
+        offEvent = util.offEvent,
         userAgent = navigator.userAgent,
         mobile = {
             isAndroid: function(ua) {
@@ -22,17 +25,18 @@ Global.Mobile = function() {
                     mobile.isWindows()
                 );
             },
+            scrollTop: scrollTop,
             killScroll: function() {
                 scrollTop();
-                doc.addEventListener('touchmove', preventDefault);
+                onEvent(doc, 'touchmove', preventDefault);
             },
             revivalScroll: function() {
                 scrollTop();
-                doc.removeEventListener('touchmove', preventDefault);
+                offEvent(doc, 'touchmove', preventDefault);
             },
             hideAddress: function() {
-                win.addEventListener('load', hideAddressHandler, false);
-                win.addEventListener('orientationchange', hideAddressHandler, false);
+                onEvent(win, 'load', hideAddressHandler, false);
+                onEvent(win, 'orientationchange', hideAddressHandler, false);
 
                 function doScroll() {
                     if (win.pageYOffset === 0) {
@@ -79,15 +83,15 @@ Global.Mobile = function() {
                 };
 
                 function add(func) {
-                    set('add', func);
+                    set(onEvent, func);
                 }
                 function remove(func) {
-                    set('remove', func);
+                    set(offEvent, func);
                 }
-                function set(mode, func) {
-                    win[mode + 'EventListener']('load', func);
-                    win[mode + 'EventListener']('orientationchange', func);
-                    win[mode + 'EventListener']('resize', func);
+                function set(setfunc, handler) {
+                    setfunc(win, 'load', handler);
+                    setfunc(win, 'orientationchange', handler);
+                    setfunc(win, 'resize', handler);
                 }
                 function onechange() {
                     change();
@@ -122,4 +126,3 @@ Global.Mobile = function() {
 
     return mobile;
 };
-

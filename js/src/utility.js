@@ -11,28 +11,32 @@ if (!Date.now) {
 Global.utility = {
     win: win,
     doc: doc,
+    body: $('body', doc),
     $: function(selector) {
-        return doc.querySelector(selector);
+        return $(selector, doc);
     },
     $$: function(selector) {
-        var eles = doc.querySelectorAll(selector),
-            arys = [],
-            i;
-
-        for (i = 0, len = eles.length; i < len; i++) {
-            arys[i] = eles[i];
-        }
-
-        return arys;
+        return $$(selector, doc);
     },
+    $child: $,
+    $$child: $$,
     $id: function(id) {
         return doc.getElementById(id);
     },
+    onEvent: function(element, eventname, handler) {
+        element.addEventListener(eventname, handler);
+    },
+    offEvent: function(element, eventname, handler) {
+        element.removeEventListener(eventname, handler);
+    },
+    createElement: function(tagname) {
+        return doc.createElement(tagname);
+    },
     showElement: function(element) {
-        element.style.display = 'block';
+        setStyleDisplay(element, 'block');
     },
     hideElement: function(element) {
-        element.style.display = 'none';
+        setStyleDisplay(element, 'none');
     },
     override: function(target, vars) {
         var i;
@@ -48,7 +52,29 @@ Global.utility = {
 
         text = text.join(replacetext);
         return text;
+    },
+    windowOpen: function(url, windowname) {
+        return win.open(url, windowname);
     }
 };
+
+function setStyleDisplay(element, value) {
+    element.style.display = value;
+}
+function $(selector, element) {
+    return element.querySelector(selector);
+}
+function $$(selector, element) {
+    var eles = element.querySelectorAll(selector),
+        arys = [],
+        i,
+        len;
+
+    for (i = 0, len = eles.length; i < len; i++) {
+        arys[i] = eles[i];
+    }
+
+    return arys;
+}
 
 }(window, document));

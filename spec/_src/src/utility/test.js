@@ -19,6 +19,10 @@ describe('utilityは', function() {
         expect(util.doc).toBe(document);
     });
 
+    it('body要素をbodyプロパティとして持つ', function() {
+        expect(util.body).toBe(document.body);
+    });
+
     it('$(selector)で対象のelement一つを返す', function() {
         expect(util.$('body')).toBeDefined();
     });
@@ -28,9 +32,40 @@ describe('utilityは', function() {
         expect(scripts.length).toBeDefined();
     });
 
+    it('$child(selector, element)でelement内のselectorに対応する要素を返す', function() {
+        var scripts = util.$$child('script', document.body);
+        expect(scripts.length).toBeDefined();
+    });
+
+    it('$$child(selector, element)でelement内のselectorに対応する要素を配列に入れて返す', function() {
+        var scripts = util.$$child('script', document.body);
+        expect(scripts.length).toBeDefined();
+    });
+
     it('$id(id)で対象のidのelementを返す', function() {
         var id = util.$id('jasmineClassList');
         expect(id).toBeDefined();
+    });
+
+    it('onEvent(element, eventname, handler)でelementにeventnameでhandlerを登録する', function() {
+        util.onEvent(window, 'load', function() {
+            expect(1).toEqual(1);
+        });
+    });
+
+    it('offEvent(element, eventname, handler)でelementにeventnameでhandlerを解除する', function() {
+        var func = function() {
+                expect(1).toEqual(1);
+            };
+
+        util.onEvent(window, 'load', func);
+        util.offEvent(window, 'load', func);
+    });
+
+    it('createElement(tagname)でタグを生成する', function() {
+        var $div = util.createElement('div');
+
+        expect($div.style.display).toEqual('');
     });
 
     it('hideElement(element)で対象のelementのstyle.displayを"none"にする', function() {
@@ -72,6 +107,13 @@ describe('utilityは', function() {
         text = util.replaceAll(text, 'A', 'Z');
 
         expect(text).toEqual('ZBCDEZFGHIZ');
+    });
+
+    it('windowOpen(url, windowname)で新規ウィンドウを開く', function() {
+        var test = util.windowOpen('.', 'newwindow');
+
+        test.close();
+        expect(1).toEqual(1);
     });
 });
 /*

@@ -1,9 +1,11 @@
 document.write('\
 <script type="text/template" id="jasmineBaseList">\
+src/Ajax/\n\
 src/DataStore/\n\
 src/Event/\n\
 src/ExternalInterface/\n\
 src/FPS/\n\
+src/Facebook/\n\
 src/HashController/\n\
 src/ImgLoad/\n\
 src/Loading/\n\
@@ -13,13 +15,16 @@ src/Observer/\n\
 src/PreRender/\n\
 src/Proxy/\n\
 src/Timer/\n\
+src/Twitter/\n\
 src/utility/\n\
 </script>\
 <script type="text/template" id="jasmineClassList">\
+../../js/src/Ajax.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/Event.js\n\
 ../../js/src/ExternalInterface.js\n\
 ../../js/src/FPS.js\n\
+../../js/src/Facebook.js\n\
 ../../js/src/HashController.js\n\
 ../../js/src/ImgLoad.js\n\
 ../../js/src/Loading.js\n\
@@ -29,13 +34,16 @@ src/utility/\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/Proxy.js\n\
 ../../js/src/Timer.js\n\
+../../js/src/Twitter.js\n\
 ../../js/src/utility.js\n\
 </script>\
 <script type="text/template" id="jasmineTestList">\
+../_src/src/Ajax/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/Event/test.js\n\
 ../_src/src/ExternalInterface/test.js\n\
 ../_src/src/FPS/test.js\n\
+../_src/src/Facebook/test.js\n\
 ../_src/src/HashController/test.js\n\
 ../_src/src/ImgLoad/test.js\n\
 ../_src/src/Loading/test.js\n\
@@ -45,6 +53,7 @@ src/utility/\n\
 ../_src/src/PreRender/test.js\n\
 ../_src/src/Proxy/test.js\n\
 ../_src/src/Timer/test.js\n\
+../_src/src/Twitter/test.js\n\
 ../_src/src/utility/test.js\n\
 </script>\
 ');

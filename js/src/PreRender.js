@@ -31,30 +31,30 @@ Global.PreRender = function(config) {
                     show(elements[i]);
                 }
                 prevtime = Date.now();
-                loopid = setInterval(instanse.check, looptime);
-            },
-            check: function() {
-                var gettime = Date.now(),
-                    diff = gettime - prevtime;
-
-                prevtime = gettime;
-
-                if (diff < loopblur) {
-                    guesslimit--;
-
-                    if (guesslimit < 1) {
-                        clearInterval(loopid);
-
-                        for (var i = elements.length; i--;) {
-                            hide(elements[i]);
-                        }
-
-                        onrendered();
-                    }
-                }
+                loopid = setInterval(check, looptime);
             }
         };
 
+    function check() {
+        var gettime = Date.now(),
+            diff = gettime - prevtime;
+
+        prevtime = gettime;
+
+        if (diff < loopblur) {
+            guesslimit--;
+
+            if (guesslimit < 1) {
+                clearInterval(loopid);
+
+                for (var i = elements.length; i--;) {
+                    hide(elements[i]);
+                }
+
+                onrendered();
+            }
+        }
+    }
+
     return instanse;
 };
-

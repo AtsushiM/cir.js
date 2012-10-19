@@ -33,6 +33,12 @@ describe('Timerは', function() {
         expect(timer.getTime()).toEqual('020.000');
     });
 
+    it('setUpdate(function)でアップデート時の動作を登録する', function() {
+        var test = function() {};
+        timer.setUpdate(test);
+        expect(dammy.onupdate).not.toEqual(test);
+    });
+
     it('getProgress()で進捗の%を取得する', function() {
         var prev = timer.getProgress(),
             now;

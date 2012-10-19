@@ -143,4 +143,3 @@ Global.Timer = function(config) {
 
     return instanse;
 };
-

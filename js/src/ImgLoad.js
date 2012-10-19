@@ -15,23 +15,16 @@ Global.ImgLoad = function(config) {
                 for (i = srccount; i--;) {
                     img = new Image();
                     img.src = srcs[i];
-                    img.onload = instanse.imgloaded;
+                    img.onload = instanse.completeCheck;
                 }
             },
             completeCheck: function() {
+                loadcount++;
                 if (loadcount >= srccount) {
                     onload();
-                    return true;
                 }
-
-                return false;
             }
         };
-
-    function imgloaded() {
-        loadcount++;
-        instanse.completeCheck();
-    }
 
     return instanse;
 };
