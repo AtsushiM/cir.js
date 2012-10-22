@@ -117,6 +117,67 @@ Global.Ajax = function(config) {
 
     return instanse;
 };
+/* Test: "../../spec/_src/src/CanvasImage/test.js" */
+Global.CanvasImage = function(config) {
+    'use strict';
+
+    var Mine = Global.CanvasImage,
+        util = Global.utility,
+        create = util.createElement,
+        src = config.src,
+        width = config.width,
+        height = config.height,
+        onload = config.onload,
+        img = create('img'),
+        canv = create('canvas');
+
+    img.onload = function() {
+        canv.width = width;
+        canv.height = height;
+        canv.getContext('2d').drawImage(img, 0, 0);
+
+        onload(canv, img);
+    };
+    img.src = src;
+
+    return canv;
+};
+
+/* Test: "../../spec/_src/CanvasRender/test.js" */
+Global.CanvasRender = function(config) {
+    'use strict';
+
+    var Mine = Global.CanvasRender,
+        canvas = config.canvas,
+        ctx = canvas.getContext('2d'),
+        canvasWidth = canvas.width,
+        canvasHeight = canvas.height,
+        instanse = {
+            setSize: function(vars) {
+                if (vars.width) {
+                    canvasWidth = vars.width;
+                    canvas.width = canvasWidth;
+                }
+                if (vars.height) {
+                    canvasHeight = vars.height;
+                    canvas.height = canvasHeight;
+                }
+            },
+            draw: function(layer) {
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+                for (i = 0, len = layer.length; i < len; i++) {
+                    item = layer[i];
+                    ctx.drawImage(item.image, item.x, item.y);
+                }
+            }
+        },
+        i, len, item;
+
+    instanse.setSize(config);
+
+    return instanse;
+};
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 Global.DataStore = function(config) {
     'use strict';
@@ -433,8 +494,6 @@ Global.HashController = function() {
     'use strict';
 
     var onHashChange = null,
-        firingCount = 0,
-        fireHashKey = 'fire',
         controller = {
             makeHash: function(config) {
                 var hash = '#' + config.mode,

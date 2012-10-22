@@ -3,8 +3,6 @@ Global.HashController = function() {
     'use strict';
 
     var onHashChange = null,
-        firingCount = 0,
-        fireHashKey = 'fire',
         controller = {
             makeHash: function(config) {
                 var hash = '#' + config.mode,
