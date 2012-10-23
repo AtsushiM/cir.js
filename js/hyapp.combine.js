@@ -56,8 +56,30 @@ Global.utility = {
     },
     windowOpen: function(url, windowname) {
         return win.open(url, windowname);
+    },
+    parseQueryString: function(query) {
+        var params,
+            i,
+            len,
+            p,
+            result = {};
+
+        query = query.replace(/^\#/, '');
+        query = query.replace(/^\?/, '');
+
+        params = query.split('&');
+
+        for (i = 0, len = params.length; i < len; i++) {
+            p = params[i].split('=');
+            result[p[0]] = decodeURIComponent(p[1]);
+        }
+        return result;
     }
 };
+
+var util = Global.utility;
+
+console.log(util.parseQueryString('#?test=1&test2=a'));
 
 function setStyleDisplay(element, value) {
     element.style.display = value;
