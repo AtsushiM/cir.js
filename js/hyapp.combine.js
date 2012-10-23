@@ -543,7 +543,7 @@ Global.HashController = function() {
                     varsHash,
                     vars = null;
 
-                hash = decodeURI(hashvars)
+                hash = decodeURIComponent(hashvars)
                        .split('#')[1];
 
                 if (!hash) {
