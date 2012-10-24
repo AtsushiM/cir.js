@@ -2,7 +2,9 @@
 Global.HashController = function() {
     'use strict';
 
-    var controller = {
+    var util = Global.utility,
+        cast = util.typeCast,
+        controller = {
             makeHash: function(config) {
                 var hash = '#' + config.mode,
                     vars = config.vars,
@@ -73,23 +75,13 @@ Global.HashController = function() {
         };
 
     function typeCast(str) {
-        if (str.match('^{.*}$')) {
-            return JSON.parse(str);
-        }
-        else if (str.match('^[0-9\.]+$')) {
-            return str * 1;
-        }
-        else if (str === 'true') {
-            return true;
-        }
-        else if (str === 'false') {
-            return false;
-        }
-        else if (str.match('^["\'](.*)["\']$')) {
+        var caststr = cast(str);
+
+        if (str === caststr && str.match('^["\'](.*)["\']$')) {
             return str.match('^["\'](.*)["\']$')[1];
         }
 
-        return str;
+        return caststr;
     }
 
     return controller;

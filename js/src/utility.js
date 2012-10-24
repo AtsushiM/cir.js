@@ -53,6 +53,7 @@ Global.utility = {
     windowOpen: function(url, windowname) {
         return win.open(url, windowname);
     },
+    typeCast: typeCast,
     makeQueryString: function(vars) {
         var sign = '',
             query = '';
@@ -78,7 +79,7 @@ Global.utility = {
 
         for (i = params.length; i--;) {
             p = params[i].split('=');
-            result[p[0]] = decodeURIComponent(p[1]);
+            result[p[0]] = typeCast(decodeURIComponent(p[1]));
         }
         return result;
     }
@@ -101,6 +102,24 @@ function $$(selector, element) {
     }
 
     return arys;
+}
+function typeCast(str) {
+    var matchstr = '' + str;
+
+    if (matchstr.match('^{.*}$')) {
+        return JSON.parse(matchstr);
+    }
+    else if (matchstr.match('^[0-9\.]+$')) {
+        return matchstr * 1;
+    }
+    else if (matchstr === 'true') {
+        return true;
+    }
+    else if (matchstr === 'false') {
+        return false;
+    }
+
+    return str;
 }
 
 }(window, document));
