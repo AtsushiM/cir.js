@@ -2,8 +2,7 @@
 Global.HashController = function() {
     'use strict';
 
-    var onHashChange = null,
-        controller = {
+    var controller = {
             makeHash: function(config) {
                 var hash = '#' + config.mode,
                     vars = config.vars,
@@ -47,9 +46,10 @@ Global.HashController = function() {
 
                     // hashをオブジェクトに整形
                     (function() {
-                        var splitVar;
+                        var splitVar,
+                            i;
 
-                        for (var i = varsHash.length; i--;) {
+                        for (i = varsHash.length; i--;) {
                             if (varsHash[i]) {
                                 splitVar = varsHash[i].split('=');
                                 vars[splitVar[0]] = typeCast(splitVar[1]);

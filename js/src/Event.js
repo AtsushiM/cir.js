@@ -19,17 +19,27 @@ Global.Event = function(config) {
     }
 
     e = {
+        // デフォルトイベント
         click: 'click',
         mousedown: 'mousedown',
         mousemove: 'mousemove',
-        mouseup: 'mouseup'
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend',
+
+        // 切替イベント
+        switchclick: 'touchstart',
+        switchdown: 'touchstart',
+        switchmove: 'touchmove',
+        switchup: 'touchend'
     };
 
     if (config.isMobile()) {
-        e.click = 'touchstart';
-        e.mousedown = 'touchstart';
-        e.mousemove = 'touchmove';
-        e.mouseup = 'touchend';
+        e.switchclick = 'click';
+        e.switchdown = 'mousedown';
+        e.switchmove = 'mousemove';
+        e.switchup = 'mouseup';
     }
 
     if (config.single) {

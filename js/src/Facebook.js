@@ -2,7 +2,8 @@
 Global.Facebook = function() {
     'use strict';
 
-    var Mine = Global.Facebook,
+    var util = Global.utility,
+        makeQuery = util.makeQueryString,
         instanse = {
             getShareURL: function(vars) {
                 var shareURL = 'https://www.facebook.com/dialog/feed?',
@@ -17,17 +18,13 @@ Global.Facebook = function() {
                         'app_id=' + app_id + '&' +
                         'redirect_uri=' + redirect_uri;
 
-                urlParam('link', link);
-                urlParam('picture', picture);
-                urlParam('name', name);
-                urlParam('caption', caption);
-                urlParam('description', description);
-
-                function urlParam(key, val) {
-                    if (val) {
-                        url += '&' + key + '=' + encodeURI(val);
-                    }
-                }
+                url += makeQuery({
+                    'link': link,
+                    'picture': picture,
+                    'name': name,
+                    'caption': caption,
+                    'description': description
+                });
 
                 return url;
             }

@@ -6,14 +6,12 @@ describe('Loadingは', function() {
                 onloadret: false,
                 onload: function() {
                     dammy.before.onloadret = true;
-                    console.log('before');
                 }
             },
             after: {
                 onloadret: false,
                 onload: function() {
                     dammy.after.onloadret = true;
-                    console.log('after');
                 }
             }
         },

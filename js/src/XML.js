@@ -2,8 +2,7 @@
 Global.XML = function(config) {
     'use strict';
 
-    var Mine = Global.XML,
-        util = Global.utility,
+    var util = Global.utility,
         $child = util.$child,
         $$child = util.$$child,
         element = util.createElement('div'),

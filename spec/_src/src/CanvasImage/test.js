@@ -11,7 +11,7 @@ describe('CanvasImageは', function() {
 
     it('srcオプションで指定した画像を表示するcanvas要素を作成する', function() {
         expect(new Global.CanvasImage({
-            src: '/spec/common/test.png',
+            src: '/spec/common/r.png',
             width: 100,
             height: 100,
             onload: function(canvas, img) {

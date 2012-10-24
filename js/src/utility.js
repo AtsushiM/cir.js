@@ -48,37 +48,41 @@ Global.utility = {
         return target;
     },
     replaceAll: function(targettext, needle, replacetext) {
-        var text = targettext.split(needle);
-
-        text = text.join(replacetext);
-        return text;
+        return targettext.split(needle).join(replacetext);
     },
     windowOpen: function(url, windowname) {
         return win.open(url, windowname);
     },
+    makeQueryString: function(vars) {
+        var sign = '',
+            query = '';
+
+        for (var i in vars) {
+            if (vars[i]) {
+                query += sign + i + '=' + encodeURIComponent(vars[i]);
+                sign = '&';
+            }
+        }
+
+        return query;
+    },
     parseQueryString: function(query) {
-        var params,
+        query = query
+            .replace(/^\#/, '')
+            .replace(/^\?/, '');
+
+        var params = query.split('&'),
             i,
-            len,
             p,
             result = {};
 
-        query = query.replace(/^\#/, '');
-        query = query.replace(/^\?/, '');
-
-        params = query.split('&');
-
-        for (i = 0, len = params.length; i < len; i++) {
+        for (i = params.length; i--;) {
             p = params[i].split('=');
             result[p[0]] = decodeURIComponent(p[1]);
         }
         return result;
     }
 };
-
-var util = Global.utility;
-
-console.log(util.parseQueryString('#?test=1&test2=a'));
 
 function setStyleDisplay(element, value) {
     element.style.display = value;

@@ -49,37 +49,41 @@ Global.utility = {
         return target;
     },
     replaceAll: function(targettext, needle, replacetext) {
-        var text = targettext.split(needle);
-
-        text = text.join(replacetext);
-        return text;
+        return targettext.split(needle).join(replacetext);
     },
     windowOpen: function(url, windowname) {
         return win.open(url, windowname);
     },
+    makeQueryString: function(vars) {
+        var sign = '',
+            query = '';
+
+        for (var i in vars) {
+            if (vars[i]) {
+                query += sign + i + '=' + encodeURIComponent(vars[i]);
+                sign = '&';
+            }
+        }
+
+        return query;
+    },
     parseQueryString: function(query) {
-        var params,
+        query = query
+            .replace(/^\#/, '')
+            .replace(/^\?/, '');
+
+        var params = query.split('&'),
             i,
-            len,
             p,
             result = {};
 
-        query = query.replace(/^\#/, '');
-        query = query.replace(/^\?/, '');
-
-        params = query.split('&');
-
-        for (i = 0, len = params.length; i < len; i++) {
+        for (i = params.length; i--;) {
             p = params[i].split('=');
             result[p[0]] = decodeURIComponent(p[1]);
         }
         return result;
     }
 };
-
-var util = Global.utility;
-
-console.log(util.parseQueryString('#?test=1&test2=a'));
 
 function setStyleDisplay(element, value) {
     element.style.display = value;
@@ -105,8 +109,7 @@ function $$(selector, element) {
 Global.Ajax = function(config) {
     'use strict';
 
-    var Mine = Global.Ajax,
-        xhr,
+    var xhr = new XMLHttpRequest(),
         instanse = {
             request: function(vars) {
                 var url = vars.url,
@@ -143,8 +146,7 @@ Global.Ajax = function(config) {
 Global.CanvasImage = function(config) {
     'use strict';
 
-    var Mine = Global.CanvasImage,
-        util = Global.utility,
+    var util = Global.utility,
         create = util.createElement,
         src = config.src,
         width = config.width,
@@ -169,11 +171,11 @@ Global.CanvasImage = function(config) {
 Global.CanvasRender = function(config) {
     'use strict';
 
-    var Mine = Global.CanvasRender,
-        canvas = config.canvas,
+    var canvas = config.canvas,
         ctx = canvas.getContext('2d'),
         canvasWidth = canvas.width,
         canvasHeight = canvas.height,
+        i, len, item,
         instanse = {
             setSize: function(vars) {
                 if (vars.width) {
@@ -193,8 +195,7 @@ Global.CanvasRender = function(config) {
                     ctx.drawImage(item.image, item.x, item.y);
                 }
             }
-        },
-        i, len, item;
+        };
 
     instanse.setSize(config);
 
@@ -270,17 +271,27 @@ Global.Event = function(config) {
     }
 
     e = {
+        // デフォルトイベント
         click: 'click',
         mousedown: 'mousedown',
         mousemove: 'mousemove',
-        mouseup: 'mouseup'
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend',
+
+        // 切替イベント
+        switchclick: 'touchstart',
+        switchdown: 'touchstart',
+        switchmove: 'touchmove',
+        switchup: 'touchend'
     };
 
     if (config.isMobile()) {
-        e.click = 'touchstart';
-        e.mousedown = 'touchstart';
-        e.mousemove = 'touchmove';
-        e.mouseup = 'touchend';
+        e.switchclick = 'click';
+        e.switchdown = 'mousedown';
+        e.switchmove = 'mousemove';
+        e.switchup = 'mouseup';
     }
 
     if (config.single) {
@@ -373,7 +384,8 @@ Global.ExternalInterface = function(config) {
 Global.Facebook = function() {
     'use strict';
 
-    var Mine = Global.Facebook,
+    var util = Global.utility,
+        makeQuery = util.makeQueryString,
         instanse = {
             getShareURL: function(vars) {
                 var shareURL = 'https://www.facebook.com/dialog/feed?',
@@ -388,17 +400,13 @@ Global.Facebook = function() {
                         'app_id=' + app_id + '&' +
                         'redirect_uri=' + redirect_uri;
 
-                urlParam('link', link);
-                urlParam('picture', picture);
-                urlParam('name', name);
-                urlParam('caption', caption);
-                urlParam('description', description);
-
-                function urlParam(key, val) {
-                    if (val) {
-                        url += '&' + key + '=' + encodeURI(val);
-                    }
-                }
+                url += makeQuery({
+                    'link': link,
+                    'picture': picture,
+                    'name': name,
+                    'caption': caption,
+                    'description': description
+                });
 
                 return url;
             }
@@ -411,7 +419,8 @@ Global.FPS = function(config) {
     'use strict';
 
     var Mine = Global.FPS,
-        override = Global.utility.override;
+        util = Global.utility,
+        override = util.override;
 
     config = override({
         single: false,
@@ -423,8 +432,7 @@ Global.FPS = function(config) {
         return Mine.instance;
     }
 
-    var util = Global.utility,
-        win = util.win,
+    var win = util.win,
         criterion = config.criterion,
         surver = criterion,
         enterframe = config.enterframe,
@@ -515,8 +523,7 @@ Global.FPS = function(config) {
 Global.HashController = function() {
     'use strict';
 
-    var onHashChange = null,
-        controller = {
+    var controller = {
             makeHash: function(config) {
                 var hash = '#' + config.mode,
                     vars = config.vars,
@@ -560,9 +567,10 @@ Global.HashController = function() {
 
                     // hashをオブジェクトに整形
                     (function() {
-                        var splitVar;
+                        var splitVar,
+                            i;
 
-                        for (var i = varsHash.length; i--;) {
+                        for (i = varsHash.length; i--;) {
                             if (varsHash[i]) {
                                 splitVar = varsHash[i].split('=');
                                 vars[splitVar[0]] = typeCast(splitVar[1]);
@@ -611,31 +619,33 @@ Global.HashController = function() {
 Global.ImgLoad = function(config) {
     'use strict';
 
-    var Mine = Global.ImgLoad,
+    var util = Global.utility,
+        create = util.createElement,
         srcs = config.srcs,
         srccount = srcs.length,
         onload = config.onload,
         loadcount = 0,
-        instanse = {
+        imgload = {
             start: function() {
                 var img,
                     i;
 
                 for (i = srccount; i--;) {
-                    img = new Image();
+                    img = create('img');
                     img.src = srcs[i];
-                    img.onload = instanse.completeCheck;
-                }
-            },
-            completeCheck: function() {
-                loadcount++;
-                if (loadcount >= srccount) {
-                    onload();
+                    img.onload = completeCheck;
                 }
             }
         };
 
-    return instanse;
+    function completeCheck() {
+        loadcount++;
+        if (loadcount >= srccount) {
+            onload();
+        }
+    }
+
+    return imgload;
 };
 /* Test: "../../spec/_src/src/Loading/test.js" */
 Global.Loading = function(config) {
@@ -936,10 +946,7 @@ Global.PreRender = function(config) {
         onrendered: function() {}
     }, config);
 
-    var Mine = Global.PreRender,
-        util = Global.utility,
-        $ = util.$,
-        show = util.showElement,
+    var show = util.showElement,
         hide = util.hideElement,
         elements = config.elements,
         guesslimit = config.guesslimit,
@@ -947,10 +954,14 @@ Global.PreRender = function(config) {
         looptime = config.looptime,
         loopblur = looptime + config.loopblur,
         loopid,
+        gettime,
+        difftime,
         prevtime,
         instanse = {
             start: function() {
-                for (var i = elements.length; i--;) {
+                var i;
+
+                for (i = elements.length; i--;) {
                     show(elements[i]);
                 }
                 prevtime = Date.now();
@@ -959,12 +970,12 @@ Global.PreRender = function(config) {
         };
 
     function check() {
-        var gettime = Date.now(),
-            diff = gettime - prevtime;
+        gettime = Date.now(),
+        difftime = gettime - prevtime;
 
         prevtime = gettime;
 
-        if (diff < loopblur) {
+        if (difftime < loopblur) {
             guesslimit--;
 
             if (guesslimit < 1) {
@@ -1154,7 +1165,8 @@ Global.Timer = function(config) {
 Global.Twitter = function(config) {
     'use strict';
 
-    var Mine = Global.Twitter,
+    var util = Global.utility,
+        makeQuery = util.makeQueryString,
         instanse = {
             getShareURL: function(vars) {
                 var shareURL = 'https://twitter.com/intent/tweet?',
@@ -1171,14 +1183,10 @@ Global.Twitter = function(config) {
                     hash = ' ' + hash;
                 }
 
-                urlParam('url', redirect_uri);
-                urlParam('text', caption + name + hash);
-
-                function urlParam(key, val) {
-                    if (val) {
-                        url += '&' + key + '=' + encodeURIComponent(val);
-                    }
-                }
+                url += makeQuery({
+                    'url': redirect_uri,
+                    'text': caption + name + hash
+                });
 
                 return url;
             }
@@ -1190,8 +1198,7 @@ Global.Twitter = function(config) {
 Global.XML = function(config) {
     'use strict';
 
-    var Mine = Global.XML,
-        util = Global.utility,
+    var util = Global.utility,
         $child = util.$child,
         $$child = util.$$child,
         element = util.createElement('div'),

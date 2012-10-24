@@ -2,11 +2,11 @@
 Global.CanvasRender = function(config) {
     'use strict';
 
-    var Mine = Global.CanvasRender,
-        canvas = config.canvas,
+    var canvas = config.canvas,
         ctx = canvas.getContext('2d'),
         canvasWidth = canvas.width,
         canvasHeight = canvas.height,
+        i, len, item,
         instanse = {
             setSize: function(vars) {
                 if (vars.width) {
@@ -26,8 +26,7 @@ Global.CanvasRender = function(config) {
                     ctx.drawImage(item.image, item.x, item.y);
                 }
             }
-        },
-        i, len, item;
+        };
 
     instanse.setSize(config);
 

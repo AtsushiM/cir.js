@@ -2,7 +2,8 @@
 Global.Twitter = function(config) {
     'use strict';
 
-    var Mine = Global.Twitter,
+    var util = Global.utility,
+        makeQuery = util.makeQueryString,
         instanse = {
             getShareURL: function(vars) {
                 var shareURL = 'https://twitter.com/intent/tweet?',
@@ -19,14 +20,10 @@ Global.Twitter = function(config) {
                     hash = ' ' + hash;
                 }
 
-                urlParam('url', redirect_uri);
-                urlParam('text', caption + name + hash);
-
-                function urlParam(key, val) {
-                    if (val) {
-                        url += '&' + key + '=' + encodeURIComponent(val);
-                    }
-                }
+                url += makeQuery({
+                    'url': redirect_uri,
+                    'text': caption + name + hash
+                });
 
                 return url;
             }

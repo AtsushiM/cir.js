@@ -2,29 +2,31 @@
 Global.ImgLoad = function(config) {
     'use strict';
 
-    var Mine = Global.ImgLoad,
+    var util = Global.utility,
+        create = util.createElement,
         srcs = config.srcs,
         srccount = srcs.length,
         onload = config.onload,
         loadcount = 0,
-        instanse = {
+        imgload = {
             start: function() {
                 var img,
                     i;
 
                 for (i = srccount; i--;) {
-                    img = new Image();
+                    img = create('img');
                     img.src = srcs[i];
-                    img.onload = instanse.completeCheck;
-                }
-            },
-            completeCheck: function() {
-                loadcount++;
-                if (loadcount >= srccount) {
-                    onload();
+                    img.onload = completeCheck;
                 }
             }
         };
 
-    return instanse;
+    function completeCheck() {
+        loadcount++;
+        if (loadcount >= srccount) {
+            onload();
+        }
+    }
+
+    return imgload;
 };

@@ -19,11 +19,6 @@ describe('ImgLoadは', function() {
         imgload.start();
         expect(0).toEqual(0);
     });
-
-    it('completeCheck()で画像の読み込みが終了したかチェックする', function() {
-        imgload.completeCheck();
-        expect(0).toEqual(0);
-    });
 });
 /*
 describe('XXXは', function() {

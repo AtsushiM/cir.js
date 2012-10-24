@@ -17,7 +17,7 @@ describe('Twitterは', function() {
                 description: 'テストデスクリプション'
             });
 
-        expect(url).toEqual('https://twitter.com/intent/tweet?&url=http%3A%2F%2Fatms.sakura.ne.jp%2Fwallsearch&text=%E3%83%86%E3%82%B9%E3%83%88%E3%82%AD%E3%83%A3%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3');
+        expect(url).toEqual('https://twitter.com/intent/tweet?url=http%3A%2F%2Fatms.sakura.ne.jp%2Fwallsearch&text=%E3%83%86%E3%82%B9%E3%83%88%E3%82%AD%E3%83%A3%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3');
     });
 });
 /*

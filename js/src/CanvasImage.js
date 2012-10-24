@@ -2,8 +2,7 @@
 Global.CanvasImage = function(config) {
     'use strict';
 
-    var Mine = Global.CanvasImage,
-        util = Global.utility,
+    var util = Global.utility,
         create = util.createElement,
         src = config.src,
         width = config.width,

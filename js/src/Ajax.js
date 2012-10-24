@@ -2,8 +2,7 @@
 Global.Ajax = function(config) {
     'use strict';
 
-    var Mine = Global.Ajax,
-        xhr,
+    var xhr = new XMLHttpRequest(),
         instanse = {
             request: function(vars) {
                 var url = vars.url,

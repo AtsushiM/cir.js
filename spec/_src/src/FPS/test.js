@@ -64,7 +64,7 @@ describe('FPSは', function() {
         setFPS();
         fps.start();
 
-        waits(fps.getFrameTime() * 4);
+        waits(fps.getFrameTime() * 5);
         runs(function() {
             expect(dammy.enterframe.callCount).toBeGreaterThan(1);
             expect(dammy.enterframe.callCount).toBeLessThan(4);

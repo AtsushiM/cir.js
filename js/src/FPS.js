@@ -3,7 +3,8 @@ Global.FPS = function(config) {
     'use strict';
 
     var Mine = Global.FPS,
-        override = Global.utility.override;
+        util = Global.utility,
+        override = util.override;
 
     config = override({
         single: false,
@@ -15,8 +16,7 @@ Global.FPS = function(config) {
         return Mine.instance;
     }
 
-    var util = Global.utility,
-        win = util.win,
+    var win = util.win,
         criterion = config.criterion,
         surver = criterion,
         enterframe = config.enterframe,

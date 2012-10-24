@@ -13,10 +13,7 @@ Global.PreRender = function(config) {
         onrendered: function() {}
     }, config);
 
-    var Mine = Global.PreRender,
-        util = Global.utility,
-        $ = util.$,
-        show = util.showElement,
+    var show = util.showElement,
         hide = util.hideElement,
         elements = config.elements,
         guesslimit = config.guesslimit,
@@ -24,10 +21,14 @@ Global.PreRender = function(config) {
         looptime = config.looptime,
         loopblur = looptime + config.loopblur,
         loopid,
+        gettime,
+        difftime,
         prevtime,
         instanse = {
             start: function() {
-                for (var i = elements.length; i--;) {
+                var i;
+
+                for (i = elements.length; i--;) {
                     show(elements[i]);
                 }
                 prevtime = Date.now();
@@ -36,12 +37,12 @@ Global.PreRender = function(config) {
         };
 
     function check() {
-        var gettime = Date.now(),
-            diff = gettime - prevtime;
+        gettime = Date.now(),
+        difftime = gettime - prevtime;
 
         prevtime = gettime;
 
-        if (diff < loopblur) {
+        if (difftime < loopblur) {
             guesslimit--;
 
             if (guesslimit < 1) {
