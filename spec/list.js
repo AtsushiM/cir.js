@@ -15,7 +15,7 @@ src/Mobile/\n\
 src/NumberImage/\n\
 src/Observer/\n\
 src/PreRender/\n\
-src/Proxy/\n\
+src/Surrogate/\n\
 src/Timer/\n\
 src/Twitter/\n\
 src/XML/\n\
@@ -37,7 +37,7 @@ src/utility/\n\
 ../../js/src/NumberImage.js\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
-../../js/src/Proxy.js\n\
+../../js/src/Surrogate.js\n\
 ../../js/src/Timer.js\n\
 ../../js/src/Twitter.js\n\
 ../../js/src/XML.js\n\
@@ -59,7 +59,7 @@ src/utility/\n\
 ../_src/src/NumberImage/test.js\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
-../_src/src/Proxy/test.js\n\
+../_src/src/Surrogate/test.js\n\
 ../_src/src/Timer/test.js\n\
 ../_src/src/Twitter/test.js\n\
 ../_src/src/XML/test.js\n\

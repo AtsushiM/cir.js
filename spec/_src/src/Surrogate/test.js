@@ -1,6 +1,6 @@
-/* Class: "../../../../js/src/Proxy.js" */
-describe('Proxyは', function() {
-    var proxy,
+/* Class: "../../../../js/src/Surrogate.js" */
+describe('Surrogateは', function() {
+    var surrogate,
         dammy = {
             callback: function() {
             }
@@ -8,7 +8,7 @@ describe('Proxyは', function() {
 
     function before() {
         // init
-        proxy = new Global.Proxy({
+        surrogate = new Global.Surrogate({
             delay: 20,
             callback: dammy.callback
         });
@@ -23,26 +23,26 @@ describe('Proxyは', function() {
     it('flush()で引数callback()を実行する', function() {
         spyOn(dammy, 'callback').andCallThrough();
         before();
-        proxy.flush();
+        surrogate.flush();
         expect(dammy.callback).toHaveBeenCalled();
     });
 
     it('request()でdelayミリ秒遅延させてflush()を実行する', function() {
         spyOn(dammy, 'callback').andCallThrough();
         before();
-        spyOn(proxy, 'flush').andCallThrough();
+        spyOn(surrogate, 'flush').andCallThrough();
 
         runs(function() {
-            proxy.request('a');
+            surrogate.request('a');
         });
         waits(10);
         runs(function() {
-            proxy.request('b');
+            surrogate.request('b');
         });
         waits(30);
         runs(function() {
             expect(dammy.callback).toHaveBeenCalledWith('b');
-            expect(proxy.flush.callCount).toEqual(1);
+            expect(surrogate.flush.callCount).toEqual(1);
         });
     });
 
@@ -50,8 +50,8 @@ describe('Proxyは', function() {
         spyOn(dammy, 'callback').andCallThrough();
         before();
 
-        proxy.request();
-        proxy.clear();
+        surrogate.request();
+        surrogate.clear();
 
         waits(30);
         runs(function() {

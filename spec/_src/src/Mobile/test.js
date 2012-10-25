@@ -46,11 +46,6 @@ describe('Mobileは', function() {
         expect(0).toEqual(0);
     });
 
-    it('scrollTop()でスクロールをトップから1pxまで移動する', function() {
-        mb.scrollTop();
-        expect(0).toEqual(0);
-    });
-
     it('killScroll()でスクロールを禁止する', function() {
         mb.killScroll();
         expect(0).toEqual(0);

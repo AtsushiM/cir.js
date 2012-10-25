@@ -47,6 +47,11 @@ describe('utilityは', function() {
         expect(id).toBeDefined();
     });
 
+    it('scrollTop()でスクロールをトップから1pxまで移動する', function() {
+        util.scrollTop();
+        expect(0).toEqual(0);
+    });
+
     it('onEvent(element, eventname, handler)でelementにeventnameでhandlerを登録する', function() {
         util.onEvent(window, 'load', function() {
             expect(1).toEqual(1);
@@ -114,6 +119,45 @@ describe('utilityは', function() {
 
         test.close();
         expect(1).toEqual(1);
+    });
+
+    it('typeCast(string)でstringを内容にあった型に変換する', function() {
+        var cast = util.typeCast;
+
+        expect(cast('test')).toEqual('test');
+        expect(cast('test1')).toEqual('test1');
+        expect(cast('1')).toEqual(1);
+        expect(cast('9')).toEqual(9);
+        expect(cast(1)).toEqual(1);
+        expect(cast(9)).toEqual(9);
+        expect(cast('true')).toEqual(true);
+        expect(cast('false')).toEqual(false);
+        expect(cast(true)).toEqual(true);
+        expect(cast(false)).toEqual(false);
+        expect(cast('{"test": "1"}')).toEqual({'test': '1'});
+        expect(cast({'test': '1'})).toEqual({'test': '1'});
+    });
+
+    it('makeQueryString(object)でクエリーストリング形式のテキストを返す', function() {
+        var query = util.makeQueryString({
+                test: 'test',
+                test1: 'test1',
+                test2: 2
+            });
+
+        expect(query).toEqual('test=test&test1=test1&test2=2');
+    });
+
+    it('parseQueryString(string)でクエリーストリング形式のテキストをオブジェクトに変換する', function() {
+        var arg = {
+                test: 'test',
+                test1: 'test1',
+                test2: 2
+            },
+            query = util.makeQueryString(arg),
+            remakearg = util.parseQueryString(query);
+
+        expect(arg).toEqual(remakearg);
     });
 });
 /*

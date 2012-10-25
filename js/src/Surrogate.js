@@ -1,16 +1,16 @@
-/* Test: "../../spec/_src/src/Proxy/test.js" */
-Global.Proxy = function(config) {
+/* Test: "../../spec/_src/src/Surrogate/test.js" */
+Global.Surrogate = function(config) {
     'use strict';
 
     var delay = config.delay,
         callback = config.callback,
         args,
         waitid,
-        proxy = {
+        surrogate = {
             request: function(arg) {
                 args = arg;
-                proxy.clear();
-                waitid = setTimeout(proxy.flush, delay);
+                surrogate.clear();
+                waitid = setTimeout(surrogate.flush, delay);
             },
             flush: function() {
                 callback(args);
@@ -20,5 +20,5 @@ Global.Proxy = function(config) {
             }
         };
 
-    return proxy;
+    return surrogate;
 };

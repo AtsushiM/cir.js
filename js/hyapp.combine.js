@@ -12,7 +12,7 @@ if (!Date.now) {
 Global.utility = {
     win: win,
     doc: doc,
-    body: $('body', doc),
+    body: doc.body,
     $: function(selector) {
         return $(selector, doc);
     },
@@ -23,6 +23,9 @@ Global.utility = {
     $$child: $$,
     $id: function(id) {
         return doc.getElementById(id);
+    },
+    scrollTop: function() {
+        win.scrollTo(0, 1);
     },
     onEvent: function(element, eventname, handler) {
         element.addEventListener(eventname, handler);
@@ -54,6 +57,7 @@ Global.utility = {
     windowOpen: function(url, windowname) {
         return win.open(url, windowname);
     },
+    typeCast: typeCast,
     makeQueryString: function(vars) {
         var sign = '',
             query = '';
@@ -79,7 +83,7 @@ Global.utility = {
 
         for (i = params.length; i--;) {
             p = params[i].split('=');
-            result[p[0]] = decodeURIComponent(p[1]);
+            result[p[0]] = typeCast(decodeURIComponent(p[1]));
         }
         return result;
     }
@@ -102,6 +106,24 @@ function $$(selector, element) {
     }
 
     return arys;
+}
+function typeCast(str) {
+    var matchstr = '' + str;
+
+    if (matchstr.match('^{.*}$')) {
+        return JSON.parse(matchstr);
+    }
+    else if (matchstr.match('^[0-9\.]+$')) {
+        return matchstr * 1;
+    }
+    else if (matchstr === 'true') {
+        return true;
+    }
+    else if (matchstr === 'false') {
+        return false;
+    }
+
+    return str;
 }
 
 }(window, document));
@@ -523,7 +545,9 @@ Global.FPS = function(config) {
 Global.HashController = function() {
     'use strict';
 
-    var controller = {
+    var util = Global.utility,
+        cast = util.typeCast,
+        controller = {
             makeHash: function(config) {
                 var hash = '#' + config.mode,
                     vars = config.vars,
@@ -594,23 +618,13 @@ Global.HashController = function() {
         };
 
     function typeCast(str) {
-        if (str.match('^{.*}$')) {
-            return JSON.parse(str);
-        }
-        else if (str.match('^[0-9\.]+$')) {
-            return str * 1;
-        }
-        else if (str === 'true') {
-            return true;
-        }
-        else if (str === 'false') {
-            return false;
-        }
-        else if (str.match('^["\'](.*)["\']$')) {
+        var caststr = cast(str);
+
+        if (str === caststr && str.match('^["\'](.*)["\']$')) {
             return str.match('^["\'](.*)["\']$')[1];
         }
 
-        return str;
+        return caststr;
     }
 
     return controller;
@@ -675,6 +689,7 @@ Global.Mobile = function() {
         doc = util.doc,
         onEvent = util.onEvent,
         offEvent = util.offEvent,
+        scrollTop = util.scrollTop,
         userAgent = navigator.userAgent,
         mobile = {
             isAndroid: function(ua) {
@@ -780,10 +795,6 @@ Global.Mobile = function() {
     function preventDefault(e) {
         e.preventDefault();
         return false;
-    }
-
-    function scrollTop() {
-        win.scrollTo(0, 1);
     }
 
     function checkUA(ua, pattern) {
@@ -992,19 +1003,19 @@ Global.PreRender = function(config) {
 
     return instanse;
 };
-/* Test: "../../spec/_src/src/Proxy/test.js" */
-Global.Proxy = function(config) {
+/* Test: "../../spec/_src/src/Surrogate/test.js" */
+Global.Surrogate = function(config) {
     'use strict';
 
     var delay = config.delay,
         callback = config.callback,
         args,
         waitid,
-        proxy = {
+        surrogate = {
             request: function(arg) {
                 args = arg;
-                proxy.clear();
-                waitid = setTimeout(proxy.flush, delay);
+                surrogate.clear();
+                waitid = setTimeout(surrogate.flush, delay);
             },
             flush: function() {
                 callback(args);
@@ -1014,7 +1025,7 @@ Global.Proxy = function(config) {
             }
         };
 
-    return proxy;
+    return surrogate;
 };
 /* Test: "../../spec/_src/src/Timer/test.js" */
 Global.Timer = function(config) {

@@ -7,6 +7,7 @@ Global.Mobile = function() {
         doc = util.doc,
         onEvent = util.onEvent,
         offEvent = util.offEvent,
+        scrollTop = util.scrollTop,
         userAgent = navigator.userAgent,
         mobile = {
             isAndroid: function(ua) {
@@ -25,7 +26,6 @@ Global.Mobile = function() {
                     mobile.isWindows()
                 );
             },
-            scrollTop: scrollTop,
             killScroll: function() {
                 scrollTop();
                 onEvent(doc, 'touchmove', preventDefault);
@@ -112,10 +112,6 @@ Global.Mobile = function() {
     function preventDefault(e) {
         e.preventDefault();
         return false;
-    }
-
-    function scrollTop() {
-        win.scrollTo(0, 1);
     }
 
     function checkUA(ua, pattern) {

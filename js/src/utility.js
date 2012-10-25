@@ -11,7 +11,7 @@ if (!Date.now) {
 Global.utility = {
     win: win,
     doc: doc,
-    body: $('body', doc),
+    body: doc.body,
     $: function(selector) {
         return $(selector, doc);
     },
@@ -22,6 +22,9 @@ Global.utility = {
     $$child: $$,
     $id: function(id) {
         return doc.getElementById(id);
+    },
+    scrollTop: function() {
+        win.scrollTo(0, 1);
     },
     onEvent: function(element, eventname, handler) {
         element.addEventListener(eventname, handler);
