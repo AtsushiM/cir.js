@@ -708,7 +708,6 @@ Global.Mobile = function() {
                     mobile.isWindows()
                 );
             },
-            scrollTop: scrollTop,
             killScroll: function() {
                 scrollTop();
                 onEvent(doc, 'touchmove', preventDefault);
