@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global.Ajax = function(config) {
+Global.Ajax = function() {
     'use strict';
 
     var xhr = new XMLHttpRequest(),

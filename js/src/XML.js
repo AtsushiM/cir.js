@@ -6,7 +6,7 @@ Global.XML = function(config) {
         $child = util.$child,
         $$child = util.$$child,
         element = util.createElement('div'),
-        data = config.data,
+        data,
         instanse = {
             getData: function() {
                 return data;
@@ -23,10 +23,9 @@ Global.XML = function(config) {
             }
         };
 
-    if (data) {
-        element.innerHTML = data;
+    if (config && config.data) {
+        instanse.setData(config.data);
     }
 
     return instanse;
 };
-

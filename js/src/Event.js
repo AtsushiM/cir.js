@@ -35,7 +35,7 @@ Global.Event = function(config) {
         switchup: 'touchend'
     };
 
-    if (config.isMobile()) {
+    if (!config.isMobile()) {
         e.switchclick = 'click';
         e.switchdown = 'mousedown';
         e.switchmove = 'mousemove';

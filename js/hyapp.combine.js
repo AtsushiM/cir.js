@@ -128,7 +128,7 @@ function typeCast(str) {
 
 }(window, document));
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global.Ajax = function(config) {
+Global.Ajax = function() {
     'use strict';
 
     var xhr = new XMLHttpRequest(),
@@ -309,7 +309,7 @@ Global.Event = function(config) {
         switchup: 'touchend'
     };
 
-    if (config.isMobile()) {
+    if (!config.isMobile()) {
         e.switchclick = 'click';
         e.switchdown = 'mousedown';
         e.switchmove = 'mousemove';
@@ -1212,7 +1212,7 @@ Global.XML = function(config) {
         $child = util.$child,
         $$child = util.$$child,
         element = util.createElement('div'),
-        data = config.data,
+        data,
         instanse = {
             getData: function() {
                 return data;
@@ -1229,10 +1229,9 @@ Global.XML = function(config) {
             }
         };
 
-    if (data) {
-        element.innerHTML = data;
+    if (config && config.data) {
+        instanse.setData(config.data);
     }
 
     return instanse;
 };
-
