@@ -11,6 +11,7 @@ src/Facebook/\n\
 src/HashController/\n\
 src/ImgLoad/\n\
 src/Loading/\n\
+src/LocalStorage/\n\
 src/Mobile/\n\
 src/NumberImage/\n\
 src/Observer/\n\
@@ -33,6 +34,7 @@ src/utility/\n\
 ../../js/src/HashController.js\n\
 ../../js/src/ImgLoad.js\n\
 ../../js/src/Loading.js\n\
+../../js/src/LocalStorage.js\n\
 ../../js/src/Mobile.js\n\
 ../../js/src/NumberImage.js\n\
 ../../js/src/Observer.js\n\
@@ -55,6 +57,7 @@ src/utility/\n\
 ../_src/src/HashController/test.js\n\
 ../_src/src/ImgLoad/test.js\n\
 ../_src/src/Loading/test.js\n\
+../_src/src/LocalStorage/test.js\n\
 ../_src/src/Mobile/test.js\n\
 ../_src/src/NumberImage/test.js\n\
 ../_src/src/Observer/test.js\n\

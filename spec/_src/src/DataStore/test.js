@@ -1,5 +1,5 @@
 /* Class: "../../../js/src/DataStore.js" */
-describe('Global.DataStoreは', function() {
+describe('DataStoreは', function() {
     var store;
 
     beforeEach(function() {
@@ -38,7 +38,15 @@ describe('Global.DataStoreは', function() {
         expect(store.getData()).toEqual({test: 'test'});
     });
 
-    it('resetData()でデータを削除し初期化する', function() {
+    it('removeData(key)でデータを削除する', function() {
+        store.setData('test1', 'test1');
+        store.setData('test2', 'test2');
+        store.removeData('test1');
+
+        expect(store.getData()).toEqual({test2: 'test2'});
+    });
+
+    it('resetData()で全データを削除する', function() {
         store.setData('test1', 'test');
         store.setData('test2', 'test');
         store.setData('test3', 'test');

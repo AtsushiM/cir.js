@@ -35,6 +35,15 @@ Global.DataStore = function(config) {
 
             return ret;
         },
+        removeData: function(key) {
+            if (!data[key]) {
+                return false;
+            }
+
+            delete data[key];
+
+            return true;
+        },
         resetData: function() {
             data = {};
             return true;
