@@ -848,6 +848,8 @@ Global.Mobile.prototype = {
         };
     },
     orientationChange: function(vars) {
+        var mine = this;
+
         if (vars.immediately) {
             change();
         }
@@ -883,7 +885,7 @@ Global.Mobile.prototype = {
         }
         function change() {
             if (
-                this.orientationCheck().portrait
+                mine.orientationCheck().portrait
             ) {
                 vars.portrait();
                 return true;
