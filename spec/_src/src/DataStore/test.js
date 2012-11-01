@@ -15,9 +15,13 @@ describe('DataStoreは', function() {
             }),
             store2 = new Global.DataStore({
                 single: true
+            }),
+            store3 = new Global.DataStore({
+                single: false
             });
 
         expect(store1).toBe(store2);
+        expect(store1).not.toBe(store3);
     });
 
     it('setData(key, val)でデータを保存する', function() {

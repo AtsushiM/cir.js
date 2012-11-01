@@ -1,60 +1,53 @@
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
+(function() {
+var instance,
+    win = Global.utility.win,
+    storage = win.localStorage;
+
 Global.LocalStorage = function(config) {
-    'use strict';
-
-    var Mine = Global.LocalStorage,
-        util = Global.utility,
-        override = util.override;
-
-    config = override({
-        single: false
-    }, config);
+    config = config || {single: false};
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
-
-    var win = util.win,
-        storage = win.localStorage,
-        instanse = {
-            setData: function(key, val) {
-                storage.setItem(key, JSON.stringify(val));
-                return true;
-            },
-            getData: function(key) {
-                if (key) {
-                    return JSON.parse(storage.getItem(key));
-                }
-
-                var ret = {},
-                    i;
-
-                for (i in storage) {
-                    ret[i] = JSON.parse(storage[i]);
-                }
-
-                return ret;
-            },
-            removeData: function(key) {
-                if (!storage.getItem(key)) {
-                    return false;
-                }
-
-                storage.removeItem(key);
-
-                return true;
-            },
-            resetData: function() {
-                storage.clear();
-
-                return true;
-            }
-        };
 
     if (config.single) {
-        Mine.instance = store;
+        instance = this;
     }
-
-    return instanse;
 };
+Global.LocalStorage.prototype = {
+    setData: function(key, val) {
+        storage.setItem(key, JSON.stringify(val));
+        return true;
+    },
+    getData: function(key) {
+        if (key) {
+            return JSON.parse(storage.getItem(key));
+        }
+
+        var ret = {},
+            i;
+
+        for (i in storage) {
+            ret[i] = JSON.parse(storage[i]);
+        }
+
+        return ret;
+    },
+    removeData: function(key) {
+        if (!storage.getItem(key)) {
+            return false;
+        }
+
+        storage.removeItem(key);
+
+        return true;
+    },
+    resetData: function() {
+        storage.clear();
+
+        return true;
+    }
+};
+}());

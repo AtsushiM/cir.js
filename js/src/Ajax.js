@@ -1,37 +1,36 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = function() {
-    'use strict';
+    this.xhr = new XMLHttpRequest();
+};
+Global.Ajax.prototype = {
+    request: function(vars) {
+        var url = vars.url,
+            callback = vars.callback,
+            xhr;
 
-    var xhr = new XMLHttpRequest(),
-        instanse = {
-            request: function(vars) {
-                var url = vars.url,
-                    callback = vars.callback;
-
-                if (!vars.cash) {
-                    if (url.match(/\?/)) {
-                        url += '&';
-                    }
-                    else {
-                        url += '?';
-                    }
-
-                    url += 'ajaxcash' + Date.now() + '=0';
-                }
-
-                xhr = new XMLHttpRequest();
-
-                xhr.onload = function() {
-                    callback(xhr.responseText);
-                };
-
-                xhr.open('GET', url);
-                xhr.send(null);
-            },
-            abort: function() {
-                xhr.abort();
+        if (!vars.cash) {
+            if (url.match(/\?/)) {
+                url += '&';
             }
+            else {
+                url += '?';
+            }
+
+            url += 'ajaxcash' + Date.now() + '=0';
+        }
+
+        this.xhr = new XMLHttpRequest();
+        xhr = this.xhr;
+
+
+        xhr.onload = function() {
+            callback(xhr.responseText);
         };
 
-    return instanse;
+        xhr.open('GET', url);
+        xhr.send(null);
+    },
+    abort: function() {
+        this.xhr.abort();
+    }
 };

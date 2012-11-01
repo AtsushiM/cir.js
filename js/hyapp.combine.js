@@ -129,166 +129,158 @@ function typeCast(str) {
 }(window, document));
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = function() {
-    'use strict';
+    this.xhr = new XMLHttpRequest();
+};
+Global.Ajax.prototype = {
+    request: function(vars) {
+        var url = vars.url,
+            callback = vars.callback,
+            xhr;
 
-    var xhr = new XMLHttpRequest(),
-        instanse = {
-            request: function(vars) {
-                var url = vars.url,
-                    callback = vars.callback;
-
-                if (!vars.cash) {
-                    if (url.match(/\?/)) {
-                        url += '&';
-                    }
-                    else {
-                        url += '?';
-                    }
-
-                    url += 'ajaxcash' + Date.now() + '=0';
-                }
-
-                xhr = new XMLHttpRequest();
-
-                xhr.onload = function() {
-                    callback(xhr.responseText);
-                };
-
-                xhr.open('GET', url);
-                xhr.send(null);
-            },
-            abort: function() {
-                xhr.abort();
+        if (!vars.cash) {
+            if (url.match(/\?/)) {
+                url += '&';
             }
+            else {
+                url += '?';
+            }
+
+            url += 'ajaxcash' + Date.now() + '=0';
+        }
+
+        this.xhr = new XMLHttpRequest();
+        xhr = this.xhr;
+
+
+        xhr.onload = function() {
+            callback(xhr.responseText);
         };
 
-    return instanse;
+        xhr.open('GET', url);
+        xhr.send(null);
+    },
+    abort: function() {
+        this.xhr.abort();
+    }
 };
 /* Test: "../../spec/_src/src/CanvasImage/test.js" */
-Global.CanvasImage = function(config) {
-    'use strict';
+(function() {
+var util = Global.utility,
+    create = util.createElement;
 
-    var util = Global.utility,
-        create = util.createElement,
-        src = config.src,
-        width = config.width,
-        height = config.height,
-        onload = config.onload,
-        img = create('img'),
+Global.CanvasImage = function(config) {
+    var mine = this,
         canv = create('canvas');
 
-    img.onload = function() {
-        canv.width = width;
-        canv.height = height;
-        canv.getContext('2d').drawImage(img, 0, 0);
+    mine.src = config.src;
+    mine.width = config.width;
+    mine.height = config.height;
+    mine.onload = config.onload;
+    mine.img = create('img');
 
-        onload(canv, img);
+    mine.img.onload = function() {
+        canv.width = mine.width;
+        canv.height = mine.height;
+        canv.getContext('2d').drawImage(mine.img, 0, 0);
+
+        mine.onload(canv, mine.img);
     };
-    img.src = src;
+    mine.img.src = mine.src;
 
     return canv;
 };
-
+}());
 /* Test: "../../spec/_src/CanvasRender/test.js" */
 Global.CanvasRender = function(config) {
-    'use strict';
+    this.canvas = config.canvas;
+    this.ctx = this.canvas.getContext('2d');
+    this.canvasWidth = this.canvas.width;
+    this.canvasHeight = this.canvas.height;
 
-    var canvas = config.canvas,
-        ctx = canvas.getContext('2d'),
-        canvasWidth = canvas.width,
-        canvasHeight = canvas.height,
-        i, len, item,
-        instanse = {
-            setSize: function(vars) {
-                if (vars.width) {
-                    canvasWidth = vars.width;
-                    canvas.width = canvasWidth;
-                }
-                if (vars.height) {
-                    canvasHeight = vars.height;
-                    canvas.height = canvasHeight;
-                }
-            },
-            draw: function(layer) {
-                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    this.setSize(config);
+};
+Global.CanvasRender.prototype = {
+    setSize: function(vars) {
+        if (vars.width) {
+            this.canvas.width = this.canvasWidth = vars.width;
+        }
+        if (vars.height) {
+            this.canvas.height = this.canvasHeight = vars.height;
+        }
+    },
+    draw: function(layer) {
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-                for (i = 0, len = layer.length; i < len; i++) {
-                    item = layer[i];
-                    ctx.drawImage(item.image, item.x, item.y);
-                }
-            }
-        };
-
-    instanse.setSize(config);
-
-    return instanse;
+        for (var i = 0, len = layer.length, item; i < len; i++) {
+            item = layer[i];
+            this.ctx.drawImage(item.image, item.x, item.y);
+        }
+    }
 };
 /* Test: "../../spec/_src/src/DataStore/test.js" */
+(function() {
+var instance;
+
 Global.DataStore = function(config) {
     'use strict';
 
-    var Mine = Global.DataStore,
-        override = Global.utility.override,
-        data,
-        store;
-
-    config = override({
-        single: false
-    }, config);
+    config = config || {single: false};
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
 
-    data = {},
-    store = {
-        setData: function(key, val) {
-            data[key] = val;
-            return true;
-        },
-        getData: function(key) {
-            if (key) {
-                return data[key];
-            }
-
-            var ret = {},
-                i;
-            for (i in data) {
-                ret[i] = data[i];
-            }
-
-            return ret;
-        },
-        removeData: function(key) {
-            if (!data[key]) {
-                return false;
-            }
-
-            delete data[key];
-
-            return true;
-        },
-        resetData: function() {
-            data = {};
-            return true;
-        }
-    };
+    this.data = {};
 
     if (config.single) {
-        Mine.instance = store;
+        instance = this;
     }
-
-    return store;
 };
+Global.DataStore.prototype = {
+    setData: function(key, val) {
+        this.data[key] = val;
+        return true;
+    },
+    getData: function(key) {
+        var data = this.data;
+
+        if (key) {
+            return data[key];
+        }
+
+        var ret = {},
+            i;
+
+        for (i in data) {
+            ret[i] = data[i];
+        }
+
+        return ret;
+    },
+    removeData: function(key) {
+        var data = this.data;
+
+        if (!data[key]) {
+            return false;
+        }
+
+        delete data[key];
+
+        return true;
+    },
+    resetData: function() {
+        this.data = {};
+        return true;
+    }
+};
+}());
 /* Test: "../../spec/_src/src/Event/test.js" */
+(function() {
+var instance,
+    override = Global.utility.override;
+
 Global.Event = function(config) {
-    'use strict';
-
-    var Mine = Global.Event,
-        override = Global.utility.override,
-        e;
-
     config = override({
         single: false,
         isMobile: function() {
@@ -297,726 +289,739 @@ Global.Event = function(config) {
     }, config);
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
 
-    e = {
-        // デフォルトイベント
-        click: 'click',
-        mousedown: 'mousedown',
-        mousemove: 'mousemove',
-        mouseup: 'mouseup',
-        touchstart: 'touchstart',
-        touchmove: 'touchmove',
-        touchend: 'touchend',
+    // デフォルトイベント
+    this.click = 'click';
+    this.mousedown = 'mousedown';
+    this.mousemove = 'mousemove';
+    this.mouseup = 'mouseup';
+    this.touchstart = 'touchstart';
+    this.touchmove = 'touchmove';
+    this.touchend = 'touchend';
 
-        // 切替イベント
-        switchclick: 'touchstart',
-        switchdown: 'touchstart',
-        switchmove: 'touchmove',
-        switchup: 'touchend'
-    };
+    // 切替イベント
+    this.switchclick = 'touchstart';
+    this.switchdown = 'touchstart';
+    this.switchmove = 'touchmove';
+    this.switchup = 'touchend';
 
     if (!config.isMobile()) {
-        e.switchclick = 'click';
-        e.switchdown = 'mousedown';
-        e.switchmove = 'mousemove';
-        e.switchup = 'mouseup';
+        this.switchclick = 'click';
+        this.switchdown = 'mousedown';
+        this.switchmove = 'mousemove';
+        this.switchup = 'mouseup';
     }
 
     if (config.single) {
-        Mine.instance = e;
+        instance = this;
     }
-
-    return e;
 };
+}());
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
+(function() {
+var instanse;
+
 Global.ExternalInterface = function(config) {
     'use strict';
 
-    var external,
-        isAndroid = false,
-        android = null,
-        ios = null,
-        hashCtrl = new Global.HashController();
+    config = config || {};
 
-    if (!config) {
-        config = {};
+    var external;
+
+    if (config.single && instanse) {
+        return instanse;
     }
 
-    // ネイティブから呼び出しメソッドが設定されているか、
-    // 強制的にAndoroidモードにするフラグでチェック
     if (config.android) {
-        isAndroid = true;
-        android = config.android;
-
-        // Androidのネイティブから参照するオブジェクト
-        Global.EXTERNAL = {};
+        external = new Global.ExternalAndroidInterface(config);
     }
     else {
-        ios = {};
+        external = new Global.ExternalIOSInterface(config);
     }
 
-    external = (function() {
-            var returned;
-            if (isAndroid) {
-                // Android
-                returned = {
-                    'call': function(config) {
-                        android[config.mode](hashCtrl.makeHash(config));
-                    },
-                    'addCallback': function(name, func) {
-                        Global.EXTERNAL[name] = function(vars) {
-                            var objs = hashCtrl.parseHash(vars);
-                            return func(objs.vars);
-                        };
-                    },
-                    'removeCallback': function(name) {
-                        delete Global.EXTERNAL[name];
-                    }
-                };
-            }
-            else {
-                // iOS
-                returned = {
-                    call: function(config) {
-                        hashCtrl.setHash(config);
-                    },
-                    addCallback: function(name, func) {
-                        ios[name] = function(e) {
-                            var hash = hashCtrl.getHash();
-
-                            if (hash.mode === name) {
-                                func(hash.vars);
-                                return true;
-                            }
-                            return false;
-                        };
-                        window.addEventListener('hashchange', ios[name]);
-                    },
-                    removeCallback: function(name) {
-                        window.removeEventListener('hashchange', ios[name]);
-                        delete ios[name];
-                    }
-                };
-            }
-
-            returned.isAndroid = function() {
-                return isAndroid;
-            };
-
-            return returned;
-        }());
+    if (config.single) {
+        instanse = external;
+    }
 
     return external;
 };
-/* Test: "../../spec/_src/src/Facebook/test.js" */
-Global.Facebook = function() {
-    'use strict';
+}());
+/* Test: "../../spec/_src/src/ExternalAndroidInterface/test.js" */
+(function() {
+var instanse;
 
-    var util = Global.utility,
-        makeQuery = util.makeQueryString,
-        instanse = {
-            getShareURL: function(vars) {
-                var shareURL = 'https://www.facebook.com/dialog/feed?',
-                    app_id = vars.app_id,
-                    redirect_uri = vars.redirect_uri,
-                    link = vars.link,
-                    picture = vars.picture,
-                    name = vars.name,
-                    caption = vars.caption,
-                    description = vars.description,
-                    url = shareURL +
-                        'app_id=' + app_id + '&' +
-                        'redirect_uri=' + redirect_uri;
+Global.ExternalAndroidInterface = function(config) {
+    config = config || {};
 
-                url += makeQuery({
-                    'link': link,
-                    'picture': picture,
-                    'name': name,
-                    'caption': caption,
-                    'description': description
-                });
+    if (config.single && instanse) {
+        return instanse;
+    }
 
-                return url;
-            }
-        };
+    this.android = config.android;
+    this.externalObj = config.externalObj;
+    this.hashCtrl = new Global.HashController();
 
-    return instanse;
+    if (!this.externalObj) {
+        Global.EXTERNAL_ANDROID = {};
+        this.externalObj = Global.EXTERNAL_ANDROID;
+    }
+
+    if (config.single) {
+        instanse = this;
+    }
 };
+Global.ExternalAndroidInterface.prototype = {
+    'call': function(conf) {
+        this.android[conf.mode](this.hashCtrl.makeHash(conf));
+    },
+    'addCallback': function(name, func) {
+        var mine = this;
+        mine.externalObj[name] = function(vars) {
+            var objs = mine.hashCtrl.parseHash(vars);
+            return func(objs.vars);
+        };
+    },
+    'removeCallback': function(name) {
+        delete this.externalObj[name];
+    }
+};
+}());
+/* Test: "../../spec/_src/src/ExternalIOSInterface/test.js" */
+(function() {
+var util = Global.utility,
+    win = util.win,
+    instanse;
+
+Global.ExternalIOSInterface = function(config) {
+    config = config || {};
+
+    if (config.single && instanse) {
+        return instanse;
+    }
+
+    this.ios = {};
+    this.hashCtrl = new Global.HashController();
+
+    if (config.single) {
+        instanse = this;
+    }
+};
+Global.ExternalIOSInterface.prototype = {
+    call: function(conf) {
+        this.hashCtrl.setHash(conf);
+    },
+    addCallback: function(name, func) {
+        var mine = this;
+        mine.ios[name] = function(e) {
+            var hash = mine.hashCtrl.getHash();
+
+            if (hash.mode === name) {
+                func(hash.vars);
+                return true;
+            }
+            return false;
+        };
+        win.addEventListener('hashchange', this.ios[name]);
+    },
+    removeCallback: function(name) {
+        win.removeEventListener('hashchange', this.ios[name]);
+        delete this.ios[name];
+    }
+};
+}());
+/* Test: "../../spec/_src/src/Facebook/test.js" */
+(function() {
+var util = Global.utility,
+    makeQuery = util.makeQueryString,
+    shareURL = 'https://www.facebook.com/dialog/feed?';
+
+Global.Facebook = function() {};
+Global.Facebook.prototype = {
+    getShareURL: function(vars) {
+        var app_id = vars.app_id,
+            redirect_uri = vars.redirect_uri,
+            link = vars.link,
+            picture = vars.picture,
+            name = vars.name,
+            caption = vars.caption,
+            description = vars.description,
+            url = shareURL +
+                'app_id=' + app_id + '&' +
+                'redirect_uri=' + redirect_uri;
+
+        url += makeQuery({
+            'link': link,
+            'picture': picture,
+            'name': name,
+            'caption': caption,
+            'description': description
+        });
+
+        return url;
+    }
+};
+}());
 /* Test: "../../spec/_src/src/FPS/test.js" */
+(function() {
+var instance,
+    util = Global.utility,
+    override = util.override,
+    win = util.win,
+    requestAnimationFrame = (function() {
+        return win.requestAnimationFrame ||
+            win.webkitRequestAnimationFrame ||
+            win.mozRequestAnimationFrame ||
+            win.oRequestAnimationFrame ||
+            win.msRequestAnimationFrame ||
+            false;
+            // function(callback, element){
+            //         window.setTimeout(callback, 1000 / 60);
+            //       };
+    }());
+
 Global.FPS = function(config) {
-    'use strict';
-
-    var Mine = Global.FPS,
-        util = Global.utility,
-        override = util.override;
-
     config = override({
         single: false,
         criterion: 20
     }, config);
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
 
-    var win = util.win,
-        criterion = config.criterion,
-        surver = criterion,
-        enterframe = config.enterframe,
-        msecFrame = getFrame(criterion),
-        prevtime,
-        nowtime,
-        loopid,
-        fps = {
-            getCriterion: function() {
-                return criterion;
-            },
-            getSurver: function() {
-                return surver;
-            },
-            getFrameTime: function() {
-                return msecFrame;
-            },
-            enter: function() {
-                enterframe({
-                    criterion: criterion,
-                    surver: surver
-                });
-            },
-            start: function() {
-                prevtime = Date.now();
-                loop();
-            },
-            stop: function() {
-                clearInterval(loopid);
-                loopid = 0;
-            }
-        },
-        animationFrameCount = 0,
-        animationFrameWait = Math.round(60 / criterion) + 1,
-        requestAnimationFrame = (function() {
-            return win.requestAnimationFrame ||
-                win.webkitRequestAnimationFrame ||
-                win.mozRequestAnimationFrame ||
-                win.oRequestAnimationFrame ||
-                win.msRequestAnimationFrame ||
-                false;
-                // function(callback, element){
-                //         window.setTimeout(callback, 1000 / 60);
-                //       };
-        }());
-
-    function animationFrame() {
-        animationFrameCount++;
-
-        if (animationFrameCount === animationFrameWait) {
-            animationFrameCount = 0;
-            _loop();
-        }
-
-        if (loopid === 1) {
-            requestAnimationFrame(animationFrame);
-        }
-    }
-
-    function loop() {
-        if (requestAnimationFrame) {
-            loopid = 1;
-            animationFrame();
-        }
-        else {
-            loopid = setInterval(_loop, msecFrame);
-        }
-    }
-    function _loop() {
-        nowtime = Date.now();
-        surver = getFrame(nowtime - prevtime);
-        prevtime = nowtime;
-
-        fps.enter();
-    }
-
-    function getFrame(time) {
-        return Math.round(1000 / time);
-    }
+    this.criterion = config.criterion,
+    this.surver = this.criterion,
+    this.enterframe = config.enterframe,
+    this.msecFrame = getFrame(this.criterion),
+    this.prevtime =
+    this.nowtime =
+    this.nexttime =
+    this.loopid = 0;
 
     if (config.single) {
-        Mine.instance = fps;
+        instance = this;
     }
-
-    return fps;
 };
+Global.FPS.prototype = {
+    getCriterion: function() {
+        return this.criterion;
+    },
+    getSurver: function() {
+        return this.surver;
+    },
+    getFrameTime: function() {
+        return this.msecFrame;
+    },
+    enter: function() {
+        this.enterframe({
+            criterion: this.criterion,
+            surver: this.surver
+        });
+    },
+    start: function() {
+        this.prevtime = Date.now();
+        this.nexttime = this.prevtime + this.msecFrame;
+        loop(this);
+    },
+    stop: function() {
+        clearInterval(this.loopid);
+        this.loopid = 0;
+    }
+};
+function animationFrame(mine) {
+    if (mine.nexttime <= Date.now()) {
+        _loop(mine);
+        mine.nexttime = mine.nowtime + mine.msecFrame;
+    }
+    if (mine.loopid === 1) {
+        requestAnimationFrame(function() {
+            animationFrame(mine);
+        });
+    }
+}
+function loop(mine) {
+    if (requestAnimationFrame) {
+        mine.loopid = 1;
+        animationFrame(mine);
+    }
+    else {
+        mine.loopid = setInterval(_loop, mine.msecFrame, mine);
+    }
+}
+function _loop(mine) {
+    mine.nowtime = Date.now();
+    mine.surver = getFrame(mine.nowtime - mine.prevtime);
+    mine.prevtime = mine.nowtime;
+
+    mine.enter();
+}
+
+function getFrame(time) {
+    return Math.round(1000 / time);
+}
+}());
 /* Test: "../../spec/_src/src/HashController/test.js" */
-Global.HashController = function() {
-    'use strict';
+(function() {
+var util = Global.utility,
+    cast = util.typeCast;
 
-    var util = Global.utility,
-        cast = util.typeCast,
-        controller = {
-            makeHash: function(config) {
-                var hash = '#' + config.mode,
-                    vars = config.vars,
-                    sign = '?',
-                    i;
+Global.HashController = function() {};
+Global.HashController.prototype = {
+    makeHash: function(conf) {
+        var hash = '#' + conf.mode,
+            vars = conf.vars,
+            sign = '?',
+            i;
 
-                for (i in vars) {
-                    hash +=
-                        sign +
-                        i + '=' +
-                        JSON.stringify(vars[i]);
-                    sign = '&';
-                }
-
-                return encodeURI(hash);
-            },
-            setHash: function(config) {
-                location.hash = controller.makeHash(config);
-                return true;
-            },
-            parseHash: function(hashvars) {
-                var hash,
-                    mode,
-                    varsHash,
-                    vars = null;
-
-                hash = decodeURIComponent(hashvars)
-                       .split('#')[1];
-
-                if (!hash) {
-                    return false;
-                }
-
-                hash = hash.split('?');
-
-                mode = hash[0];
-
-                if (hash[1]) {
-                    vars = {};
-                    varsHash = hash[1].split('&');
-
-                    // hashをオブジェクトに整形
-                    (function() {
-                        var splitVar,
-                            i;
-
-                        for (i = varsHash.length; i--;) {
-                            if (varsHash[i]) {
-                                splitVar = varsHash[i].split('=');
-                                vars[splitVar[0]] = typeCast(splitVar[1]);
-                            }
-                        }
-                    }());
-
-                    return {
-                        mode: mode,
-                        vars: vars
-                    };
-                }
-
-                return {
-                    mode: mode
-                };
-            },
-            getHash: function() {
-                return controller.parseHash(location.hash);
-            }
-        };
-
-    function typeCast(str) {
-        var caststr = cast(str);
-
-        if (str === caststr && str.match('^["\'](.*)["\']$')) {
-            return str.match('^["\'](.*)["\']$')[1];
+        for (i in vars) {
+            hash +=
+                sign +
+                i + '=' +
+                JSON.stringify(vars[i]);
+            sign = '&';
         }
 
-        return caststr;
+        return encodeURI(hash);
+    },
+    setHash: function(vars) {
+        location.hash = this.makeHash(vars);
+        return true;
+    },
+    parseHash: function(hashvars) {
+        var hash,
+            mode,
+            varsHash,
+            vars = null;
+
+        hash = decodeURIComponent(hashvars)
+               .split('#')[1];
+
+        if (!hash) {
+            return false;
+        }
+
+        hash = hash.split('?');
+
+        mode = hash[0];
+
+        if (hash[1]) {
+            vars = {};
+            varsHash = hash[1].split('&');
+
+            // hashをオブジェクトに整形
+            (function() {
+                var splitVar,
+                    i;
+
+                for (i = varsHash.length; i--;) {
+                    if (varsHash[i]) {
+                        splitVar = varsHash[i].split('=');
+                        vars[splitVar[0]] = typeCast(splitVar[1]);
+                    }
+                }
+            }());
+
+            return {
+                mode: mode,
+                vars: vars
+            };
+        }
+
+        return {
+            mode: mode
+        };
+    },
+    getHash: function() {
+        return this.parseHash(location.hash);
+    }
+};
+
+function typeCast(str) {
+    var caststr = cast(str);
+
+    if (str === caststr && str.match('^["\'](.*)["\']$')) {
+        return str.match('^["\'](.*)["\']$')[1];
     }
 
-    return controller;
-};
+    return caststr;
+}
+}());
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
+(function() {
+var util = Global.utility,
+    create = util.createElement,
+    nullfunc = function() {};
+
 Global.ImgLoad = function(config) {
-    'use strict';
+    var mine = this;
 
-    var util = Global.utility,
-        create = util.createElement,
-        srcs = config.srcs,
-        srccount = srcs.length,
-        onload = config.onload,
-        loadcount = 0,
-        imgload = {
-            start: function() {
-                var img,
-                    i;
+    mine.srcs = config.srcs,
+    mine.srccount = this.srcs.length,
+    mine.loadedsrcs = [];
+    mine.onload = config.onload || nullfunc,
+    mine.onprogress = config.onprogress || nullfunc,
+    mine.loadcount = 0;
+    mine.progress = 0;
+    mine.check = function() {
+        mine.loadcount++;
 
-                for (i = srccount; i--;) {
-                    img = create('img');
-                    img.src = srcs[i];
-                    img.onload = completeCheck;
-                }
-            }
-        };
+        mine.progress = mine.loadcount / mine.srccount;
+        mine.onprogress(mine.progress);
 
-    function completeCheck() {
-        loadcount++;
-        if (loadcount >= srccount) {
-            onload();
+        if (mine.loadcount >= mine.srccount) {
+            mine.onload(mine.loadedsrcs);
         }
-    }
-
-    return imgload;
+    };
 };
+Global.ImgLoad.prototype = {
+    start: function() {
+        var img,
+            i, len;
+
+        for (i = 0, len = this.srccount; i < len; i++) {
+            img = create('img');
+            img.src = this.srcs[i];
+            img.onload = this.check;
+
+            this.loadedsrcs.push(img);
+        }
+    },
+    getProgress: function() {
+        return this.progress;
+    }
+};
+}());
 /* Test: "../../spec/_src/src/Loading/test.js" */
+(function() {
+var win = Global.utility.win;
+
 Global.Loading = function(config) {
-    'use strict';
-
-    var win = Global.utility.win,
-        instanse = {
-            onload: function(func) {
-                win.addEventListener('load', func);
-            }
-        };
-
-    if (config) {
-        if (config.onload) {
-            instanse.onload(config.onload);
-        }
+    if (config && config.onload) {
+        this.onload(config.onload);
     }
-
-    return instanse;
 };
+Global.Loading.prototype = {
+    onload: function(func) {
+        win.addEventListener('load', func);
+    }
+};
+}());
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
+(function() {
+var instance,
+    win = Global.utility.win,
+    storage = win.localStorage;
+
 Global.LocalStorage = function(config) {
-    'use strict';
-
-    var Mine = Global.LocalStorage,
-        util = Global.utility,
-        override = util.override;
-
-    config = override({
-        single: false
-    }, config);
+    config = config || {single: false};
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
-
-    var win = util.win,
-        storage = win.localStorage,
-        instanse = {
-            setData: function(key, val) {
-                storage.setItem(key, JSON.stringify(val));
-                return true;
-            },
-            getData: function(key) {
-                if (key) {
-                    return JSON.parse(storage.getItem(key));
-                }
-
-                var ret = {},
-                    i;
-
-                for (i in storage) {
-                    ret[i] = JSON.parse(storage[i]);
-                }
-
-                return ret;
-            },
-            removeData: function(key) {
-                if (!storage.getItem(key)) {
-                    return false;
-                }
-
-                storage.removeItem(key);
-
-                return true;
-            },
-            resetData: function() {
-                storage.clear();
-
-                return true;
-            }
-        };
 
     if (config.single) {
-        Mine.instance = store;
+        instance = this;
     }
-
-    return instanse;
 };
+Global.LocalStorage.prototype = {
+    setData: function(key, val) {
+        storage.setItem(key, JSON.stringify(val));
+        return true;
+    },
+    getData: function(key) {
+        if (key) {
+            return JSON.parse(storage.getItem(key));
+        }
+
+        var ret = {},
+            i;
+
+        for (i in storage) {
+            ret[i] = JSON.parse(storage[i]);
+        }
+
+        return ret;
+    },
+    removeData: function(key) {
+        if (!storage.getItem(key)) {
+            return false;
+        }
+
+        storage.removeItem(key);
+
+        return true;
+    },
+    resetData: function() {
+        storage.clear();
+
+        return true;
+    }
+};
+}());
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global.Mobile = function() {
-    'use strict';
+(function() {
+var util = Global.utility,
+    win = util.win,
+    doc = util.doc,
+    onEvent = util.onEvent,
+    offEvent = util.offEvent,
+    scrollTop = util.scrollTop,
+    userAgent = navigator.userAgent;
 
-    var util = Global.utility,
-        win = util.win,
-        doc = util.doc,
-        onEvent = util.onEvent,
-        offEvent = util.offEvent,
-        scrollTop = util.scrollTop,
-        userAgent = navigator.userAgent,
-        mobile = {
-            isAndroid: function(ua) {
-                return checkUA(ua, /Android/i);
-            },
-            isIOS: function(ua) {
-                return checkUA(ua, /iPhone|iPad|iPod/i);
-            },
-            isWindows: function(ua) {
-                return checkUA(ua, /IEMobile/i);
-            },
-            isMobile: function() {
-                return (
-                    mobile.isAndroid() ||
-                    mobile.isIOS() ||
-                    mobile.isWindows()
-                );
-            },
-            killScroll: function() {
-                scrollTop();
-                onEvent(doc, 'touchmove', preventDefault);
-            },
-            revivalScroll: function() {
-                scrollTop();
-                offEvent(doc, 'touchmove', preventDefault);
-            },
-            hideAddress: function() {
-                onEvent(win, 'load', hideAddressHandler, false);
-                onEvent(win, 'orientationchange', hideAddressHandler, false);
+Global.Mobile = function() {};
+Global.Mobile.prototype = {
+    isAndroid: function(ua) {
+        return checkUA(ua, /Android/i);
+    },
+    isIOS: function(ua) {
+        return checkUA(ua, /iPhone|iPad|iPod/i);
+    },
+    isWindows: function(ua) {
+        return checkUA(ua, /IEMobile/i);
+    },
+    isMobile: function() {
+        return (
+            this.isAndroid() ||
+            this.isIOS() ||
+            this.isWindows()
+        );
+    },
+    killScroll: function() {
+        scrollTop();
+        onEvent(doc, 'touchmove', preventDefault);
+    },
+    revivalScroll: function() {
+        scrollTop();
+        offEvent(doc, 'touchmove', preventDefault);
+    },
+    hideAddress: function() {
+        onEvent(win, 'load', hideAddressHandler, false);
+        onEvent(win, 'orientationchange', hideAddressHandler, false);
+    },
+    orientationCheck: function() {
+        if (
+            Math.abs(win.orientation) !== 90 &&
+            win.innerWidth < win.innerHeight
+        ) {
+            return {
+                portrait: true,
+                landscape: false
+            };
+        }
 
-                function doScroll() {
-                    if (win.pageYOffset === 0) {
-                        scrollTop();
-                    }
-                }
-                function hideAddressHandler() {
-                    setTimeout(doScroll, 100);
-                }
-            },
-            orientationCheck: function() {
-                if (
-                    Math.abs(win.orientation) !== 90 &&
-                    win.innerWidth < win.innerHeight
-                ) {
-                    return {
-                        portrait: true,
-                        landscape: false
-                    };
-                }
+        return {
+            portrait: false,
+            landscape: true
+        };
+    },
+    orientationChange: function(vars) {
+        if (vars.immediately) {
+            change();
+        }
 
-                return {
-                    portrait: false,
-                    landscape: true
-                };
-            },
-            orientationChange: function(vars) {
-                if (vars.immediately) {
-                    change();
-                }
+        if (vars.one) {
+            add(onechange);
 
-                if (vars.one) {
-                    add(onechange);
+            return function() {
+                remove(onechange);
+            };
+        }
 
-                    return function() {
-                        remove(onechange);
-                    };
-                }
+        add(change);
 
-                add(change);
-
-                return function() {
-                    remove(change);
-                };
-
-                function add(func) {
-                    set(onEvent, func);
-                }
-                function remove(func) {
-                    set(offEvent, func);
-                }
-                function set(setfunc, handler) {
-                    setfunc(win, 'load', handler);
-                    setfunc(win, 'orientationchange', handler);
-                    setfunc(win, 'resize', handler);
-                }
-                function onechange() {
-                    change();
-                    remove(onechange);
-                }
-                function change() {
-                    if (
-                        mobile.orientationCheck().portrait
-                    ) {
-                        vars.portrait();
-                        return true;
-                    }
-                    vars.landscape();
-                }
-            }
+        return function() {
+            remove(change);
         };
 
-    function preventDefault(e) {
-        e.preventDefault();
-        return false;
+        function add(func) {
+            set(onEvent, func);
+        }
+        function remove(func) {
+            set(offEvent, func);
+        }
+        function set(setfunc, handler) {
+            setfunc(win, 'load', handler);
+            setfunc(win, 'orientationchange', handler);
+            setfunc(win, 'resize', handler);
+        }
+        function onechange() {
+            change();
+            remove(onechange);
+        }
+        function change() {
+            if (
+                this.orientationCheck().portrait
+            ) {
+                vars.portrait();
+                return true;
+            }
+            vars.landscape();
+        }
     }
-
-    function checkUA(ua, pattern) {
-        ua = ua ? ua : userAgent;
-
-        return ua.match(pattern) ? true : false;
-    }
-
-    return mobile;
 };
+
+function preventDefault(e) {
+    e.preventDefault();
+    return false;
+}
+function checkUA(ua, pattern) {
+    ua = ua ? ua : userAgent;
+
+    return ua.match(pattern) ? true : false;
+}
+function doScroll() {
+    if (win.pageYOffset === 0) {
+        scrollTop();
+    }
+}
+function hideAddressHandler() {
+    setTimeout(doScroll, 100);
+}
+}());
 /* Test: "../../spec/_src/src/NumberImage/test.js" */
+(function() {
 Global.NumberImage = function(config) {
-    'use strict';
+    config = config || {type: ''};
 
-    var type = config.type,
-        extension = config.extension,
-        numimg = {
-            make: function(x) {
-                var aryX = ('' + x).split(''),
-                    tags = '',
-                    i;
-
-                for (i = aryX.length; i--;) {
-                    tags = make1Digit(aryX[i]) + tags;
-                }
-
-                return tags;
-            }
-        };
-
-    if (!type) {
-        type = '';
-    }
-
-    function make1Digit(x) {
-        return '<span class="num_' + type + x + '">&nbsp;</span>';
-    }
-
-    return numimg;
+    this.type = config.type;
 };
+Global.NumberImage.prototype = {
+    make: function(x) {
+        var aryX = ('' + x).split(''),
+            tags = '',
+            i;
+
+        for (i = aryX.length; i--;) {
+            tags = make1Digit(this.type + aryX[i]) + tags;
+        }
+
+        return tags;
+    }
+};
+
+function make1Digit(x) {
+    return '<span class="num_' + x + '">&nbsp;</span>';
+}
+}());
 /* Test: "../../spec/_src/src/Observer/test.js" */
+(function() {
+var instance;
+
 Global.Observer = function(config) {
     'use strict';
 
-    var Mine = Global.Observer,
-        override = Global.utility.override;
-
-    config = override({
-        single: false
-    }, config);
+    config = config || {single: false};
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
 
-    var observed = {},
-        instance = {
-            getObserved: function() {
-                return observed;
-            },
-            on: function(key, func) {
-                if (!observed[key]) {
-                    observed[key] = [];
-                }
+    this.observed = {};
 
-                observed[key].push(func);
-            },
-            forOn: function(obj) {
-                var i;
-                for (i in obj) {
-                    instance.on(i, obj[i]);
-                }
-            },
-            one: function(key, func) {
-                wrapfunc = function(vars) {
-                    func(vars);
-                    instance.off(key, wrapfunc);
-                };
+    if (config.single) {
+        instance = this;
+    }
+};
+Global.Observer.prototype = {
+    getObserved: function() {
+        return this.observed;
+    },
+    on: function(key, func) {
+        var observed = this.observed;
 
-                instance.on(key, wrapfunc);
-            },
-            off: function(key, func) {
-                if (!func) {
-                    deleteKey(key);
+        if (!observed[key]) {
+            observed[key] = [];
+        }
 
-                    return true;
-                }
+        observed[key].push(func);
+    },
+    forOn: function(obj) {
+        var i;
 
-                var target = observed[key],
-                    i;
+        for (i in obj) {
+            this.on(i, obj[i]);
+        }
+    },
+    one: function(key, func) {
+        var mine = this,
+            wrapfunc = function(vars) {
+                func(vars);
+                mine.off(key, wrapfunc);
+            };
 
-                if (!target) {
-                    return false;
-                }
+        mine.on(key, wrapfunc);
+    },
+    off: function(key, func) {
+        var observed = this.observed;
+
+        if (!func) {
+            delete observed[key];
+
+            return true;
+        }
+
+        var target = observed[key],
+            i;
+
+        if (!target) {
+            return false;
+        }
 
 
-                for (i = target.length; i--;) {
-                    if (func === target[i]) {
-                        target.splice(i, 1);
+        for (i = target.length; i--;) {
+            if (func === target[i]) {
+                target.splice(i, 1);
 
-                        if (target.length === 0) {
-                            deleteKey(key);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return false;
-            },
-            forOff: function(obj) {
-                var i;
-                for (i in obj) {
-                    instance.off(i, obj[i]);
-                }
-            },
-            fire: function(key, vars) {
-                var target = observed[key],
-                    func,
-                    i;
-
-                if (!target) {
-                    return false;
-                }
-
-                for (i = target.length; i--;) {
-                    func = target[i];
-                    if (func) {
-                        func(vars);
-                    }
+                if (target.length === 0) {
+                    delete observed[key];
                 }
 
                 return true;
             }
-        };
+        }
 
-    function deleteKey(key) {
-        delete observed[key];
+        return false;
+    },
+    forOff: function(obj) {
+        var i;
+        for (i in obj) {
+            this.off(i, obj[i]);
+        }
+    },
+    fire: function(key, vars) {
+        var target = this.observed[key],
+            func,
+            i;
+
+        if (!target) {
+            return false;
+        }
+
+        for (i = target.length; i--;) {
+            func = target[i];
+            if (func) {
+                func(vars);
+            }
+        }
+
+        return true;
     }
-
-    if (config.single) {
-        Mine.instance = instance;
-    }
-
-    return instance;
 };
+}());
 /* Test: "../../spec/_src/src/PreRender/test.js" */
+(function() {
+var util = Global.utility,
+    override = util.override,
+    show = util.showElement,
+    hide = util.hideElement;
+
 Global.PreRender = function(config) {
-    'use strict';
-
-    var util = Global.utility,
-        override = util.override;
-
     config = override({
         elements: [],
         guesslimit: 30,
@@ -1025,75 +1030,67 @@ Global.PreRender = function(config) {
         onrendered: function() {}
     }, config);
 
-    var show = util.showElement,
-        hide = util.hideElement,
-        elements = config.elements,
-        guesslimit = config.guesslimit,
-        onrendered = config.onrendered,
-        looptime = config.looptime,
-        loopblur = looptime + config.loopblur,
-        loopid,
-        gettime,
-        difftime,
-        prevtime,
-        instanse = {
-            start: function() {
-                var i;
+    this.elements = config.elements;
+    this.guesslimit = config.guesslimit;
+    this.onrendered = config.onrendered;
+    this.looptime = config.looptime;
+    this.loopblur = this.looptime + config.loopblur;
+    this.loopid = null;
+    this.prevtime = null;
+};
+Global.PreRender.prototype = {
+    start: function() {
+        var i;
 
-                for (i = elements.length; i--;) {
-                    show(elements[i]);
-                }
-                prevtime = Date.now();
-                loopid = setInterval(check, looptime);
+        for (i = this.elements.length; i--;) {
+            show(this.elements[i]);
+        }
+        this.prevtime = Date.now();
+        this.loopid = setInterval(check, this.looptime, this);
+    }
+};
+function check(mine) {
+    var gettime = Date.now(),
+        difftime = gettime - mine.prevtime;
+
+    mine.prevtime = gettime;
+
+    if (difftime < mine.loopblur) {
+        mine.guesslimit--;
+
+        if (mine.guesslimit < 1) {
+            clearInterval(mine.loopid);
+
+            for (var i = mine.elements.length; i--;) {
+                hide(mine.elements[i]);
             }
-        };
 
-    function check() {
-        gettime = Date.now(),
-        difftime = gettime - prevtime;
-
-        prevtime = gettime;
-
-        if (difftime < loopblur) {
-            guesslimit--;
-
-            if (guesslimit < 1) {
-                clearInterval(loopid);
-
-                for (var i = elements.length; i--;) {
-                    hide(elements[i]);
-                }
-
-                onrendered();
-            }
+            mine.onrendered();
         }
     }
-
-    return instanse;
-};
+}
+}());
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
 Global.Surrogate = function(config) {
-    'use strict';
+    this.delay = config.delay;
+    this.callback = config.callback;
+    this.args = null;
+    this.waitid = null;
+};
+Global.Surrogate.prototype = {
+    request: function(arg) {
+        this.args = arg;
+        this.clear();
+        this.waitid = setTimeout(this.flush, this.delay, this);
+    },
+    flush: function(mine) {
+        mine = mine || this;
 
-    var delay = config.delay,
-        callback = config.callback,
-        args,
-        waitid,
-        surrogate = {
-            request: function(arg) {
-                args = arg;
-                surrogate.clear();
-                waitid = setTimeout(surrogate.flush, delay);
-            },
-            flush: function() {
-                callback(args);
-            },
-            clear: function() {
-                clearInterval(waitid);
-            }
-        };
-
-    return surrogate;
+        mine.callback(mine.args);
+    },
+    clear: function() {
+        clearInterval(this.waitid);
+    }
 };
 /* Test: "../../spec/_src/src/Timer/test.js" */
 Global.Timer = function(config) {
@@ -1241,66 +1238,60 @@ Global.Timer = function(config) {
     return instanse;
 };
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-Global.Twitter = function(config) {
-    'use strict';
+(function() {
+var util = Global.utility,
+    makeQuery = util.makeQueryString,
+    shareURL = 'https://twitter.com/intent/tweet?';
 
-    var util = Global.utility,
-        makeQuery = util.makeQueryString,
-        instanse = {
-            getShareURL: function(vars) {
-                var shareURL = 'https://twitter.com/intent/tweet?',
-                    redirect_uri = vars.redirect_uri,
-                    caption = vars.caption || '',
-                    name = vars.name || '',
-                    hash = vars.hash || '',
-                    url = shareURL;
+Global.Twitter = function(config) {};
+Global.Twitter.prototype = {
+    getShareURL: function(vars) {
+        var redirect_uri = vars.redirect_uri,
+            caption = vars.caption || '',
+            name = vars.name || '',
+            hash = vars.hash || '',
+            url = shareURL;
 
-                if (name) {
-                    name = ' 「' + name + '」';
-                }
-                if (hash) {
-                    hash = ' ' + hash;
-                }
+        name = name ? ' 「' + name + '」' : '';
+        hash = hash ? ' ' + hash : '';
 
-                url += makeQuery({
-                    'url': redirect_uri,
-                    'text': caption + name + hash
-                });
+        url += makeQuery({
+            'url': redirect_uri,
+            'text': caption + name + hash
+        });
 
-                return url;
-            }
-        };
-
-    return instanse;
+        return url;
+    }
 };
+}());
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global.XML = function(config) {
-    'use strict';
+(function() {
+var util = Global.utility,
+    $child = util.$child,
+    $$child = util.$$child,
+    create = util.createElement;
 
-    var util = Global.utility,
-        $child = util.$child,
-        $$child = util.$$child,
-        element = util.createElement('div'),
-        data,
-        instanse = {
-            getData: function() {
-                return data;
-            },
-            setData: function(d) {
-                data =
-                element.innerHTML = d;
-            },
-            $: function(selector) {
-                return $child(selector, element);
-            },
-            $$: function(selector) {
-                return $$child(selector, element);
-            }
-        };
+Global.XML = function(config) {
+    this.element = create('div');
+    this.data = {};
 
     if (config && config.data) {
-        instanse.setData(config.data);
+        this.setData(config.data);
     }
-
-    return instanse;
 };
+Global.XML.prototype = {
+    getData: function() {
+        return this.data;
+    },
+    setData: function(d) {
+        this.data =
+        this.element.innerHTML = d;
+    },
+    $: function(selector) {
+        return $child(selector, this.element);
+    },
+    $$: function(selector) {
+        return $$child(selector, this.element);
+    }
+};
+}());

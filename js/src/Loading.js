@@ -1,19 +1,15 @@
 /* Test: "../../spec/_src/src/Loading/test.js" */
+(function() {
+var win = Global.utility.win;
+
 Global.Loading = function(config) {
-    'use strict';
-
-    var win = Global.utility.win,
-        instanse = {
-            onload: function(func) {
-                win.addEventListener('load', func);
-            }
-        };
-
-    if (config) {
-        if (config.onload) {
-            instanse.onload(config.onload);
-        }
+    if (config && config.onload) {
+        this.onload(config.onload);
     }
-
-    return instanse;
 };
+Global.Loading.prototype = {
+    onload: function(func) {
+        win.addEventListener('load', func);
+    }
+};
+}());

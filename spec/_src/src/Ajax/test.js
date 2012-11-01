@@ -19,7 +19,7 @@ describe('Ajaxは', function() {
             }
         });
 
-        waits(100);
+        waits(500);
         runs(function() {
             expect(data).not.toEqual('');
         });
@@ -35,7 +35,7 @@ describe('Ajaxは', function() {
         });
         ajax.abort();
 
-        waits(10);
+        waits(500);
         runs(function() {
             expect(data).toEqual('');
         });

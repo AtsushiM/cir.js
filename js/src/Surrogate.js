@@ -1,24 +1,22 @@
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
 Global.Surrogate = function(config) {
-    'use strict';
+    this.delay = config.delay;
+    this.callback = config.callback;
+    this.args = null;
+    this.waitid = null;
+};
+Global.Surrogate.prototype = {
+    request: function(arg) {
+        this.args = arg;
+        this.clear();
+        this.waitid = setTimeout(this.flush, this.delay, this);
+    },
+    flush: function(mine) {
+        mine = mine || this;
 
-    var delay = config.delay,
-        callback = config.callback,
-        args,
-        waitid,
-        surrogate = {
-            request: function(arg) {
-                args = arg;
-                surrogate.clear();
-                waitid = setTimeout(surrogate.flush, delay);
-            },
-            flush: function() {
-                callback(args);
-            },
-            clear: function() {
-                clearInterval(waitid);
-            }
-        };
-
-    return surrogate;
+        mine.callback(mine.args);
+    },
+    clear: function() {
+        clearInterval(this.waitid);
+    }
 };

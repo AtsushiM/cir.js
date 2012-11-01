@@ -5,6 +5,8 @@ src/CanvasImage/\n\
 src/CanvasRender/\n\
 src/DataStore/\n\
 src/Event/\n\
+src/ExternalAndroidInterface/\n\
+src/ExternalIOSInterface/\n\
 src/ExternalInterface/\n\
 src/FPS/\n\
 src/Facebook/\n\
@@ -28,6 +30,8 @@ src/utility/\n\
 ../../js/src/CanvasRender.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/Event.js\n\
+../../js/src/ExternalAndroidInterface.js\n\
+../../js/src/ExternalIOSInterface.js\n\
 ../../js/src/ExternalInterface.js\n\
 ../../js/src/FPS.js\n\
 ../../js/src/Facebook.js\n\
@@ -51,6 +55,8 @@ src/utility/\n\
 ../_src/src/CanvasRender/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/Event/test.js\n\
+../_src/src/ExternalAndroidInterface/test.js\n\
+../_src/src/ExternalIOSInterface/test.js\n\
 ../_src/src/ExternalInterface/test.js\n\
 ../_src/src/FPS/test.js\n\
 ../_src/src/Facebook/test.js\n\

@@ -1,34 +1,32 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-Global.Facebook = function() {
-    'use strict';
+(function() {
+var util = Global.utility,
+    makeQuery = util.makeQueryString,
+    shareURL = 'https://www.facebook.com/dialog/feed?';
 
-    var util = Global.utility,
-        makeQuery = util.makeQueryString,
-        instanse = {
-            getShareURL: function(vars) {
-                var shareURL = 'https://www.facebook.com/dialog/feed?',
-                    app_id = vars.app_id,
-                    redirect_uri = vars.redirect_uri,
-                    link = vars.link,
-                    picture = vars.picture,
-                    name = vars.name,
-                    caption = vars.caption,
-                    description = vars.description,
-                    url = shareURL +
-                        'app_id=' + app_id + '&' +
-                        'redirect_uri=' + redirect_uri;
+Global.Facebook = function() {};
+Global.Facebook.prototype = {
+    getShareURL: function(vars) {
+        var app_id = vars.app_id,
+            redirect_uri = vars.redirect_uri,
+            link = vars.link,
+            picture = vars.picture,
+            name = vars.name,
+            caption = vars.caption,
+            description = vars.description,
+            url = shareURL +
+                'app_id=' + app_id + '&' +
+                'redirect_uri=' + redirect_uri;
 
-                url += makeQuery({
-                    'link': link,
-                    'picture': picture,
-                    'name': name,
-                    'caption': caption,
-                    'description': description
-                });
+        url += makeQuery({
+            'link': link,
+            'picture': picture,
+            'name': name,
+            'caption': caption,
+            'description': description
+        });
 
-                return url;
-            }
-        };
-
-    return instanse;
+        return url;
+    }
 };
+}());

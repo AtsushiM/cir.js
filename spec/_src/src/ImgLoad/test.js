@@ -1,23 +1,61 @@
 /* Class: "../../../../js/src/ImgLoad.js" */
 describe('ImgLoadは', function() {
-    var imgload;
+    var imgload,
+        progress = 0,
+        loadend = false;
 
     beforeEach(function() {
         // init
         imgload = new Global.ImgLoad({
             srcs: [
                 // img path
+                '/spec/common/r.png',
+                '/spec/common/g.png',
+                '/spec/common/b.png'
             ],
-            onload: function() {}
+            onprogress: function(prog) {
+                progress = prog;
+            },
+            onload: function() {
+                loadend = true;
+            }
         });
     });
     afterEach(function() {
         // clear
+        progresscount = 0;
+        loadend = false;
     });
 
     it('start()で画像の先読みを開始する', function() {
+        runs(function() {
+            imgload.start();
+        });
+        waits(200);
+        runs(function() {
+            expect(loadend).toBeTruthy();
+            expect(progress).toEqual(1);
+        });
+    });
+
+    it('getProgress()で読込状況を0~1の間で返す', function() {
+        var before = 0;
+
+        imgload = new Global.ImgLoad({
+            srcs: [
+                // img path
+                '/spec/common/r.png',
+                '/spec/common/g.png',
+                '/spec/common/b.png'
+            ],
+            onprogress: function(prog) {
+                expect(prog).toBeGreaterThan(before);
+                before = prog;
+
+                expect(imgload.getProgress()).toEqual(prog);
+            }
+        });
         imgload.start();
-        expect(0).toEqual(0);
     });
 });
 /*

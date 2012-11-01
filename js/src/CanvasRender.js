@@ -1,34 +1,27 @@
 /* Test: "../../spec/_src/CanvasRender/test.js" */
 Global.CanvasRender = function(config) {
-    'use strict';
+    this.canvas = config.canvas;
+    this.ctx = this.canvas.getContext('2d');
+    this.canvasWidth = this.canvas.width;
+    this.canvasHeight = this.canvas.height;
 
-    var canvas = config.canvas,
-        ctx = canvas.getContext('2d'),
-        canvasWidth = canvas.width,
-        canvasHeight = canvas.height,
-        i, len, item,
-        instanse = {
-            setSize: function(vars) {
-                if (vars.width) {
-                    canvasWidth = vars.width;
-                    canvas.width = canvasWidth;
-                }
-                if (vars.height) {
-                    canvasHeight = vars.height;
-                    canvas.height = canvasHeight;
-                }
-            },
-            draw: function(layer) {
-                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    this.setSize(config);
+};
+Global.CanvasRender.prototype = {
+    setSize: function(vars) {
+        if (vars.width) {
+            this.canvas.width = this.canvasWidth = vars.width;
+        }
+        if (vars.height) {
+            this.canvas.height = this.canvasHeight = vars.height;
+        }
+    },
+    draw: function(layer) {
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-                for (i = 0, len = layer.length; i < len; i++) {
-                    item = layer[i];
-                    ctx.drawImage(item.image, item.x, item.y);
-                }
-            }
-        };
-
-    instanse.setSize(config);
-
-    return instanse;
+        for (var i = 0, len = layer.length, item; i < len; i++) {
+            item = layer[i];
+            this.ctx.drawImage(item.image, item.x, item.y);
+        }
+    }
 };

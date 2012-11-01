@@ -1,10 +1,11 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
+(function() {
+var util = Global.utility,
+    override = util.override,
+    show = util.showElement,
+    hide = util.hideElement;
+
 Global.PreRender = function(config) {
-    'use strict';
-
-    var util = Global.utility,
-        override = util.override;
-
     config = override({
         elements: [],
         guesslimit: 30,
@@ -13,49 +14,43 @@ Global.PreRender = function(config) {
         onrendered: function() {}
     }, config);
 
-    var show = util.showElement,
-        hide = util.hideElement,
-        elements = config.elements,
-        guesslimit = config.guesslimit,
-        onrendered = config.onrendered,
-        looptime = config.looptime,
-        loopblur = looptime + config.loopblur,
-        loopid,
-        gettime,
-        difftime,
-        prevtime,
-        instanse = {
-            start: function() {
-                var i;
+    this.elements = config.elements;
+    this.guesslimit = config.guesslimit;
+    this.onrendered = config.onrendered;
+    this.looptime = config.looptime;
+    this.loopblur = this.looptime + config.loopblur;
+    this.loopid = null;
+    this.prevtime = null;
+};
+Global.PreRender.prototype = {
+    start: function() {
+        var i;
 
-                for (i = elements.length; i--;) {
-                    show(elements[i]);
-                }
-                prevtime = Date.now();
-                loopid = setInterval(check, looptime);
+        for (i = this.elements.length; i--;) {
+            show(this.elements[i]);
+        }
+        this.prevtime = Date.now();
+        this.loopid = setInterval(check, this.looptime, this);
+    }
+};
+function check(mine) {
+    var gettime = Date.now(),
+        difftime = gettime - mine.prevtime;
+
+    mine.prevtime = gettime;
+
+    if (difftime < mine.loopblur) {
+        mine.guesslimit--;
+
+        if (mine.guesslimit < 1) {
+            clearInterval(mine.loopid);
+
+            for (var i = mine.elements.length; i--;) {
+                hide(mine.elements[i]);
             }
-        };
 
-    function check() {
-        gettime = Date.now(),
-        difftime = gettime - prevtime;
-
-        prevtime = gettime;
-
-        if (difftime < loopblur) {
-            guesslimit--;
-
-            if (guesslimit < 1) {
-                clearInterval(loopid);
-
-                for (var i = elements.length; i--;) {
-                    hide(elements[i]);
-                }
-
-                onrendered();
-            }
+            mine.onrendered();
         }
     }
-
-    return instanse;
-};
+}
+}());

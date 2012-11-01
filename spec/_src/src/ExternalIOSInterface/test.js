@@ -1,91 +1,116 @@
-/* Class: "../../../../js/src/FPS.js" */
-describe('FPSは', function() {
-    var fps,
-        dammy = {
-            enterframe: function(vars) {
-            }
-        },
-        criterion = 10;
-
-    function setFPS() {
-        fps = new Global.FPS({
-            criterion: criterion,
-            enterframe: dammy.enterframe
-        });
-    }
+/* Class: "../../../../js/src/ExternalIOSInterface.js" */
+describe('ExternalIOSInterfaceは', function() {
+    var external;
+        orgHash = location.hash,
+        hashCntl = new Global.HashController(),
+        iOSMethod = {
+            test1: function() {},
+            test2: function() {},
+            test3: function() {}
+        };
 
     beforeEach(function() {
         // init
-        setFPS();
+        external = new Global.ExternalIOSInterface();
     });
     afterEach(function() {
         // clear
-        fps.stop();
+        location.hash = orgHash;
     });
 
     it('singleオプションでsingletonになる', function() {
-        var fps1 = new Global.FPS({
-                single: true,
-                enterframe: dammy.enterframe
+        var e1 = new Global.ExternalIOSInterface({
+                single: true
             }),
-            fps2 = new Global.FPS({
-                single: true,
-                enterframe: dammy.enterframe
+            e2 = new Global.ExternalIOSInterface({
+                single: true
+            }),
+            e3 = new Global.ExternalIOSInterface({
+                single: false
             });
 
-        expect(fps1).toBe(fps2);
+        expect(e1).toBe(e2);
+        expect(e1).not.toBe(e3);
     });
 
-    it('getCriterion()で目標FPSを取得する', function() {
-        expect(fps.getCriterion()).toEqual(criterion);
+    it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {
+        // iOSの場合はhash,
+        var args = {
+                id: 0,
+                loop: 0
+            };
+
+        for (var i in iOSMethod) {
+            external.call({
+                mode: i,
+                vars: args
+            });
+            expect(
+                location.hash
+                .split('#')[1]
+                .split('?')[0]
+            ).toEqual(i);
+        }
     });
 
-    it('getSurver()で現在FPSを取得する', function() {
-        expect(fps.getSurver()).toEqual(fps.getCriterion());
-    });
+    it('addCallback(name, function)でネイティブから機能を呼び出す関数を登録する', function() {
+        var args = {
+                mode: 'test',
+                vars: {
+                    test: 1
+                }
+            };
 
-    it('getFrameTime()で1フレームあたりのミリ秒数を取得する', function() {
-        expect(fps.getFrameTime()).toEqual(1000 / criterion);
-    });
+        var returned = null;
 
-    it('enter()で毎フレーム実行するメソッドを実行する', function() {
-        spyOn(dammy, 'enterframe').andCallThrough();
-        setFPS();
-        fps.enter();
+        runs(function() {
+            external.addCallback('load', function(args) {
+                returned = args;
+            });
 
-        expect(dammy.enterframe).toHaveBeenCalledWith({
-            criterion: fps.getCriterion(),
-            surver: fps.getSurver()
+            hashCntl.setHash({
+                mode: 'load',
+                vars: args
+            });
+        });
+        waits(1);
+        runs(function() {
+            /* args.fire = 0; */
+            expect(returned).toEqual(args);
+            /* delete args.fire; */
+
+            returned = null;
+
+            hashCntl.setHash({
+                mode: 'test',
+                vars: args
+            });
+        });
+        waits(1);
+        runs(function() {
+            expect(returned).not.toEqual(args);
         });
     });
 
-    it('start()でフレームごとの実行を開始する', function() {
-        spyOn(dammy, 'enterframe').andCallThrough();
-        setFPS();
-        waits(100);
-        runs(function() {
-            fps.start();
-        });
-        waits(Math.ceil(fps.getFrameTime() * 20));
-        runs(function() {
-            expect(dammy.enterframe.callCount).toBeGreaterThan(15);
-            expect(dammy.enterframe.callCount).toBeLessThan(21);
-        });
-    });
+    it('removeCallback(name)でネイティブ呼び出しを削除する', function() {
+        var returned = null;
 
-    it('stop()でフレームごとの実行を停止する', function() {
-        spyOn(dammy, 'enterframe').andCallThrough();
-        setFPS();
-        fps.start();
-        fps.stop();
+        runs(function() {
+            external.addCallback('load', function() {
+                returned = true;
+            });
+            external.removeCallback('load');
 
-        waits(fps.getFrameTime() + 10);
-        runs(function() {
-            expect(dammy.enterframe.callCount).toEqual(0);
+            hashCntl.setHash({
+                mode: 'load',
+                vars: {
+                    test: 'test'
+                }
+            });
         });
-        waits(fps.getFrameTime());
+        waits(1);
         runs(function() {
-            expect(dammy.enterframe.callCount).toEqual(0);
+            expect(returned).toBeNull();
         });
     });
 });

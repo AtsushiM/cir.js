@@ -1,105 +1,100 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
+(function() {
+var instance,
+    util = Global.utility,
+    override = util.override,
+    win = util.win,
+    requestAnimationFrame = (function() {
+        return win.requestAnimationFrame ||
+            win.webkitRequestAnimationFrame ||
+            win.mozRequestAnimationFrame ||
+            win.oRequestAnimationFrame ||
+            win.msRequestAnimationFrame ||
+            false;
+            // function(callback, element){
+            //         window.setTimeout(callback, 1000 / 60);
+            //       };
+    }());
+
 Global.FPS = function(config) {
-    'use strict';
-
-    var Mine = Global.FPS,
-        util = Global.utility,
-        override = util.override;
-
     config = override({
         single: false,
         criterion: 20
     }, config);
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
 
-    var win = util.win,
-        criterion = config.criterion,
-        surver = criterion,
-        enterframe = config.enterframe,
-        msecFrame = getFrame(criterion),
-        prevtime,
-        nowtime,
-        loopid,
-        fps = {
-            getCriterion: function() {
-                return criterion;
-            },
-            getSurver: function() {
-                return surver;
-            },
-            getFrameTime: function() {
-                return msecFrame;
-            },
-            enter: function() {
-                enterframe({
-                    criterion: criterion,
-                    surver: surver
-                });
-            },
-            start: function() {
-                prevtime = Date.now();
-                loop();
-            },
-            stop: function() {
-                clearInterval(loopid);
-                loopid = 0;
-            }
-        },
-        animationFrameCount = 0,
-        animationFrameWait = Math.round(60 / criterion) + 1,
-        requestAnimationFrame = (function() {
-            return win.requestAnimationFrame ||
-                win.webkitRequestAnimationFrame ||
-                win.mozRequestAnimationFrame ||
-                win.oRequestAnimationFrame ||
-                win.msRequestAnimationFrame ||
-                false;
-                // function(callback, element){
-                //         window.setTimeout(callback, 1000 / 60);
-                //       };
-        }());
-
-    function animationFrame() {
-        animationFrameCount++;
-
-        if (animationFrameCount === animationFrameWait) {
-            animationFrameCount = 0;
-            _loop();
-        }
-
-        if (loopid === 1) {
-            requestAnimationFrame(animationFrame);
-        }
-    }
-
-    function loop() {
-        if (requestAnimationFrame) {
-            loopid = 1;
-            animationFrame();
-        }
-        else {
-            loopid = setInterval(_loop, msecFrame);
-        }
-    }
-    function _loop() {
-        nowtime = Date.now();
-        surver = getFrame(nowtime - prevtime);
-        prevtime = nowtime;
-
-        fps.enter();
-    }
-
-    function getFrame(time) {
-        return Math.round(1000 / time);
-    }
+    this.criterion = config.criterion,
+    this.surver = this.criterion,
+    this.enterframe = config.enterframe,
+    this.msecFrame = getFrame(this.criterion),
+    this.prevtime =
+    this.nowtime =
+    this.nexttime =
+    this.loopid = 0;
 
     if (config.single) {
-        Mine.instance = fps;
+        instance = this;
     }
-
-    return fps;
 };
+Global.FPS.prototype = {
+    getCriterion: function() {
+        return this.criterion;
+    },
+    getSurver: function() {
+        return this.surver;
+    },
+    getFrameTime: function() {
+        return this.msecFrame;
+    },
+    enter: function() {
+        this.enterframe({
+            criterion: this.criterion,
+            surver: this.surver
+        });
+    },
+    start: function() {
+        this.prevtime = Date.now();
+        this.nexttime = this.prevtime + this.msecFrame;
+        loop(this);
+    },
+    stop: function() {
+        clearInterval(this.loopid);
+        this.loopid = 0;
+    }
+};
+function animationFrame(mine) {
+    if (mine.nexttime <= Date.now()) {
+        _loop(mine);
+        mine.nexttime = mine.nowtime + mine.msecFrame;
+    }
+    if (mine.loopid === 1) {
+        requestAnimationFrame(function() {
+            animationFrame(mine);
+        });
+    }
+}
+function loop(mine) {
+    if (requestAnimationFrame) {
+        mine.loopid = 1;
+        animationFrame(mine);
+    }
+    else {
+        mine.loopid = setInterval(_loop, mine.msecFrame, mine);
+    }
+}
+function _loop(mine) {
+    mine.nowtime = Date.now();
+    mine.surver = getFrame(mine.nowtime - mine.prevtime);
+    mine.prevtime = mine.nowtime;
+
+    mine.enter();
+}
+
+function getFrame(time) {
+    return Math.round(1000 / time);
+}
+}());

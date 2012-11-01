@@ -1,31 +1,31 @@
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global.XML = function(config) {
-    'use strict';
+(function() {
+var util = Global.utility,
+    $child = util.$child,
+    $$child = util.$$child,
+    create = util.createElement;
 
-    var util = Global.utility,
-        $child = util.$child,
-        $$child = util.$$child,
-        element = util.createElement('div'),
-        data,
-        instanse = {
-            getData: function() {
-                return data;
-            },
-            setData: function(d) {
-                data =
-                element.innerHTML = d;
-            },
-            $: function(selector) {
-                return $child(selector, element);
-            },
-            $$: function(selector) {
-                return $$child(selector, element);
-            }
-        };
+Global.XML = function(config) {
+    this.element = create('div');
+    this.data = {};
 
     if (config && config.data) {
-        instanse.setData(config.data);
+        this.setData(config.data);
     }
-
-    return instanse;
 };
+Global.XML.prototype = {
+    getData: function() {
+        return this.data;
+    },
+    setData: function(d) {
+        this.data =
+        this.element.innerHTML = d;
+    },
+    $: function(selector) {
+        return $child(selector, this.element);
+    },
+    $$: function(selector) {
+        return $$child(selector, this.element);
+    }
+};
+}());

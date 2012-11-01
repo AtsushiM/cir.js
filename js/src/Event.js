@@ -1,11 +1,9 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
+(function() {
+var instance,
+    override = Global.utility.override;
+
 Global.Event = function(config) {
-    'use strict';
-
-    var Mine = Global.Event,
-        override = Global.utility.override,
-        e;
-
     config = override({
         single: false,
         isMobile: function() {
@@ -14,37 +12,34 @@ Global.Event = function(config) {
     }, config);
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
 
-    e = {
-        // デフォルトイベント
-        click: 'click',
-        mousedown: 'mousedown',
-        mousemove: 'mousemove',
-        mouseup: 'mouseup',
-        touchstart: 'touchstart',
-        touchmove: 'touchmove',
-        touchend: 'touchend',
+    // デフォルトイベント
+    this.click = 'click';
+    this.mousedown = 'mousedown';
+    this.mousemove = 'mousemove';
+    this.mouseup = 'mouseup';
+    this.touchstart = 'touchstart';
+    this.touchmove = 'touchmove';
+    this.touchend = 'touchend';
 
-        // 切替イベント
-        switchclick: 'touchstart',
-        switchdown: 'touchstart',
-        switchmove: 'touchmove',
-        switchup: 'touchend'
-    };
+    // 切替イベント
+    this.switchclick = 'touchstart';
+    this.switchdown = 'touchstart';
+    this.switchmove = 'touchmove';
+    this.switchup = 'touchend';
 
     if (!config.isMobile()) {
-        e.switchclick = 'click';
-        e.switchdown = 'mousedown';
-        e.switchmove = 'mousemove';
-        e.switchup = 'mouseup';
+        this.switchclick = 'click';
+        this.switchdown = 'mousedown';
+        this.switchmove = 'mousemove';
+        this.switchup = 'mouseup';
     }
 
     if (config.single) {
-        Mine.instance = e;
+        instance = this;
     }
-
-    return e;
 };
+}());

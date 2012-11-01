@@ -1,107 +1,106 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
+(function() {
+var instance;
+
 Global.Observer = function(config) {
     'use strict';
 
-    var Mine = Global.Observer,
-        override = Global.utility.override;
-
-    config = override({
-        single: false
-    }, config);
+    config = config || {single: false};
 
     // singleton
-    if (config.single && Mine.instance) {
-        return Mine.instance;
+    if (config.single && instance) {
+        return instance;
     }
 
-    var observed = {},
-        instance = {
-            getObserved: function() {
-                return observed;
-            },
-            on: function(key, func) {
-                if (!observed[key]) {
-                    observed[key] = [];
-                }
+    this.observed = {};
 
-                observed[key].push(func);
-            },
-            forOn: function(obj) {
-                var i;
-                for (i in obj) {
-                    instance.on(i, obj[i]);
-                }
-            },
-            one: function(key, func) {
-                wrapfunc = function(vars) {
-                    func(vars);
-                    instance.off(key, wrapfunc);
-                };
+    if (config.single) {
+        instance = this;
+    }
+};
+Global.Observer.prototype = {
+    getObserved: function() {
+        return this.observed;
+    },
+    on: function(key, func) {
+        var observed = this.observed;
 
-                instance.on(key, wrapfunc);
-            },
-            off: function(key, func) {
-                if (!func) {
-                    deleteKey(key);
+        if (!observed[key]) {
+            observed[key] = [];
+        }
 
-                    return true;
-                }
+        observed[key].push(func);
+    },
+    forOn: function(obj) {
+        var i;
 
-                var target = observed[key],
-                    i;
+        for (i in obj) {
+            this.on(i, obj[i]);
+        }
+    },
+    one: function(key, func) {
+        var mine = this,
+            wrapfunc = function(vars) {
+                func(vars);
+                mine.off(key, wrapfunc);
+            };
 
-                if (!target) {
-                    return false;
-                }
+        mine.on(key, wrapfunc);
+    },
+    off: function(key, func) {
+        var observed = this.observed;
+
+        if (!func) {
+            delete observed[key];
+
+            return true;
+        }
+
+        var target = observed[key],
+            i;
+
+        if (!target) {
+            return false;
+        }
 
 
-                for (i = target.length; i--;) {
-                    if (func === target[i]) {
-                        target.splice(i, 1);
+        for (i = target.length; i--;) {
+            if (func === target[i]) {
+                target.splice(i, 1);
 
-                        if (target.length === 0) {
-                            deleteKey(key);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return false;
-            },
-            forOff: function(obj) {
-                var i;
-                for (i in obj) {
-                    instance.off(i, obj[i]);
-                }
-            },
-            fire: function(key, vars) {
-                var target = observed[key],
-                    func,
-                    i;
-
-                if (!target) {
-                    return false;
-                }
-
-                for (i = target.length; i--;) {
-                    func = target[i];
-                    if (func) {
-                        func(vars);
-                    }
+                if (target.length === 0) {
+                    delete observed[key];
                 }
 
                 return true;
             }
-        };
+        }
 
-    function deleteKey(key) {
-        delete observed[key];
+        return false;
+    },
+    forOff: function(obj) {
+        var i;
+        for (i in obj) {
+            this.off(i, obj[i]);
+        }
+    },
+    fire: function(key, vars) {
+        var target = this.observed[key],
+            func,
+            i;
+
+        if (!target) {
+            return false;
+        }
+
+        for (i = target.length; i--;) {
+            func = target[i];
+            if (func) {
+                func(vars);
+            }
+        }
+
+        return true;
     }
-
-    if (config.single) {
-        Mine.instance = instance;
-    }
-
-    return instance;
 };
+}());

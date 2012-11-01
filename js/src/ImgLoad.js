@@ -1,32 +1,45 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
+(function() {
+var util = Global.utility,
+    create = util.createElement,
+    nullfunc = function() {};
+
 Global.ImgLoad = function(config) {
-    'use strict';
+    var mine = this;
 
-    var util = Global.utility,
-        create = util.createElement,
-        srcs = config.srcs,
-        srccount = srcs.length,
-        onload = config.onload,
-        loadcount = 0,
-        imgload = {
-            start: function() {
-                var img,
-                    i;
+    mine.srcs = config.srcs,
+    mine.srccount = this.srcs.length,
+    mine.loadedsrcs = [];
+    mine.onload = config.onload || nullfunc,
+    mine.onprogress = config.onprogress || nullfunc,
+    mine.loadcount = 0;
+    mine.progress = 0;
+    mine.check = function() {
+        mine.loadcount++;
 
-                for (i = srccount; i--;) {
-                    img = create('img');
-                    img.src = srcs[i];
-                    img.onload = completeCheck;
-                }
-            }
-        };
+        mine.progress = mine.loadcount / mine.srccount;
+        mine.onprogress(mine.progress);
 
-    function completeCheck() {
-        loadcount++;
-        if (loadcount >= srccount) {
-            onload();
+        if (mine.loadcount >= mine.srccount) {
+            mine.onload(mine.loadedsrcs);
         }
-    }
-
-    return imgload;
+    };
 };
+Global.ImgLoad.prototype = {
+    start: function() {
+        var img,
+            i, len;
+
+        for (i = 0, len = this.srccount; i < len; i++) {
+            img = create('img');
+            img.src = this.srcs[i];
+            img.onload = this.check;
+
+            this.loadedsrcs.push(img);
+        }
+    },
+    getProgress: function() {
+        return this.progress;
+    }
+};
+}());

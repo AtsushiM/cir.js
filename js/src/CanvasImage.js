@@ -1,25 +1,27 @@
 /* Test: "../../spec/_src/src/CanvasImage/test.js" */
-Global.CanvasImage = function(config) {
-    'use strict';
+(function() {
+var util = Global.utility,
+    create = util.createElement;
 
-    var util = Global.utility,
-        create = util.createElement,
-        src = config.src,
-        width = config.width,
-        height = config.height,
-        onload = config.onload,
-        img = create('img'),
+Global.CanvasImage = function(config) {
+    var mine = this,
         canv = create('canvas');
 
-    img.onload = function() {
-        canv.width = width;
-        canv.height = height;
-        canv.getContext('2d').drawImage(img, 0, 0);
+    mine.src = config.src;
+    mine.width = config.width;
+    mine.height = config.height;
+    mine.onload = config.onload;
+    mine.img = create('img');
 
-        onload(canv, img);
+    mine.img.onload = function() {
+        canv.width = mine.width;
+        canv.height = mine.height;
+        canv.getContext('2d').drawImage(mine.img, 0, 0);
+
+        mine.onload(canv, mine.img);
     };
-    img.src = src;
+    mine.img.src = mine.src;
 
     return canv;
 };
-
+}());

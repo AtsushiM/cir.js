@@ -1,34 +1,43 @@
-/* Class: "../../../../js/src/ExternalInterface.js" */
-describe('ExternalInterfaceは', function() {
-    var extAndroid,
-        extIOS,
+/* Class: "../../../../js/src/ExternalAndroidInterface.js" */
+describe('ExternalAndroidInterfaceは', function() {
+    var external,
+        orgHash = location.hash,
+        hashCntl = new Global.HashController(),
         androidMethod = {
-            test1: function() {},
-            test2: function() {},
-            test3: function() {}
+            test1: function() {
+            },
+            test2: function() {
+            },
+            test3: function() {
+            }
         };
 
     beforeEach(function() {
         // init
-        extAndroid = new Global.ExternalInterface({
-            android: androidMethod
-        });
-        extIOS = new Global.ExternalInterface({
-            android: false
+        Global.EXTERNAL_ANDROID = {};
+        external = new Global.ExternalAndroidInterface({
+            android: androidMethod,
+            // option
+            externalObj: Global.EXTERNAL_ANDROID
         });
     });
     afterEach(function() {
         // clear
+        location.hash = orgHash;
+        delete Global.EXTERNAL_ANDROID;
     });
 
     it('singleオプションでsingletonになる', function() {
-        var e1 = new Global.ExternalInterface({
+        var e1 = new Global.ExternalAndroidInterface({
+                android: androidMethod,
                 single: true
             }),
-            e2 = new Global.ExternalInterface({
+            e2 = new Global.ExternalAndroidInterface({
+                android: androidMethod,
                 single: true
             }),
-            e3 = new Global.ExternalInterface({
+            e3 = new Global.ExternalAndroidInterface({
+                android: androidMethod,
                 single: false
             });
 
@@ -36,14 +45,61 @@ describe('ExternalInterfaceは', function() {
         expect(e1).not.toBe(e3);
     });
 
-    it('iOSとAndroid端末で、メソッドの動作を変更する', function() {
-        // それぞれ同じメソッドを持つことを確認する
-        expect(extAndroid.call).toBeDefined();
-        expect(extIOS.call).toBeDefined();
-        expect(extAndroid.addCallback).toBeDefined();
-        expect(extIOS.addCallback).toBeDefined();
-        expect(extAndroid.removeCallback).toBeDefined();
-        expect(extIOS.removeCallback).toBeDefined();
+    it('Global.EXTERNAL_ANDROIDにAndroidネイティブから呼び出すための関数を設定する', function(){
+        delete Global.EXTERNAL_ANDROID;
+        external = new Global.ExternalAndroidInterface({
+            android: androidMethod
+        });
+
+        expect(Global.EXTERNAL_ANDROID).toBeDefined();
+    });
+
+    it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {
+        var args = {
+                id: 0,
+                loop: 0
+            };
+
+        for (var i in androidMethod) {
+            spyOn(androidMethod, i).andCallThrough();
+
+            external.call({
+                mode: i,
+                vars: args
+            });
+            expect(androidMethod[i]).toHaveBeenCalled();
+        }
+    });
+
+    it('addCallback(name, function)でネイティブから機能を呼び出す関数を登録する', function() {
+        var args = {
+                mode: 'test',
+                vars: {
+                    test: 1
+                }
+            };
+
+        // Android
+        var returned = null;
+
+        external.addCallback('load', function(args) {
+            returned = args;
+        });
+        Global.EXTERNAL_ANDROID.load(hashCntl.makeHash(args));
+        expect(returned).toEqual(args.vars);
+        returned = null;
+    });
+
+    it('removeCallback(name)でネイティブ呼び出しを削除する', function() {
+        // Android
+        var returned = null;
+
+        external.addCallback('load', function() {
+            returned = true;
+        });
+        external.removeCallback('load');
+
+        expect(Global.EXTERNAL_ANDROID.load).not.toBeDefined();
     });
 });
 /*
