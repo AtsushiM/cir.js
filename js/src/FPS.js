@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
 (function() {
+'use strict';
+
 var instance,
     util = Global.utility,
     override = util.override,

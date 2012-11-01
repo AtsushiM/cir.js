@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/XML/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     $child = util.$child,
     $$child = util.$$child,

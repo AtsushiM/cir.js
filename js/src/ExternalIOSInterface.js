@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/ExternalIOSInterface/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     win = util.win,
     instanse;

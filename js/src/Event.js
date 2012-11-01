@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
 (function() {
+'use strict';
+
 var instance,
     override = Global.utility.override;
 

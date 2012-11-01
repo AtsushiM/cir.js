@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
 (function() {
+'use strict';
+
 var instanse;
 
 Global.ExternalInterface = function(config) {
-    'use strict';
-
     config = config || {};
 
     var external;

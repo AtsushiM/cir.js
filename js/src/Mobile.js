@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     win = util.win,
     doc = util.doc,

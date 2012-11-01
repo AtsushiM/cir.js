@@ -128,6 +128,9 @@ function typeCast(str) {
 
 }(window, document));
 /* Test: "../../spec/_src/src/Ajax/test.js" */
+(function() {
+'use strict';
+
 Global.Ajax = function() {
     this.xhr = new XMLHttpRequest();
 };
@@ -163,8 +166,11 @@ Global.Ajax.prototype = {
         this.xhr.abort();
     }
 };
+}());
 /* Test: "../../spec/_src/src/CanvasImage/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     create = util.createElement;
 
@@ -191,6 +197,9 @@ Global.CanvasImage = function(config) {
 };
 }());
 /* Test: "../../spec/_src/CanvasRender/test.js" */
+(function() {
+'use strict';
+
 Global.CanvasRender = function(config) {
     this.canvas = config.canvas;
     this.ctx = this.canvas.getContext('2d');
@@ -217,13 +226,14 @@ Global.CanvasRender.prototype = {
         }
     }
 };
+}());
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 (function() {
+'use strict';
+
 var instance;
 
 Global.DataStore = function(config) {
-    'use strict';
-
     config = config || {single: false};
 
     // singleton
@@ -277,6 +287,8 @@ Global.DataStore.prototype = {
 }());
 /* Test: "../../spec/_src/src/Event/test.js" */
 (function() {
+'use strict';
+
 var instance,
     override = Global.utility.override;
 
@@ -322,11 +334,11 @@ Global.Event = function(config) {
 }());
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
 (function() {
+'use strict';
+
 var instanse;
 
 Global.ExternalInterface = function(config) {
-    'use strict';
-
     config = config || {};
 
     var external;
@@ -351,6 +363,8 @@ Global.ExternalInterface = function(config) {
 }());
 /* Test: "../../spec/_src/src/ExternalAndroidInterface/test.js" */
 (function() {
+'use strict';
+
 var instanse;
 
 Global.ExternalAndroidInterface = function(config) {
@@ -391,6 +405,8 @@ Global.ExternalAndroidInterface.prototype = {
 }());
 /* Test: "../../spec/_src/src/ExternalIOSInterface/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     win = util.win,
     instanse;
@@ -434,6 +450,8 @@ Global.ExternalIOSInterface.prototype = {
 }());
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     makeQuery = util.makeQueryString,
     shareURL = 'https://www.facebook.com/dialog/feed?';
@@ -466,6 +484,8 @@ Global.Facebook.prototype = {
 }());
 /* Test: "../../spec/_src/src/FPS/test.js" */
 (function() {
+'use strict';
+
 var instance,
     util = Global.utility,
     override = util.override,
@@ -566,6 +586,8 @@ function getFrame(time) {
 }());
 /* Test: "../../spec/_src/src/HashController/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     cast = util.typeCast;
 
@@ -652,6 +674,8 @@ function typeCast(str) {
 }());
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     create = util.createElement,
     nullfunc = function() {};
@@ -697,6 +721,8 @@ Global.ImgLoad.prototype = {
 }());
 /* Test: "../../spec/_src/src/Loading/test.js" */
 (function() {
+'use strict';
+
 var win = Global.utility.win;
 
 Global.Loading = function(config) {
@@ -712,6 +738,8 @@ Global.Loading.prototype = {
 }());
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
 (function() {
+'use strict';
+
 var instance,
     win = Global.utility.win,
     storage = win.localStorage;
@@ -765,6 +793,8 @@ Global.LocalStorage.prototype = {
 }());
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     win = util.win,
     doc = util.doc,
@@ -885,6 +915,8 @@ function hideAddressHandler() {
 }());
 /* Test: "../../spec/_src/src/NumberImage/test.js" */
 (function() {
+'use strict';
+
 Global.NumberImage = function(config) {
     config = config || {type: ''};
 
@@ -910,11 +942,11 @@ function make1Digit(x) {
 }());
 /* Test: "../../spec/_src/src/Observer/test.js" */
 (function() {
+'use strict';
+
 var instance;
 
 Global.Observer = function(config) {
-    'use strict';
-
     config = config || {single: false};
 
     // singleton
@@ -1016,6 +1048,8 @@ Global.Observer.prototype = {
 }());
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     override = util.override,
     show = util.showElement,
@@ -1071,6 +1105,9 @@ function check(mine) {
 }
 }());
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
+(function() {
+'use strict';
+
 Global.Surrogate = function(config) {
     this.delay = config.delay;
     this.callback = config.callback;
@@ -1092,6 +1129,7 @@ Global.Surrogate.prototype = {
         clearInterval(this.waitid);
     }
 };
+}());
 /* Test: "../../spec/_src/src/Timer/test.js" */
 Global.Timer = function(config) {
     'use strict';
@@ -1239,6 +1277,8 @@ Global.Timer = function(config) {
 };
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     makeQuery = util.makeQueryString,
     shareURL = 'https://twitter.com/intent/tweet?';
@@ -1266,6 +1306,8 @@ Global.Twitter.prototype = {
 }());
 /* Test: "../../spec/_src/src/XML/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     $child = util.$child,
     $$child = util.$$child,

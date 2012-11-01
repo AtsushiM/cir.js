@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/NumberImage/test.js" */
 (function() {
+'use strict';
+
 Global.NumberImage = function(config) {
     config = config || {type: ''};
 

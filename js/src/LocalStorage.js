@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
 (function() {
+'use strict';
+
 var instance,
     win = Global.utility.win,
     storage = win.localStorage;

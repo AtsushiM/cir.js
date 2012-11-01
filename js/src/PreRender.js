@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     override = util.override,
     show = util.showElement,

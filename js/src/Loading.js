@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/Loading/test.js" */
 (function() {
+'use strict';
+
 var win = Global.utility.win;
 
 Global.Loading = function(config) {

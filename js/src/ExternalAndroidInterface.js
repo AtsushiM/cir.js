@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/ExternalAndroidInterface/test.js" */
 (function() {
+'use strict';
+
 var instanse;
 
 Global.ExternalAndroidInterface = function(config) {

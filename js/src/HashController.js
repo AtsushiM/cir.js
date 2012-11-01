@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/HashController/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     cast = util.typeCast;
 

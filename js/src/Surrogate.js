@@ -1,4 +1,7 @@
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
+(function() {
+'use strict';
+
 Global.Surrogate = function(config) {
     this.delay = config.delay;
     this.callback = config.callback;
@@ -20,3 +23,4 @@ Global.Surrogate.prototype = {
         clearInterval(this.waitid);
     }
 };
+}());

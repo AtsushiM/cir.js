@@ -1,4 +1,7 @@
 /* Test: "../../spec/_src/CanvasRender/test.js" */
+(function() {
+'use strict';
+
 Global.CanvasRender = function(config) {
     this.canvas = config.canvas;
     this.ctx = this.canvas.getContext('2d');
@@ -25,3 +28,4 @@ Global.CanvasRender.prototype = {
         }
     }
 };
+}());

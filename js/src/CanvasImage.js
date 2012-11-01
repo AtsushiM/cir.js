@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/CanvasImage/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     create = util.createElement;
 

@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     makeQuery = util.makeQueryString,
     shareURL = 'https://twitter.com/intent/tweet?';

@@ -1,4 +1,7 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
+(function() {
+'use strict';
+
 Global.Ajax = function() {
     this.xhr = new XMLHttpRequest();
 };
@@ -34,3 +37,4 @@ Global.Ajax.prototype = {
         this.xhr.abort();
     }
 };
+}());

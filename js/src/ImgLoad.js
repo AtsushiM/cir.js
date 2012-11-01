@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     create = util.createElement,
     nullfunc = function() {};

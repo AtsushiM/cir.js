@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
 (function() {
+'use strict';
+
 var instance;
 
 Global.Observer = function(config) {
-    'use strict';
-
     config = config || {single: false};
 
     // singleton

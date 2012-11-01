@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 (function() {
+'use strict';
+
 var util = Global.utility,
     makeQuery = util.makeQueryString,
     shareURL = 'https://www.facebook.com/dialog/feed?';

@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 (function() {
+'use strict';
+
 var instance;
 
 Global.DataStore = function(config) {
-    'use strict';
-
     config = config || {single: false};
 
     // singleton
