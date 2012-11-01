@@ -4,39 +4,41 @@
 
 var instanse;
 
-Global.ExternalAndroidInterface = function(config) {
-    config = config || {};
+Global.ExternalAndroidInterface = Global.klass({
+    constructor: function(config) {
+        config = config || {};
 
-    if (config.single && instanse) {
-        return instanse;
-    }
+        if (config.single && instanse) {
+            return instanse;
+        }
 
-    this.android = config.android;
-    this.externalObj = config.externalObj;
-    this.hashCtrl = new Global.HashController();
+        this.android = config.android;
+        this.externalObj = config.externalObj;
+        this.hashCtrl = new Global.HashController();
 
-    if (!this.externalObj) {
-        Global.EXTERNAL_ANDROID = {};
-        this.externalObj = Global.EXTERNAL_ANDROID;
-    }
+        if (!this.externalObj) {
+            Global.EXTERNAL_ANDROID = {};
+            this.externalObj = Global.EXTERNAL_ANDROID;
+        }
 
-    if (config.single) {
-        instanse = this;
-    }
-};
-Global.ExternalAndroidInterface.prototype = {
-    'call': function(conf) {
-        this.android[conf.mode](this.hashCtrl.makeHash(conf));
+        if (config.single) {
+            instanse = this;
+        }
     },
-    'addCallback': function(name, func) {
-        var mine = this;
-        mine.externalObj[name] = function(vars) {
-            var objs = mine.hashCtrl.parseHash(vars);
-            return func(objs.vars);
-        };
-    },
-    'removeCallback': function(name) {
-        delete this.externalObj[name];
+    method: {
+        'call': function(conf) {
+            this.android[conf.mode](this.hashCtrl.makeHash(conf));
+        },
+        'addCallback': function(name, func) {
+            var mine = this;
+            mine.externalObj[name] = function(vars) {
+                var objs = mine.hashCtrl.parseHash(vars);
+                return func(objs.vars);
+            };
+        },
+        'removeCallback': function(name) {
+            delete this.externalObj[name];
+        }
     }
-};
+});
 }());

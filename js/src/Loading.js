@@ -4,14 +4,16 @@
 
 var win = Global.utility.win;
 
-Global.Loading = function(config) {
-    if (config && config.onload) {
-        this.onload(config.onload);
+Global.Loading = Global.klass({
+    constructor: function(config) {
+        if (config && config.onload) {
+            this.onload(config.onload);
+        }
+    },
+    method: {
+        onload: function(func) {
+            win.addEventListener('load', func);
+        }
     }
-};
-Global.Loading.prototype = {
-    onload: function(func) {
-        win.addEventListener('load', func);
-    }
-};
+});
 }());

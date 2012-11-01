@@ -2,25 +2,27 @@
 (function() {
 'use strict';
 
-Global.Surrogate = function(config) {
-    this.delay = config.delay;
-    this.callback = config.callback;
-    this.args = null;
-    this.waitid = null;
-};
-Global.Surrogate.prototype = {
-    request: function(arg) {
-        this.args = arg;
-        this.clear();
-        this.waitid = setTimeout(this.flush, this.delay, this);
+Global.Surrogate = Global.klass({
+    constructor: function(config) {
+        this.delay = config.delay;
+        this.callback = config.callback;
+        this.args = null;
+        this.waitid = null;
     },
-    flush: function(mine) {
-        mine = mine || this;
+    method: {
+        request: function(arg) {
+            this.args = arg;
+            this.clear();
+            this.waitid = setTimeout(this.flush, this.delay, this);
+        },
+        flush: function(mine) {
+            mine = mine || this;
 
-        mine.callback(mine.args);
-    },
-    clear: function() {
-        clearInterval(this.waitid);
+            mine.callback(mine.args);
+        },
+        clear: function() {
+            clearInterval(this.waitid);
+        }
     }
-};
+});
 }());

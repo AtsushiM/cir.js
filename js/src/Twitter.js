@@ -6,24 +6,26 @@ var util = Global.utility,
     makeQuery = util.makeQueryString,
     shareURL = 'https://twitter.com/intent/tweet?';
 
-Global.Twitter = function(config) {};
-Global.Twitter.prototype = {
-    getShareURL: function(vars) {
-        var redirect_uri = vars.redirect_uri,
-            caption = vars.caption || '',
-            name = vars.name || '',
-            hash = vars.hash || '',
-            url = shareURL;
+Global.Twitter = Global.klass({
+    constructor: function() {},
+    method: {
+        getShareURL: function(vars) {
+            var redirect_uri = vars.redirect_uri,
+                caption = vars.caption || '',
+                name = vars.name || '',
+                hash = vars.hash || '',
+                url = shareURL;
 
-        name = name ? ' 「' + name + '」' : '';
-        hash = hash ? ' ' + hash : '';
+            name = name ? ' 「' + name + '」' : '';
+            hash = hash ? ' ' + hash : '';
 
-        url += makeQuery({
-            'url': redirect_uri,
-            'text': caption + name + hash
-        });
+            url += makeQuery({
+                'url': redirect_uri,
+                'text': caption + name + hash
+            });
 
-        return url;
+            return url;
+        }
     }
-};
+});
 }());

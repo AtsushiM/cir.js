@@ -18,56 +18,58 @@ var instance,
             //       };
     }());
 
-Global.FPS = function(config) {
-    config = override({
-        single: false,
-        criterion: 20
-    }, config);
+Global.FPS = Global.klass({
+    constructor: function(config) {
+        config = override({
+            single: false,
+            criterion: 20
+        }, config);
 
-    // singleton
-    if (config.single && instance) {
-        return instance;
-    }
+        // singleton
+        if (config.single && instance) {
+            return instance;
+        }
 
-    this.criterion = config.criterion,
-    this.surver = this.criterion,
-    this.enterframe = config.enterframe,
-    this.msecFrame = getFrame(this.criterion),
-    this.prevtime =
-    this.nowtime =
-    this.nexttime =
-    this.loopid = 0;
-
-    if (config.single) {
-        instance = this;
-    }
-};
-Global.FPS.prototype = {
-    getCriterion: function() {
-        return this.criterion;
-    },
-    getSurver: function() {
-        return this.surver;
-    },
-    getFrameTime: function() {
-        return this.msecFrame;
-    },
-    enter: function() {
-        this.enterframe({
-            criterion: this.criterion,
-            surver: this.surver
-        });
-    },
-    start: function() {
-        this.prevtime = Date.now();
-        this.nexttime = this.prevtime + this.msecFrame;
-        loop(this);
-    },
-    stop: function() {
-        clearInterval(this.loopid);
+        this.criterion = config.criterion,
+        this.surver = this.criterion,
+        this.enterframe = config.enterframe,
+        this.msecFrame = getFrame(this.criterion),
+        this.prevtime =
+        this.nowtime =
+        this.nexttime =
         this.loopid = 0;
+
+        if (config.single) {
+            instance = this;
+        }
+    },
+    method: {
+        getCriterion: function() {
+            return this.criterion;
+        },
+        getSurver: function() {
+            return this.surver;
+        },
+        getFrameTime: function() {
+            return this.msecFrame;
+        },
+        enter: function() {
+            this.enterframe({
+                criterion: this.criterion,
+                surver: this.surver
+            });
+        },
+        start: function() {
+            this.prevtime = Date.now();
+            this.nexttime = this.prevtime + this.msecFrame;
+            loop(this);
+        },
+        stop: function() {
+            clearInterval(this.loopid);
+            this.loopid = 0;
+        }
     }
-};
+});
 function animationFrame(mine) {
     if (mine.nexttime <= Date.now()) {
         _loop(mine);

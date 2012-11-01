@@ -7,34 +7,37 @@ var util = Global.utility,
     show = util.showElement,
     hide = util.hideElement;
 
-Global.PreRender = function(config) {
-    config = override({
-        elements: [],
-        guesslimit: 30,
-        looptime: 100,
-        loopblur: 20,
-        onrendered: function() {}
-    }, config);
+Global.PreRender = Global.klass({
+    constructor: function(config) {
+        config = override({
+            elements: [],
+            guesslimit: 30,
+            looptime: 100,
+            loopblur: 20,
+            onrendered: function() {}
+        }, config);
 
-    this.elements = config.elements;
-    this.guesslimit = config.guesslimit;
-    this.onrendered = config.onrendered;
-    this.looptime = config.looptime;
-    this.loopblur = this.looptime + config.loopblur;
-    this.loopid = null;
-    this.prevtime = null;
-};
-Global.PreRender.prototype = {
-    start: function() {
-        var i;
+        this.elements = config.elements;
+        this.guesslimit = config.guesslimit;
+        this.onrendered = config.onrendered;
+        this.looptime = config.looptime;
+        this.loopblur = this.looptime + config.loopblur;
+        this.loopid = null;
+        this.prevtime = null;
+    },
+    method: {
+        start: function() {
+            var i;
 
-        for (i = this.elements.length; i--;) {
-            show(this.elements[i]);
+            for (i = this.elements.length; i--;) {
+                show(this.elements[i]);
+            }
+            this.prevtime = Date.now();
+            this.loopid = setInterval(check, this.looptime, this);
         }
-        this.prevtime = Date.now();
-        this.loopid = setInterval(check, this.looptime, this);
     }
-};
+});
+
 function check(mine) {
     var gettime = Date.now(),
         difftime = gettime - mine.prevtime;

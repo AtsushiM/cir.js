@@ -30,15 +30,23 @@ describe('Mobileは', function() {
         expect(mb.isWindows('PC')).toBeFalsy();
     });
 
+    it('isFBAPP()でFacebookアプリかどうかチェック', function() {
+        expect(mb.isFBAPP()).toBeFalsy();
+        expect(mb.isFBAPP('FBAN')).toBeTruthy();
+        expect(mb.isFBAPP('fban')).toBeFalsy();
+    });
+
     it('isMobile()でモバイル端末かどうかチェック', function() {
         spyOn(mb, 'isAndroid').andCallThrough();
         spyOn(mb, 'isIOS').andCallThrough();
         spyOn(mb, 'isWindows').andCallThrough();
+        spyOn(mb, 'isFBAPP').andCallThrough();
 
         expect(mb.isMobile()).toBeFalsy();
         expect(mb.isAndroid).toHaveBeenCalled();
         expect(mb.isIOS).toHaveBeenCalled();
         expect(mb.isWindows).toHaveBeenCalled();
+        expect(mb.isFBAPP).toHaveBeenCalled();
     });
 
     it('hideAddress()でアドレスバーを非表示にする', function() {
