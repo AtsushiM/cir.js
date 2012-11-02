@@ -18,22 +18,22 @@ describe('Throttleは', function() {
         retarg = null;
     });
 
-    it('request(arg)でcallback関数をスロットル実行する', function() {
-        throttle.request(0);
-        throttle.request(1);
+    it('exec(arg)でcallback関数をスロットル実行する', function() {
+        throttle.exec(0);
+        throttle.exec(1);
 
         expect(retarg).toEqual(0);
 
         waits(150);
         runs(function() {
-            throttle.request(2);
+            throttle.exec(2);
             expect(retarg).toEqual(2);
         });
     });
 
     it('lock()で強制的にcallback関数をロックする', function() {
         throttle.lock();
-        throttle.request(0);
+        throttle.exec(0);
 
         expect(retarg).toEqual(null);
     });
@@ -42,12 +42,12 @@ describe('Throttleは', function() {
         throttle.lock();
         throttle.unlock();
 
-        throttle.request(0);
+        throttle.exec(0);
 
         expect(retarg).toEqual(0);
 
         throttle.unlock();
-        throttle.request(1);
+        throttle.exec(1);
 
         expect(retarg).toEqual(1);
     });

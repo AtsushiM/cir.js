@@ -10,7 +10,7 @@ Global.Throttle = Global.klass({
         this.waitid = null;
     },
     method: {
-        request: function(vars) {
+        exec: function(vars) {
             if (this.locked) {
                 return false;
             }
