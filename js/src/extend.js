@@ -1,20 +1,27 @@
 /* Test: "../../spec/_src/src/extend/test.js" */
-(function () {
-'use strict';
-
 Global.extend = function(child, _super) {
-    function ctor() { this.constructor = child; }
+    'use strict';
+
+    function ctor() {
+        this.constructor = child;
+    }
+
     ctor.prototype = _super.prototype;
     child.prototype = new ctor();
-    child.prototype._superclass = _super;
-    child.prototype._super = function() {
-        if (this._prevctor) {
-            this._prevctor = this._prevctor.prototype._superclass;
+
+    var cpt = child.prototype;
+
+    cpt._superclass = _super;
+    cpt._super = function() {
+        var prev = this._prevctor;
+
+        if (prev) {
+            prev = prev.prototype._superclass;
         }
         else {
-            this._prevctor = _super;
+            prev = this._prevctor = _super;
         }
-        this._prevctor.apply(this, arguments);
+
+        prev.apply(this, arguments);
     };
-}
-}());
+};
