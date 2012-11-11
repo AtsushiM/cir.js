@@ -1,15 +1,12 @@
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-(function() {
-'use strict';
-
 Global.Throttle = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         this.waittime = config.waittime;
         this.callback = config.callback;
         this.locked = false;
         this.waitid = null;
     },
-    method: {
+    methods: {
         exec: function(vars) {
             if (this.locked) {
                 return false;
@@ -30,4 +27,3 @@ Global.Throttle = Global.klass({
         }
     }
 });
-}());

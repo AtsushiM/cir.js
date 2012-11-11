@@ -47,8 +47,8 @@ describe('utilityは', function() {
         expect(id).toBeDefined();
     });
 
-    it('scrollTop()でスクロールをトップから1pxまで移動する', function() {
-        util.scrollTop();
+    it('pageTop()でスクロールをトップから1pxまで移動する', function() {
+        util.pageTop();
         expect(0).toEqual(0);
     });
 
@@ -67,8 +67,8 @@ describe('utilityは', function() {
         util.offEvent(window, 'load', func);
     });
 
-    it('createElement(tagname)でタグを生成する', function() {
-        var $div = util.createElement('div');
+    it('makeElement(tagname)でタグを生成する', function() {
+        var $div = util.makeElement('div');
 
         expect($div.style.display).toEqual('');
     });

@@ -1,12 +1,12 @@
 /* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
-'use strice';
+'use strict';
 
 var xhr,
     isLoaded = false;
 
 Global.ServerMeta = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {};
 
         var callback = config.callback || function() {};
@@ -21,7 +21,7 @@ Global.ServerMeta = Global.klass({
             callback(xhr);
         }
     },
-    method: {
+    methods: {
         date: function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
@@ -72,5 +72,3 @@ function getHeader(callback) {
     return xhr;
 }
 }());
-
-var a = new Global.ServerMeta();

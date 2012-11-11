@@ -7,7 +7,7 @@ var instance,
     storage = win.localStorage;
 
 Global.LocalStorage = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {single: false};
 
         // singleton
@@ -19,12 +19,12 @@ Global.LocalStorage = Global.klass({
             instance = this;
         }
     },
-    method: {
-        setData: function(key, val) {
+    methods: {
+        set: function(key, val) {
             storage.setItem(key, JSON.stringify(val));
             return true;
         },
-        getData: function(key) {
+        get: function(key) {
             if (key) {
                 return JSON.parse(storage.getItem(key));
             }
@@ -38,7 +38,7 @@ Global.LocalStorage = Global.klass({
 
             return ret;
         },
-        removeData: function(key) {
+        remove: function(key) {
             if (!storage.getItem(key)) {
                 return false;
             }
@@ -47,7 +47,7 @@ Global.LocalStorage = Global.klass({
 
             return true;
         },
-        resetData: function() {
+        reset: function() {
             storage.clear();
 
             return true;

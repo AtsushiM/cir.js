@@ -3,7 +3,7 @@ Global.extend = function(child, _super) {
     'use strict';
 
     function ctor() {
-        this.constructor = child;
+        this.init = child;
     }
 
     ctor.prototype = _super.prototype;

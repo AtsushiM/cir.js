@@ -1,15 +1,15 @@
 /* Class: "../../../../js/src/klass.js" */
 describe('klassは', function() {
     var _super = Global.klass({
-            constructor: function() {},
-            method: {
+            init: function() {},
+            methods: {
                 test1: function() {},
             }
         }),
         klass = Global.klass({
             extend: _super,
-            constructor: function() {},
-            method: {
+            init: function() {},
+            methods: {
                 test2: function() {},
                 test3: function() {}
             }

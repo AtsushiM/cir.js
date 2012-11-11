@@ -4,15 +4,15 @@ Global.klass = function(config) {
 
     var util = Global.utility,
         override = util.override,
-        constructor = config.constructor,
-        method = config.method,
+        init = config.init,
+        methods = config.methods,
         extend = config.extend;
 
     if (extend) {
-        Global.extend(constructor, extend);
+        Global.extend(init, extend);
     }
 
-    override(constructor.prototype, method);
+    override(init.prototype, methods);
 
-    return constructor;
+    return init;
 };

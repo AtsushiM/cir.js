@@ -7,7 +7,7 @@ var util = Global.utility,
     instanse;
 
 Global.ExternalIOSInterface = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {};
 
         if (config.single && instanse) {
@@ -21,7 +21,7 @@ Global.ExternalIOSInterface = Global.klass({
             instanse = this;
         }
     },
-    method: {
+    methods: {
         call: function(conf) {
             this.hashCtrl.setHash(conf);
         },

@@ -6,7 +6,7 @@ var instance,
     override = Global.utility.override;
 
 Global.Event = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = override({
             single: false,
             isMobile: function() {

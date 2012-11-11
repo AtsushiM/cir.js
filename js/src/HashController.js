@@ -6,8 +6,8 @@ var util = Global.utility,
     cast = util.typeCast;
 
 Global.HashController = Global.klass({
-    constructor: function() {},
-    method: {
+    init: function() {},
+    methods: {
         makeHash: function(conf) {
             var hash = '#' + conf.mode,
                 vars = conf.vars,

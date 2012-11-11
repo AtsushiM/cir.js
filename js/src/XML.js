@@ -5,18 +5,18 @@
 var util = Global.utility,
     $child = util.$child,
     $$child = util.$$child,
-    create = util.createElement;
+    make = util.makeElement;
 
 Global.XML = Global.klass({
-    constructor: function(config) {
-        this.element = create('div');
+    init: function(config) {
+        this.element = make('div');
         this.data = {};
 
         if (config && config.data) {
             this.setData(config.data);
         }
     },
-    method: {
+    methods: {
         getData: function() {
             return this.data;
         },

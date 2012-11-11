@@ -1,15 +1,12 @@
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-(function() {
-'use strict';
-
 Global.Surrogate = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         this.delay = config.delay;
         this.callback = config.callback;
         this.args = null;
         this.waitid = null;
     },
-    method: {
+    methods: {
         request: function(arg) {
             this.args = arg;
             this.clear();
@@ -25,4 +22,3 @@ Global.Surrogate = Global.klass({
         }
     }
 });
-}());

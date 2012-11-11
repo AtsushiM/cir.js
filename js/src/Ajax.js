@@ -1,12 +1,9 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-(function() {
-'use strict';
-
 Global.Ajax = Global.klass({
-    constructor: function() {
+    init: function() {
         this.xhr = new XMLHttpRequest();
     },
-    method: {
+    methods: {
         request: function(vars) {
             var url = vars.url,
                 callback = vars.callback,
@@ -39,4 +36,3 @@ Global.Ajax = Global.klass({
         }
     }
 });
-}());

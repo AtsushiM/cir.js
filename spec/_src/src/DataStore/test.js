@@ -6,7 +6,7 @@ describe('DataStoreは', function() {
         store = new Global.DataStore();
     });
     afterEach(function() {
-        store.resetData();
+        store.reset();
     });
 
     it('singleオプションでsingletonになる', function() {
@@ -24,46 +24,46 @@ describe('DataStoreは', function() {
         expect(store1).not.toBe(store3);
     });
 
-    it('setData(key, val)でデータを保存する', function() {
-        store.setData('test', 'test');
+    it('set(key, val)でデータを保存する', function() {
+        store.set('test', 'test');
 
-        expect(store.getData('test')).toEqual('test');
+        expect(store.get('test')).toEqual('test');
     });
 
-    it('getData(key)でデータを取得する', function() {
-        store.setData('test', 'test');
+    it('get(key)でデータを取得する', function() {
+        store.set('test', 'test');
 
-        expect(store.getData('test')).toEqual('test');
+        expect(store.get('test')).toEqual('test');
     });
 
-    it('getData()で全データを取得する', function() {
-        expect(store.getData()).toEqual({});
-        store.setData('test', 'test');
-        expect(store.getData()).toEqual({test: 'test'});
+    it('get()で全データを取得する', function() {
+        expect(store.get()).toEqual({});
+        store.set('test', 'test');
+        expect(store.get()).toEqual({test: 'test'});
     });
 
-    it('removeData(key)でデータを削除する', function() {
-        store.setData('test1', 'test1');
-        store.setData('test2', 'test2');
-        store.removeData('test1');
+    it('remove(key)でデータを削除する', function() {
+        store.set('test1', 'test1');
+        store.set('test2', 'test2');
+        store.remove('test1');
 
-        expect(store.getData()).toEqual({test2: 'test2'});
+        expect(store.get()).toEqual({test2: 'test2'});
     });
 
-    it('resetData()で全データを削除する', function() {
-        store.setData('test1', 'test');
-        store.setData('test2', 'test');
-        store.setData('test3', 'test');
+    it('reset()で全データを削除する', function() {
+        store.set('test1', 'test');
+        store.set('test2', 'test');
+        store.set('test3', 'test');
 
-        expect(store.getData('test1')).toEqual('test');
-        expect(store.getData('test2')).toEqual('test');
-        expect(store.getData('test3')).toEqual('test');
+        expect(store.get('test1')).toEqual('test');
+        expect(store.get('test2')).toEqual('test');
+        expect(store.get('test3')).toEqual('test');
 
-        store.resetData();
+        store.reset();
 
-        expect(store.getData('test1')).not.toBeDefined();
-        expect(store.getData('test2')).not.toBeDefined();
-        expect(store.getData('test3')).not.toBeDefined();
+        expect(store.get('test1')).not.toBeDefined();
+        expect(store.get('test2')).not.toBeDefined();
+        expect(store.get('test3')).not.toBeDefined();
     });
 });
 /*

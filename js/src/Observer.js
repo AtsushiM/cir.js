@@ -5,7 +5,7 @@
 var instance;
 
 Global.Observer = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {single: false};
 
         // singleton
@@ -19,7 +19,7 @@ Global.Observer = Global.klass({
             instance = this;
         }
     },
-    method: {
+    methods: {
         getObserved: function() {
             return this.observed;
         },

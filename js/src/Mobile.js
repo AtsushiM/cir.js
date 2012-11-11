@@ -7,12 +7,12 @@ var util = Global.utility,
     doc = util.doc,
     onEvent = util.onEvent,
     offEvent = util.offEvent,
-    scrollTop = util.scrollTop,
+    pageTop = util.pageTop,
     userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
-    constructor: function() {},
-    method: {
+    init: function() {},
+    methods: {
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -34,11 +34,11 @@ Global.Mobile = Global.klass({
             );
         },
         killScroll: function() {
-            scrollTop();
+            pageTop();
             onEvent(doc, 'touchmove', preventDefault);
         },
         revivalScroll: function() {
-            scrollTop();
+            pageTop();
             offEvent(doc, 'touchmove', preventDefault);
         },
         hideAddress: function() {
@@ -121,7 +121,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        scrollTop();
+        pageTop();
     }
 }
 function hideAddressHandler() {

@@ -12,10 +12,10 @@ describe('LocalStorageは', function() {
         LS.clear();
     });
 
-    it('setData(key, value)でデータをlocalStorageにデータを保存する', function() {
-        storage.setData('test1', 1);
-        storage.setData('test2', 'test');
-        storage.setData('test3', {
+    it('set(key, value)でデータをlocalStorageにデータを保存する', function() {
+        storage.set('test1', 1);
+        storage.set('test2', 'test');
+        storage.set('test3', {
             test: 'test'
         });
 
@@ -24,16 +24,16 @@ describe('LocalStorageは', function() {
         expect(LS.test3).toEqual('{"test":"test"}');
     });
 
-    it('getData(key)でlocalStorageからデータを取得する', function() {
-        storage.setData('test1', 1);
-        storage.setData('test2', 'test');
-        storage.setData('test3', {
+    it('get(key)でlocalStorageからデータを取得する', function() {
+        storage.set('test1', 1);
+        storage.set('test2', 'test');
+        storage.set('test3', {
             test: 'test'
         });
 
-        var test1 = storage.getData('test1'),
-            test2 = storage.getData('test2'),
-            test3 = storage.getData('test3');
+        var test1 = storage.get('test1'),
+            test2 = storage.get('test2'),
+            test3 = storage.get('test3');
 
         expect(test1).toEqual(1);
         expect(test2).toEqual('test');
@@ -42,14 +42,14 @@ describe('LocalStorageは', function() {
         });
     });
 
-    it('getData()でlocalStorageから全データを取得する', function() {
-        storage.setData('test1', 1);
-        storage.setData('test2', 'test');
-        storage.setData('test3', {
+    it('get()でlocalStorageから全データを取得する', function() {
+        storage.set('test1', 1);
+        storage.set('test2', 'test');
+        storage.set('test3', {
             test: 'test'
         });
 
-        var test = storage.getData();
+        var test = storage.get();
 
         expect(test).toEqual({
             test1: 1,
@@ -60,22 +60,22 @@ describe('LocalStorageは', function() {
         });
     });
 
-    it('removeData(key)でlocalStorageからデータを削除する', function() {
-        storage.setData('test1', 1);
-        storage.setData('test2', 'test');
-        storage.removeData('test1');
+    it('remove(key)でlocalStorageからデータを削除する', function() {
+        storage.set('test1', 1);
+        storage.set('test2', 'test');
+        storage.remove('test1');
 
-        expect(storage.getData('test1')).toBeNull();
-        expect(storage.getData('test2')).toBeDefined();
+        expect(storage.get('test1')).toBeNull();
+        expect(storage.get('test2')).toBeDefined();
     });
 
-    it('resetData(key)でlocalStorageから全データを削除する', function() {
-        storage.setData('test1', 1);
-        storage.setData('test2', 'test');
-        storage.resetData();
+    it('reset(key)でlocalStorageから全データを削除する', function() {
+        storage.set('test1', 1);
+        storage.set('test2', 'test');
+        storage.reset();
 
-        expect(storage.getData('test1')).toBeNull();
-        expect(storage.getData('test2')).toBeNull();
+        expect(storage.get('test1')).toBeNull();
+        expect(storage.get('test2')).toBeNull();
     });
 });
 /*

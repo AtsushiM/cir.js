@@ -7,8 +7,8 @@ var util = Global.utility,
     shareURL = 'https://www.facebook.com/dialog/feed?';
 
 Global.Facebook = Global.klass({
-    constructor: function() {},
-    method: {
+    init: function() {},
+    methods: {
         getShareURL: function(vars) {
             var app_id = vars.app_id,
                 redirect_uri = vars.redirect_uri,

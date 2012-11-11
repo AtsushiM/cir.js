@@ -3,12 +3,12 @@
 'use strict';
 
 Global.NumberImage = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {type: ''};
 
         this.type = config.type;
     },
-    method: {
+    methods: {
         make: function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',

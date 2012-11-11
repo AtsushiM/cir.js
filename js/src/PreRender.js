@@ -8,7 +8,7 @@ var util = Global.utility,
     hide = util.hideElement;
 
 Global.PreRender = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = override({
             elements: [],
             guesslimit: 30,
@@ -25,7 +25,7 @@ Global.PreRender = Global.klass({
         this.loopid = null;
         this.prevtime = null;
     },
-    method: {
+    methods: {
         start: function() {
             var i;
 

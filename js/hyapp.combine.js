@@ -24,7 +24,7 @@ Global.utility = {
     $id: function(id) {
         return doc.getElementById(id);
     },
-    scrollTop: function() {
+    pageTop: function() {
         win.scrollTo(0, 1);
     },
     onEvent: function(element, eventname, handler) {
@@ -33,7 +33,7 @@ Global.utility = {
     offEvent: function(element, eventname, handler) {
         element.removeEventListener(eventname, handler);
     },
-    createElement: function(tagname) {
+    makeElement: function(tagname) {
         return doc.createElement(tagname);
     },
     showElement: function(element) {
@@ -133,24 +133,24 @@ Global.klass = function(config) {
 
     var util = Global.utility,
         override = util.override,
-        constructor = config.constructor,
-        method = config.method,
+        init = config.init,
+        methods = config.methods,
         extend = config.extend;
 
     if (extend) {
-        Global.extend(constructor, extend);
+        Global.extend(init, extend);
     }
 
-    override(constructor.prototype, method);
+    override(init.prototype, methods);
 
-    return constructor;
+    return init;
 };
 /* Test: "../../spec/_src/src/extend/test.js" */
 Global.extend = function(child, _super) {
     'use strict';
 
     function ctor() {
-        this.constructor = child;
+        this.init = child;
     }
 
     ctor.prototype = _super.prototype;
@@ -173,14 +173,11 @@ Global.extend = function(child, _super) {
     };
 };
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-(function() {
-'use strict';
-
 Global.Ajax = Global.klass({
-    constructor: function() {
+    init: function() {
         this.xhr = new XMLHttpRequest();
     },
-    method: {
+    methods: {
         request: function(vars) {
             var url = vars.url,
                 callback = vars.callback,
@@ -213,17 +210,16 @@ Global.Ajax = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/CanvasImage/test.js" */
 (function() {
 'use strict';
 
 var util = Global.utility,
-    create = util.createElement;
+    make = util.makeElement;
 
 Global.CanvasImage = function(config) {
-    var canv = create('canvas'),
-        img = create('img'),
+    var canv = make('canvas'),
+        img = make('img'),
         src = config.src,
         width = config.width,
         height = config.height,
@@ -242,11 +238,8 @@ Global.CanvasImage = function(config) {
 };
 }());
 /* Test: "../../spec/_src/CanvasRender/test.js" */
-(function() {
-'use strict';
-
 Global.CanvasRender = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         this.canvas = config.canvas;
         this.ctx = this.canvas.getContext('2d');
         this.canvasWidth = this.canvas.width;
@@ -254,7 +247,7 @@ Global.CanvasRender = Global.klass({
 
         this.setSize(config);
     },
-    method: {
+    methods: {
         setSize: function(vars) {
             if (vars.width) {
                 this.canvas.width = this.canvasWidth = vars.width;
@@ -273,7 +266,6 @@ Global.CanvasRender = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 (function() {
 'use strict';
@@ -281,7 +273,7 @@ Global.CanvasRender = Global.klass({
 var instance;
 
 Global.DataStore = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {single: false};
 
         // singleton
@@ -295,12 +287,12 @@ Global.DataStore = Global.klass({
             instance = this;
         }
     },
-    method: {
-        setData: function(key, val) {
+    methods: {
+        set: function(key, val) {
             this.data[key] = val;
             return true;
         },
-        getData: function(key) {
+        get: function(key) {
             var data = this.data;
 
             if (key) {
@@ -316,7 +308,7 @@ Global.DataStore = Global.klass({
 
             return ret;
         },
-        removeData: function(key) {
+        remove: function(key) {
             var data = this.data;
 
             if (!data[key]) {
@@ -327,7 +319,7 @@ Global.DataStore = Global.klass({
 
             return true;
         },
-        resetData: function() {
+        reset: function() {
             this.data = {};
             return true;
         }
@@ -342,7 +334,7 @@ var instance,
     override = Global.utility.override;
 
 Global.Event = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = override({
             single: false,
             isMobile: function() {
@@ -419,7 +411,7 @@ Global.ExternalInterface = function(config) {
 var instanse;
 
 Global.ExternalAndroidInterface = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {};
 
         if (config.single && instanse) {
@@ -439,7 +431,7 @@ Global.ExternalAndroidInterface = Global.klass({
             instanse = this;
         }
     },
-    method: {
+    methods: {
         'call': function(conf) {
             this.android[conf.mode](this.hashCtrl.makeHash(conf));
         },
@@ -465,7 +457,7 @@ var util = Global.utility,
     instanse;
 
 Global.ExternalIOSInterface = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {};
 
         if (config.single && instanse) {
@@ -479,7 +471,7 @@ Global.ExternalIOSInterface = Global.klass({
             instanse = this;
         }
     },
-    method: {
+    methods: {
         call: function(conf) {
             this.hashCtrl.setHash(conf);
         },
@@ -512,8 +504,8 @@ var util = Global.utility,
     shareURL = 'https://www.facebook.com/dialog/feed?';
 
 Global.Facebook = Global.klass({
-    constructor: function() {},
-    method: {
+    init: function() {},
+    methods: {
         getShareURL: function(vars) {
             var app_id = vars.app_id,
                 redirect_uri = vars.redirect_uri,
@@ -560,7 +552,7 @@ var instance,
     }());
 
 Global.FPS = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = override({
             single: false,
             criterion: 20
@@ -584,7 +576,7 @@ Global.FPS = Global.klass({
             instance = this;
         }
     },
-    method: {
+    methods: {
         getCriterion: function() {
             return this.criterion;
         },
@@ -651,8 +643,8 @@ var util = Global.utility,
     cast = util.typeCast;
 
 Global.HashController = Global.klass({
-    constructor: function() {},
-    method: {
+    init: function() {},
+    methods: {
         makeHash: function(conf) {
             var hash = '#' + conf.mode,
                 vars = conf.vars,
@@ -738,11 +730,11 @@ function typeCast(str) {
 'use strict';
 
 var util = Global.utility,
-    create = util.createElement,
+    make = util.makeElement,
     nullfunc = function() {};
 
 Global.ImgLoad = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         var mine = this;
 
         mine.srcs = config.srcs,
@@ -763,13 +755,13 @@ Global.ImgLoad = Global.klass({
             }
         };
     },
-    method: {
+    methods: {
         start: function() {
             var img,
                 i, len;
 
             for (i = 0, len = this.srccount; i < len; i++) {
-                img = create('img');
+                img = make('img');
                 img.src = this.srcs[i];
                 img.onload = this.check;
 
@@ -789,12 +781,12 @@ Global.ImgLoad = Global.klass({
 var win = Global.utility.win;
 
 Global.Loading = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         if (config && config.onload) {
             this.onload(config.onload);
         }
     },
-    method: {
+    methods: {
         onload: function(func) {
             win.addEventListener('load', func);
         }
@@ -810,7 +802,7 @@ var instance,
     storage = win.localStorage;
 
 Global.LocalStorage = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {single: false};
 
         // singleton
@@ -822,12 +814,12 @@ Global.LocalStorage = Global.klass({
             instance = this;
         }
     },
-    method: {
-        setData: function(key, val) {
+    methods: {
+        set: function(key, val) {
             storage.setItem(key, JSON.stringify(val));
             return true;
         },
-        getData: function(key) {
+        get: function(key) {
             if (key) {
                 return JSON.parse(storage.getItem(key));
             }
@@ -841,7 +833,7 @@ Global.LocalStorage = Global.klass({
 
             return ret;
         },
-        removeData: function(key) {
+        remove: function(key) {
             if (!storage.getItem(key)) {
                 return false;
             }
@@ -850,7 +842,7 @@ Global.LocalStorage = Global.klass({
 
             return true;
         },
-        resetData: function() {
+        reset: function() {
             storage.clear();
 
             return true;
@@ -867,12 +859,12 @@ var util = Global.utility,
     doc = util.doc,
     onEvent = util.onEvent,
     offEvent = util.offEvent,
-    scrollTop = util.scrollTop,
+    pageTop = util.pageTop,
     userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
-    constructor: function() {},
-    method: {
+    init: function() {},
+    methods: {
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -894,11 +886,11 @@ Global.Mobile = Global.klass({
             );
         },
         killScroll: function() {
-            scrollTop();
+            pageTop();
             onEvent(doc, 'touchmove', preventDefault);
         },
         revivalScroll: function() {
-            scrollTop();
+            pageTop();
             offEvent(doc, 'touchmove', preventDefault);
         },
         hideAddress: function() {
@@ -981,7 +973,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        scrollTop();
+        pageTop();
     }
 }
 function hideAddressHandler() {
@@ -993,12 +985,12 @@ function hideAddressHandler() {
 'use strict';
 
 Global.NumberImage = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {type: ''};
 
         this.type = config.type;
     },
-    method: {
+    methods: {
         make: function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',
@@ -1024,7 +1016,7 @@ function make1Digit(x) {
 var instance;
 
 Global.Observer = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {single: false};
 
         // singleton
@@ -1038,7 +1030,7 @@ Global.Observer = Global.klass({
             instance = this;
         }
     },
-    method: {
+    methods: {
         getObserved: function() {
             return this.observed;
         },
@@ -1135,7 +1127,7 @@ var util = Global.utility,
     hide = util.hideElement;
 
 Global.PreRender = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = override({
             elements: [],
             guesslimit: 30,
@@ -1152,7 +1144,7 @@ Global.PreRender = Global.klass({
         this.loopid = null;
         this.prevtime = null;
     },
-    method: {
+    methods: {
         start: function() {
             var i;
 
@@ -1188,13 +1180,13 @@ function check(mine) {
 }());
 /* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
-'use strice';
+'use strict';
 
 var xhr,
     isLoaded = false;
 
 Global.ServerMeta = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {};
 
         var callback = config.callback || function() {};
@@ -1209,7 +1201,7 @@ Global.ServerMeta = Global.klass({
             callback(xhr);
         }
     },
-    method: {
+    methods: {
         date: function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
@@ -1260,20 +1252,15 @@ function getHeader(callback) {
     return xhr;
 }
 }());
-
-var a = new Global.ServerMeta();
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-(function() {
-'use strict';
-
 Global.Surrogate = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         this.delay = config.delay;
         this.callback = config.callback;
         this.args = null;
         this.waitid = null;
     },
-    method: {
+    methods: {
         request: function(arg) {
             this.args = arg;
             this.clear();
@@ -1289,19 +1276,15 @@ Global.Surrogate = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-(function() {
-'use strict';
-
 Global.Throttle = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         this.waittime = config.waittime;
         this.callback = config.callback;
         this.locked = false;
         this.waitid = null;
     },
-    method: {
+    methods: {
         exec: function(vars) {
             if (this.locked) {
                 return false;
@@ -1322,7 +1305,6 @@ Global.Throttle = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/Timer/test.js" */
 Global.Timer = function(config) {
     'use strict';
@@ -1477,8 +1459,8 @@ var util = Global.utility,
     shareURL = 'https://twitter.com/intent/tweet?';
 
 Global.Twitter = Global.klass({
-    constructor: function() {},
-    method: {
+    init: function() {},
+    methods: {
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
                 caption = vars.caption || '',
@@ -1506,18 +1488,18 @@ Global.Twitter = Global.klass({
 var util = Global.utility,
     $child = util.$child,
     $$child = util.$$child,
-    create = util.createElement;
+    make = util.makeElement;
 
 Global.XML = Global.klass({
-    constructor: function(config) {
-        this.element = create('div');
+    init: function(config) {
+        this.element = make('div');
         this.data = {};
 
         if (config && config.data) {
             this.setData(config.data);
         }
     },
-    method: {
+    methods: {
         getData: function() {
             return this.data;
         },

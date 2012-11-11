@@ -3,11 +3,11 @@
 'use strict';
 
 var util = Global.utility,
-    create = util.createElement;
+    make = util.makeElement;
 
 Global.CanvasImage = function(config) {
-    var canv = create('canvas'),
-        img = create('img'),
+    var canv = make('canvas'),
+        img = make('img'),
         src = config.src,
         width = config.width,
         height = config.height,

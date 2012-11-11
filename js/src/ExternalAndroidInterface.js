@@ -5,7 +5,7 @@
 var instanse;
 
 Global.ExternalAndroidInterface = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {};
 
         if (config.single && instanse) {
@@ -25,7 +25,7 @@ Global.ExternalAndroidInterface = Global.klass({
             instanse = this;
         }
     },
-    method: {
+    methods: {
         'call': function(conf) {
             this.android[conf.mode](this.hashCtrl.makeHash(conf));
         },

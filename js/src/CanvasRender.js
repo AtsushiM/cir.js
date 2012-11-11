@@ -1,9 +1,6 @@
 /* Test: "../../spec/_src/CanvasRender/test.js" */
-(function() {
-'use strict';
-
 Global.CanvasRender = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         this.canvas = config.canvas;
         this.ctx = this.canvas.getContext('2d');
         this.canvasWidth = this.canvas.width;
@@ -11,7 +8,7 @@ Global.CanvasRender = Global.klass({
 
         this.setSize(config);
     },
-    method: {
+    methods: {
         setSize: function(vars) {
             if (vars.width) {
                 this.canvas.width = this.canvasWidth = vars.width;
@@ -30,4 +27,3 @@ Global.CanvasRender = Global.klass({
         }
     }
 });
-}());

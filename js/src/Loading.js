@@ -5,12 +5,12 @@
 var win = Global.utility.win;
 
 Global.Loading = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         if (config && config.onload) {
             this.onload(config.onload);
         }
     },
-    method: {
+    methods: {
         onload: function(func) {
             win.addEventListener('load', func);
         }

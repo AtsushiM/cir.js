@@ -5,7 +5,7 @@
 var instance;
 
 Global.DataStore = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = config || {single: false};
 
         // singleton
@@ -19,12 +19,12 @@ Global.DataStore = Global.klass({
             instance = this;
         }
     },
-    method: {
-        setData: function(key, val) {
+    methods: {
+        set: function(key, val) {
             this.data[key] = val;
             return true;
         },
-        getData: function(key) {
+        get: function(key) {
             var data = this.data;
 
             if (key) {
@@ -40,7 +40,7 @@ Global.DataStore = Global.klass({
 
             return ret;
         },
-        removeData: function(key) {
+        remove: function(key) {
             var data = this.data;
 
             if (!data[key]) {
@@ -51,7 +51,7 @@ Global.DataStore = Global.klass({
 
             return true;
         },
-        resetData: function() {
+        reset: function() {
             this.data = {};
             return true;
         }

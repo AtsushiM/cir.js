@@ -23,7 +23,7 @@ Global.utility = {
     $id: function(id) {
         return doc.getElementById(id);
     },
-    scrollTop: function() {
+    pageTop: function() {
         win.scrollTo(0, 1);
     },
     onEvent: function(element, eventname, handler) {
@@ -32,7 +32,7 @@ Global.utility = {
     offEvent: function(element, eventname, handler) {
         element.removeEventListener(eventname, handler);
     },
-    createElement: function(tagname) {
+    makeElement: function(tagname) {
         return doc.createElement(tagname);
     },
     showElement: function(element) {

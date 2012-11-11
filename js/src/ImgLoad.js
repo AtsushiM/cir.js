@@ -3,11 +3,11 @@
 'use strict';
 
 var util = Global.utility,
-    create = util.createElement,
+    make = util.makeElement,
     nullfunc = function() {};
 
 Global.ImgLoad = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         var mine = this;
 
         mine.srcs = config.srcs,
@@ -28,13 +28,13 @@ Global.ImgLoad = Global.klass({
             }
         };
     },
-    method: {
+    methods: {
         start: function() {
             var img,
                 i, len;
 
             for (i = 0, len = this.srccount; i < len; i++) {
-                img = create('img');
+                img = make('img');
                 img.src = this.srcs[i];
                 img.onload = this.check;
 

@@ -19,7 +19,7 @@ var instance,
     }());
 
 Global.FPS = Global.klass({
-    constructor: function(config) {
+    init: function(config) {
         config = override({
             single: false,
             criterion: 20
@@ -43,7 +43,7 @@ Global.FPS = Global.klass({
             instance = this;
         }
     },
-    method: {
+    methods: {
         getCriterion: function() {
             return this.criterion;
         },
