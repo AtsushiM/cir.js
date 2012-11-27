@@ -42,6 +42,9 @@ Global.utility = {
     hideElement: function(element) {
         setStyleDisplay(element, 'none');
     },
+    opacityElement: function(element, value) {
+        element.style.opacity = value;
+    },
     override: function(target, vars) {
         var i;
 
@@ -207,6 +210,14 @@ Global.Ajax = Global.klass({
         },
         abort: function() {
             this.xhr.abort();
+        },
+        getJSON: function(vars) {
+            this.request({
+                url: vars.url,
+                callback: function(data) {
+                    vars.callback(JSON.parse(data));
+                }
+            });
         }
     }
 });
@@ -274,7 +285,7 @@ var instance;
 
 Global.DataStore = Global.klass({
     init: function(config) {
-        config = config || {single: false};
+        config = config || {};
 
         // singleton
         if (config.single && instance) {
@@ -330,17 +341,11 @@ Global.DataStore = Global.klass({
 (function() {
 'use strict';
 
-var instance,
-    override = Global.utility.override;
+var instance;
 
 Global.Event = Global.klass({
     init: function(config) {
-        config = override({
-            single: false,
-            isMobile: function() {
-                return false;
-            }
-        }, config);
+        config = config || {};
 
         // singleton
         if (config.single && instance) {
@@ -362,7 +367,7 @@ Global.Event = Global.klass({
         this.switchmove = 'touchmove';
         this.switchup = 'touchend';
 
-        if (!config.isMobile()) {
+        if (!config.mobileMode) {
             this.switchclick = 'click';
             this.switchdown = 'mousedown';
             this.switchmove = 'mousemove';
@@ -537,7 +542,6 @@ Global.Facebook = Global.klass({
 
 var instance,
     util = Global.utility,
-    override = util.override,
     win = util.win,
     requestAnimationFrame = (function() {
         return win.requestAnimationFrame ||
@@ -553,10 +557,11 @@ var instance,
 
 Global.FPS = Global.klass({
     init: function(config) {
-        config = override({
-            single: false,
-            criterion: 20
-        }, config);
+        config = config || {};
+
+        if (!config.criterion) {
+            config.criterion = 20;
+        }
 
         // singleton
         if (config.single && instance) {
@@ -803,7 +808,7 @@ var instance,
 
 Global.LocalStorage = Global.klass({
     init: function(config) {
-        config = config || {single: false};
+        config = config || {};
 
         // singleton
         if (config.single && instance) {
@@ -885,12 +890,16 @@ Global.Mobile = Global.klass({
                 this.isFBAPP()
             );
         },
-        killScroll: function() {
-            pageTop();
+        killScroll: function(isNoTop) {
+            if (!isNoTop) {
+                pageTop();
+            }
             onEvent(doc, 'touchmove', preventDefault);
         },
-        revivalScroll: function() {
-            pageTop();
+        revivalScroll: function(isNoTop) {
+            if (!isNoTop) {
+                pageTop();
+            }
             offEvent(doc, 'touchmove', preventDefault);
         },
         hideAddress: function() {
@@ -1122,19 +1131,28 @@ Global.Observer = Global.klass({
 'use strict';
 
 var util = Global.utility,
-    override = util.override,
     show = util.showElement,
     hide = util.hideElement;
 
 Global.PreRender = Global.klass({
     init: function(config) {
-        config = override({
-            elements: [],
-            guesslimit: 30,
-            looptime: 100,
-            loopblur: 20,
-            onrendered: function() {}
-        }, config);
+        config = config || {};
+
+        if (!config.elements) {
+            config.elements = [];
+        }
+        if (!config.guesslimit) {
+            config.guesslimit = 30;
+        }
+        if (!config.looptime) {
+            config.looptime = 100;
+        }
+        if (!config.loopblur) {
+            config.loopblur = 20;
+        }
+        if (!config.onrendered) {
+            config.onrendered = function() {};
+        }
 
         this.elements = config.elements;
         this.guesslimit = config.guesslimit;

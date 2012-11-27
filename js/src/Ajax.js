@@ -33,6 +33,14 @@ Global.Ajax = Global.klass({
         },
         abort: function() {
             this.xhr.abort();
+        },
+        getJSON: function(vars) {
+            this.request({
+                url: vars.url,
+                callback: function(data) {
+                    vars.callback(JSON.parse(data));
+                }
+            });
         }
     }
 });

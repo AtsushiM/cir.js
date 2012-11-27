@@ -33,12 +33,16 @@ Global.Mobile = Global.klass({
                 this.isFBAPP()
             );
         },
-        killScroll: function() {
-            pageTop();
+        killScroll: function(isNoTop) {
+            if (!isNoTop) {
+                pageTop();
+            }
             onEvent(doc, 'touchmove', preventDefault);
         },
-        revivalScroll: function() {
-            pageTop();
+        revivalScroll: function(isNoTop) {
+            if (!isNoTop) {
+                pageTop();
+            }
             offEvent(doc, 'touchmove', preventDefault);
         },
         hideAddress: function() {

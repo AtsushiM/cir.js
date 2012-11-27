@@ -3,19 +3,28 @@
 'use strict';
 
 var util = Global.utility,
-    override = util.override,
     show = util.showElement,
     hide = util.hideElement;
 
 Global.PreRender = Global.klass({
     init: function(config) {
-        config = override({
-            elements: [],
-            guesslimit: 30,
-            looptime: 100,
-            loopblur: 20,
-            onrendered: function() {}
-        }, config);
+        config = config || {};
+
+        if (!config.elements) {
+            config.elements = [];
+        }
+        if (!config.guesslimit) {
+            config.guesslimit = 30;
+        }
+        if (!config.looptime) {
+            config.looptime = 100;
+        }
+        if (!config.loopblur) {
+            config.loopblur = 20;
+        }
+        if (!config.onrendered) {
+            config.onrendered = function() {};
+        }
 
         this.elements = config.elements;
         this.guesslimit = config.guesslimit;

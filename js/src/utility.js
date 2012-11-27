@@ -41,6 +41,9 @@ Global.utility = {
     hideElement: function(element) {
         setStyleDisplay(element, 'none');
     },
+    opacityElement: function(element, value) {
+        element.style.opacity = value;
+    },
     override: function(target, vars) {
         var i;
 

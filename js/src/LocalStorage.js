@@ -8,7 +8,7 @@ var instance,
 
 Global.LocalStorage = Global.klass({
     init: function(config) {
-        config = config || {single: false};
+        config = config || {};
 
         // singleton
         if (config.single && instance) {

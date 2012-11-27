@@ -2,17 +2,11 @@
 (function() {
 'use strict';
 
-var instance,
-    override = Global.utility.override;
+var instance;
 
 Global.Event = Global.klass({
     init: function(config) {
-        config = override({
-            single: false,
-            isMobile: function() {
-                return false;
-            }
-        }, config);
+        config = config || {};
 
         // singleton
         if (config.single && instance) {
@@ -34,7 +28,7 @@ Global.Event = Global.klass({
         this.switchmove = 'touchmove';
         this.switchup = 'touchend';
 
-        if (!config.isMobile()) {
+        if (!config.mobileMode) {
             this.switchclick = 'click';
             this.switchdown = 'mousedown';
             this.switchmove = 'mousemove';

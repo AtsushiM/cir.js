@@ -4,7 +4,6 @@
 
 var instance,
     util = Global.utility,
-    override = util.override,
     win = util.win,
     requestAnimationFrame = (function() {
         return win.requestAnimationFrame ||
@@ -20,10 +19,11 @@ var instance,
 
 Global.FPS = Global.klass({
     init: function(config) {
-        config = override({
-            single: false,
-            criterion: 20
-        }, config);
+        config = config || {};
+
+        if (!config.criterion) {
+            config.criterion = 20;
+        }
 
         // singleton
         if (config.single && instance) {
