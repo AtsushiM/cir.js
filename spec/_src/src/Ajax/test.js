@@ -25,6 +25,21 @@ describe('Ajaxは', function() {
         });
     });
 
+    it('getJSON({url, callback})で非同期でjsonを取得する', function() {
+        var data = '';
+        ajax.getJSON({
+            url: '/spec/common/test.json',
+            callback: function(d) {
+                data = d;
+            }
+        });
+
+        waits(500);
+        runs(function() {
+            expect(data).not.toEqual('');
+        });
+    });
+
     it('abort()で非同期通信を停止する', function() {
         var data = '';
         ajax.request({

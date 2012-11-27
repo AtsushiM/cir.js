@@ -73,6 +73,14 @@ describe('utilityは', function() {
         expect($div.style.display).toEqual('');
     });
 
+    it('showElement(element)で対象のelementのstyle.displayを"block"にする', function() {
+        var $body = util.$('body');
+
+        util.hideElement($body);
+        util.showElement($body);
+        expect($body.style.display).toEqual('block');
+    });
+
     it('hideElement(element)で対象のelementのstyle.displayを"none"にする', function() {
         var $body = util.$('body');
 
@@ -80,12 +88,13 @@ describe('utilityは', function() {
         expect($body.style.display).toEqual('none');
     });
 
-    it('showElement(element)で対象のelementのstyle.displayを"block"にする', function() {
+    it('opacityElement(element, value)で対象のelementのstyle.opacityをvalueにする', function() {
         var $body = util.$('body');
 
-        util.hideElement($body);
-        util.showElement($body);
-        expect($body.style.display).toEqual('block');
+        util.opacityElement($body, 0);
+        expect($body.style.opacity).toEqual('0');
+        util.opacityElement($body, 1);
+        expect($body.style.opacity).toEqual('1');
     });
 
     it('override(targetObj, varObj)でtargetObjにvarObjのプロパティを上書きする', function() {
