@@ -137,14 +137,14 @@ Global.klass = function(config) {
     var util = Global.utility,
         override = util.override,
         init = config.init,
-        methods = config.methods,
+        properties = config.properties,
         extend = config.extend;
 
     if (extend) {
         Global.extend(init, extend);
     }
 
-    override(init.prototype, methods);
+    override(init.prototype, properties);
 
     return init;
 };
@@ -180,39 +180,48 @@ Global.Ajax = Global.klass({
     init: function() {
         this.xhr = new XMLHttpRequest();
     },
-    methods: {
+    properties: {
+        utility: Global.utility,
         request: function(vars) {
             var url = vars.url,
                 callback = vars.callback,
+                type = vars.type || 'GET',
+                query = '',
                 xhr;
 
             if (!vars.cash) {
-                if (url.match(/\?/)) {
-                    url += '&';
-                }
-                else {
-                    url += '?';
+                if (!vars.query) {
+                    vars.query = {};
                 }
 
-                url += 'ajaxcash' + Date.now() + '=0';
+                vars.query['ajaxcash' + Date.now()] = '0';
+            }
+            if (vars.query) {
+                query = this.utility.makeQueryString(vars.query);
+                query = encodeURI(query);
             }
 
             this.xhr = new XMLHttpRequest();
             xhr = this.xhr;
 
-
             xhr.onload = function() {
                 callback(xhr.responseText);
             };
 
-            xhr.open('GET', url);
-            xhr.send(null);
+            xhr.open(type, url);
+
+            if (type === 'POST') {
+                xhr.setRequestHeader('Content-Type',
+                        'application/x-www-form-urlencoded');
+            }
+            xhr.send(query);
         },
         abort: function() {
             this.xhr.abort();
         },
         getJSON: function(vars) {
             this.request({
+                type: vars.type,
                 url: vars.url,
                 callback: function(data) {
                     vars.callback(JSON.parse(data));
@@ -258,7 +267,7 @@ Global.CanvasRender = Global.klass({
 
         this.setSize(config);
     },
-    methods: {
+    properties: {
         setSize: function(vars) {
             if (vars.width) {
                 this.canvas.width = this.canvasWidth = vars.width;
@@ -298,7 +307,7 @@ Global.DataStore = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         set: function(key, val) {
             this.data[key] = val;
             return true;
@@ -436,7 +445,7 @@ Global.ExternalAndroidInterface = Global.klass({
             instanse = this;
         }
     },
-    methods: {
+    properties: {
         'call': function(conf) {
             this.android[conf.mode](this.hashCtrl.makeHash(conf));
         },
@@ -476,7 +485,7 @@ Global.ExternalIOSInterface = Global.klass({
             instanse = this;
         }
     },
-    methods: {
+    properties: {
         call: function(conf) {
             this.hashCtrl.setHash(conf);
         },
@@ -510,7 +519,7 @@ var util = Global.utility,
 
 Global.Facebook = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         getShareURL: function(vars) {
             var app_id = vars.app_id,
                 redirect_uri = vars.redirect_uri,
@@ -581,7 +590,7 @@ Global.FPS = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         getCriterion: function() {
             return this.criterion;
         },
@@ -649,7 +658,7 @@ var util = Global.utility,
 
 Global.HashController = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         makeHash: function(conf) {
             var hash = '#' + conf.mode,
                 vars = conf.vars,
@@ -760,7 +769,7 @@ Global.ImgLoad = Global.klass({
             }
         };
     },
-    methods: {
+    properties: {
         start: function() {
             var img,
                 i, len;
@@ -791,7 +800,7 @@ Global.Loading = Global.klass({
             this.onload(config.onload);
         }
     },
-    methods: {
+    properties: {
         onload: function(func) {
             win.addEventListener('load', func);
         }
@@ -819,7 +828,7 @@ Global.LocalStorage = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         set: function(key, val) {
             storage.setItem(key, JSON.stringify(val));
             return true;
@@ -869,7 +878,7 @@ var util = Global.utility,
 
 Global.Mobile = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -999,7 +1008,7 @@ Global.NumberImage = Global.klass({
 
         this.type = config.type;
     },
-    methods: {
+    properties: {
         make: function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',
@@ -1039,7 +1048,7 @@ Global.Observer = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         getObserved: function() {
             return this.observed;
         },
@@ -1162,7 +1171,7 @@ Global.PreRender = Global.klass({
         this.loopid = null;
         this.prevtime = null;
     },
-    methods: {
+    properties: {
         start: function() {
             var i;
 
@@ -1219,7 +1228,7 @@ Global.ServerMeta = Global.klass({
             callback(xhr);
         }
     },
-    methods: {
+    properties: {
         date: function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
@@ -1278,7 +1287,7 @@ Global.Surrogate = Global.klass({
         this.args = null;
         this.waitid = null;
     },
-    methods: {
+    properties: {
         request: function(arg) {
             this.args = arg;
             this.clear();
@@ -1302,7 +1311,7 @@ Global.Throttle = Global.klass({
         this.locked = false;
         this.waitid = null;
     },
-    methods: {
+    properties: {
         exec: function(vars) {
             if (this.locked) {
                 return false;
@@ -1478,7 +1487,7 @@ var util = Global.utility,
 
 Global.Twitter = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
                 caption = vars.caption || '',
@@ -1517,7 +1526,7 @@ Global.XML = Global.klass({
             this.setData(config.data);
         }
     },
-    methods: {
+    properties: {
         getData: function() {
             return this.data;
         },

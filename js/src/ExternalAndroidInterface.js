@@ -25,7 +25,7 @@ Global.ExternalAndroidInterface = Global.klass({
             instanse = this;
         }
     },
-    methods: {
+    properties: {
         'call': function(conf) {
             this.android[conf.mode](this.hashCtrl.makeHash(conf));
         },

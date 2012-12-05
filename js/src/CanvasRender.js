@@ -8,7 +8,7 @@ Global.CanvasRender = Global.klass({
 
         this.setSize(config);
     },
-    methods: {
+    properties: {
         setSize: function(vars) {
             if (vars.width) {
                 this.canvas.width = this.canvasWidth = vars.width;

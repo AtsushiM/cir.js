@@ -43,7 +43,7 @@ Global.FPS = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         getCriterion: function() {
             return this.criterion;
         },

@@ -8,7 +8,7 @@ Global.NumberImage = Global.klass({
 
         this.type = config.type;
     },
-    methods: {
+    properties: {
         make: function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',

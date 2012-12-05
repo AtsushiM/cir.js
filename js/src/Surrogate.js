@@ -6,7 +6,7 @@ Global.Surrogate = Global.klass({
         this.args = null;
         this.waitid = null;
     },
-    methods: {
+    properties: {
         request: function(arg) {
             this.args = arg;
             this.clear();

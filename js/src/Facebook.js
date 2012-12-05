@@ -8,7 +8,7 @@ var util = Global.utility,
 
 Global.Facebook = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         getShareURL: function(vars) {
             var app_id = vars.app_id,
                 redirect_uri = vars.redirect_uri,

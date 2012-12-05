@@ -21,7 +21,7 @@ Global.ExternalIOSInterface = Global.klass({
             instanse = this;
         }
     },
-    methods: {
+    properties: {
         call: function(conf) {
             this.hashCtrl.setHash(conf);
         },

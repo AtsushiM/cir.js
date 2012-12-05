@@ -25,6 +25,38 @@ describe('Ajaxは', function() {
         });
     });
 
+    it('request({url, cash: true, callback})でキャッシュ無効化用のフラグを立てる', function() {
+        var data = '';
+        ajax.request({
+            url: '/spec/common/test.xml',
+            cash: true,
+            callback: function(d) {
+                data = d;
+            }
+        });
+
+        waits(500);
+        runs(function() {
+            expect(data).not.toEqual('');
+        });
+    });
+
+    it('request({url, type: "POST", callback})で送信メソッドをPOSTにする', function() {
+        var data = '';
+        ajax.request({
+            url: '/spec/common/test.xml',
+            type: 'POST',
+            callback: function(d) {
+                data = d;
+            }
+        });
+
+        waits(500);
+        runs(function() {
+            expect(data).not.toEqual('');
+        });
+    });
+
     it('getJSON({url, callback})で非同期でjsonを取得する', function() {
         var data = '';
         ajax.getJSON({

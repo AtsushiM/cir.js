@@ -8,7 +8,7 @@ var util = Global.utility,
 
 Global.Twitter = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
                 caption = vars.caption || '',

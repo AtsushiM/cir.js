@@ -2,14 +2,14 @@
 describe('klassは', function() {
     var _super = Global.klass({
             init: function() {},
-            methods: {
+            properties: {
                 test1: function() {},
             }
         }),
         klass = Global.klass({
             extend: _super,
             init: function() {},
-            methods: {
+            properties: {
                 test2: function() {},
                 test3: function() {}
             }

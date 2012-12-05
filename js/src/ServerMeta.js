@@ -21,7 +21,7 @@ Global.ServerMeta = Global.klass({
             callback(xhr);
         }
     },
-    methods: {
+    properties: {
         date: function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));

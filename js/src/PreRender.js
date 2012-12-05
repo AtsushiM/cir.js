@@ -34,7 +34,7 @@ Global.PreRender = Global.klass({
         this.loopid = null;
         this.prevtime = null;
     },
-    methods: {
+    properties: {
         start: function() {
             var i;
 

@@ -7,7 +7,7 @@ var util = Global.utility,
 
 Global.HashController = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         makeHash: function(conf) {
             var hash = '#' + conf.mode,
                 vars = conf.vars,

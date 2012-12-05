@@ -19,7 +19,7 @@ Global.DataStore = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         set: function(key, val) {
             this.data[key] = val;
             return true;

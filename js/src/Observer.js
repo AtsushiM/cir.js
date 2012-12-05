@@ -19,7 +19,7 @@ Global.Observer = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         getObserved: function() {
             return this.observed;
         },

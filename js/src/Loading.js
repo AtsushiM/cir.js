@@ -10,7 +10,7 @@ Global.Loading = Global.klass({
             this.onload(config.onload);
         }
     },
-    methods: {
+    properties: {
         onload: function(func) {
             win.addEventListener('load', func);
         }

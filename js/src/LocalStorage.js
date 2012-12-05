@@ -19,7 +19,7 @@ Global.LocalStorage = Global.klass({
             instance = this;
         }
     },
-    methods: {
+    properties: {
         set: function(key, val) {
             storage.setItem(key, JSON.stringify(val));
             return true;

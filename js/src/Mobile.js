@@ -12,7 +12,7 @@ var util = Global.utility,
 
 Global.Mobile = Global.klass({
     init: function() {},
-    methods: {
+    properties: {
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },

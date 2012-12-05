@@ -28,7 +28,7 @@ Global.ImgLoad = Global.klass({
             }
         };
     },
-    methods: {
+    properties: {
         start: function() {
             var img,
                 i, len;

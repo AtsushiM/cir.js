@@ -16,7 +16,7 @@ Global.XML = Global.klass({
             this.setData(config.data);
         }
     },
-    methods: {
+    properties: {
         getData: function() {
             return this.data;
         },
