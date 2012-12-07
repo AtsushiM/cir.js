@@ -1032,13 +1032,6 @@ Global.Observer = Global.klass({
 
             observed[key].push(func);
         },
-        forOn: function(obj) {
-            var i;
-
-            for (i in obj) {
-                this.on(i, obj[i]);
-            }
-        },
         one: function(key, func) {
             var mine = this,
                 wrapfunc = function(vars) {
@@ -1078,12 +1071,6 @@ Global.Observer = Global.klass({
             }
 
             return false;
-        },
-        forOff: function(obj) {
-            var i;
-            for (i in obj) {
-                this.off(i, obj[i]);
-            }
         },
         fire: function(key, vars) {
             var target = this.observed[key],
