@@ -9,7 +9,7 @@ Global.ServerMeta = Global.klass({
     init: function(config) {
         config = config || {};
 
-        var callback = config.callback || function() {};
+        var callback = config.callback || this.utility.nullFunction;
 
         if (!xhr) {
             xhr = getHeader(function() {
@@ -22,6 +22,7 @@ Global.ServerMeta = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
         date: function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
