@@ -1,25 +1,20 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    makeQuery = util.makeQueryString,
-    shareURL = 'https://twitter.com/intent/tweet?';
-
 Global.Twitter = Global.klass({
     init: function() {},
     properties: {
+        utility: Global.utility,
+        shareURLBase: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
                 caption = vars.caption || '',
                 name = vars.name || '',
                 hash = vars.hash || '',
-                url = shareURL;
+                url = this.shareURLBase;
 
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
-            url += makeQuery({
+            url += this.utility.makeQueryString({
                 'url': redirect_uri,
                 'text': caption + name + hash
             });
@@ -28,4 +23,3 @@ Global.Twitter = Global.klass({
         }
     }
 });
-}());

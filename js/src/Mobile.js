@@ -2,17 +2,12 @@
 (function() {
 'use strict';
 
-var util = Global.utility,
-    win = util.win,
-    doc = util.doc,
-    onEvent = util.onEvent,
-    offEvent = util.offEvent,
-    pageTop = util.pageTop,
-    userAgent = navigator.userAgent;
+var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
     init: function() {},
     properties: {
+        utility: Global.utility,
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -35,24 +30,24 @@ Global.Mobile = Global.klass({
         },
         killScroll: function(isNoTop) {
             if (!isNoTop) {
-                pageTop();
+                this.utility.pageTop();
             }
-            onEvent(doc, 'touchmove', preventDefault);
+            this.utility.onEvent(this.utility.doc, 'touchmove', preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
-                pageTop();
+                this.utility.pageTop();
             }
-            offEvent(doc, 'touchmove', preventDefault);
+            this.utility.offEvent(this.utility.doc, 'touchmove', preventDefault);
         },
         hideAddress: function() {
-            onEvent(win, 'load', hideAddressHandler, false);
-            onEvent(win, 'orientationchange', hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, 'load', hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, 'orientationchange', hideAddressHandler, false);
         },
         orientationCheck: function() {
             if (
-                Math.abs(win.orientation) !== 90 &&
-                win.innerWidth < win.innerHeight
+                Math.abs(this.utility.win.orientation) !== 90 &&
+                this.utility.win.innerWidth < this.utility.win.innerHeight
             ) {
                 return {
                     portrait: true,
@@ -87,15 +82,15 @@ Global.Mobile = Global.klass({
             };
 
             function add(func) {
-                set(onEvent, func);
+                set(mine.utility.onEvent, func);
             }
             function remove(func) {
-                set(offEvent, func);
+                set(mine.utility.offEvent, func);
             }
             function set(setfunc, handler) {
-                setfunc(win, 'load', handler);
-                setfunc(win, 'orientationchange', handler);
-                setfunc(win, 'resize', handler);
+                setfunc(mine.utility.win, 'load', handler);
+                setfunc(mine.utility.win, 'orientationchange', handler);
+                setfunc(mine.utility.win, 'resize', handler);
             }
             function onechange() {
                 change();
@@ -125,7 +120,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        pageTop();
+        this.utility.pageTop();
     }
 }
 function hideAddressHandler() {

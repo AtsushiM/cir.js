@@ -1,4 +1,4 @@
-SRC = namespace.js utility.js klass.js extend.js Ajax.js CanvasImage.js CanvasRender.js DataStore.js Event.js ExternalInterface.js ExternalAndroidInterface.js ExternalIOSInterface.js Facebook.js FPS.js HashController.js ImgLoad.js Loading.js LocalStorage.js Mobile.js NumberImage.js Observer.js PreRender.js ServerMeta.js Surrogate.js Throttle.js Timer.js Twitter.js XML.js
+SRC = namespace.js utility.js klass.js extend.js HashController.js Ajax.js CanvasImage.js CanvasRender.js DataStore.js Event.js ExternalInterface.js ExternalAndroidInterface.js ExternalIOSInterface.js Facebook.js FPS.js ImgLoad.js Loading.js LocalStorage.js Mobile.js NumberImage.js Observer.js PreRender.js ServerMeta.js Surrogate.js Throttle.js Timer.js Twitter.js XML.js
 COMBINE = ../hyapp.combine.js
 COMPRESS = ../hyapp.js
 

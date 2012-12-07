@@ -1,11 +1,4 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    make = util.makeElement,
-    nullfunc = function() {};
-
 Global.ImgLoad = Global.klass({
     init: function(config) {
         var mine = this;
@@ -13,8 +6,8 @@ Global.ImgLoad = Global.klass({
         mine.srcs = config.srcs,
         mine.srccount = this.srcs.length,
         mine.loadedsrcs = [];
-        mine.onload = config.onload || nullfunc,
-        mine.onprogress = config.onprogress || nullfunc,
+        mine.onload = config.onload || this.utility.nullFunction,
+        mine.onprogress = config.onprogress || this.utility.nullFunction,
         mine.loadcount = 0;
         mine.progress = 0;
         mine.check = function() {
@@ -29,12 +22,13 @@ Global.ImgLoad = Global.klass({
         };
     },
     properties: {
+        utility: Global.utility,
         start: function() {
             var img,
                 i, len;
 
             for (i = 0, len = this.srccount; i < len; i++) {
-                img = make('img');
+                img = this.utility.makeElement('img');
                 img.src = this.srcs[i];
                 img.onload = this.check;
 
@@ -46,4 +40,3 @@ Global.ImgLoad = Global.klass({
         }
     }
 });
-}());

@@ -1,7 +1,4 @@
 /* Test: "../../spec/_src/src/NumberImage/test.js" */
-(function() {
-'use strict';
-
 Global.NumberImage = Global.klass({
     init: function(config) {
         config = config || {type: ''};
@@ -18,12 +15,11 @@ Global.NumberImage = Global.klass({
                 tags = make1Digit(this.type + aryX[i]) + tags;
             }
 
+            function make1Digit(x) {
+                return '<span class="num_' + x + '">&nbsp;</span>';
+            }
+
             return tags;
         }
     }
 });
-
-function make1Digit(x) {
-    return '<span class="num_' + x + '">&nbsp;</span>';
-}
-}());

@@ -2,9 +2,7 @@
 (function() {
 'use strict';
 
-var instance,
-    win = Global.utility.win,
-    storage = win.localStorage;
+var instance;
 
 Global.LocalStorage = Global.klass({
     init: function(config) {
@@ -20,35 +18,37 @@ Global.LocalStorage = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
+        storage: Global.utility.win.localStorage,
         set: function(key, val) {
-            storage.setItem(key, JSON.stringify(val));
+            this.storage.setItem(key, JSON.stringify(val));
             return true;
         },
         get: function(key) {
             if (key) {
-                return JSON.parse(storage.getItem(key));
+                return JSON.parse(this.storage.getItem(key));
             }
 
             var ret = {},
                 i;
 
-            for (i in storage) {
-                ret[i] = JSON.parse(storage[i]);
+            for (i in this.storage) {
+                ret[i] = JSON.parse(this.storage[i]);
             }
 
             return ret;
         },
         remove: function(key) {
-            if (!storage.getItem(key)) {
+            if (!this.storage.getItem(key)) {
                 return false;
             }
 
-            storage.removeItem(key);
+            this.storage.removeItem(key);
 
             return true;
         },
         reset: function() {
-            storage.clear();
+            this.storage.clear();
 
             return true;
         }

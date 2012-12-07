@@ -14,7 +14,6 @@ Global.ExternalAndroidInterface = Global.klass({
 
         this.android = config.android;
         this.externalObj = config.externalObj;
-        this.hashCtrl = new Global.HashController();
 
         if (!this.externalObj) {
             Global.EXTERNAL_ANDROID = {};
@@ -26,6 +25,7 @@ Global.ExternalAndroidInterface = Global.klass({
         }
     },
     properties: {
+        hashCtrl: new Global.HashController(),
         'call': function(conf) {
             this.android[conf.mode](this.hashCtrl.makeHash(conf));
         },

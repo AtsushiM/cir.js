@@ -89,6 +89,9 @@ Global.utility = {
             result[p[0]] = typeCast(decodeURIComponent(p[1]));
         }
         return result;
+    },
+    nullFunction: function() {
+        return null;
     }
 };
 
@@ -175,6 +178,87 @@ Global.extend = function(child, _super) {
         prev.apply(this, arguments);
     };
 };
+/* Test: "../../spec/_src/src/HashController/test.js" */
+Global.HashController = Global.klass({
+    init: function() {},
+    properties: {
+        utility: Global.utility,
+        typeCast: function(str) {
+            var caststr = this.utility.typeCast(str),
+                matchstr;
+
+            if (str === caststr) {
+                matchstr = str.match('^["\'](.*)["\']$');
+
+                if (matchstr) {
+                    return matchstr[1];
+                }
+            }
+
+            return caststr;
+        },
+        makeHash: function(conf) {
+            var hash = '#' + conf.mode,
+                vars = conf.vars,
+                sign = '?',
+                i;
+
+            for (i in vars) {
+                hash +=
+                    sign +
+                    i + '=' +
+                    JSON.stringify(vars[i]);
+                sign = '&';
+            }
+
+            return encodeURI(hash);
+        },
+        setHash: function(vars) {
+            location.hash = this.makeHash(vars);
+            return true;
+        },
+        parseHash: function(hashvars) {
+            var hash,
+                mode,
+                varsHash,
+                vars,
+                splitVar,
+                i;
+
+            hash = decodeURIComponent(hashvars)
+                   .split('#')[1];
+
+            if (!hash) {
+                return false;
+            }
+
+            hash = hash.split('?');
+
+            mode = hash[0];
+
+            if (hash[1]) {
+                vars = {};
+                varsHash = hash[1].split('&');
+
+                // hashをオブジェクトに整形
+                for (i = varsHash.length; i--;) {
+                    if (varsHash[i]) {
+                        splitVar = varsHash[i].split('=');
+                        vars[splitVar[0]] = this.typeCast(splitVar[1]);
+                    }
+                }
+            }
+
+            return {
+                mode: mode,
+                vars: vars
+            };
+        },
+        getHash: function() {
+            return this.parseHash(location.hash);
+        }
+    }
+});
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = Global.klass({
     init: function() {
@@ -434,7 +518,6 @@ Global.ExternalAndroidInterface = Global.klass({
 
         this.android = config.android;
         this.externalObj = config.externalObj;
-        this.hashCtrl = new Global.HashController();
 
         if (!this.externalObj) {
             Global.EXTERNAL_ANDROID = {};
@@ -446,6 +529,7 @@ Global.ExternalAndroidInterface = Global.klass({
         }
     },
     properties: {
+        hashCtrl: new Global.HashController(),
         'call': function(conf) {
             this.android[conf.mode](this.hashCtrl.makeHash(conf));
         },
@@ -479,13 +563,13 @@ Global.ExternalIOSInterface = Global.klass({
         }
 
         this.ios = {};
-        this.hashCtrl = new Global.HashController();
 
         if (config.single) {
             instanse = this;
         }
     },
     properties: {
+        hashCtrl: new Global.HashController(),
         call: function(conf) {
             this.hashCtrl.setHash(conf);
         },
@@ -510,16 +594,11 @@ Global.ExternalIOSInterface = Global.klass({
 });
 }());
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    makeQuery = util.makeQueryString,
-    shareURL = 'https://www.facebook.com/dialog/feed?';
-
 Global.Facebook = Global.klass({
     init: function() {},
     properties: {
+        utility: Global.utility,
+        shareURLBase: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
             var app_id = vars.app_id,
                 redirect_uri = vars.redirect_uri,
@@ -528,11 +607,11 @@ Global.Facebook = Global.klass({
                 name = vars.name,
                 caption = vars.caption,
                 description = vars.description,
-                url = shareURL +
+                url = this.shareURLBase +
                     'app_id=' + app_id + '&' +
                     'redirect_uri=' + redirect_uri;
 
-            url += makeQuery({
+            url += this.utility.makeQueryString({
                 'link': link,
                 'picture': picture,
                 'name': name,
@@ -544,7 +623,6 @@ Global.Facebook = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/FPS/test.js" */
 (function() {
 'use strict';
@@ -649,104 +727,7 @@ function getFrame(time) {
     return Math.round(1000 / time);
 }
 }());
-/* Test: "../../spec/_src/src/HashController/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    cast = util.typeCast;
-
-Global.HashController = Global.klass({
-    init: function() {},
-    properties: {
-        makeHash: function(conf) {
-            var hash = '#' + conf.mode,
-                vars = conf.vars,
-                sign = '?',
-                i;
-
-            for (i in vars) {
-                hash +=
-                    sign +
-                    i + '=' +
-                    JSON.stringify(vars[i]);
-                sign = '&';
-            }
-
-            return encodeURI(hash);
-        },
-        setHash: function(vars) {
-            location.hash = this.makeHash(vars);
-            return true;
-        },
-        parseHash: function(hashvars) {
-            var hash,
-                mode,
-                varsHash,
-                vars = null;
-
-            hash = decodeURIComponent(hashvars)
-                   .split('#')[1];
-
-            if (!hash) {
-                return false;
-            }
-
-            hash = hash.split('?');
-
-            mode = hash[0];
-
-            if (hash[1]) {
-                vars = {};
-                varsHash = hash[1].split('&');
-
-                // hashをオブジェクトに整形
-                (function() {
-                    var splitVar,
-                        i;
-
-                    for (i = varsHash.length; i--;) {
-                        if (varsHash[i]) {
-                            splitVar = varsHash[i].split('=');
-                            vars[splitVar[0]] = typeCast(splitVar[1]);
-                        }
-                    }
-                }());
-
-                return {
-                    mode: mode,
-                    vars: vars
-                };
-            }
-
-            return {
-                mode: mode
-            };
-        },
-        getHash: function() {
-            return this.parseHash(location.hash);
-        }
-    }
-});
-
-function typeCast(str) {
-    var caststr = cast(str);
-
-    if (str === caststr && str.match('^["\'](.*)["\']$')) {
-        return str.match('^["\'](.*)["\']$')[1];
-    }
-
-    return caststr;
-}
-}());
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    make = util.makeElement,
-    nullfunc = function() {};
-
 Global.ImgLoad = Global.klass({
     init: function(config) {
         var mine = this;
@@ -754,8 +735,8 @@ Global.ImgLoad = Global.klass({
         mine.srcs = config.srcs,
         mine.srccount = this.srcs.length,
         mine.loadedsrcs = [];
-        mine.onload = config.onload || nullfunc,
-        mine.onprogress = config.onprogress || nullfunc,
+        mine.onload = config.onload || this.utility.nullFunction,
+        mine.onprogress = config.onprogress || this.utility.nullFunction,
         mine.loadcount = 0;
         mine.progress = 0;
         mine.check = function() {
@@ -770,12 +751,13 @@ Global.ImgLoad = Global.klass({
         };
     },
     properties: {
+        utility: Global.utility,
         start: function() {
             var img,
                 i, len;
 
             for (i = 0, len = this.srccount; i < len; i++) {
-                img = make('img');
+                img = this.utility.makeElement('img');
                 img.src = this.srcs[i];
                 img.onload = this.check;
 
@@ -787,13 +769,7 @@ Global.ImgLoad = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/Loading/test.js" */
-(function() {
-'use strict';
-
-var win = Global.utility.win;
-
 Global.Loading = Global.klass({
     init: function(config) {
         if (config && config.onload) {
@@ -801,19 +777,17 @@ Global.Loading = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
         onload: function(func) {
-            win.addEventListener('load', func);
+            this.utility.win.addEventListener('load', func);
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
 (function() {
 'use strict';
 
-var instance,
-    win = Global.utility.win,
-    storage = win.localStorage;
+var instance;
 
 Global.LocalStorage = Global.klass({
     init: function(config) {
@@ -829,35 +803,37 @@ Global.LocalStorage = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
+        storage: Global.utility.win.localStorage,
         set: function(key, val) {
-            storage.setItem(key, JSON.stringify(val));
+            this.storage.setItem(key, JSON.stringify(val));
             return true;
         },
         get: function(key) {
             if (key) {
-                return JSON.parse(storage.getItem(key));
+                return JSON.parse(this.storage.getItem(key));
             }
 
             var ret = {},
                 i;
 
-            for (i in storage) {
-                ret[i] = JSON.parse(storage[i]);
+            for (i in this.storage) {
+                ret[i] = JSON.parse(this.storage[i]);
             }
 
             return ret;
         },
         remove: function(key) {
-            if (!storage.getItem(key)) {
+            if (!this.storage.getItem(key)) {
                 return false;
             }
 
-            storage.removeItem(key);
+            this.storage.removeItem(key);
 
             return true;
         },
         reset: function() {
-            storage.clear();
+            this.storage.clear();
 
             return true;
         }
@@ -868,17 +844,12 @@ Global.LocalStorage = Global.klass({
 (function() {
 'use strict';
 
-var util = Global.utility,
-    win = util.win,
-    doc = util.doc,
-    onEvent = util.onEvent,
-    offEvent = util.offEvent,
-    pageTop = util.pageTop,
-    userAgent = navigator.userAgent;
+var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
     init: function() {},
     properties: {
+        utility: Global.utility,
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -901,24 +872,24 @@ Global.Mobile = Global.klass({
         },
         killScroll: function(isNoTop) {
             if (!isNoTop) {
-                pageTop();
+                this.utility.pageTop();
             }
-            onEvent(doc, 'touchmove', preventDefault);
+            this.utility.onEvent(this.utility.doc, 'touchmove', preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
-                pageTop();
+                this.utility.pageTop();
             }
-            offEvent(doc, 'touchmove', preventDefault);
+            this.utility.offEvent(this.utility.doc, 'touchmove', preventDefault);
         },
         hideAddress: function() {
-            onEvent(win, 'load', hideAddressHandler, false);
-            onEvent(win, 'orientationchange', hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, 'load', hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, 'orientationchange', hideAddressHandler, false);
         },
         orientationCheck: function() {
             if (
-                Math.abs(win.orientation) !== 90 &&
-                win.innerWidth < win.innerHeight
+                Math.abs(this.utility.win.orientation) !== 90 &&
+                this.utility.win.innerWidth < this.utility.win.innerHeight
             ) {
                 return {
                     portrait: true,
@@ -953,15 +924,15 @@ Global.Mobile = Global.klass({
             };
 
             function add(func) {
-                set(onEvent, func);
+                set(mine.utility.onEvent, func);
             }
             function remove(func) {
-                set(offEvent, func);
+                set(mine.utility.offEvent, func);
             }
             function set(setfunc, handler) {
-                setfunc(win, 'load', handler);
-                setfunc(win, 'orientationchange', handler);
-                setfunc(win, 'resize', handler);
+                setfunc(mine.utility.win, 'load', handler);
+                setfunc(mine.utility.win, 'orientationchange', handler);
+                setfunc(mine.utility.win, 'resize', handler);
             }
             function onechange() {
                 change();
@@ -991,7 +962,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        pageTop();
+        this.utility.pageTop();
     }
 }
 function hideAddressHandler() {
@@ -999,9 +970,6 @@ function hideAddressHandler() {
 }
 }());
 /* Test: "../../spec/_src/src/NumberImage/test.js" */
-(function() {
-'use strict';
-
 Global.NumberImage = Global.klass({
     init: function(config) {
         config = config || {type: ''};
@@ -1018,15 +986,14 @@ Global.NumberImage = Global.klass({
                 tags = make1Digit(this.type + aryX[i]) + tags;
             }
 
+            function make1Digit(x) {
+                return '<span class="num_' + x + '">&nbsp;</span>';
+            }
+
             return tags;
         }
     }
 });
-
-function make1Digit(x) {
-    return '<span class="num_' + x + '">&nbsp;</span>';
-}
-}());
 /* Test: "../../spec/_src/src/Observer/test.js" */
 (function() {
 'use strict';
@@ -1136,13 +1103,6 @@ Global.Observer = Global.klass({
 });
 }());
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    show = util.showElement,
-    hide = util.hideElement;
-
 Global.PreRender = Global.klass({
     init: function(config) {
         config = config || {};
@@ -1172,39 +1132,39 @@ Global.PreRender = Global.klass({
         this.prevtime = null;
     },
     properties: {
+        utility: Global.utility,
         start: function() {
             var i;
 
             for (i = this.elements.length; i--;) {
-                show(this.elements[i]);
+                this.utility.showElement(this.elements[i]);
             }
             this.prevtime = Date.now();
             this.loopid = setInterval(check, this.looptime, this);
+
+            function check(mine) {
+                var gettime = Date.now(),
+                    difftime = gettime - mine.prevtime;
+
+                mine.prevtime = gettime;
+
+                if (difftime < mine.loopblur) {
+                    mine.guesslimit--;
+
+                    if (mine.guesslimit < 1) {
+                        clearInterval(mine.loopid);
+
+                        for (var i = mine.elements.length; i--;) {
+                            this.utility.hideElement(mine.elements[i]);
+                        }
+
+                        mine.onrendered();
+                    }
+                }
+            }
         }
     }
 });
-
-function check(mine) {
-    var gettime = Date.now(),
-        difftime = gettime - mine.prevtime;
-
-    mine.prevtime = gettime;
-
-    if (difftime < mine.loopblur) {
-        mine.guesslimit--;
-
-        if (mine.guesslimit < 1) {
-            clearInterval(mine.loopid);
-
-            for (var i = mine.elements.length; i--;) {
-                hide(mine.elements[i]);
-            }
-
-            mine.onrendered();
-        }
-    }
-}
-}());
 /* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
 'use strict';
@@ -1478,27 +1438,22 @@ Global.Timer = function(config) {
     return instanse;
 };
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    makeQuery = util.makeQueryString,
-    shareURL = 'https://twitter.com/intent/tweet?';
-
 Global.Twitter = Global.klass({
     init: function() {},
     properties: {
+        utility: Global.utility,
+        shareURLBase: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
                 caption = vars.caption || '',
                 name = vars.name || '',
                 hash = vars.hash || '',
-                url = shareURL;
+                url = this.shareURLBase;
 
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
-            url += makeQuery({
+            url += this.utility.makeQueryString({
                 'url': redirect_uri,
                 'text': caption + name + hash
             });
@@ -1507,19 +1462,10 @@ Global.Twitter = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/XML/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    $child = util.$child,
-    $$child = util.$$child,
-    make = util.makeElement;
-
 Global.XML = Global.klass({
     init: function(config) {
-        this.element = make('div');
+        this.element = this.utility.makeElement('div');
         this.data = {};
 
         if (config && config.data) {
@@ -1527,6 +1473,7 @@ Global.XML = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
         getData: function() {
             return this.data;
         },
@@ -1535,11 +1482,10 @@ Global.XML = Global.klass({
             this.element.innerHTML = d;
         },
         $: function(selector) {
-            return $child(selector, this.element);
+            return this.utility.$child(selector, this.element);
         },
         $$: function(selector) {
-            return $$child(selector, this.element);
+            return this.utility.$$child(selector, this.element);
         }
     }
 });
-}());

@@ -1,9 +1,4 @@
 /* Test: "../../spec/_src/src/Loading/test.js" */
-(function() {
-'use strict';
-
-var win = Global.utility.win;
-
 Global.Loading = Global.klass({
     init: function(config) {
         if (config && config.onload) {
@@ -11,9 +6,9 @@ Global.Loading = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
         onload: function(func) {
-            win.addEventListener('load', func);
+            this.utility.win.addEventListener('load', func);
         }
     }
 });
-}());

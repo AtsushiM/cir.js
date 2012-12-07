@@ -1,14 +1,9 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    makeQuery = util.makeQueryString,
-    shareURL = 'https://www.facebook.com/dialog/feed?';
-
 Global.Facebook = Global.klass({
     init: function() {},
     properties: {
+        utility: Global.utility,
+        shareURLBase: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
             var app_id = vars.app_id,
                 redirect_uri = vars.redirect_uri,
@@ -17,11 +12,11 @@ Global.Facebook = Global.klass({
                 name = vars.name,
                 caption = vars.caption,
                 description = vars.description,
-                url = shareURL +
+                url = this.shareURLBase +
                     'app_id=' + app_id + '&' +
                     'redirect_uri=' + redirect_uri;
 
-            url += makeQuery({
+            url += this.utility.makeQueryString({
                 'link': link,
                 'picture': picture,
                 'name': name,
@@ -33,4 +28,3 @@ Global.Facebook = Global.klass({
         }
     }
 });
-}());

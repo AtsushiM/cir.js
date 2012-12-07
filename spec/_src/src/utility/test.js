@@ -168,6 +168,10 @@ describe('utilityは', function() {
 
         expect(arg).toEqual(remakearg);
     });
+
+    it('nullFunction()はnullを返す', function() {
+        expect(util.nullFunction()).toEqual(null);
+    });
 });
 /*
 describe('XXXは', function() {

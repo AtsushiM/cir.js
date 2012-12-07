@@ -88,6 +88,9 @@ Global.utility = {
             result[p[0]] = typeCast(decodeURIComponent(p[1]));
         }
         return result;
+    },
+    nullFunction: function() {
+        return null;
     }
 };
 

@@ -15,13 +15,13 @@ Global.ExternalIOSInterface = Global.klass({
         }
 
         this.ios = {};
-        this.hashCtrl = new Global.HashController();
 
         if (config.single) {
             instanse = this;
         }
     },
     properties: {
+        hashCtrl: new Global.HashController(),
         call: function(conf) {
             this.hashCtrl.setHash(conf);
         },
