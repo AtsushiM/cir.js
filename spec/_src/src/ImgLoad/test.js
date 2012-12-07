@@ -31,7 +31,7 @@ describe('ImgLoadは', function() {
         runs(function() {
             imgload.start();
         });
-        waits(200);
+        waits(500);
         runs(function() {
             expect(loadend).toBeTruthy();
             expect(progress).toEqual(1);

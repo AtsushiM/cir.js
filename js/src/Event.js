@@ -13,22 +13,14 @@ Global.Event = Global.klass({
             return instance;
         }
 
-        // デフォルトイベント
-        this.click = 'click';
-        this.mousedown = 'mousedown';
-        this.mousemove = 'mousemove';
-        this.mouseup = 'mouseup';
-        this.touchstart = 'touchstart';
-        this.touchmove = 'touchmove';
-        this.touchend = 'touchend';
-
-        // 切替イベント
-        this.switchclick = 'touchstart';
-        this.switchdown = 'touchstart';
-        this.switchmove = 'touchmove';
-        this.switchup = 'touchend';
-
-        if (!config.mobileMode) {
+        // switch event
+        if (config.mobileMode) {
+            this.switchclick = 'touchstart';
+            this.switchdown = 'touchstart';
+            this.switchmove = 'touchmove';
+            this.switchup = 'touchend';
+        }
+        else {
             this.switchclick = 'click';
             this.switchdown = 'mousedown';
             this.switchmove = 'mousemove';
@@ -38,6 +30,15 @@ Global.Event = Global.klass({
         if (config.single) {
             instance = this;
         }
+    },
+    properties: {
+        click: 'click',
+        mousedown: 'mousedown',
+        mousemove: 'mousemove',
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend'
     }
 });
 }());

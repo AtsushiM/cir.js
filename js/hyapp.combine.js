@@ -445,22 +445,14 @@ Global.Event = Global.klass({
             return instance;
         }
 
-        // デフォルトイベント
-        this.click = 'click';
-        this.mousedown = 'mousedown';
-        this.mousemove = 'mousemove';
-        this.mouseup = 'mouseup';
-        this.touchstart = 'touchstart';
-        this.touchmove = 'touchmove';
-        this.touchend = 'touchend';
-
-        // 切替イベント
-        this.switchclick = 'touchstart';
-        this.switchdown = 'touchstart';
-        this.switchmove = 'touchmove';
-        this.switchup = 'touchend';
-
-        if (!config.mobileMode) {
+        // switch event
+        if (config.mobileMode) {
+            this.switchclick = 'touchstart';
+            this.switchdown = 'touchstart';
+            this.switchmove = 'touchmove';
+            this.switchup = 'touchend';
+        }
+        else {
             this.switchclick = 'click';
             this.switchdown = 'mousedown';
             this.switchmove = 'mousemove';
@@ -470,6 +462,15 @@ Global.Event = Global.klass({
         if (config.single) {
             instance = this;
         }
+    },
+    properties: {
+        click: 'click',
+        mousedown: 'mousedown',
+        mousemove: 'mousemove',
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend'
     }
 });
 }());
@@ -733,10 +734,10 @@ Global.ImgLoad = Global.klass({
         var mine = this;
 
         mine.srcs = config.srcs,
-        mine.srccount = this.srcs.length,
+        mine.srccount = mine.srcs.length,
         mine.loadedsrcs = [];
-        mine.onload = config.onload || this.utility.nullFunction,
-        mine.onprogress = config.onprogress || this.utility.nullFunction,
+        mine.onload = config.onload || mine.utility.nullFunction,
+        mine.onprogress = config.onprogress || mine.utility.nullFunction,
         mine.loadcount = 0;
         mine.progress = 0;
         mine.check = function() {
@@ -1107,29 +1108,16 @@ Global.PreRender = Global.klass({
     init: function(config) {
         config = config || {};
 
-        if (!config.elements) {
-            config.elements = [];
-        }
-        if (!config.guesslimit) {
-            config.guesslimit = 30;
-        }
-        if (!config.looptime) {
-            config.looptime = 100;
-        }
         if (!config.loopblur) {
             config.loopblur = 20;
         }
-        if (!config.onrendered) {
-            config.onrendered = function() {};
-        }
 
-        this.elements = config.elements;
-        this.guesslimit = config.guesslimit;
-        this.onrendered = config.onrendered;
-        this.looptime = config.looptime;
+        this.elements = config.elements || [];
+        this.guesslimit = config.guesslimit || 30;
+        this.onrendered = config.onrendered || this.utility.nullFunction;
+        this.looptime = config.looptime || 100;
         this.loopblur = this.looptime + config.loopblur;
-        this.loopid = null;
-        this.prevtime = null;
+        this.loopid = this.prevtime = null;
     },
     properties: {
         utility: Global.utility,
@@ -1155,7 +1143,7 @@ Global.PreRender = Global.klass({
                         clearInterval(mine.loopid);
 
                         for (var i = mine.elements.length; i--;) {
-                            this.utility.hideElement(mine.elements[i]);
+                            mine.utility.hideElement(mine.elements[i]);
                         }
 
                         mine.onrendered();

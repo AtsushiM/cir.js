@@ -4,10 +4,10 @@ Global.ImgLoad = Global.klass({
         var mine = this;
 
         mine.srcs = config.srcs,
-        mine.srccount = this.srcs.length,
+        mine.srccount = mine.srcs.length,
         mine.loadedsrcs = [];
-        mine.onload = config.onload || this.utility.nullFunction,
-        mine.onprogress = config.onprogress || this.utility.nullFunction,
+        mine.onload = config.onload || mine.utility.nullFunction,
+        mine.onprogress = config.onprogress || mine.utility.nullFunction,
         mine.loadcount = 0;
         mine.progress = 0;
         mine.check = function() {
