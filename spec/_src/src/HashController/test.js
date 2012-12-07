@@ -4,7 +4,7 @@ describe('HashControllerは', function() {
         orgHash = location.hash;
 
     beforeEach(function() {
-        controller = new Global.HashController();
+        controller = new HYAPP.HashController();
         location.hash = orgHash;
     });
     afterEach(function() {

@@ -1,12 +1,12 @@
 /* Class: "../../../../js/src/klass.js" */
 describe('klassは', function() {
-    var _super = Global.klass({
+    var _super = HYAPP.klass({
             init: function() {},
             properties: {
                 test1: function() {},
             }
         }),
-        klass = Global.klass({
+        klass = HYAPP.klass({
             extend: _super,
             init: function() {},
             properties: {

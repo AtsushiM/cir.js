@@ -15,8 +15,8 @@ describe('Loadingは', function() {
                 }
             }
         },
-        loading_after = new Global.Loading(),
-        loading_before = new Global.Loading({
+        loading_after = new HYAPP.Loading(),
+        loading_before = new HYAPP.Loading({
             onload: dammy.before.onload
         });
 

@@ -1,4 +1,7 @@
-var Global = {};
+var HYAPP = {};
+(function() {
+    'use strict';
+    var Global = HYAPP;
 /* Test: "../../spec/_src/src/utility/test.js" */
 (function(win, doc) {
 'use strict';
@@ -1478,3 +1481,4 @@ Global.XML = Global.klass({
         }
     }
 });
+}());

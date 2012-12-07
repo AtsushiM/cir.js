@@ -12,7 +12,7 @@ describe('Timerは', function() {
 
     beforeEach(function() {
         // init
-        timer = new Global.Timer({
+        timer = new HYAPP.Timer({
             template: 'xxx.xxx',
             limit: 20,
             interval: 0.05,
@@ -77,7 +77,7 @@ describe('Timerは', function() {
     });
 
     it('countDown()は指定した秒数後停止する', function() {
-        timer = new Global.Timer({
+        timer = new HYAPP.Timer({
             template: 'xxx.xxx',
             limit: 0.1,
             interval: 0.05,

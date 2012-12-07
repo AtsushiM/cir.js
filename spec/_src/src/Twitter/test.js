@@ -4,7 +4,7 @@ describe('Twitterは', function() {
 
     beforeEach(function() {
         // init
-        twitter = new Global.Twitter();
+        twitter = new HYAPP.Twitter();
     });
     afterEach(function() {
         // clear

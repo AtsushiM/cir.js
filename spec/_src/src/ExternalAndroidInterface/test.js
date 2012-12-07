@@ -2,7 +2,7 @@
 describe('ExternalAndroidInterfaceは', function() {
     var external,
         orgHash = location.hash,
-        hashCntl = new Global.HashController(),
+        hashCntl = new HYAPP.HashController(),
         androidMethod = {
             test1: function() {
             },
@@ -14,29 +14,29 @@ describe('ExternalAndroidInterfaceは', function() {
 
     beforeEach(function() {
         // init
-        Global.EXTERNAL_ANDROID = {};
-        external = new Global.ExternalAndroidInterface({
+        HYAPP.EXTERNAL_ANDROID = {};
+        external = new HYAPP.ExternalAndroidInterface({
             android: androidMethod,
             // option
-            externalObj: Global.EXTERNAL_ANDROID
+            externalObj: HYAPP.EXTERNAL_ANDROID
         });
     });
     afterEach(function() {
         // clear
         location.hash = orgHash;
-        delete Global.EXTERNAL_ANDROID;
+        delete HYAPP.EXTERNAL_ANDROID;
     });
 
     it('singleオプションでsingletonになる', function() {
-        var e1 = new Global.ExternalAndroidInterface({
+        var e1 = new HYAPP.ExternalAndroidInterface({
                 android: androidMethod,
                 single: true
             }),
-            e2 = new Global.ExternalAndroidInterface({
+            e2 = new HYAPP.ExternalAndroidInterface({
                 android: androidMethod,
                 single: true
             }),
-            e3 = new Global.ExternalAndroidInterface({
+            e3 = new HYAPP.ExternalAndroidInterface({
                 android: androidMethod,
                 single: false
             });
@@ -45,13 +45,13 @@ describe('ExternalAndroidInterfaceは', function() {
         expect(e1).not.toBe(e3);
     });
 
-    it('Global.EXTERNAL_ANDROIDにAndroidネイティブから呼び出すための関数を設定する', function(){
-        delete Global.EXTERNAL_ANDROID;
-        external = new Global.ExternalAndroidInterface({
+    it('HYAPP.EXTERNAL_ANDROIDにAndroidネイティブから呼び出すための関数を設定する', function(){
+        delete HYAPP.EXTERNAL_ANDROID;
+        external = new HYAPP.ExternalAndroidInterface({
             android: androidMethod
         });
 
-        expect(Global.EXTERNAL_ANDROID).toBeDefined();
+        expect(HYAPP.EXTERNAL_ANDROID).toBeDefined();
     });
 
     it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {
@@ -85,7 +85,7 @@ describe('ExternalAndroidInterfaceは', function() {
         external.addCallback('load', function(args) {
             returned = args;
         });
-        Global.EXTERNAL_ANDROID.load(hashCntl.makeHash(args));
+        HYAPP.EXTERNAL_ANDROID.load(hashCntl.makeHash(args));
         expect(returned).toEqual(args.vars);
         returned = null;
     });
@@ -99,7 +99,7 @@ describe('ExternalAndroidInterfaceは', function() {
         });
         external.removeCallback('load');
 
-        expect(Global.EXTERNAL_ANDROID.load).not.toBeDefined();
+        expect(HYAPP.EXTERNAL_ANDROID.load).not.toBeDefined();
     });
 });
 /*

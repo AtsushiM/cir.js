@@ -7,7 +7,7 @@ describe('NumberImageは', function() {
 
     beforeEach(function() {
         // init
-        numimg = new Global.NumberImage(args);
+        numimg = new HYAPP.NumberImage(args);
     });
     afterEach(function() {
         // clear

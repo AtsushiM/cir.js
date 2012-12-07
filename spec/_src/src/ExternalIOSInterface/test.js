@@ -2,7 +2,7 @@
 describe('ExternalIOSInterfaceは', function() {
     var external;
         orgHash = location.hash,
-        hashCntl = new Global.HashController(),
+        hashCntl = new HYAPP.HashController(),
         iOSMethod = {
             test1: function() {},
             test2: function() {},
@@ -11,7 +11,7 @@ describe('ExternalIOSInterfaceは', function() {
 
     beforeEach(function() {
         // init
-        external = new Global.ExternalIOSInterface();
+        external = new HYAPP.ExternalIOSInterface();
     });
     afterEach(function() {
         // clear
@@ -19,13 +19,13 @@ describe('ExternalIOSInterfaceは', function() {
     });
 
     it('singleオプションでsingletonになる', function() {
-        var e1 = new Global.ExternalIOSInterface({
+        var e1 = new HYAPP.ExternalIOSInterface({
                 single: true
             }),
-            e2 = new Global.ExternalIOSInterface({
+            e2 = new HYAPP.ExternalIOSInterface({
                 single: true
             }),
-            e3 = new Global.ExternalIOSInterface({
+            e3 = new HYAPP.ExternalIOSInterface({
                 single: false
             });
 

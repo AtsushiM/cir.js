@@ -5,7 +5,7 @@ describe('XMLは', function() {
 
     beforeEach(function() {
         // init
-        xml = new Global.XML({
+        xml = new HYAPP.XML({
             data: data
         });
     });

@@ -4,7 +4,7 @@ describe('utilityは', function() {
 
     beforeEach(function() {
         // init
-        util = Global.utility;
+        util = HYAPP.utility;
     });
     afterEach(function() {
         // clear

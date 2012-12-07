@@ -6,7 +6,7 @@ describe('ImgLoadは', function() {
 
     beforeEach(function() {
         // init
-        imgload = new Global.ImgLoad({
+        imgload = new HYAPP.ImgLoad({
             srcs: [
                 // img path
                 '/spec/common/r.png',
@@ -41,7 +41,7 @@ describe('ImgLoadは', function() {
     it('getProgress()で読込状況を0~1の間で返す', function() {
         var before = 0;
 
-        imgload = new Global.ImgLoad({
+        imgload = new HYAPP.ImgLoad({
             srcs: [
                 // img path
                 '/spec/common/r.png',

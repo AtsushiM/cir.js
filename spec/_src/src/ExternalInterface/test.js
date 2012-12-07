@@ -10,10 +10,10 @@ describe('ExternalInterfaceは', function() {
 
     beforeEach(function() {
         // init
-        extAndroid = new Global.ExternalInterface({
+        extAndroid = new HYAPP.ExternalInterface({
             android: androidMethod
         });
-        extIOS = new Global.ExternalInterface({
+        extIOS = new HYAPP.ExternalInterface({
             android: false
         });
     });
@@ -22,13 +22,13 @@ describe('ExternalInterfaceは', function() {
     });
 
     it('singleオプションでsingletonになる', function() {
-        var e1 = new Global.ExternalInterface({
+        var e1 = new HYAPP.ExternalInterface({
                 single: true
             }),
-            e2 = new Global.ExternalInterface({
+            e2 = new HYAPP.ExternalInterface({
                 single: true
             }),
-            e3 = new Global.ExternalInterface({
+            e3 = new HYAPP.ExternalInterface({
                 single: false
             });
 

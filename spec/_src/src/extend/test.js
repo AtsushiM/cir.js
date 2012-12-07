@@ -4,7 +4,7 @@ describe('extendは', function() {
 
     beforeEach(function() {
         // init
-        extend = Global.extend;
+        extend = HYAPP.extend;
     });
     afterEach(function() {
         // clear
@@ -26,7 +26,7 @@ describe('extendは', function() {
                 this.text = 'no';
             };
 
-        Global.extend(Test2, Test1);
+        HYAPP.extend(Test2, Test1);
 
         Test2.prototype.shout = function() {
             return this.text + '!';
