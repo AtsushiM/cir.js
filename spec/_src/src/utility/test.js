@@ -4,7 +4,7 @@ describe('utilityは', function() {
 
     beforeEach(function() {
         // init
-        util = HYAPP.utility;
+        util = window.HYAPP ? HYAPP.utility : Global.utility;
     });
     afterEach(function() {
         // clear
@@ -95,6 +95,60 @@ describe('utilityは', function() {
         expect($body.style.opacity).toEqual('0');
         util.opacityElement($body, 1);
         expect($body.style.opacity).toEqual('1');
+    });
+
+    it('hasClass(element, value)で対象のelementのclassNameにvalueが存在するかどうかboolで返す', function() {
+        var $body = util.$('body'),
+            baseCls = $body.className;
+
+        expect(util.hasClass($body, 'test')).toBeFalsy();
+        $body.className = 'test';
+        expect(util.hasClass($body, 'test')).toBeTruthy();
+        $body.className = 'test test1 test2';
+        expect(util.hasClass($body, 'test')).toBeTruthy();
+        $body.className = '';
+        expect(util.hasClass($body, 'test')).toBeFalsy();
+
+        $body.className = baseCls;
+    });
+
+    it('addClass(element, value)で対象のelementのclassNameにvalueを追加する', function() {
+        var $body = util.$('body'),
+            baseCls = $body.className;
+
+        expect(util.hasClass($body, 'test')).toBeFalsy();
+        expect(util.addClass($body, 'test')).toBeTruthy();
+        expect(util.addClass($body, 'test')).toBeFalsy();
+        expect(util.hasClass($body, 'test')).toBeTruthy();
+
+        $body.className = baseCls;
+    });
+
+    it('removeClass(element, value)で対象のelementのclassNameからvalueを削除する', function() {
+        var $body = util.$('body'),
+            baseCls = $body.className;
+
+        util.addClass($body, 'test');
+        util.removeClass($body, 'test');
+        expect(util.hasClass($body, 'test')).toBeFalsy();
+
+        $body.className = baseCls;
+    });
+
+    it('toggleClass(element, value)で対象のelementのclassNameからvalueをトグルする', function() {
+        var $body = util.$('body'),
+            baseCls = $body.className;
+
+        util.toggleClass($body, 'test');
+        expect(util.hasClass($body, 'test')).toBeTruthy();
+        util.toggleClass($body, 'test');
+        expect(util.hasClass($body, 'test')).toBeFalsy();
+        util.toggleClass($body, 'test');
+        expect(util.hasClass($body, 'test')).toBeTruthy();
+        util.toggleClass($body, 'test');
+        expect(util.hasClass($body, 'test')).toBeFalsy();
+
+        $body.className = baseCls;
     });
 
     it('override(targetObj, varObj)でtargetObjにvarObjのプロパティを上書きする', function() {

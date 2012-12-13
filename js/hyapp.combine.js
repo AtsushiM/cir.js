@@ -48,6 +48,16 @@ Global.utility = {
     opacityElement: function(element, value) {
         element.style.opacity = value;
     },
+    hasClass: hasClass,
+    addClass: addClass,
+    removeClass: removeClass,
+    toggleClass: function(element, cls) {
+        if (hasClass(element, cls)) {
+            return removeClass(element, cls);
+        }
+
+        return addClass(element, cls);
+    },
     override: function(target, vars) {
         var i;
 
@@ -97,6 +107,59 @@ Global.utility = {
         return null;
     }
 };
+
+function hasClass(element, cls) {
+    var clsName = element.className,
+        addedcls = clsName ? clsName.split(' ') : [],
+        i = 0,
+        len = addedcls.length;
+
+    for (; i < len; i++) {
+        if (cls && cls === addedcls[i]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+function addClass(element, cls) {
+    var between = '';
+
+    if (hasClass(element, cls)) {
+        return false;
+    }
+
+    if (element.className) {
+        between = ' ';
+    }
+
+    element.className = element.className + between + cls;
+
+    return true;
+}
+function removeClass(element, cls) {
+    var addedcls,
+        bindcls = [],
+        i;
+
+    if (!hasClass(element, cls)) {
+        return false;
+    }
+
+    addedcls = element.className.split(' ');
+    i = 0,
+  len = addedcls.length;
+
+    for (; i < len; i++) {
+        if (cls !== addedcls[i]) {
+            bindcls.push(addedcls[i]);
+        }
+    }
+
+    element.className = bindcls.join(' ');
+
+    return true;
+}
 
 function setStyleDisplay(element, value) {
     element.style.display = value;
