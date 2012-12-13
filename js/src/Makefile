@@ -1,4 +1,4 @@
-SRC = namespace_start.js utility.js klass.js extend.js HashController.js Ajax.js CanvasImage.js CanvasRender.js DataStore.js Event.js ExternalInterface.js ExternalAndroidInterface.js ExternalIOSInterface.js Facebook.js FPS.js ImgLoad.js Loading.js LocalStorage.js Mobile.js NumberImage.js Observer.js PreRender.js ServerMeta.js Surrogate.js Throttle.js Timer.js Twitter.js XML.js namespace_end.js
+SRC = namespace_start.js utility.js klass.js extend.js HashController.js Ajax.js Bind.js CanvasImage.js CanvasRender.js DataStore.js Event.js ExternalInterface.js ExternalAndroidInterface.js ExternalIOSInterface.js Facebook.js FPS.js ImgLoad.js Loading.js LocalStorage.js Mobile.js NumberImage.js Observer.js PreRender.js ServerMeta.js Surrogate.js Throttle.js Timer.js Twitter.js XML.js namespace_end.js
 
 # Minimum configuration
 # SRC = namespace_start.js utility.js klass.js extend.js Event.js Loading.js Mobile.js Observer.js XML.js namespace_end.js

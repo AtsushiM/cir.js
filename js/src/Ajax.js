@@ -8,6 +8,7 @@ Global.Ajax = Global.klass({
         request: function(vars) {
             var url = vars.url,
                 callback = vars.callback,
+                error = vars.error,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -27,9 +28,18 @@ Global.Ajax = Global.klass({
             this.xhr = new XMLHttpRequest();
             xhr = this.xhr;
 
-            xhr.onload = function() {
-                callback(xhr.responseText);
-            };
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4) {
+                    return false;
+                }
+
+                if (xhr.status == 200) {
+                    callback(xhr.responseText);
+                }
+                else if (error) {
+                    error(xhr);
+                }
+            }
 
             xhr.open(type, url);
 
@@ -48,6 +58,11 @@ Global.Ajax = Global.klass({
                 url: vars.url,
                 callback: function(data) {
                     vars.callback(JSON.parse(data));
+                },
+                error: function(data) {
+                    if (vars.error) {
+                        vars.error(data);
+                    }
                 }
             });
         }

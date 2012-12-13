@@ -272,6 +272,7 @@ Global.Ajax = Global.klass({
         request: function(vars) {
             var url = vars.url,
                 callback = vars.callback,
+                error = vars.error,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -291,9 +292,18 @@ Global.Ajax = Global.klass({
             this.xhr = new XMLHttpRequest();
             xhr = this.xhr;
 
-            xhr.onload = function() {
-                callback(xhr.responseText);
-            };
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4) {
+                    return false;
+                }
+
+                if (xhr.status == 200) {
+                    callback(xhr.responseText);
+                }
+                else if (error) {
+                    error(xhr);
+                }
+            }
 
             xhr.open(type, url);
 
@@ -312,8 +322,43 @@ Global.Ajax = Global.klass({
                 url: vars.url,
                 callback: function(data) {
                     vars.callback(JSON.parse(data));
+                },
+                error: function(data) {
+                    if (vars.error) {
+                        vars.error(data);
+                    }
                 }
             });
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Bind/test.js" */
+Global.Bind = Global.klass({
+    init: function() {},
+    properties: {
+        utility: Global.utility,
+        add: function(vars) {
+            return this.exe(vars, true);
+        },
+        remove: function(vars) {
+            return this.exe(vars, false);
+        },
+        exe: function(vars, isBind) {
+            var util = this.utility,
+                element = vars.element,
+                events = vars.events,
+                onoff = isBind ? util.onEvent : util.offEvent,
+                i;
+
+            for (i in events) {
+                onoff(
+                    element,
+                    i,
+                    events[i]
+                );
+            }
+
+            return vars;
         }
     }
 });
