@@ -136,7 +136,8 @@ function addClass(element, cls) {
 function removeClass(element, cls) {
     var addedcls,
         bindcls = [],
-        i;
+        i,
+        len;
 
     if (!hasClass(element, cls)) {
         return false;
@@ -144,7 +145,7 @@ function removeClass(element, cls) {
 
     addedcls = element.className.split(' ');
     i = 0,
-  len = addedcls.length;
+    len = addedcls.length;
 
     for (; i < len; i++) {
         if (cls !== addedcls[i]) {

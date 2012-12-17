@@ -19,6 +19,7 @@ src/Mobile/\n\
 src/NumberImage/\n\
 src/Observer/\n\
 src/PreRender/\n\
+src/ScriptLoad/\n\
 src/ServerMeta/\n\
 src/Surrogate/\n\
 src/Throttle/\n\
@@ -49,6 +50,7 @@ src/utility/\n\
 ../../js/src/NumberImage.js\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
+../../js/src/ScriptLoad.js\n\
 ../../js/src/ServerMeta.js\n\
 ../../js/src/Surrogate.js\n\
 ../../js/src/Throttle.js\n\
@@ -79,6 +81,7 @@ src/utility/\n\
 ../_src/src/NumberImage/test.js\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
+../_src/src/ScriptLoad/test.js\n\
 ../_src/src/ServerMeta/test.js\n\
 ../_src/src/Surrogate/test.js\n\
 ../_src/src/Throttle/test.js\n\

@@ -140,7 +140,8 @@ function addClass(element, cls) {
 function removeClass(element, cls) {
     var addedcls,
         bindcls = [],
-        i;
+        i,
+        len;
 
     if (!hasClass(element, cls)) {
         return false;
@@ -148,7 +149,7 @@ function removeClass(element, cls) {
 
     addedcls = element.className.split(' ');
     i = 0,
-  len = addedcls.length;
+    len = addedcls.length;
 
     for (; i < len; i++) {
         if (cls !== addedcls[i]) {
@@ -1251,6 +1252,35 @@ Global.PreRender = Global.klass({
         }
     }
 });
+/* Test: "../../spec/_src/src/ScriptLoad/test.js" */
+Global.ScriptLoad = function(config) {
+    'use strict';
+
+    var Mine = Global.ScriptLoad,
+        instanse = {
+            requests: function(varary) {
+                var i = 0,
+                    len = varary.length;
+
+                for (; i < len; i++) {
+                    instanse.request(varary[i]);
+                }
+            },
+            request: function(vars) {
+                var script = document.createElement('script');
+
+                script.type = 'text/javascript';
+                script.src = vars.src;
+                document.body.appendChild(script);
+
+                if (vars.callback) {
+                    script.onload = vars.callback;
+                }
+            }
+        };
+
+    return instanse;
+};
 /* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
 'use strict';
