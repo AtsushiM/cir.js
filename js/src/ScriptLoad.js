@@ -1,29 +1,26 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-Global.ScriptLoad = function(config) {
-    'use strict';
+Global.ScriptLoad = Global.klass({
+    init: function() {},
+    properties: {
+        utility: Global.utility,
+        requests: function(varary) {
+            var i = 0,
+                len = varary.length;
 
-    var Mine = Global.ScriptLoad,
-        instanse = {
-            requests: function(varary) {
-                var i = 0,
-                    len = varary.length;
-
-                for (; i < len; i++) {
-                    instanse.request(varary[i]);
-                }
-            },
-            request: function(vars) {
-                var script = document.createElement('script');
-
-                script.type = 'text/javascript';
-                script.src = vars.src;
-                document.body.appendChild(script);
-
-                if (vars.callback) {
-                    script.onload = vars.callback;
-                }
+            for (; i < len; i++) {
+                this.request(varary[i]);
             }
-        };
+        },
+        request: function(vars) {
+            var script = this.utility.makeElement('script');
 
-    return instanse;
-};
+            script.type = 'text/javascript';
+            script.src = vars.src;
+            this.utility.body.appendChild(script);
+
+            if (vars.callback) {
+                script.onload = vars.callback;
+            }
+        }
+    }
+});
