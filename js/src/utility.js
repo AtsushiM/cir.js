@@ -71,6 +71,17 @@ Global.utility = {
             style[key] = value;
         }
     },
+    appendElement: function(_parent, element) {
+        _parent.appendChild(element);
+    },
+    innerHTML: function(element, text) {
+        if (text) {
+            element.innerHTML = text;
+        }
+        else {
+            return element.innerHTML;
+        }
+    },
     override: override,
     replaceAll: function(targettext, needle, replacetext) {
         return targettext.split(needle).join(replacetext);

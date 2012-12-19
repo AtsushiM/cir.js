@@ -75,6 +75,17 @@ Global.utility = {
             style[key] = value;
         }
     },
+    appendElement: function(_parent, element) {
+        _parent.appendChild(element);
+    },
+    innerHTML: function(element, text) {
+        if (text) {
+            element.innerHTML = text;
+        }
+        else {
+            return element.innerHTML;
+        }
+    },
     override: override,
     replaceAll: function(targettext, needle, replacetext) {
         return targettext.split(needle).join(replacetext);
@@ -1379,6 +1390,13 @@ Global.Selector.methods = {
     },
     css: function() {
         return forExe(this, util.styleElement, arguments);
+    },
+    html: function(text) {
+        /* return forExe(this, util.innerHTML, arguments); */
+        return util.innerHTML(this[0], text);
+    },
+    append: function() {
+        return forExe(this, util.appendElement, arguments);
     }
 };
 }());

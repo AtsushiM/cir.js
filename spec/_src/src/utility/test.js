@@ -163,6 +163,28 @@ describe('utilityは', function() {
         expect(bodyStyle.paddingTop).toEqual('10px');
     });
 
+    it('appendElement(_parent, element)で_parentにelementをappendChildする', function() {
+        var $body = util.$('body'),
+            $make = util.makeElement('div');
+
+        $make.className = 'appendTest';
+
+        expect(util.$('.appendTest')).toBeNull();
+        util.appendElement($body, $make);
+        expect(util.$('.appendTest')).toBeDefined();
+    });
+
+    it('innerHTML(element, text)でelement.innerHTMLにtextを設定する', function() {
+        var $body = util.$('body'),
+            $make = util.makeElement('div');
+
+        expect($make.innerHTML).toEqual('');
+        expect(util.innerHTML($make)).toEqual('');
+        util.innerHTML($make, 'test');
+        expect($make.innerHTML).toEqual('test');
+        expect(util.innerHTML($make)).toEqual('test');
+    });
+
     it('override(targetObj, varObj)でtargetObjにvarObjのプロパティを上書きする', function() {
         var target = {},
             vars = {

@@ -4,7 +4,7 @@ describe('Selector.methodsは', function() {
         Global = HYAPP;
     }
 
-    var selector = new Global.Selector('body'),
+    var selector = Global.Selector('body'),
         util = Global.utility;
 
     beforeEach(function() {
@@ -45,6 +45,7 @@ describe('Selector.methodsは', function() {
         selector.hide();
 
         expect(util.hideElement).toHaveBeenCalledWith(selector[0]);
+        selector.show();
     });
 
     it('Selector(selector).opacity(value)でGlobal.utility.opacityElementを実行する', function() {
@@ -52,6 +53,7 @@ describe('Selector.methodsは', function() {
         selector.opacity(0.5);
 
         expect(util.opacityElement).toHaveBeenCalledWith(selector[0], 0.5);
+        selector.opacity(1);
     });
 
     it('Selector(selector).hasClass(value)でGlobal.utility.hasClassを実行する', function() {
@@ -95,6 +97,29 @@ describe('Selector.methodsは', function() {
         selector.css({
             padding: 0
         });
+    });
+
+    it('Selector(selector).append(value)でGlobal.utility.appendElementを実行する', function() {
+        var div = document.createElement('div');
+
+        spyOn(util, 'appendElement').andCallThrough();
+
+        selector.append(div);
+        expect(util.appendElement).toHaveBeenCalledWith(selector[0], div);
+    });
+
+    it('Selector(selector).html(value)でGlobal.utility.innerHTMLを実行する', function() {
+        spyOn(util, 'innerHTML').andCallThrough();
+
+        var div = document.createElement('div');
+
+        div.className = 'selectorTestInnerHTML';
+        selector.append(div);
+
+        var $div = Global.Selector('.selectorTestInnerHTML');
+
+        $div.html('test');
+        expect(util.innerHTML).toHaveBeenCalledWith($div[0], 'test');
     });
 });
 /*
