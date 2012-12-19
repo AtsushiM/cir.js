@@ -121,6 +121,13 @@ describe('Selector.methodsは', function() {
         $div.html('test');
         expect(util.innerHTML).toHaveBeenCalledWith($div[0], 'test');
     });
+
+    it('Selector(selector).attr(value)でGlobal.utility.attrElementを実行する', function() {
+        spyOn(util, 'attrElement').andCallThrough();
+
+        selector.attr('width');
+        expect(util.attrElement).toHaveBeenCalledWith(selector[0], 'width');
+    });
 });
 /*
 describe('XXXは', function() {

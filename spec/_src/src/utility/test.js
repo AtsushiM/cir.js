@@ -163,6 +163,33 @@ describe('utilityは', function() {
         expect(bodyStyle.paddingTop).toEqual('10px');
     });
 
+    it('attrElement(element, object)でelementのプロパティにobjectの値を設定する', function() {
+        var $body = util.$('body');
+
+        util.attrElement($body, {
+            width: '100%'
+        });
+        expect($body.getAttribute('width')).toEqual('100%');
+    });
+
+    it('attrElement(element, property, value)でelementのpropertyにvalueを設定する', function() {
+        var $body = util.$('body');
+
+        util.attrElement($body, 'width', '10%');
+        expect($body.getAttribute('width')).toEqual('10%');
+        util.attrElement($body, 'width', '100%');
+        expect($body.getAttribute('width')).toEqual('100%');
+    });
+
+    it('attrElement(element, string)でelementのstring名のプロパティを返す', function() {
+        var $body = util.$('body');
+
+        util.attrElement($body, {
+            width: '100%'
+        });
+        expect(util.attrElement($body, 'width')).toEqual('100%');
+    });
+
     it('appendElement(_parent, element)で_parentにelementをappendChildする', function() {
         var $body = util.$('body'),
             $make = util.makeElement('div');

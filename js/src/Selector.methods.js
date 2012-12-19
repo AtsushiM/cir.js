@@ -4,28 +4,41 @@ var util = Global.utility;
 
 function forExe(_this, func, arg) {
     var i = 0,
-        aryarg = [],
-        arglen = arg ? arg.length : 0,
-        len = _this.length;
+        len = _this.length,
+        ary = makeAry(arg);
 
-    aryarg[0] = null;
-    for (i = 0; i < arglen; i++) {
-        aryarg[i + 1] = arg[i];
-    }
-
-    for (i = 0; i < len; i++) {
-        aryarg[0] = _this[i];
-        func.apply(null, aryarg);
+    for (; i < len; i++) {
+        ary[0] = _this[i];
+        func.apply(null, ary);
     }
 
     return _this;
 }
+function exe(_this, func, arg) {
+    var ary = makeAry(arg);
+
+    ary[0] = _this[0];
+
+    return func.apply(null, ary);
+}
+
+function makeAry(arg) {
+    var ary = [null],
+        i = 0,
+        len = arg ? arg.length : 0;
+
+    for (; i < len; i++) {
+        ary[i + 1] = arg[i];
+    }
+
+    return ary;
+}
 
 Global.Selector.methods = {
-    on: function(eventname, handler) {
+    on: function() {
         return forExe(this, util.onEvent, arguments);
     },
-    off: function(eventname, handler) {
+    off: function() {
         return forExe(this, util.offEvent, arguments);
     },
     show: function() {
@@ -37,9 +50,8 @@ Global.Selector.methods = {
     opacity: function() {
         return forExe(this, util.opacityElement, arguments);
     },
-    hasClass: function(classname) {
-        /* return forExe(this, util.hasClass, arguments); */
-        return util.hasClass(this[0], classname);
+    hasClass: function() {
+        return exe(this, util.hasClass, arguments);
     },
     addClass: function() {
         return forExe(this, util.addClass, arguments);
@@ -53,9 +65,11 @@ Global.Selector.methods = {
     css: function() {
         return forExe(this, util.styleElement, arguments);
     },
-    html: function(text) {
-        /* return forExe(this, util.innerHTML, arguments); */
-        return util.innerHTML(this[0], text);
+    html: function() {
+        return exe(this, util.innerHTML, arguments);
+    },
+    attr: function() {
+        return exe(this, util.attrElement, arguments);
     },
     append: function() {
         return forExe(this, util.appendElement, arguments);

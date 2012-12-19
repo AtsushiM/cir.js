@@ -71,8 +71,25 @@ Global.utility = {
             style[key] = value;
         }
     },
-    appendElement: function(_parent, element) {
-        _parent.appendChild(element);
+    appendElement: function(element, addelement) {
+        element.appendChild(addelement);
+    },
+    attrElement: function(element, vars, value) {
+        var i;
+
+        if (Object.prototype.toString.call(vars) === '[object Object]') {
+            for (i in vars) {
+                element.setAttribute(i, vars[i]);
+            }
+
+            return true;
+        }
+
+        if (value || value === '') {
+            return element.setAttribute(vars, value);
+        }
+
+        return element.getAttribute(vars);
     },
     innerHTML: function(element, text) {
         if (text) {
