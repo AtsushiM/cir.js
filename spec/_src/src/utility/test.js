@@ -151,6 +151,18 @@ describe('utilityは', function() {
         $body.className = baseCls;
     });
 
+    it('styleElement(element, object)で対象のelementのstyleにobjectを追加する', function() {
+        var $body = util.$('body'),
+            bodyStyle = $body.style;
+
+        util.styleElement($body, {
+            backgroundColor: 'red',
+            paddingTop: 10
+        });
+        expect(bodyStyle.backgroundColor).toEqual('red');
+        expect(bodyStyle.paddingTop).toEqual('10px');
+    });
+
     it('override(targetObj, varObj)でtargetObjにvarObjのプロパティを上書きする', function() {
         var target = {},
             vars = {

@@ -20,6 +20,8 @@ src/NumberImage/\n\
 src/Observer/\n\
 src/PreRender/\n\
 src/ScriptLoad/\n\
+src/Selector/\n\
+src/Selector.methods/\n\
 src/ServerMeta/\n\
 src/SessionStorage/\n\
 src/Surrogate/\n\
@@ -52,8 +54,10 @@ src/utility/\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/ScriptLoad.js\n\
+../../js/src/Selector.js\n\
+../../js/src/Selector.methods.js\n\
 ../../js/src/ServerMeta.js\n\
-../../js/src/SessionStorage.js\n\
+../../js/src/LocalStorage.js\n\
 ../../js/src/Surrogate.js\n\
 ../../js/src/Throttle.js\n\
 ../../js/src/Timer.js\n\
@@ -84,6 +88,8 @@ src/utility/\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
 ../_src/src/ScriptLoad/test.js\n\
+../_src/src/Selector/test.js\n\
+../_src/src/Selector.methods/test.js\n\
 ../_src/src/ServerMeta/test.js\n\
 ../_src/src/SessionStorage/test.js\n\
 ../_src/src/Surrogate/test.js\n\

@@ -54,15 +54,24 @@ Global.utility = {
 
         return addClass(element, cls);
     },
-    override: function(target, vars) {
-        var i;
+    styleElement: function(element, addstyle) {
+        var style = element.style,
+            i,
+            key,
+            value;
 
-        for (i in vars) {
-            target[i] = vars[i];
+        for (i in addstyle) {
+            key = i;
+            value = addstyle[i];
+
+            if (isFinite(value)) {
+                value += 'px';
+            }
+
+            style[key] = value;
         }
-
-        return target;
     },
+    override: override,
     replaceAll: function(targettext, needle, replacetext) {
         return targettext.split(needle).join(replacetext);
     },
@@ -103,6 +112,16 @@ Global.utility = {
         return null;
     }
 };
+
+function override(target, vars) {
+    var i;
+
+    for (i in vars) {
+        target[i] = vars[i];
+    }
+
+    return target;
+}
 
 function hasClass(element, cls) {
     var clsName = element.className,
