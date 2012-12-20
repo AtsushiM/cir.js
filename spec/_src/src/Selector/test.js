@@ -14,14 +14,25 @@ describe('Selectorは', function() {
         // clear
     });
 
-    it('jQueryライクなオブジェクトを返す', function() {
+    it('Selector(string)でjQueryライクなオブジェクトを返す', function() {
         var selector = new Global.Selector('script');
-
-        console.log(selector);
 
         expect(selector.hide()).toEqual(selector);
         expect(selector.show()).toEqual(selector);
-        expect(selector.hide().show()).toEqual(selector);
+        expect(selector.hide().show().hide()).toEqual(selector);
+    });
+
+    it('Selector(string, element)でelementからstringに対応するelementを内包したSelectorインスタンスを返す', function() {
+        var selector = new Global.Selector('script', document.body);
+
+        expect(selector.hide()).toEqual(selector);
+    });
+
+    it('Selector(string, selector)でselectorからstringに対応するelementを内包したSelectorインスタンスを返す', function() {
+        var body = Global.Selector('body'),
+            selector = new Global.Selector('script', body);
+
+        expect(selector.hide()).toEqual(selector);
     });
 });
 /*

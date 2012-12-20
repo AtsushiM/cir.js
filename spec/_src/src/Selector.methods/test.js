@@ -14,6 +14,18 @@ describe('Selector.methodsは', function() {
         // clear
     });
 
+    it('Selector(selector).querySelectorAll(query)でthis[0].querySelectorAll(query)を実行する', function() {
+        expect(selector.querySelectorAll('script')).toEqual(document.body.querySelectorAll('script'));
+    });
+
+    it('Selector(selector).find(selector)でSelectorインスタンス内のselectorに該当するelementを内包したSelecotrインスタンスを返す', function() {
+        expect(
+            Global.Selector('script', document.body)
+        ).toEqual(
+            selector.find('script')
+        );
+    });
+
     it('Selector(selector).on(eventname, handler)でGlobal.utility.onEventを実行する', function() {
         var func = function() {};
 

@@ -35,6 +35,12 @@ function makeAry(arg) {
 }
 
 Global.Selector.methods = {
+    querySelectorAll: function(query) {
+        return this[0].querySelectorAll(query);
+    },
+    find: function(query) {
+        return Global.Selector(query, this);
+    },
     on: function() {
         return forExe(this, util.onEvent, arguments);
     },

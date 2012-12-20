@@ -1326,11 +1326,12 @@ Global.ScriptLoad = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Selector/test.js" */
-Global.Selector = function(query) {
+Global.Selector = function(query, _parent) {
     'use strict';
 
     var Mine = Global.Selector,
-        $elements = document.querySelectorAll(query),
+        _par = _parent || document,
+        $elements = _par.querySelectorAll(query),
         base,
         instanse,
         i = 0,
@@ -1390,6 +1391,12 @@ function makeAry(arg) {
 }
 
 Global.Selector.methods = {
+    querySelectorAll: function(query) {
+        return this[0].querySelectorAll(query);
+    },
+    find: function(query) {
+        return Global.Selector(query, this);
+    },
     on: function() {
         return forExe(this, util.onEvent, arguments);
     },

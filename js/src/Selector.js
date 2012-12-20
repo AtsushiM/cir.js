@@ -1,9 +1,10 @@
 /* Test: "../../spec/_src/src/Selector/test.js" */
-Global.Selector = function(query) {
+Global.Selector = function(query, _parent) {
     'use strict';
 
     var Mine = Global.Selector,
-        $elements = document.querySelectorAll(query),
+        _par = _parent || document,
+        $elements = _par.querySelectorAll(query),
         base,
         instanse,
         i = 0,
