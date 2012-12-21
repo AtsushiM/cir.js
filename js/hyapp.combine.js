@@ -36,8 +36,14 @@ Global.utility = {
     offEvent: function(element, eventname, handler) {
         element.removeEventListener(eventname, handler);
     },
-    makeElement: function(tagname) {
-        return doc.createElement(tagname);
+    makeElement: function(tagname, attr) {
+        var element = doc.createElement(tagname);
+
+        if (attr) {
+            attrElement(element, attr);
+        }
+
+        return element;
     },
     showElement: function(element) {
         setStyleDisplay(element, 'block');
@@ -78,23 +84,7 @@ Global.utility = {
     appendElement: function(element, addelement) {
         element.appendChild(addelement);
     },
-    attrElement: function(element, vars, value) {
-        var i;
-
-        if (Object.prototype.toString.call(vars) === '[object Object]') {
-            for (i in vars) {
-                element.setAttribute(i, vars[i]);
-            }
-
-            return true;
-        }
-
-        if (value || value === '') {
-            return element.setAttribute(vars, value);
-        }
-
-        return element.getAttribute(vars);
-    },
+    attrElement: attrElement,
     innerHTML: function(element, text) {
         if (text) {
             element.innerHTML = text;
@@ -153,6 +143,24 @@ function override(target, vars) {
     }
 
     return target;
+}
+
+function attrElement(element, vars, value) {
+    var i;
+
+    if (Object.prototype.toString.call(vars) === '[object Object]') {
+        for (i in vars) {
+            element.setAttribute(i, vars[i]);
+        }
+
+        return true;
+    }
+
+    if (value || value === '') {
+        return element.setAttribute(vars, value);
+    }
+
+    return element.getAttribute(vars);
 }
 
 function hasClass(element, cls) {
@@ -253,7 +261,7 @@ Global.klass = function(config) {
 
     var util = Global.utility,
         override = util.override,
-        init = config.init,
+        init = config.init || function() {},
         properties = config.properties,
         extend = config.extend;
 
@@ -294,7 +302,6 @@ Global.extend = function(child, _super) {
 };
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         typeCast: function(str) {
@@ -445,7 +452,6 @@ Global.Ajax = Global.klass({
 });
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         add: function(vars) {
@@ -755,7 +761,6 @@ Global.ExternalIOSInterface = Global.klass({
 }());
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         shareURLBase: 'https://www.facebook.com/dialog/feed?',
@@ -1007,7 +1012,6 @@ Global.LocalStorage = Global.klass({
 var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         isAndroid: function(ua) {
@@ -1301,7 +1305,6 @@ Global.PreRender = Global.klass({
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         requests: function(varary) {
@@ -1325,11 +1328,11 @@ Global.ScriptLoad = Global.klass({
         }
     }
 });
-/* Test: "../../spec/_src/src/Selector/test.js" */
-Global.Selector = function(query, _parent) {
+/* Test: "../../spec/_src/src/selector/test.js" */
+Global.selector = function(query, _parent) {
     'use strict';
 
-    var Mine = Global.Selector,
+    var Mine = Global.selector,
         _par = _parent || document,
         $elements = _par.querySelectorAll(query),
         base,
@@ -1354,7 +1357,7 @@ Global.Selector = function(query, _parent) {
 
     return instanse;
 };
-/* Test: "../../spec/_src/src/Selector.methods/test.js" */
+/* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
 var util = Global.utility;
 
@@ -1390,12 +1393,12 @@ function makeAry(arg) {
     return ary;
 }
 
-Global.Selector.methods = {
+Global.selector.methods = {
     querySelectorAll: function(query) {
         return this[0].querySelectorAll(query);
     },
     find: function(query) {
-        return Global.Selector(query, this);
+        return Global.selector(query, this);
     },
     on: function() {
         return forExe(this, util.onEvent, arguments);
@@ -1771,7 +1774,6 @@ Global.Timer = function(config) {
 };
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         shareURLBase: 'https://twitter.com/intent/tweet?',

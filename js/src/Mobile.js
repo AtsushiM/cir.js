@@ -5,7 +5,6 @@
 var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         isAndroid: function(ua) {

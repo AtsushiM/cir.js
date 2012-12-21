@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         shareURLBase: 'https://twitter.com/intent/tweet?',

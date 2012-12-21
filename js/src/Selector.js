@@ -1,8 +1,8 @@
-/* Test: "../../spec/_src/src/Selector/test.js" */
-Global.Selector = function(query, _parent) {
+/* Test: "../../spec/_src/src/selector/test.js" */
+Global.selector = function(query, _parent) {
     'use strict';
 
-    var Mine = Global.Selector,
+    var Mine = Global.selector,
         _par = _parent || document,
         $elements = _par.querySelectorAll(query),
         base,

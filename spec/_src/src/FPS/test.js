@@ -68,7 +68,7 @@ describe('FPSは', function() {
         });
         waits(Math.ceil(fps.getFrameTime() * 20));
         runs(function() {
-            expect(dammy.enterframe.callCount).toBeGreaterThan(14);
+            expect(dammy.enterframe.callCount).toBeGreaterThan(13);
             expect(dammy.enterframe.callCount).toBeLessThan(21);
         });
     });

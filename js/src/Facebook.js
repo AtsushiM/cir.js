@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         shareURLBase: 'https://www.facebook.com/dialog/feed?',

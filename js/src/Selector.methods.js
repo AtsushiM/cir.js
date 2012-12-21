@@ -1,4 +1,4 @@
-/* Test: "../../spec/_src/src/Selector.methods/test.js" */
+/* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
 var util = Global.utility;
 
@@ -34,12 +34,12 @@ function makeAry(arg) {
     return ary;
 }
 
-Global.Selector.methods = {
+Global.selector.methods = {
     querySelectorAll: function(query) {
         return this[0].querySelectorAll(query);
     },
     find: function(query) {
-        return Global.Selector(query, this);
+        return Global.selector(query, this);
     },
     on: function() {
         return forExe(this, util.onEvent, arguments);

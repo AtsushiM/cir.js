@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         typeCast: function(str) {

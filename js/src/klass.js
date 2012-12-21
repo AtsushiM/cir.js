@@ -4,7 +4,7 @@ Global.klass = function(config) {
 
     var util = Global.utility,
         override = util.override,
-        init = config.init,
+        init = config.init || function() {},
         properties = config.properties,
         extend = config.extend;
 

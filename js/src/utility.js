@@ -32,8 +32,14 @@ Global.utility = {
     offEvent: function(element, eventname, handler) {
         element.removeEventListener(eventname, handler);
     },
-    makeElement: function(tagname) {
-        return doc.createElement(tagname);
+    makeElement: function(tagname, attr) {
+        var element = doc.createElement(tagname);
+
+        if (attr) {
+            attrElement(element, attr);
+        }
+
+        return element;
     },
     showElement: function(element) {
         setStyleDisplay(element, 'block');
@@ -74,23 +80,7 @@ Global.utility = {
     appendElement: function(element, addelement) {
         element.appendChild(addelement);
     },
-    attrElement: function(element, vars, value) {
-        var i;
-
-        if (Object.prototype.toString.call(vars) === '[object Object]') {
-            for (i in vars) {
-                element.setAttribute(i, vars[i]);
-            }
-
-            return true;
-        }
-
-        if (value || value === '') {
-            return element.setAttribute(vars, value);
-        }
-
-        return element.getAttribute(vars);
-    },
+    attrElement: attrElement,
     innerHTML: function(element, text) {
         if (text) {
             element.innerHTML = text;
@@ -149,6 +139,24 @@ function override(target, vars) {
     }
 
     return target;
+}
+
+function attrElement(element, vars, value) {
+    var i;
+
+    if (Object.prototype.toString.call(vars) === '[object Object]') {
+        for (i in vars) {
+            element.setAttribute(i, vars[i]);
+        }
+
+        return true;
+    }
+
+    if (value || value === '') {
+        return element.setAttribute(vars, value);
+    }
+
+    return element.getAttribute(vars);
 }
 
 function hasClass(element, cls) {

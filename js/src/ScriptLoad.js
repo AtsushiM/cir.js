@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         requests: function(varary) {

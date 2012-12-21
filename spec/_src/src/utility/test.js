@@ -67,10 +67,21 @@ describe('utilityは', function() {
         util.offEvent(window, 'load', func);
     });
 
-    it('makeElement(tagname)でタグを生成する', function() {
+    it('makeElement(tagname [, attr])でタグを生成する', function() {
         var $div = util.makeElement('div');
 
         expect($div.style.display).toEqual('');
+
+        var $div = util.makeElement(
+                'div',
+                {
+                    width: '100%',
+                    bgcolor: 'red'
+                }
+            );
+
+        expect($div.getAttribute('width')).toEqual('100%');
+        expect($div.getAttribute('bgcolor')).toEqual('red');
     });
 
     it('showElement(element)で対象のelementのstyle.displayを"block"にする', function() {

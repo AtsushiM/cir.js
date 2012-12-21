@@ -1,5 +1,5 @@
-/* Class: "../../../../js/src/Selector.js" */
-describe('Selectorは', function() {
+/* Class: "../../../../js/src/selector.js" */
+describe('selectorは', function() {
     var selector;
 
     if (window.HYAPP) {
@@ -8,29 +8,29 @@ describe('Selectorは', function() {
 
     beforeEach(function() {
         // init
-        /* selector = new Global.Selector(); */
+        /* selector = new Global.selector(); */
     });
     afterEach(function() {
         // clear
     });
 
-    it('Selector(string)でjQueryライクなオブジェクトを返す', function() {
-        var selector = new Global.Selector('script');
+    it('selector(string)でjQueryライクなオブジェクトを返す', function() {
+        var selector = new Global.selector('script');
 
         expect(selector.hide()).toEqual(selector);
         expect(selector.show()).toEqual(selector);
         expect(selector.hide().show().hide()).toEqual(selector);
     });
 
-    it('Selector(string, element)でelementからstringに対応するelementを内包したSelectorインスタンスを返す', function() {
-        var selector = new Global.Selector('script', document.body);
+    it('selector(string, element)でelementからstringに対応するelementを内包したselectorインスタンスを返す', function() {
+        var selector = new Global.selector('script', document.body);
 
         expect(selector.hide()).toEqual(selector);
     });
 
-    it('Selector(string, selector)でselectorからstringに対応するelementを内包したSelectorインスタンスを返す', function() {
-        var body = Global.Selector('body'),
-            selector = new Global.Selector('script', body);
+    it('selector(string, selector)でselectorからstringに対応するelementを内包したselectorインスタンスを返す', function() {
+        var body = Global.selector('body'),
+            selector = new Global.selector('script', body);
 
         expect(selector.hide()).toEqual(selector);
     });

@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = Global.klass({
-    init: function() {},
     properties: {
         utility: Global.utility,
         add: function(vars) {
