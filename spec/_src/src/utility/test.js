@@ -295,6 +295,41 @@ describe('utilityは', function() {
         expect(arg).toEqual(remakearg);
     });
 
+    it('is(string, vars)でvarsがstringの形式かどうか調べる', function() {
+        expect(util.is('Object', {})).toBeTruthy();
+        expect(util.is('Object', 1)).toBeFalsy();
+        expect(util.is('Number', 1)).toBeTruthy();
+        expect(util.is('Number', {})).toBeFalsy();
+        expect(util.is('String', '')).toBeTruthy();
+        expect(util.is('String', 1)).toBeFalsy();
+        expect(util.is('Function', function() {})).toBeTruthy();
+        expect(util.is('Function', 1)).toBeFalsy();
+        expect(util.is('Boolean', true)).toBeTruthy();
+        expect(util.is('Boolean', false)).toBeTruthy();
+        expect(util.is('Boolean', 1)).toBeFalsy();
+    });
+    it('isObject(vars)でvarsがObjectかどうか調べる', function() {
+        expect(util.isObject({})).toBeTruthy();
+        expect(util.isObject(1)).toBeFalsy();
+    });
+    it('isNumber(vars)でvarsがNumberかどうか調べる', function() {
+        expect(util.isNumber(1)).toBeTruthy();
+        expect(util.isNumber({})).toBeFalsy();
+    });
+    it('isString(vars)でvarsがStringかどうか調べる', function() {
+        expect(util.isString('')).toBeTruthy();
+        expect(util.isString(1)).toBeFalsy();
+    });
+    it('isFunction(vars)でvarsがFunctionかどうか調べる', function() {
+        expect(util.isFunction(function() {})).toBeTruthy();
+        expect(util.isFunction(1)).toBeFalsy();
+    });
+    it('isBoolean(vars)でvarsがBooleanかどうか調べる', function() {
+        expect(util.isBoolean(true)).toBeTruthy();
+        expect(util.isBoolean(false)).toBeTruthy();
+        expect(util.isBoolean(1)).toBeFalsy();
+    });
+
     it('nullFunction()はnullを返す', function() {
         expect(util.nullFunction()).toEqual(null);
     });

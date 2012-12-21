@@ -126,10 +126,38 @@ Global.utility = {
         }
         return result;
     },
+    is: is,
+    isObject: isObject,
+    isNumber: isNumber,
+    isString: isString,
+    isFunction: isFunction,
+    isBoolean: isBoolean,
     nullFunction: function() {
         return null;
     }
 };
+
+function is(key, vars) {
+    if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
+        return true;
+    }
+    return false;
+}
+function isObject(vars) {
+    return is('Object', vars);
+}
+function isNumber(vars) {
+    return is('Number', vars);
+}
+function isString(vars) {
+    return is('String', vars);
+}
+function isFunction(vars) {
+    return is('Function', vars);
+}
+function isBoolean(vars) {
+    return is('Boolean', vars);
+}
 
 function override(target, vars) {
     var i;
@@ -144,7 +172,7 @@ function override(target, vars) {
 function attrElement(element, vars, value) {
     var i;
 
-    if (Object.prototype.toString.call(vars) === '[object Object]') {
+    if (isObject(vars)) {
         for (i in vars) {
             element.setAttribute(i, vars[i]);
         }
