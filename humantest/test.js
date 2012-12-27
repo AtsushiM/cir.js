@@ -5,6 +5,8 @@
 
     if (!window.HYAPP) {
         $ = window.$;
+
+       console.log($('.test').is('.no2'));
     }
     else {
         $ = HYAPP.selector;

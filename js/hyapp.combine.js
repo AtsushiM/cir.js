@@ -1150,7 +1150,8 @@ Global.LocalStorage = Global.klass({
 (function() {
 'use strict';
 
-var userAgent = navigator.userAgent;
+var util = Global.utility,
+    userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
     properties: {
@@ -1190,6 +1191,67 @@ Global.Mobile = Global.klass({
         hideAddress: function() {
             this.utility.onEvent(this.utility.win, 'load', hideAddressHandler, false);
             this.utility.onEvent(this.utility.win, 'orientationchange', hideAddressHandler, false);
+        },
+        flickAmount: function(vars) {
+            var startX,
+                startY;
+
+            util.onEvent(vars.element, 'touchstart', function(e) {
+                var changed = e.changedTouches[0];
+                startX = changed.pageX;
+                startY = changed.pageY;
+            });
+            util.onEvent(vars.element, 'touchend', function(e) {
+                var changed = e.changedTouches[0],
+                    amount = {
+                        x: changed.pageX - startX,
+                        y: changed.pageY - startY
+                    };
+
+                vars.callback(amount);
+            });
+        },
+        flickDirection: function(vars) {
+            this.flickAmount({
+                element: vars.element,
+                callback: function(amount) {
+                    var boundary = vars.boundary || 0,
+                        isChange = false,
+                        direction = {
+                            top: false,
+                            right: false,
+                            bottom: false,
+                            left: false,
+                            amount: amount
+                        };
+
+                    if (Math.abs(amount.x) > boundary) {
+                        if (amount.x > 0) {
+                            direction.right = true;
+                        }
+                        else if (amount.x < 0) {
+                            direction.left = true;
+                        }
+
+                        isChange = true;
+                    }
+
+                    if (Math.abs(amount.y) > boundary) {
+                        if (amount.y > 0) {
+                            direction.bottom = true;
+                        }
+                        else if (amount.y < 0) {
+                            direction.top = true;
+                        }
+
+                        isChange = true;
+                    }
+
+                    if (isChange) {
+                        vars.callback(direction);
+                    }
+                }
+            });
         },
         orientationCheck: function() {
             if (

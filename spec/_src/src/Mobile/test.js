@@ -66,6 +66,34 @@ describe('Mobileは', function() {
         expect(0).toEqual(0);
     });
 
+    it('flickAmount({element, callback})でelementがフリックされた際、callbackに移動量を{x,y}の形式で渡す', function() {
+        mb.flickAmount({
+            element: document.body,
+            callback: function(amount) {
+                expect(amount.x).toBeDefined();
+                expect(amount.y).toBeDefined();
+            }
+        });
+
+        expect(0).toEqual(0);
+    });
+
+    it('flickDirection({element, boundary, callback})でelementがフリックされた際、boundaryで指定した移動量以上フリックされたらcallbackに移動方向を渡す', function() {
+        mb.flickDirection({
+            element: document.body,
+            boundary: 0,
+            callback: function(direction) {
+                expect(direction.top).toBeDefined();
+                expect(direction.right).toBeDefined();
+                expect(direction.bottom).toBeDefined();
+                expect(direction.left).toBeDefined();
+                expect(direction.amount).toBeDefined();
+            }
+        });
+
+        expect(0).toEqual(0);
+    });
+
     it('orientationCheck()で画面の向きをチェックする', function() {
         mb.orientationCheck();
         expect(0).toEqual(0);
