@@ -132,6 +132,9 @@ Global.utility = {
     isString: isString,
     isFunction: isFunction,
     isBoolean: isBoolean,
+    isTouchDevice: function() {
+        return 'ontouchstart' in win;
+    },
     nullFunction: function() {
         return null;
     }

@@ -7,8 +7,9 @@ Global.Loading = Global.klass({
     },
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         onload: function(func) {
-            this.utility.win.addEventListener('load', func);
+            this.utility.onEvent(this.utility.win, this._event.load, func);
         }
     }
 });

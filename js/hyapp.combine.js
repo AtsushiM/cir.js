@@ -136,6 +136,9 @@ Global.utility = {
     isString: isString,
     isFunction: isFunction,
     isBoolean: isBoolean,
+    isTouchDevice: function() {
+        return 'ontouchstart' in win;
+    },
     nullFunction: function() {
         return null;
     }
@@ -521,6 +524,59 @@ Global.HashController = Global.klass({
         }
     }
 });
+/* Test: "../../spec/_src/src/Event/test.js" */
+(function() {
+'use strict';
+
+var instance;
+
+Global.Event = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        // singleton
+        if (config.single && instance) {
+            return instance;
+        }
+        if (
+            config.mobileMode === undefined &&
+            this.utility.isTouchDevice()
+        ) {
+            config.mobileMode = true;
+        }
+
+        // switch event
+        if (config.mobileMode) {
+            this.switchclick = 'touchstart';
+            this.switchdown = 'touchstart';
+            this.switchmove = 'touchmove';
+            this.switchup = 'touchend';
+        }
+        else {
+            this.switchclick = 'click';
+            this.switchdown = 'mousedown';
+            this.switchmove = 'mousemove';
+            this.switchup = 'mouseup';
+        }
+
+        if (config.single) {
+            instance = this;
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        load: 'load',
+        hashchange: 'hashchange',
+        click: 'click',
+        mousedown: 'mousedown',
+        mousemove: 'mousemove',
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend'
+    }
+});
+}());
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = Global.klass({
     init: function() {
@@ -736,50 +792,163 @@ Global.DataStore = Global.klass({
     }
 });
 }());
-/* Test: "../../spec/_src/src/Event/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
-Global.Event = Global.klass({
+/* Test: "../../spec/_src/src/DragFlick/test.js" */
+Global.DragFlick = Global.klass({
     init: function(config) {
-        config = config || {};
-
-        // singleton
-        if (config.single && instance) {
-            return instance;
-        }
-
-        // switch event
-        if (config.mobileMode) {
-            this.switchclick = 'touchstart';
-            this.switchdown = 'touchstart';
-            this.switchmove = 'touchmove';
-            this.switchup = 'touchend';
-        }
-        else {
-            this.switchclick = 'click';
-            this.switchdown = 'mousedown';
-            this.switchmove = 'mousemove';
-            this.switchup = 'mouseup';
-        }
-
-        if (config.single) {
-            instance = this;
+        if (config) {
+            this.bind(config);
         }
     },
     properties: {
-        click: 'click',
-        mousedown: 'mousedown',
-        mousemove: 'mousemove',
-        mouseup: 'mouseup',
-        touchstart: 'touchstart',
-        touchmove: 'touchmove',
-        touchend: 'touchend'
+        utility: Global.utility,
+        _event: new Global.Event(),
+        _getEventTarget: function(e) {
+            var changed = e.changedTouches ? e.changedTouches[0] : e;
+
+            return changed;
+        },
+        amount: function(vars) {
+            var mine = this,
+                startX,
+                startY,
+                dragflg = false;
+
+            mine.utility.onEvent(vars.element, mine._event.switchdown, start);
+            mine.utility.onEvent(mine.utility.win, mine._event.switchup, end);
+
+            function start(e) {
+                var changed = mine._getEventTarget(e);
+
+                startX = changed.pageX;
+                startY = changed.pageY;
+
+                dragflg = true;
+
+                e.preventDefault();
+            }
+            function end(e) {
+                if (dragflg) {
+                    var changed = mine._getEventTarget(e),
+                        amount = {
+                            x: changed.pageX - startX,
+                            y: changed.pageY - startY
+                        };
+
+                    vars.callback(amount);
+
+                    dragflg = false;
+                }
+            }
+        },
+        direction: function(vars) {
+            this.amount({
+                element: vars.element,
+                callback: function(amount) {
+                    var boundary = vars.boundary || 0,
+                        direction = {
+                            change: false,
+                            top: false,
+                            right: false,
+                            bottom: false,
+                            left: false,
+                            amount: amount
+                        };
+
+                    if (Math.abs(amount.x) > boundary) {
+                        if (amount.x > 0) {
+                            direction.right = true;
+                        }
+                        else if (amount.x < 0) {
+                            direction.left = true;
+                        }
+
+                        direction.change = true;
+                    }
+
+                    if (Math.abs(amount.y) > boundary) {
+                        if (amount.y > 0) {
+                            direction.bottom = true;
+                        }
+                        else if (amount.y < 0) {
+                            direction.top = true;
+                        }
+
+                        direction.change = true;
+                    }
+
+                    vars.callback(direction);
+                }
+            });
+        },
+        bind: function(vars) {
+            var mine = this,
+                element = vars.element,
+                e = this._event,
+                util = this.utility,
+                start = vars.start || util.nullFunction,
+                move = vars.move || util.nullFunction,
+                end = vars.end || util.nullFunction,
+                flg = false,
+                startX = 0,
+                startY = 0;
+
+            if (vars.direction) {
+                mine.direction({
+                    element: element,
+                    boundary: vars.boundary,
+                    callback: vars.direction
+                });
+            }
+
+            eventProxy(element, e.switchdown, function(_e) {
+                flg = true;
+
+                startX = _e.pageX;
+                startY = _e.pageY;
+
+                start({
+                    e: _e,
+                    move: {
+                        x: startX,
+                        y: startY
+                    }
+                });
+            });
+            eventProxy(util.doc, e.switchmove, function(_e) {
+                if (flg) {
+                    move({
+                        e: _e,
+                        move: {
+                            x: _e.pageX - startX,
+                            y: _e.pageY - startY
+                        }
+                    });
+                }
+            });
+            eventProxy(util.doc, e.switchup, function(_e) {
+                if (flg) {
+                    end({
+                        e: _e,
+                        move: {
+                            x: _e.pageX - startX,
+                            y: _e.pageY - startY
+                        }
+                    });
+
+                    flg = false;
+                }
+            });
+
+            function eventProxy(element, ev, callback) {
+                util.onEvent(
+                    element, ev, function(e) {
+                        var changed = mine._getEventTarget(e);
+                        callback(changed);
+                    });
+            }
+        }
     }
 });
-}());
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
 (function() {
 'use strict';
@@ -857,9 +1026,7 @@ Global.ExternalAndroidInterface = Global.klass({
 (function() {
 'use strict';
 
-var util = Global.utility,
-    win = util.win,
-    instanse;
+var instanse;
 
 Global.ExternalIOSInterface = Global.klass({
     init: function(config) {
@@ -876,6 +1043,8 @@ Global.ExternalIOSInterface = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
         hashCtrl: new Global.HashController(),
         call: function(conf) {
             this.hashCtrl.setHash(conf);
@@ -891,10 +1060,12 @@ Global.ExternalIOSInterface = Global.klass({
                 }
                 return false;
             };
-            win.addEventListener('hashchange', this.ios[name]);
+            this.utility.onEvent(
+                this.utility.win, this._event.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            win.removeEventListener('hashchange', this.ios[name]);
+            this.utility.offEvent(
+                this.utility.win, this._event.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
@@ -1084,8 +1255,9 @@ Global.Loading = Global.klass({
     },
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         onload: function(func) {
-            this.utility.win.addEventListener('load', func);
+            this.utility.onEvent(this.utility.win, this._event.load, func);
         }
     }
 });
@@ -1150,8 +1322,7 @@ Global.LocalStorage = Global.klass({
 (function() {
 'use strict';
 
-var util = Global.utility,
-    userAgent = navigator.userAgent;
+var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
     properties: {
@@ -1191,67 +1362,6 @@ Global.Mobile = Global.klass({
         hideAddress: function() {
             this.utility.onEvent(this.utility.win, 'load', hideAddressHandler, false);
             this.utility.onEvent(this.utility.win, 'orientationchange', hideAddressHandler, false);
-        },
-        flickAmount: function(vars) {
-            var startX,
-                startY;
-
-            util.onEvent(vars.element, 'touchstart', function(e) {
-                var changed = e.changedTouches[0];
-                startX = changed.pageX;
-                startY = changed.pageY;
-            });
-            util.onEvent(vars.element, 'touchend', function(e) {
-                var changed = e.changedTouches[0],
-                    amount = {
-                        x: changed.pageX - startX,
-                        y: changed.pageY - startY
-                    };
-
-                vars.callback(amount);
-            });
-        },
-        flickDirection: function(vars) {
-            this.flickAmount({
-                element: vars.element,
-                callback: function(amount) {
-                    var boundary = vars.boundary || 0,
-                        isChange = false,
-                        direction = {
-                            top: false,
-                            right: false,
-                            bottom: false,
-                            left: false,
-                            amount: amount
-                        };
-
-                    if (Math.abs(amount.x) > boundary) {
-                        if (amount.x > 0) {
-                            direction.right = true;
-                        }
-                        else if (amount.x < 0) {
-                            direction.left = true;
-                        }
-
-                        isChange = true;
-                    }
-
-                    if (Math.abs(amount.y) > boundary) {
-                        if (amount.y > 0) {
-                            direction.bottom = true;
-                        }
-                        else if (amount.y < 0) {
-                            direction.top = true;
-                        }
-
-                        isChange = true;
-                    }
-
-                    if (isChange) {
-                        vars.callback(direction);
-                    }
-                }
-            });
         },
         orientationCheck: function() {
             if (

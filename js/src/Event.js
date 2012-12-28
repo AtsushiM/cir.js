@@ -12,6 +12,12 @@ Global.Event = Global.klass({
         if (config.single && instance) {
             return instance;
         }
+        if (
+            config.mobileMode === undefined &&
+            this.utility.isTouchDevice()
+        ) {
+            config.mobileMode = true;
+        }
 
         // switch event
         if (config.mobileMode) {
@@ -32,6 +38,9 @@ Global.Event = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
+        load: 'load',
+        hashchange: 'hashchange',
         click: 'click',
         mousedown: 'mousedown',
         mousemove: 'mousemove',

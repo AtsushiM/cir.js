@@ -5,6 +5,7 @@ src/Bind/\n\
 src/CanvasImage/\n\
 src/CanvasRender/\n\
 src/DataStore/\n\
+src/DragFlick/\n\
 src/Event/\n\
 src/ExternalAndroidInterface/\n\
 src/ExternalIOSInterface/\n\
@@ -20,8 +21,6 @@ src/NumberImage/\n\
 src/Observer/\n\
 src/PreRender/\n\
 src/ScriptLoad/\n\
-src/Selector/\n\
-src/Selector.methods/\n\
 src/ServerMeta/\n\
 src/SessionStorage/\n\
 src/Surrogate/\n\
@@ -31,6 +30,8 @@ src/Twitter/\n\
 src/XML/\n\
 src/extend/\n\
 src/klass/\n\
+src/selector/\n\
+src/selector.methods/\n\
 src/utility/\n\
 </script>\
 <script type="text/template" id="jasmineClassList">\
@@ -39,6 +40,7 @@ src/utility/\n\
 ../../js/src/CanvasImage.js\n\
 ../../js/src/CanvasRender.js\n\
 ../../js/src/DataStore.js\n\
+../../js/src/DragFlick.js\n\
 ../../js/src/Event.js\n\
 ../../js/src/ExternalAndroidInterface.js\n\
 ../../js/src/ExternalIOSInterface.js\n\
@@ -54,8 +56,6 @@ src/utility/\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/ScriptLoad.js\n\
-../../js/src/Selector.js\n\
-../../js/src/Selector.methods.js\n\
 ../../js/src/ServerMeta.js\n\
 ../../js/src/LocalStorage.js\n\
 ../../js/src/Surrogate.js\n\
@@ -65,6 +65,8 @@ src/utility/\n\
 ../../js/src/XML.js\n\
 ../../js/src/extend.js\n\
 ../../js/src/klass.js\n\
+../../js/src/selector.js\n\
+../../js/src/selector.methods.js\n\
 ../../js/src/utility.js\n\
 </script>\
 <script type="text/template" id="jasmineTestList">\
@@ -73,6 +75,7 @@ src/utility/\n\
 ../_src/src/CanvasImage/test.js\n\
 ../_src/src/CanvasRender/test.js\n\
 ../_src/src/DataStore/test.js\n\
+../_src/src/DragFlick/test.js\n\
 ../_src/src/Event/test.js\n\
 ../_src/src/ExternalAndroidInterface/test.js\n\
 ../_src/src/ExternalIOSInterface/test.js\n\
@@ -88,8 +91,6 @@ src/utility/\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
 ../_src/src/ScriptLoad/test.js\n\
-../_src/src/Selector/test.js\n\
-../_src/src/Selector.methods/test.js\n\
 ../_src/src/ServerMeta/test.js\n\
 ../_src/src/SessionStorage/test.js\n\
 ../_src/src/Surrogate/test.js\n\
@@ -99,6 +100,8 @@ src/utility/\n\
 ../_src/src/XML/test.js\n\
 ../_src/src/extend/test.js\n\
 ../_src/src/klass/test.js\n\
+../_src/src/selector/test.js\n\
+../_src/src/selector.methods/test.js\n\
 ../_src/src/utility/test.js\n\
 </script>\
 ');

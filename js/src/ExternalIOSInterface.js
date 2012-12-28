@@ -2,9 +2,7 @@
 (function() {
 'use strict';
 
-var util = Global.utility,
-    win = util.win,
-    instanse;
+var instanse;
 
 Global.ExternalIOSInterface = Global.klass({
     init: function(config) {
@@ -21,6 +19,8 @@ Global.ExternalIOSInterface = Global.klass({
         }
     },
     properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
         hashCtrl: new Global.HashController(),
         call: function(conf) {
             this.hashCtrl.setHash(conf);
@@ -36,10 +36,12 @@ Global.ExternalIOSInterface = Global.klass({
                 }
                 return false;
             };
-            win.addEventListener('hashchange', this.ios[name]);
+            this.utility.onEvent(
+                this.utility.win, this._event.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            win.removeEventListener('hashchange', this.ios[name]);
+            this.utility.offEvent(
+                this.utility.win, this._event.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
