@@ -7,6 +7,7 @@ var userAgent = navigator.userAgent;
 Global.Mobile = Global.klass({
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -31,17 +32,17 @@ Global.Mobile = Global.klass({
             if (!isNoTop) {
                 this.utility.pageTop();
             }
-            this.utility.onEvent(this.utility.doc, 'touchmove', preventDefault);
+            this.utility.onEvent(this.utility.doc, this._event.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
                 this.utility.pageTop();
             }
-            this.utility.offEvent(this.utility.doc, 'touchmove', preventDefault);
+            this.utility.offEvent(this.utility.doc, this._event.touchmove, preventDefault);
         },
         hideAddress: function() {
-            this.utility.onEvent(this.utility.win, 'load', hideAddressHandler, false);
-            this.utility.onEvent(this.utility.win, 'orientationchange', hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, this._event.load, hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, this._event.orientationchange, hideAddressHandler, false);
         },
         orientationCheck: function() {
             if (
@@ -87,9 +88,9 @@ Global.Mobile = Global.klass({
                 set(mine.utility.offEvent, func);
             }
             function set(setfunc, handler) {
-                setfunc(mine.utility.win, 'load', handler);
-                setfunc(mine.utility.win, 'orientationchange', handler);
-                setfunc(mine.utility.win, 'resize', handler);
+                setfunc(mine.utility.win, mine._event.load, handler);
+                setfunc(mine.utility.win, mine._event.orientationchange, handler);
+                setfunc(mine.utility.win, mine._event.resize, handler);
             }
             function onechange() {
                 change();

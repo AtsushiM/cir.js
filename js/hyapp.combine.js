@@ -444,6 +444,46 @@ Global.selector.methods = {
     }
 };
 }());
+/* Test: "../../spec/_src/src/Event/test.js" */
+(function() {
+'use strict';
+
+var instance,
+    isTouch = Global.utility.isTouchDevice();
+
+Global.Event = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        // singleton
+        if (config.single && instance) {
+            return instance;
+        }
+
+        if (config.single) {
+            instance = this;
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        switchclick: isTouch ? 'touchstart' : 'click',
+        switchdown: isTouch ? 'touchstart' : 'mousedown',
+        switchmove: isTouch ? 'touchmove' : 'mousemove',
+        switchup: isTouch ? 'touchend' : 'mouseup',
+        load: 'load',
+        hashchange: 'hashchange',
+        click: 'click',
+        mousedown: 'mousedown',
+        mousemove: 'mousemove',
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend',
+        orientationchange: 'orientationchange',
+        resize: 'resize'
+    }
+});
+}());
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
     properties: {
@@ -524,59 +564,6 @@ Global.HashController = Global.klass({
         }
     }
 });
-/* Test: "../../spec/_src/src/Event/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
-Global.Event = Global.klass({
-    init: function(config) {
-        config = config || {};
-
-        // singleton
-        if (config.single && instance) {
-            return instance;
-        }
-        if (
-            config.mobileMode === undefined &&
-            this.utility.isTouchDevice()
-        ) {
-            config.mobileMode = true;
-        }
-
-        // switch event
-        if (config.mobileMode) {
-            this.switchclick = 'touchstart';
-            this.switchdown = 'touchstart';
-            this.switchmove = 'touchmove';
-            this.switchup = 'touchend';
-        }
-        else {
-            this.switchclick = 'click';
-            this.switchdown = 'mousedown';
-            this.switchmove = 'mousemove';
-            this.switchup = 'mouseup';
-        }
-
-        if (config.single) {
-            instance = this;
-        }
-    },
-    properties: {
-        utility: Global.utility,
-        load: 'load',
-        hashchange: 'hashchange',
-        click: 'click',
-        mousedown: 'mousedown',
-        mousemove: 'mousemove',
-        mouseup: 'mouseup',
-        touchstart: 'touchstart',
-        touchmove: 'touchmove',
-        touchend: 'touchend'
-    }
-});
-}());
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = Global.klass({
     init: function() {
@@ -1229,6 +1216,7 @@ Global.ImgLoad = Global.klass({
     },
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         start: function() {
             var img,
                 i, len;
@@ -1236,7 +1224,8 @@ Global.ImgLoad = Global.klass({
             for (i = 0, len = this.srccount; i < len; i++) {
                 img = this.utility.makeElement('img');
                 img.src = this.srcs[i];
-                img.onload = this.check;
+
+                this.utility.onEvent(img, this._event.load, this.check);
 
                 this.loadedsrcs.push(img);
             }
@@ -1327,6 +1316,7 @@ var userAgent = navigator.userAgent;
 Global.Mobile = Global.klass({
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -1351,17 +1341,17 @@ Global.Mobile = Global.klass({
             if (!isNoTop) {
                 this.utility.pageTop();
             }
-            this.utility.onEvent(this.utility.doc, 'touchmove', preventDefault);
+            this.utility.onEvent(this.utility.doc, this._event.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
                 this.utility.pageTop();
             }
-            this.utility.offEvent(this.utility.doc, 'touchmove', preventDefault);
+            this.utility.offEvent(this.utility.doc, this._event.touchmove, preventDefault);
         },
         hideAddress: function() {
-            this.utility.onEvent(this.utility.win, 'load', hideAddressHandler, false);
-            this.utility.onEvent(this.utility.win, 'orientationchange', hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, this._event.load, hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, this._event.orientationchange, hideAddressHandler, false);
         },
         orientationCheck: function() {
             if (
@@ -1407,9 +1397,9 @@ Global.Mobile = Global.klass({
                 set(mine.utility.offEvent, func);
             }
             function set(setfunc, handler) {
-                setfunc(mine.utility.win, 'load', handler);
-                setfunc(mine.utility.win, 'orientationchange', handler);
-                setfunc(mine.utility.win, 'resize', handler);
+                setfunc(mine.utility.win, mine._event.load, handler);
+                setfunc(mine.utility.win, mine._event.orientationchange, handler);
+                setfunc(mine.utility.win, mine._event.resize, handler);
             }
             function onechange() {
                 change();
@@ -1620,6 +1610,7 @@ Global.PreRender = Global.klass({
 Global.ScriptLoad = Global.klass({
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         requests: function(varary) {
             var i = 0,
                 len = varary.length;
@@ -1636,7 +1627,7 @@ Global.ScriptLoad = Global.klass({
             this.utility.body.appendChild(script);
 
             if (vars.callback) {
-                script.onload = vars.callback;
+                this.utility.onEvent(script, this._event.load, vars.callback);
             }
         }
     }
@@ -1807,7 +1798,7 @@ Global.Throttle = Global.klass({
         this.waitid = null;
     },
     properties: {
-        exec: function(vars) {
+        request: function(vars) {
             if (this.locked) {
                 return false;
             }

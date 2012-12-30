@@ -2,7 +2,8 @@
 (function() {
 'use strict';
 
-var instance;
+var instance,
+    isTouch = Global.utility.isTouchDevice();
 
 Global.Event = Global.klass({
     init: function(config) {
@@ -12,26 +13,6 @@ Global.Event = Global.klass({
         if (config.single && instance) {
             return instance;
         }
-        if (
-            config.mobileMode === undefined &&
-            this.utility.isTouchDevice()
-        ) {
-            config.mobileMode = true;
-        }
-
-        // switch event
-        if (config.mobileMode) {
-            this.switchclick = 'touchstart';
-            this.switchdown = 'touchstart';
-            this.switchmove = 'touchmove';
-            this.switchup = 'touchend';
-        }
-        else {
-            this.switchclick = 'click';
-            this.switchdown = 'mousedown';
-            this.switchmove = 'mousemove';
-            this.switchup = 'mouseup';
-        }
 
         if (config.single) {
             instance = this;
@@ -39,6 +20,10 @@ Global.Event = Global.klass({
     },
     properties: {
         utility: Global.utility,
+        switchclick: isTouch ? 'touchstart' : 'click',
+        switchdown: isTouch ? 'touchstart' : 'mousedown',
+        switchmove: isTouch ? 'touchmove' : 'mousemove',
+        switchup: isTouch ? 'touchend' : 'mouseup',
         load: 'load',
         hashchange: 'hashchange',
         click: 'click',
@@ -47,7 +32,9 @@ Global.Event = Global.klass({
         mouseup: 'mouseup',
         touchstart: 'touchstart',
         touchmove: 'touchmove',
-        touchend: 'touchend'
+        touchend: 'touchend',
+        orientationchange: 'orientationchange',
+        resize: 'resize'
     }
 });
 }());

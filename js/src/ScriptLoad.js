@@ -2,6 +2,7 @@
 Global.ScriptLoad = Global.klass({
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         requests: function(varary) {
             var i = 0,
                 len = varary.length;
@@ -18,7 +19,7 @@ Global.ScriptLoad = Global.klass({
             this.utility.body.appendChild(script);
 
             if (vars.callback) {
-                script.onload = vars.callback;
+                this.utility.onEvent(script, this._event.load, vars.callback);
             }
         }
     }

@@ -23,6 +23,7 @@ Global.ImgLoad = Global.klass({
     },
     properties: {
         utility: Global.utility,
+        _event: new Global.Event(),
         start: function() {
             var img,
                 i, len;
@@ -30,7 +31,8 @@ Global.ImgLoad = Global.klass({
             for (i = 0, len = this.srccount; i < len; i++) {
                 img = this.utility.makeElement('img');
                 img.src = this.srcs[i];
-                img.onload = this.check;
+
+                this.utility.onEvent(img, this._event.load, this.check);
 
                 this.loadedsrcs.push(img);
             }
