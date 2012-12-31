@@ -7,8 +7,8 @@ SRC = namespace_start.js utility.js klass.js extend.js selector.js selector.meth
 # Minimum configuration + element selector
 # SRC = namespace_start.js utility.js klass.js extend.js selector.js selector.methods.js Event.js Mobile.js Observer.js namespace_end.js
 
-COMBINE = ../hyapp.combine.js
-COMPRESS = ../hyapp.js
+COMBINE = ../cir.combine.js
+COMPRESS = ../cir.js
 
 $(COMBINE) : $(SRC)
 	cat $^ > $@

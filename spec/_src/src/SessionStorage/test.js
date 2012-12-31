@@ -5,7 +5,7 @@ describe('SessionStorageは', function() {
 
     beforeEach(function() {
         // init
-        storage = new HYAPP.SessionStorage();
+        storage = new C.SessionStorage();
     });
     afterEach(function() {
         // clear

@@ -8,7 +8,7 @@ describe('FPSは', function() {
         criterion = 10;
 
     function setFPS() {
-        fps = new HYAPP.FPS({
+        fps = new C.FPS({
             criterion: criterion,
             enterframe: dammy.enterframe
         });
@@ -24,11 +24,11 @@ describe('FPSは', function() {
     });
 
     it('singleオプションでsingletonになる', function() {
-        var fps1 = new HYAPP.FPS({
+        var fps1 = new C.FPS({
                 single: true,
                 enterframe: dammy.enterframe
             }),
-            fps2 = new HYAPP.FPS({
+            fps2 = new C.FPS({
                 single: true,
                 enterframe: dammy.enterframe
             });

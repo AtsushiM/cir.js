@@ -4,8 +4,8 @@ describe('ScriptLoadは', function() {
 
     beforeEach(function() {
         // init
-        if (window.HYAPP) {
-            scriptload = new HYAPP.ScriptLoad();
+        if (window.C) {
+            scriptload = new C.ScriptLoad();
         }
         else {
             scriptload = new Global.ScriptLoad();

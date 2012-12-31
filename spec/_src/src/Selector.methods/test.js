@@ -1,7 +1,7 @@
 /* Class: "../../../../js/src/selector.methods.js" */
 describe('selector.methodsは', function() {
-    if (window.HYAPP) {
-        Global = HYAPP;
+    if (window.C) {
+        Global = C;
     }
 
     var selector = Global.selector('body'),

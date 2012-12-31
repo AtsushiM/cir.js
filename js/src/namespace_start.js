@@ -1,4 +1,5 @@
-var HYAPP = {};
+// Cool Is Right.
+var C = {};
 (function() {
     'use strict';
-    var Global = HYAPP;
+    var Global = C;

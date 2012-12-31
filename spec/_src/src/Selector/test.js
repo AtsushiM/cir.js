@@ -2,8 +2,8 @@
 describe('selectorは', function() {
     var selector;
 
-    if (window.HYAPP) {
-        Global = HYAPP;
+    if (window.C) {
+        Global = C;
     }
 
     beforeEach(function() {

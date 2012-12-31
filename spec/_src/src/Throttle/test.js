@@ -8,7 +8,7 @@ describe('Throttleは', function() {
 
     beforeEach(function() {
         // init
-        throttle = new HYAPP.Throttle({
+        throttle = new C.Throttle({
             waittime: 100,
             callback: argfunction
         });

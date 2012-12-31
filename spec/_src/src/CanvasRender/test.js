@@ -2,19 +2,19 @@
 describe('CanvasRenderは', function() {
     var canvasrender,
         canvas = document.createElement('canvas'),
-        r = new HYAPP.CanvasImage({
+        r = new C.CanvasImage({
             src: '/spec/common/r.png',
             width: 100,
             height: 100,
             onload: function() {}
         }),
-        g = new HYAPP.CanvasImage({
+        g = new C.CanvasImage({
             src: '/spec/common/g.png',
             width: 100,
             height: 100,
             onload: function() {}
         }),
-        b = new HYAPP.CanvasImage({
+        b = new C.CanvasImage({
             src: '/spec/common/b.png',
             width: 100,
             height: 100,
@@ -25,7 +25,7 @@ describe('CanvasRenderは', function() {
 
     beforeEach(function() {
         // init
-        canvasrender = new HYAPP.CanvasRender({
+        canvasrender = new C.CanvasRender({
             canvas: canvas,
             width: 100,
             height: 100

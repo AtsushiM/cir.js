@@ -5,7 +5,7 @@ describe('Bindは', function() {
 
     beforeEach(function() {
         // init
-        bind = new HYAPP.Bind();
+        bind = new C.Bind();
     });
     afterEach(function() {
         bind.remove(eventHandeler);

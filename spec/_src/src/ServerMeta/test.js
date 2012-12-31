@@ -4,14 +4,14 @@ describe('ServerMetaは', function() {
 
     beforeEach(function() {
         // init
-        servermeta = new HYAPP.ServerMeta();
+        servermeta = new C.ServerMeta();
     });
     afterEach(function() {
         // clear
     });
 
     it('初期化完了時にcallbackを実行する', function() {
-        servermeta = new HYAPP.ServerMeta({
+        servermeta = new C.ServerMeta({
             callback: function() {
                 expect(0).toEqual(0);
             }

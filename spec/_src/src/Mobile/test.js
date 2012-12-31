@@ -4,7 +4,7 @@ describe('Mobileは', function() {
 
     beforeEach(function() {
         // init
-        mb = new HYAPP.Mobile();
+        mb = new C.Mobile();
     });
     afterEach(function() {
         // clear

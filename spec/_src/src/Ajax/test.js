@@ -4,7 +4,7 @@ describe('Ajaxは', function() {
 
     beforeEach(function() {
         // init
-        ajax = new HYAPP.Ajax();
+        ajax = new C.Ajax();
     });
     afterEach(function() {
         // clear

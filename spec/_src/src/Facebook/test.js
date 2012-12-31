@@ -4,7 +4,7 @@ describe('Facebookは', function() {
 
     beforeEach(function() {
         // init
-        facebook = new HYAPP.Facebook();
+        facebook = new C.Facebook();
     });
     afterEach(function() {
         // clear

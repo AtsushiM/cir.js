@@ -4,7 +4,7 @@ describe('Eventは', function() {
 
     beforeEach(function() {
         // init
-        e = new HYAPP.Event({
+        e = new C.Event({
             isMobile: function() {
                 return false;
             }
@@ -15,10 +15,10 @@ describe('Eventは', function() {
     });
 
     it('singleオプションでsingletonになる', function() {
-        var e1 = new HYAPP.Event({
+        var e1 = new C.Event({
                 single: true
             }),
-            e2 = new HYAPP.Event({
+            e2 = new C.Event({
                 single: true
             });
 
@@ -26,7 +26,7 @@ describe('Eventは', function() {
     });
 
     it('PCとスマートフォンでイベントを切り替える', function() {
-        var eSP = new HYAPP.Event({
+        var eSP = new C.Event({
                 isMobile: function() {
                     return true;
                 }

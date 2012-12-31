@@ -5,7 +5,7 @@ describe('LocalStorageは', function() {
 
     beforeEach(function() {
         // init
-        storage = new HYAPP.LocalStorage();
+        storage = new C.LocalStorage();
     });
     afterEach(function() {
         // clear

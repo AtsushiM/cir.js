@@ -5,7 +5,7 @@ describe('XMLは', function() {
 
     beforeEach(function() {
         // init
-        xml = new HYAPP.XML({
+        xml = new C.XML({
             data: data
         });
     });

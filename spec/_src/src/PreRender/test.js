@@ -5,7 +5,7 @@ describe('PreRenderは', function() {
 
     beforeEach(function() {
         // init
-        prerender = new HYAPP.PreRender({
+        prerender = new C.PreRender({
             elements: [$body],
             guesslimit: 10,
             looptime: 10,

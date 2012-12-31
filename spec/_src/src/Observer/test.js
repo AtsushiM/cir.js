@@ -4,17 +4,17 @@ describe('Observerは', function() {
 
     beforeEach(function() {
         // init
-        observer = new HYAPP.Observer();
+        observer = new C.Observer();
     });
     afterEach(function() {
         // clear
     });
 
     it('singleオプションでsingletonになる', function() {
-        var observer1 = new HYAPP.Observer({
+        var observer1 = new C.Observer({
                 single: true
             }),
-            observer2 = new HYAPP.Observer({
+            observer2 = new C.Observer({
                 single: true
             });
 

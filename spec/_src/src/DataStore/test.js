@@ -3,20 +3,20 @@ describe('DataStoreは', function() {
     var store;
 
     beforeEach(function() {
-        store = new HYAPP.DataStore();
+        store = new C.DataStore();
     });
     afterEach(function() {
         store.reset();
     });
 
     it('singleオプションでsingletonになる', function() {
-        var store1 = new HYAPP.DataStore({
+        var store1 = new C.DataStore({
                 single: true
             }),
-            store2 = new HYAPP.DataStore({
+            store2 = new C.DataStore({
                 single: true
             }),
-            store3 = new HYAPP.DataStore({
+            store3 = new C.DataStore({
                 single: false
             });
 

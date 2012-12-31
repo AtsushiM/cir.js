@@ -15,8 +15,8 @@ describe('Loadingは', function() {
                 }
             }
         },
-        loading_after = new HYAPP.Loading(),
-        loading_before = new HYAPP.Loading({
+        loading_after = new C.Loading(),
+        loading_before = new C.Loading({
             onload: dammy.before.onload
         });
 

@@ -8,7 +8,7 @@ describe('Surrogateは', function() {
 
     function before() {
         // init
-        surrogate = new HYAPP.Surrogate({
+        surrogate = new C.Surrogate({
             delay: 20,
             callback: dammy.callback
         });
