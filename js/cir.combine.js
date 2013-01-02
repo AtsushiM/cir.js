@@ -340,7 +340,7 @@ Global.selector = function(query, _parent) {
         _par = _parent || document,
         $elements = _par.querySelectorAll(query),
         base,
-        instanse,
+        instance,
         i = 0,
         len = $elements.length;
 
@@ -350,16 +350,16 @@ Global.selector = function(query, _parent) {
 
     base = function() {};
     base.prototype = Mine.methods;
-    instanse = new base();
+    instance = new base();
 
-    instanse.length = len;
-    instanse.selector = query;
+    instance.length = len;
+    instance.selector = query;
 
     for (; i < len; i++) {
-        instanse[i] = $elements[i];
+        instance[i] = $elements[i];
     }
 
-    return instanse;
+    return instance;
 };
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
@@ -535,20 +535,19 @@ Global.easing = {
 (function() {
 'use strict';
 
-var instance,
-    isTouch = Global.utility.isTouchDevice();
+var isTouch = Global.utility.isTouchDevice();
 
 Global.Event = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.Event.instance) {
+            return Global.Event.instance;
         }
 
         if (config.single) {
-            instance = this;
+            Global.Event.instance = this;
         }
     },
     properties: {
@@ -570,6 +569,7 @@ Global.Event = Global.klass({
         resize: 'resize'
     }
 });
+Global.Event.instance = null;
 }());
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
@@ -807,24 +807,19 @@ Global.CanvasRender = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.DataStore = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.DataStore.instance) {
+            return Global.DataStore.instance;
         }
 
         this.data = {};
 
         if (config.single) {
-            instance = this;
+            Global.DataStore.instance = this;
         }
     },
     properties: {
@@ -865,7 +860,7 @@ Global.DataStore = Global.klass({
         }
     }
 });
-}());
+Global.DataStore.instance = null;
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global.DragFlick = Global.klass({
     init: function(config) {
@@ -1024,47 +1019,33 @@ Global.DragFlick = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
-(function() {
-'use strict';
-
-var instanse;
-
 Global.ExternalInterface = function(config) {
     config = config || {};
 
     var external;
 
-    if (config.single && instanse) {
-        return instanse;
+    if (config.single && Global.ExternalInterface.instance) {
+        return Global.ExternalInterface.instance;
     }
 
     if (config.android) {
-        external = new Global.ExternalAndroidInterface(config);
+        external = new Global.ExternalInterface.Android(config);
     }
     else {
-        external = new Global.ExternalIOSInterface(config);
+        external = new Global.ExternalInterface.IOS(config);
     }
 
     if (config.single) {
-        instanse = external;
+        Global.ExternalInterface.instance = external;
     }
 
     return external;
 };
-}());
-/* Test: "../../spec/_src/src/ExternalAndroidInterface/test.js" */
-(function() {
-'use strict';
-
-var instanse;
-
-Global.ExternalAndroidInterface = Global.klass({
+Global.ExternalInterface.instance = null;
+/* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
+Global.ExternalInterface.Android = Global.klass({
     init: function(config) {
         config = config || {};
-
-        if (config.single && instanse) {
-            return instanse;
-        }
 
         this.android = config.android;
         this.externalObj = config.externalObj;
@@ -1072,10 +1053,6 @@ Global.ExternalAndroidInterface = Global.klass({
         if (!this.externalObj) {
             Global.EXTERNAL_ANDROID = {};
             this.externalObj = Global.EXTERNAL_ANDROID;
-        }
-
-        if (config.single) {
-            instanse = this;
         }
     },
     properties: {
@@ -1095,26 +1072,10 @@ Global.ExternalAndroidInterface = Global.klass({
         }
     }
 });
-}());
-/* Test: "../../spec/_src/src/ExternalIOSInterface/test.js" */
-(function() {
-'use strict';
-
-var instanse;
-
-Global.ExternalIOSInterface = Global.klass({
+/* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
+Global.ExternalInterface.IOS = Global.klass({
     init: function(config) {
-        config = config || {};
-
-        if (config.single && instanse) {
-            return instanse;
-        }
-
         this.ios = {};
-
-        if (config.single) {
-            instanse = this;
-        }
     },
     properties: {
         utility: Global.utility,
@@ -1144,7 +1105,6 @@ Global.ExternalIOSInterface = Global.klass({
         }
     }
 });
-}());
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = Global.klass({
     properties: {
@@ -1338,22 +1298,17 @@ Global.Loading = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.LocalStorage = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.LocalStorage.instance) {
+            return Global.LocalStorage.instance;
         }
 
         if (config.single) {
-            instance = this;
+            Global.LocalStorage.instance = this;
         }
     },
     properties: {
@@ -1393,7 +1348,7 @@ Global.LocalStorage = Global.klass({
         }
     }
 });
-}());
+Global.LocalStorage.instance = null;
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 (function() {
 'use strict';
@@ -1549,24 +1504,19 @@ Global.NumberImage = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.Observer = Global.klass({
     init: function(config) {
         config = config || {single: false};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.Observer.instance) {
+            return Global.Observer.instance;
         }
 
         this.observed = {};
 
         if (config.single) {
-            instance = this;
+            Global.Observer.instance = this;
         }
     },
     properties: {
@@ -1642,7 +1592,7 @@ Global.Observer = Global.klass({
         }
     }
 });
-}());
+Global.Observer.instance = null;
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 Global.PreRender = Global.klass({
     init: function(config) {
@@ -1795,22 +1745,17 @@ function getHeader(callback) {
 }
 }());
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.SessionStorage = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.SessionStorage.instance) {
+            return Global.SessionStorage.instance;
         }
 
         if (config.single) {
-            instance = this;
+            Global.SessionStorage.instance = this;
         }
     },
     properties: {
@@ -1850,8 +1795,7 @@ Global.SessionStorage = Global.klass({
         }
     }
 });
-}());
-
+Global.SessionStorage.instance = null;
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
 Global.Surrogate = Global.klass({
     init: function(config) {
@@ -1920,7 +1864,7 @@ Global.Timer = function(config) {
         endtime = limitx1000,
         preformedtime = getPreformedNum(limit),
         loopid,
-        instanse = {
+        instance = {
             getLimit: function() {
                 return limit;
             },
@@ -1966,7 +1910,7 @@ Global.Timer = function(config) {
         onupdate(preformedtime);
 
         if (nowtime > endtime) {
-            instanse.stop();
+            instance.stop();
             ontimeup();
             return true;
         }
@@ -2048,7 +1992,7 @@ Global.Timer = function(config) {
         };
     }
 
-    return instanse;
+    return instance;
 };
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 Global.Tweener = Global.klass({

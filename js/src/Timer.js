@@ -13,7 +13,7 @@ Global.Timer = function(config) {
         endtime = limitx1000,
         preformedtime = getPreformedNum(limit),
         loopid,
-        instanse = {
+        instance = {
             getLimit: function() {
                 return limit;
             },
@@ -59,7 +59,7 @@ Global.Timer = function(config) {
         onupdate(preformedtime);
 
         if (nowtime > endtime) {
-            instanse.stop();
+            instance.stop();
             ontimeup();
             return true;
         }
@@ -141,5 +141,5 @@ Global.Timer = function(config) {
         };
     }
 
-    return instanse;
+    return instance;
 };

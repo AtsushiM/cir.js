@@ -1,20 +1,15 @@
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.SessionStorage = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.SessionStorage.instance) {
+            return Global.SessionStorage.instance;
         }
 
         if (config.single) {
-            instance = this;
+            Global.SessionStorage.instance = this;
         }
     },
     properties: {
@@ -54,5 +49,4 @@ Global.SessionStorage = Global.klass({
         }
     }
 });
-}());
-
+Global.SessionStorage.instance = null;

@@ -1,20 +1,15 @@
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.LocalStorage = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.LocalStorage.instance) {
+            return Global.LocalStorage.instance;
         }
 
         if (config.single) {
-            instance = this;
+            Global.LocalStorage.instance = this;
         }
     },
     properties: {
@@ -54,4 +49,4 @@ Global.LocalStorage = Global.klass({
         }
     }
 });
-}());
+Global.LocalStorage.instance = null;

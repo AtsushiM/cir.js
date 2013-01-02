@@ -1,22 +1,17 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.DataStore = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.DataStore.instance) {
+            return Global.DataStore.instance;
         }
 
         this.data = {};
 
         if (config.single) {
-            instance = this;
+            Global.DataStore.instance = this;
         }
     },
     properties: {
@@ -57,4 +52,4 @@ Global.DataStore = Global.klass({
         }
     }
 });
-}());
+Global.DataStore.instance = null;

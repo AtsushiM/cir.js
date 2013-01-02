@@ -6,7 +6,7 @@ Global.selector = function(query, _parent) {
         _par = _parent || document,
         $elements = _par.querySelectorAll(query),
         base,
-        instanse,
+        instance,
         i = 0,
         len = $elements.length;
 
@@ -16,14 +16,14 @@ Global.selector = function(query, _parent) {
 
     base = function() {};
     base.prototype = Mine.methods;
-    instanse = new base();
+    instance = new base();
 
-    instanse.length = len;
-    instanse.selector = query;
+    instance.length = len;
+    instance.selector = query;
 
     for (; i < len; i++) {
-        instanse[i] = $elements[i];
+        instance[i] = $elements[i];
     }
 
-    return instanse;
+    return instance;
 };

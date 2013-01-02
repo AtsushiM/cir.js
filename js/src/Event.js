@@ -2,20 +2,19 @@
 (function() {
 'use strict';
 
-var instance,
-    isTouch = Global.utility.isTouchDevice();
+var isTouch = Global.utility.isTouchDevice();
 
 Global.Event = Global.klass({
     init: function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.Event.instance) {
+            return Global.Event.instance;
         }
 
         if (config.single) {
-            instance = this;
+            Global.Event.instance = this;
         }
     },
     properties: {
@@ -37,4 +36,5 @@ Global.Event = Global.klass({
         resize: 'resize'
     }
 });
+Global.Event.instance = null;
 }());

@@ -1,22 +1,17 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
-(function() {
-'use strict';
-
-var instance;
-
 Global.Observer = Global.klass({
     init: function(config) {
         config = config || {single: false};
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.Observer.instance) {
+            return Global.Observer.instance;
         }
 
         this.observed = {};
 
         if (config.single) {
-            instance = this;
+            Global.Observer.instance = this;
         }
     },
     properties: {
@@ -92,4 +87,4 @@ Global.Observer = Global.klass({
         }
     }
 });
-}());
+Global.Observer.instance = null;
