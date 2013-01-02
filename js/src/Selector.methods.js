@@ -23,18 +23,17 @@ function exe(_this, func, arg) {
 }
 
 function makeAry(arg) {
-    var ary = [null],
-        i = 0,
-        len = arg ? arg.length : 0;
+    var ary = [null];
 
-    for (; i < len; i++) {
-        ary[i + 1] = arg[i];
-    }
+    ary.push.apply(ary, arg)
 
     return ary;
 }
 
 Global.selector.methods = {
+    _forexe: forExe,
+    _exe: exe,
+    _argary: makeAry,
     querySelectorAll: function(query) {
         return this[0].querySelectorAll(query);
     },

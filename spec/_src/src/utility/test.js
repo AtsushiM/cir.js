@@ -201,6 +201,12 @@ describe('utilityは', function() {
         expect(util.attrElement($body, 'width')).toEqual('100%');
     });
 
+    it('computedStyleElementでエレメントに適用されているStyleオブジェクトを取得する', function() {
+        var $body = util.$('body');
+
+        expect(util.computedStyleElement($body)).toBeDefined();
+    });
+
     it('appendElement(_parent, element)で_parentにelementをappendChildする', function() {
         var $body = util.$('body'),
             $make = util.makeElement('div');

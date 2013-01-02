@@ -5,6 +5,10 @@
 
     if (!window.C) {
         $ = window.$;
+
+        $('#test').animate({
+            paddingTop: 0
+        });
     }
     else {
         $ = C.selector;

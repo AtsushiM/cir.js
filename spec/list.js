@@ -34,6 +34,7 @@ src/extend/\n\
 src/klass/\n\
 src/selector/\n\
 src/selector.methods/\n\
+src/selector.methods.animate/\n\
 src/utility/\n\
 </script>\
 <script type="text/template" id="jasmineClassList">\
@@ -71,6 +72,7 @@ src/utility/\n\
 ../../js/src/klass.js\n\
 ../../js/src/selector.js\n\
 ../../js/src/selector.methods.js\n\
+../../js/src/selector.methods.animate.js\n\
 ../../js/src/utility.js\n\
 </script>\
 <script type="text/template" id="jasmineTestList">\
@@ -108,6 +110,7 @@ src/utility/\n\
 ../_src/src/klass/test.js\n\
 ../_src/src/selector/test.js\n\
 ../_src/src/selector.methods/test.js\n\
+../_src/src/selector.methods.animate/test.js\n\
 ../_src/src/utility/test.js\n\
 </script>\
 ');

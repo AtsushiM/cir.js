@@ -13,16 +13,6 @@ Global.Tweener = Global.klass({
             prop = property[name];
             prop.name = name;
 
-            if (!prop.from) {
-                if (target[name]) {
-                    prop.from = target[name].match(/^[0-9]+/)[0] * 1;
-                }
-
-                if (!prop.from) {
-                    prop.from = 0;
-                }
-            }
-
             prop.distance = prop.to - prop.from;
             prop.prefix = prop.prefix || '';
             prop.suffix = prop.suffix || 'px';

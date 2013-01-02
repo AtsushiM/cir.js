@@ -6,17 +6,28 @@
             document.getElementById('test').style,
             {
                 width: {
+                    from: 0,
                     to: 100
                 },
                 height: {
+                    from: 0,
                     to: 200
                 }
             },
             {
                 easing: C.easing.easeOutExpo,
-                onComplete: function() {
-                    alert('end');
-                }
+                onComplete: testAnimate
             }
         );
+
+    function testAnimate() {
+        var $ = C.selector;
+
+        $('#test').animate({
+            width: 50,
+            height: 100
+        }, 1000, 'easeOutExpo', function() {
+            alert('end');
+        });
+    }
 }());

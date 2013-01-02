@@ -77,6 +77,9 @@ Global.utility = {
             style[key] = value;
         }
     },
+    computedStyleElement: function(element) {
+        return doc.defaultView.getComputedStyle(element, null);
+    },
     appendElement: function(element, addelement) {
         element.appendChild(addelement);
     },
