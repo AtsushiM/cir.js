@@ -6,6 +6,7 @@ src/CanvasImage/\n\
 src/CanvasRender/\n\
 src/DataStore/\n\
 src/DragFlick/\n\
+src/Easing/\n\
 src/Event/\n\
 src/ExternalAndroidInterface/\n\
 src/ExternalIOSInterface/\n\
@@ -26,6 +27,7 @@ src/SessionStorage/\n\
 src/Surrogate/\n\
 src/Throttle/\n\
 src/Timer/\n\
+src/Tweener/\n\
 src/Twitter/\n\
 src/XML/\n\
 src/extend/\n\
@@ -41,6 +43,7 @@ src/utility/\n\
 ../../js/src/CanvasRender.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/DragFlick.js\n\
+../../js/src/Easing.js\n\
 ../../js/src/Event.js\n\
 ../../js/src/ExternalAndroidInterface.js\n\
 ../../js/src/ExternalIOSInterface.js\n\
@@ -61,6 +64,7 @@ src/utility/\n\
 ../../js/src/Surrogate.js\n\
 ../../js/src/Throttle.js\n\
 ../../js/src/Timer.js\n\
+../../js/src/Tweener.js\n\
 ../../js/src/Twitter.js\n\
 ../../js/src/XML.js\n\
 ../../js/src/extend.js\n\
@@ -76,6 +80,7 @@ src/utility/\n\
 ../_src/src/CanvasRender/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/DragFlick/test.js\n\
+../_src/src/Easing/test.js\n\
 ../_src/src/Event/test.js\n\
 ../_src/src/ExternalAndroidInterface/test.js\n\
 ../_src/src/ExternalIOSInterface/test.js\n\
@@ -96,6 +101,7 @@ src/utility/\n\
 ../_src/src/Surrogate/test.js\n\
 ../_src/src/Throttle/test.js\n\
 ../_src/src/Timer/test.js\n\
+../_src/src/Tweener/test.js\n\
 ../_src/src/Twitter/test.js\n\
 ../_src/src/XML/test.js\n\
 ../_src/src/extend/test.js\n\

@@ -445,6 +445,92 @@ Global.selector.methods = {
     }
 };
 }());
+/* Test: "../../spec/_src/src/easing/test.js" */
+Global.easing = {
+    easeInCubic: function(time, from, dist, duration) {
+        return dist * Math.pow(time / duration, 3) + from;
+    },
+    easeOutCubic: function(time, from, dist, duration) {
+        return dist * (Math.pow(time / duration - 1, 3) + 1) + from;
+    },
+    easeInOutCubic: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(time, 3) + from;
+        }
+        return dist / 2 * (Math.pow(time - 2, 3) + 2) + from;
+    },
+    easeInQuart: function(time, from, dist, duration) {
+        return dist * Math.pow(time / duration, 4) + from;
+    },
+    easeOutQuart: function(time, from, dist, duration) {
+        return -dist * (Math.pow(time / duration - 1, 4) - 1) + from;
+    },
+    easeInOutQuart: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(time, 4) + from;
+        }
+        return -dist / 2 * (Math.pow(time - 2, 4) - 2) + from;
+    },
+    easeInQuint: function(time, from, dist, duration) {
+        return dist * Math.pow(time / duration, 5) + from;
+    },
+    easeOutQuint: function(time, from, dist, duration) {
+        return dist * (Math.pow(time / duration - 1, 5) + 1) + from;
+    },
+    easeInOutQuint: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(time, 5) + from;
+        }
+        return dist / 2 * (Math.pow(time - 2, 5) + 2) + from;
+    },
+    easeInSine: function(time, from, dist, duration) {
+        return dist *
+            (1 - Math.cos(time / duration * (Math.PI / 2))) + from;
+    },
+    easeOutSine: function(time, from, dist, duration) {
+        return dist * Math.sin(time / duration * (Math.PI / 2)) + from;
+    },
+    easeInOutSine: function(time, from, dist, duration) {
+        return dist / 2 * (1 - Math.cos(Math.PI * time / duration)) + from;
+    },
+    easeInExpo: function(time, from, dist, duration) {
+        return dist * Math.pow(2, 10 * (time / duration - 1)) + from;
+    },
+    easeOutExpo: function(time, from, dist, duration) {
+        return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
+    },
+    easeInOutExpo: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(2, 10 * (time - 1)) + from;
+        }
+        return dist / 2 * (-Math.pow(2, -10 * --time) + 2) + from;
+    },
+    easeInCirc: function(time, from, dist, duration) {
+        return dist * (1 - Math.sqrt(1 - (time /= duration) * time)) + from;
+    },
+    easeOutCirc: function(time, from, dist, duration) {
+        return dist *
+            Math.sqrt(1 - (time = time / duration - 1) * time) + from;
+    },
+    easeInOutCirc: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * (1 - Math.sqrt(1 - time * time)) + from;
+        }
+        return dist / 2 * (Math.sqrt(1 - (time -= 2) * time) + 1) + from;
+    },
+    easeInQuad: function(time, from, dist, duration) {
+        return dist * (time /= duration) * time + from;
+    },
+    easeOutQuad: function(time, from, dist, duration) {
+        return -dist * (time /= duration) * (time - 2) + from;
+    },
+    easeInOutQuad: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * time * time + from;
+        }
+        return -dist / 2 * ((--time) * (time - 2) - 1) + from;
+    }
+};
 /* Test: "../../spec/_src/src/Event/test.js" */
 (function() {
 'use strict';
@@ -1964,6 +2050,120 @@ Global.Timer = function(config) {
 
     return instanse;
 };
+/* Test: "../../spec/_src/src/Tweener/test.js" */
+Global.Tweener = Global.klass({
+    init: function(target, property, option) {
+        var name,
+            prop;
+
+        option = option || {};
+
+        this.target = target;
+        this.property = [];
+
+        for (name in property) {
+            prop = property[name];
+            prop.name = name;
+
+            if (!prop.from) {
+                if (target[name]) {
+                    prop.from = target[name].match(/^[0-9]+/)[0] * 1;
+                }
+
+                if (!prop.from) {
+                    prop.from = 0;
+                }
+            }
+
+            prop.distance = prop.to - prop.from;
+            prop.prefix = prop.prefix || '';
+            prop.suffix = prop.suffix || 'px';
+
+            this.property.push(prop);
+        }
+
+        this.duration = option.duration || Global.Tweener.Duration;
+        this.easing = option.easing || this._easing;
+        this.onComplete = option.onComplete;
+
+        this.begin = Date.now();
+
+        Global.Tweener.Items.push(this);
+        if (!Global.Tweener.timerId) {
+            this.start();
+        }
+    },
+    properties: {
+        _easing: function(time, from, dist, duration) {
+            return dist * time / duration + from;
+        },
+        setProp: function(target, prop, point) {
+            target[prop.name] = prop.prefix + point + prop.suffix;
+        },
+        loop: function() {
+            var items = Global.Tweener.Items,
+                item,
+                now = Date.now(),
+                time,
+                n = items.length,
+                i,
+                len,
+                prop;
+
+            while (n--) {
+                item = items[n];
+                len = item.property.length;
+                time = now - item.begin;
+
+                if (time < item.duration) {
+                    for (i = 0; i < len; i++) {
+                        prop = item.property[i];
+
+                        this.setProp(item.target, prop, item.easing(
+                            time,
+                            prop.from,
+                            prop.distance,
+                            item.duration
+                        ));
+                    }
+                }
+                else {
+                    for (i = 0; i < len; i++) {
+                        prop = item.property[i];
+
+                        this.setProp(item.target, prop, prop.to);
+                    }
+                    if (item.onComplete) {
+                        item.onComplete();
+                    }
+                    items.splice(n, 1);
+                }
+            }
+            if (!items.length) {
+                this.end();
+            }
+        },
+        start: function() {
+            var mine = this;
+
+            Global.Tweener.timerId = setInterval(
+                function() {
+                    mine.loop();
+                },
+                1000 / Global.Tweener.FPS
+            );
+        },
+        end: function() {
+            Global.Tweener.Items = [];
+            clearInterval(Global.Tweener.timerId);
+            Global.Tweener.timerId = null;
+        }
+    }
+});
+Global.Tweener.timerId = null;
+Global.Tweener.Items = [];
+Global.Tweener.FPS = 30;
+Global.Tweener.Duration = 500;
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = Global.klass({
     properties: {

@@ -3,13 +3,11 @@
     var start = Date.now(),
         $;
 
-    if (!window.HYAPP) {
+    if (!window.C) {
         $ = window.$;
-
-       console.log($('.test').is('.no2'));
     }
     else {
-        $ = HYAPP.selector;
+        $ = C.selector;
     }
 
     var $test;
