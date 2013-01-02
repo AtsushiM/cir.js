@@ -1,6 +1,6 @@
 (function() {
-    C.Tweener.Duration = 1000;
-    C.Tweener.FPS = 60;
+    // C.Tweener.Duration = 1000;
+    // C.Tweener.FPS = 60;
 
     var tweener = new C.Tweener(
             document.getElementById('test').style,
@@ -15,7 +15,7 @@
                 }
             },
             {
-                easing: C.easing.easeOutExpo,
+                easing: null,
                 onComplete: testAnimate
             }
         );
@@ -27,7 +27,7 @@
             width: 50,
             height: 100
         }, 1000, 'easeOutExpo', function() {
-            alert('end');
+            console.log('anime end.');
         });
     }
 }());

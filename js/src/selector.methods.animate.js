@@ -10,7 +10,7 @@ if (Global.easing) {
     Easing = Global.easing;
 }
 
-methods = util.override(
+util.override(
     methods,
     {
         animate: function() {
@@ -22,6 +22,15 @@ methods = util.override(
 function animate(element, params, duration, easing, callback) {
     var style = element.style,
         tweener;
+
+    if (util.isFunction(duration)) {
+        callback = duration;
+        duration = null;
+    }
+    if (util.isFunction(easing)) {
+        callback = easing;
+        easing = null;
+    }
 
     tweener = new Global.Tweener(
         element.style,
@@ -36,29 +45,25 @@ function animate(element, params, duration, easing, callback) {
 function convertTweenerParam(element, params) {
     var name,
         computedStyle = util.computedStyleElement(element),
+        tosplit,
         retobj = {};
 
     for (name in params) {
+        tosplit = splitSuffix(params[name]);
+
         retobj[name] = {
-            from: removeSuffix(
-                  computedStyle.getPropertyValue(name)),
-            to: removeSuffix(params[name]),
-            suffix: getSuffix(params[name])
+            from: splitSuffix(computedStyle.getPropertyValue(name))[1] * 1 || 0,
+            to: tosplit[1] * 1 || 0,
+            suffix: tosplit[2]
         };
     }
 
     return retobj;
 }
-function getSuffix(value) {
-    value = '' + value;
+function splitSuffix(value) {
     value = value || '';
-
-    return value.match(/^[0-9\.]+(.*)/)[1] || 'px';
-}
-function removeSuffix(value) {
     value = '' + value;
-    value = value || '';
 
-    return value.match(/^[0-9\.]+/)[0] * 1 || 0;
+    return value.match(/^([0-9\.]+)(.*)/);
 }
 }());

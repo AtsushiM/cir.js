@@ -21,10 +21,11 @@ describe('selector.methods.animateは', function() {
                 width: 50,
                 height: 100
             }, 100, 'easeOutExpo', function() {
+                console.log('callback');
                 callback = true;
             });
         });
-        waits(100 + 10);
+        waits(100 + 100);
         runs(function() {
             expect(callback).toBeTruthy();
         });

@@ -447,7 +447,7 @@ Global.selector.methods = {
     }
 };
 }());
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
 'use strict';
 
@@ -459,7 +459,7 @@ if (Global.easing) {
     Easing = Global.easing;
 }
 
-methods = util.override(
+util.override(
     methods,
     {
         animate: function() {
@@ -471,6 +471,15 @@ methods = util.override(
 function animate(element, params, duration, easing, callback) {
     var style = element.style,
         tweener;
+
+    if (util.isFunction(duration)) {
+        callback = duration;
+        duration = null;
+    }
+    if (util.isFunction(easing)) {
+        callback = easing;
+        easing = null;
+    }
 
     tweener = new Global.Tweener(
         element.style,
@@ -485,30 +494,26 @@ function animate(element, params, duration, easing, callback) {
 function convertTweenerParam(element, params) {
     var name,
         computedStyle = util.computedStyleElement(element),
+        tosplit,
         retobj = {};
 
     for (name in params) {
+        tosplit = splitSuffix(params[name]);
+
         retobj[name] = {
-            from: removeSuffix(
-                  computedStyle.getPropertyValue(name)),
-            to: removeSuffix(params[name]),
-            suffix: getSuffix(params[name])
+            from: splitSuffix(computedStyle.getPropertyValue(name))[1] * 1 || 0,
+            to: tosplit[1] * 1 || 0,
+            suffix: tosplit[2]
         };
     }
 
     return retobj;
 }
-function getSuffix(value) {
-    value = '' + value;
+function splitSuffix(value) {
     value = value || '';
-
-    return value.match(/^[0-9\.]+(.*)/)[1] || 'px';
-}
-function removeSuffix(value) {
     value = '' + value;
-    value = value || '';
 
-    return value.match(/^[0-9\.]+/)[0] * 1 || 0;
+    return value.match(/^([0-9\.]+)(.*)/);
 }
 }());
 /* Test: "../../spec/_src/src/easing/test.js" */
@@ -2097,11 +2102,47 @@ Global.Tweener = Global.klass({
         _easing: function(time, from, dist, duration) {
             return dist * time / duration + from;
         },
-        setProp: function(target, prop, point) {
-            target[prop.name] = prop.prefix + point + prop.suffix;
-        },
+        _requestAnimationFrame: (function() {
+            var win = Global.utility.win,
+                anime = win.requestAnimationFrame ||
+                    win.webkitRequestAnimationFrame ||
+                    win.mozRequestAnimationFrame ||
+                    win.oRequestAnimationFrame ||
+                    win.msRequestAnimationFrame ||
+                    false;
+
+            if (anime) {
+                switch (anime) {
+                    case win.requestAnimationFrame:
+                        return function(callback) {
+                            requestAnimationFrame(callback);
+                        };
+                    case win.webkitRequestAnimationFrame:
+                        return function(callback) {
+                            webkitRequestAnimationFrame(callback);
+                        };
+                    case win.mozRequestAnimationFrame:
+                        return function(callback) {
+                            mozRequestAnimationFrame(callback);
+                        };
+                    case win.oRequestAnimationFrame:
+                        return function(callback) {
+                            oRequestAnimationFrame(callback);
+                        };
+                    case win.msRequestAnimationFrame:
+                        return function(callback) {
+                            msRequestAnimationFrame(callback);
+                        };
+                    default:
+                        return function(callback) {
+                            setTimeout(callback, 1000 / Global.Tweener.FPS);
+                        };
+                }
+            }
+        }()),
         loop: function() {
-            var items = Global.Tweener.Items,
+            var mine = this,
+                items = Global.Tweener.Items,
                 item,
                 now = Date.now(),
                 time,
@@ -2119,7 +2160,7 @@ Global.Tweener = Global.klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        this.setProp(item.target, prop, item.easing(
+                        Global.Tweener._setProp(item.target, prop, item.easing(
                             time,
                             prop.from,
                             prop.distance,
@@ -2131,7 +2172,7 @@ Global.Tweener = Global.klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        this.setProp(item.target, prop, prop.to);
+                        Global.Tweener._setProp(item.target, prop, prop.to);
                     }
                     if (item.onComplete) {
                         item.onComplete();
@@ -2139,19 +2180,24 @@ Global.Tweener = Global.klass({
                     items.splice(n, 1);
                 }
             }
-            if (!items.length) {
-                this.end();
+
+            if (items.length) {
+                mine._requestAnimationFrame(function() {
+                    mine.loop();
+                });
+
+                return true;
             }
+
+            this.end();
         },
         start: function() {
             var mine = this;
 
-            Global.Tweener.timerId = setInterval(
-                function() {
-                    mine.loop();
-                },
-                1000 / Global.Tweener.FPS
-            );
+            Global.Tweener.timerId = 1;
+            mine._requestAnimationFrame(function() {
+                mine.loop();
+            });
         },
         end: function() {
             Global.Tweener.Items = [];
@@ -2160,6 +2206,9 @@ Global.Tweener = Global.klass({
         }
     }
 });
+Global.Tweener._setProp = function(target, prop, point) {
+    target[prop.name] = prop.prefix + point + prop.suffix;
+};
 Global.Tweener.timerId = null;
 Global.Tweener.Items = [];
 Global.Tweener.FPS = 30;
