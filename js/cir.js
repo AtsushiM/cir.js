@@ -1,48 +1,2262 @@
-var C={};
-(function(){var c=C;(function(a,b){function d(a,b){return Object.prototype.toString.call(b)==="[object "+a+"]"?!0:!1}function e(a){return d("Object",a)}function f(a,b,d){var c;if(e(b)){for(c in b)a.setAttribute(c,b[c]);return!0}return d||""===d?a.setAttribute(b,d):a.getAttribute(b)}function g(a,b){for(var d=a.className,d=d?d.split(" "):[],e=0,c=d.length;e<c;e++)if(b&&b===d[e])return!0;return!1}function h(a,b){var d="";if(g(a,b))return!1;a.className&&(d=" ");a.className=a.className+d+b;return!0}function j(a,
-b){var d,e=[],c,f;if(!g(a,b))return!1;d=a.className.split(" ");c=0;for(f=d.length;c<f;c++)b!==d[c]&&e.push(d[c]);a.className=e.join(" ");return!0}function i(a,b){var d=b.querySelectorAll(a),e=[],c,g;c=0;for(g=d.length;c<g;c++)e[c]=d[c];return e}function k(a){var b=""+a;return b.match("^{.*}$")?JSON.parse(b):b.match("^[0-9.]+$")?1*b:"true"===b?!0:"false"===b?!1:a}Date.now||(Date.now=function(){return+new Date});c.utility={win:a,doc:b,body:b.body,$:function(a){return b.querySelector(a)},$$:function(a){return i(a,
-b)},$child:function(a,b){return b.querySelector(a)},$$child:i,$id:function(a){return b.getElementById(a)},pageTop:function(){a.scrollTo(0,1)},onEvent:function(a,b,d){a.addEventListener(b,d)},offEvent:function(a,b,d){a.removeEventListener(b,d)},makeElement:function(a,d){var c=b.createElement(a);d&&f(c,d);return c},showElement:function(a){a.style.display="block"},hideElement:function(a){a.style.display="none"},opacityElement:function(a,b){a.style.opacity=b},hasClass:g,addClass:h,removeClass:j,toggleClass:function(a,
-b){return g(a,b)?j(a,b):h(a,b)},styleElement:function(a,b){var d=a.style,c,e,g;for(c in b){e=c;g=b[c];isFinite(g)&&(g=g+"px");d[e]=g}},computedStyleElement:function(a){return b.defaultView.getComputedStyle(a,null)},appendElement:function(a,b){a.appendChild(b)},attrElement:f,innerHTML:function(a,b){if(b)a.innerHTML=b;else return a.innerHTML},override:function(a,b){for(var d in b)a[d]=b[d];return a},replaceAll:function(a,b,d){return a.split(b).join(d)},windowOpen:function(b,d){return a.open(b,d)},typeCast:k,
-makeQueryString:function(a){var b="",d="",c;for(c in a)if(a[c]){d=d+(b+c+"="+encodeURIComponent(a[c]));b="&"}return d},parseQueryString:function(a){var a=a.replace(/^\#/,"").replace(/^\?/,""),a=a.split("&"),b,d,c={};for(b=a.length;b--;){d=a[b].split("=");c[d[0]]=k(decodeURIComponent(d[1]))}return c},is:d,isObject:e,isNumber:function(a){return d("Number",a)},isString:function(a){return d("String",a)},isFunction:function(a){return d("Function",a)},isBoolean:function(a){return d("Boolean",a)},isTouchDevice:function(){return"ontouchstart"in
-a},nullFunction:function(){return null}}})(window,document);c.klass=function(a){var b=c.utility.override,d=a.init||function(){},e=a.properties;(a=a.extend)&&c.extend(d,a);b(d.prototype,e);return d};c.extend=function(a,b){function d(){this.init=a}d.prototype=b.prototype;a.prototype=new d;var c=a.prototype;c._superclass=b;c._super=function(){var a=this._prevctor,a=a?a.prototype._superclass:this._prevctor=b;a.apply(this,arguments)}};c.selector=function(a,b){var d=c.selector,e=(b||document).querySelectorAll(a),
-f,g=0,h=e.length;f=function(){};f.prototype=d.methods;d=new f;d.length=h;for(d.selector=a;g<h;g++)d[g]=e[g];return d};(function(){function a(a,b,c){for(var e=0,i=a.length,c=d(c);e<i;e++)c[0]=a[e],b.apply(null,c);return a}function b(a,b,c){c=d(c);c[0]=a[0];return b.apply(null,c)}function d(a){var b=[null];b.push.apply(b,a);return b}var e=c.utility;c.selector.methods={_forexe:a,_exe:b,_argary:d,querySelectorAll:function(a){return this[0].querySelectorAll(a)},find:function(a){return c.selector(a,this)},
-on:function(){return a(this,e.onEvent,arguments)},off:function(){return a(this,e.offEvent,arguments)},show:function(){return a(this,e.showElement)},hide:function(){return a(this,e.hideElement)},opacity:function(){return a(this,e.opacityElement,arguments)},hasClass:function(){return b(this,e.hasClass,arguments)},addClass:function(){return a(this,e.addClass,arguments)},removeClass:function(){return a(this,e.removeClass,arguments)},toggleClass:function(){return a(this,e.toggleClass,arguments)},css:function(){return a(this,
-e.styleElement,arguments)},html:function(){return b(this,e.innerHTML,arguments)},attr:function(){return b(this,e.attrElement,arguments)},append:function(){return a(this,e.appendElement,arguments)}}})();(function(){function a(a,e,j,i,k){d.isFunction(j)&&(k=j,j=null);d.isFunction(i)&&(k=i,i=null);var n=c.Tweener,l=a.style,m,a=d.computedStyleElement(a),o,p={};for(m in e)o=b(e[m]),p[m]={from:1*b(a.getPropertyValue(m))[1]||0,to:1*o[1]||0,suffix:o[2]};new n(l,p,{duration:j,easing:f[i],onComplete:k})}function b(a){return(""+
-(a||"")).match(/^([0-9\.]+)(.*)/)}var d=c.utility,e=c.selector.methods,f={};c.easing&&(Easing=c.easing);d.override(e,{animate:function(){return e._forexe(this,a,arguments)}})})();c.easing={easeInCubic:function(a,b,d,c){return d*Math.pow(a/c,3)+b},easeOutCubic:function(a,b,d,c){return d*(Math.pow(a/c-1,3)+1)+b},easeInOutCubic:function(a,b,d,c){return 1>(a/=c/2)?d/2*Math.pow(a,3)+b:d/2*(Math.pow(a-2,3)+2)+b},easeInQuart:function(a,b,d,c){return d*Math.pow(a/c,4)+b},easeOutQuart:function(a,b,d,c){return-d*
-(Math.pow(a/c-1,4)-1)+b},easeInOutQuart:function(a,b,d,c){return 1>(a/=c/2)?d/2*Math.pow(a,4)+b:-d/2*(Math.pow(a-2,4)-2)+b},easeInQuint:function(a,b,d,c){return d*Math.pow(a/c,5)+b},easeOutQuint:function(a,b,d,c){return d*(Math.pow(a/c-1,5)+1)+b},easeInOutQuint:function(a,b,d,c){return 1>(a/=c/2)?d/2*Math.pow(a,5)+b:d/2*(Math.pow(a-2,5)+2)+b},easeInSine:function(a,b,d,c){return d*(1-Math.cos(a/c*(Math.PI/2)))+b},easeOutSine:function(a,b,d,c){return d*Math.sin(a/c*(Math.PI/2))+b},easeInOutSine:function(a,
-b,d,c){return d/2*(1-Math.cos(Math.PI*a/c))+b},easeInExpo:function(a,b,d,c){return d*Math.pow(2,10*(a/c-1))+b},easeOutExpo:function(a,b,d,c){return d*(-Math.pow(2,-10*a/c)+1)+b},easeInOutExpo:function(a,b,d,c){return 1>(a/=c/2)?d/2*Math.pow(2,10*(a-1))+b:d/2*(-Math.pow(2,-10*--a)+2)+b},easeInCirc:function(a,b,d,c){return d*(1-Math.sqrt(1-(a/=c)*a))+b},easeOutCirc:function(a,b,d,c){return d*Math.sqrt(1-(a=a/c-1)*a)+b},easeInOutCirc:function(a,b,d,c){return 1>(a/=c/2)?d/2*(1-Math.sqrt(1-a*a))+b:d/2*
-(Math.sqrt(1-(a-=2)*a)+1)+b},easeInQuad:function(a,b,d,c){return d*(a/=c)*a+b},easeOutQuad:function(a,b,d,c){return-d*(a/=c)*(a-2)+b},easeInOutQuad:function(a,b,d,c){return 1>(a/=c/2)?d/2*a*a+b:-d/2*(--a*(a-2)-1)+b}};(function(){var a=c.utility.isTouchDevice();c.Event=c.klass({init:function(a){a=a||{};if(a.single&&c.Event.instance)return c.Event.instance;a.single&&(c.Event.instance=this)},properties:{utility:c.utility,switchclick:a?"touchstart":"click",switchdown:a?"touchstart":"mousedown",switchmove:a?
-"touchmove":"mousemove",switchup:a?"touchend":"mouseup",load:"load",hashchange:"hashchange",click:"click",mousedown:"mousedown",mousemove:"mousemove",mouseup:"mouseup",touchstart:"touchstart",touchmove:"touchmove",touchend:"touchend",orientationchange:"orientationchange",resize:"resize"}});c.Event.instance=null})();c.HashController=c.klass({properties:{utility:c.utility,typeCast:function(a){var b=this.utility.typeCast(a);return a===b&&(a=a.match("^[\"'](.*)[\"']$"))?a[1]:b},makeHash:function(a){var b=
-"#"+a.mode,a=a.vars,c="?",e;for(e in a)b+=c+e+"="+JSON.stringify(a[e]),c="&";return encodeURI(b)},setHash:function(a){location.hash=this.makeHash(a);return!0},parseHash:function(a){var b,c,e,f;b=decodeURIComponent(a).split("#")[1];if(!b)return!1;b=b.split("?");a=b[0];if(b[1]){c={};b=b[1].split("&");for(f=b.length;f--;)b[f]&&(e=b[f].split("="),c[e[0]]=this.typeCast(e[1]))}return{mode:a,vars:c}},getHash:function(){return this.parseHash(location.hash)}}});c.Ajax=c.klass({init:function(){this.xhr=new XMLHttpRequest},
-properties:{utility:c.utility,request:function(a){var b=a.url,c=a.callback,e=a.error,f=a.type||"GET",g="",h;a.cash||(a.query||(a.query={}),a.query["ajaxcash"+Date.now()]="0");a.query&&(g=this.utility.makeQueryString(a.query),g=encodeURI(g));h=this.xhr=new XMLHttpRequest;h.onreadystatechange=function(){if(h.readyState!=4)return false;h.status==200?c(h.responseText):e&&e(h)};h.open(f,b);"POST"===f&&h.setRequestHeader("Content-Type","application/x-www-form-urlencoded");h.send(g)},abort:function(){this.xhr.abort()},
-getJSON:function(a){this.request({type:a.type,url:a.url,callback:function(b){a.callback(JSON.parse(b))},error:function(b){a.error&&a.error(b)}})}}});c.Bind=c.klass({properties:{utility:c.utility,add:function(a){return this.exe(a,!0)},remove:function(a){return this.exe(a,!1)},exe:function(a,b){var c=this.utility,e=a.element,f=a.events,c=b?c.onEvent:c.offEvent,g;for(g in f)c(e,g,f[g]);return a}}});(function(){var a=c.utility.makeElement;c.CanvasImage=function(b){var c=a("canvas"),e=a("img"),f=b.src,
-g=b.width,h=b.height,j=b.onload;e.onload=function(){c.width=g;c.height=h;c.getContext("2d").drawImage(e,0,0);j(c,e)};e.src=f;return c}})();c.CanvasRender=c.klass({init:function(a){this.canvas=a.canvas;this.ctx=this.canvas.getContext("2d");this.canvasWidth=this.canvas.width;this.canvasHeight=this.canvas.height;this.setSize(a)},properties:{setSize:function(a){a.width&&(this.canvas.width=this.canvasWidth=a.width);a.height&&(this.canvas.height=this.canvasHeight=a.height)},draw:function(a){this.ctx.clearRect(0,
-0,this.canvasWidth,this.canvasHeight);for(var b=0,c=a.length,e;b<c;b++)e=a[b],this.ctx.drawImage(e.image,e.x,e.y)}}});c.DataStore=c.klass({init:function(a){a=a||{};if(a.single&&c.DataStore.instance)return c.DataStore.instance;this.data={};a.single&&(c.DataStore.instance=this)},properties:{set:function(a,b){this.data[a]=b;return!0},get:function(a){var b=this.data;if(a)return b[a];var a={},c;for(c in b)a[c]=b[c];return a},remove:function(a){var b=this.data;if(!b[a])return!1;delete b[a];return!0},reset:function(){this.data=
-{};return!0}}});c.DataStore.instance=null;c.DragFlick=c.klass({init:function(a){a&&this.bind(a)},properties:{utility:c.utility,_event:new c.Event,_getEventTarget:function(a){return a.changedTouches?a.changedTouches[0]:a},amount:function(a){var b=this,c,e,f=!1;b.utility.onEvent(a.element,b._event.switchdown,function(a){var h=b._getEventTarget(a);c=h.pageX;e=h.pageY;f=!0;a.preventDefault()});b.utility.onEvent(b.utility.win,b._event.switchup,function(g){f&&(g=b._getEventTarget(g),a.callback({x:g.pageX-
-c,y:g.pageY-e}),f=!1)})},direction:function(a){this.amount({element:a.element,callback:function(b){var c=a.boundary||0,e={change:!1,top:!1,right:!1,bottom:!1,left:!1,amount:b};Math.abs(b.x)>c&&(0<b.x?e.right=!0:0>b.x&&(e.left=!0),e.change=!0);Math.abs(b.y)>c&&(0<b.y?e.bottom=!0:0>b.y&&(e.top=!0),e.change=!0);a.callback(e)}})},bind:function(a){function b(a,b,e){g.onEvent(a,b,function(a){a=c._getEventTarget(a);e(a)})}var c=this,e=a.element,f=this._event,g=this.utility,h=a.start||g.nullFunction,j=a.move||
-g.nullFunction,i=a.end||g.nullFunction,k=!1,n=0,l=0;a.direction&&c.direction({element:e,boundary:a.boundary,callback:a.direction});b(e,f.switchdown,function(a){k=!0;n=a.pageX;l=a.pageY;h({e:a,move:{x:n,y:l}})});b(g.doc,f.switchmove,function(a){k&&j({e:a,move:{x:a.pageX-n,y:a.pageY-l}})});b(g.doc,f.switchup,function(a){k&&(i({e:a,move:{x:a.pageX-n,y:a.pageY-l}}),k=!1)})}}});c.ExternalInterface=function(a){var a=a||{},b;if(a.single&&c.ExternalInterface.instance)return c.ExternalInterface.instance;b=
-a.android?new c.ExternalInterface.Android(a):new c.ExternalInterface.IOS(a);a.single&&(c.ExternalInterface.instance=b);return b};c.ExternalInterface.instance=null;c.ExternalInterface.Android=c.klass({init:function(a){a=a||{};this.android=a.android;this.externalObj=a.externalObj;this.externalObj||(c.EXTERNAL_ANDROID={},this.externalObj=c.EXTERNAL_ANDROID)},properties:{hashCtrl:new c.HashController,call:function(a){this.android[a.mode](this.hashCtrl.makeHash(a))},addCallback:function(a,b){var c=this;
-c.externalObj[a]=function(a){a=c.hashCtrl.parseHash(a);return b(a.vars)}},removeCallback:function(a){delete this.externalObj[a]}}});c.ExternalInterface.IOS=c.klass({init:function(){this.ios={}},properties:{utility:c.utility,_event:new c.Event,hashCtrl:new c.HashController,call:function(a){this.hashCtrl.setHash(a)},addCallback:function(a,b){var c=this;c.ios[a]=function(){var e=c.hashCtrl.getHash();return e.mode===a?(b(e.vars),!0):!1};this.utility.onEvent(this.utility.win,this._event.hashchange,this.ios[a])},
-removeCallback:function(a){this.utility.offEvent(this.utility.win,this._event.hashchange,this.ios[a]);delete this.ios[a]}}});c.Facebook=c.klass({properties:{utility:c.utility,shareURLBase:"https://www.facebook.com/dialog/feed?",getShareURL:function(a){var b=this.shareURLBase+"app_id="+a.app_id+"&redirect_uri="+a.redirect_uri;return b+=this.utility.makeQueryString({link:a.link,picture:a.picture,name:a.name,caption:a.caption,description:a.description})}}});(function(){function a(c){c.nexttime<=Date.now()&&
-(b(c),c.nexttime=c.nowtime+c.msecFrame);1===c.loopid&&f(function(){a(c)})}function b(a){a.nowtime=Date.now();a.surver=Math.round(1E3/(a.nowtime-a.prevtime));a.prevtime=a.nowtime;a.enter()}var d,e=c.utility.win,f=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||!1;c.FPS=c.klass({init:function(a){a=a||{};a.criterion||(a.criterion=20);if(a.single&&d)return d;this.surver=this.criterion=a.criterion;this.enterframe=
-a.enterframe;this.msecFrame=Math.round(1E3/this.criterion);this.prevtime=this.nowtime=this.nexttime=this.loopid=0;a.single&&(d=this)},properties:{getCriterion:function(){return this.criterion},getSurver:function(){return this.surver},getFrameTime:function(){return this.msecFrame},enter:function(){this.enterframe({criterion:this.criterion,surver:this.surver})},start:function(){this.prevtime=Date.now();this.nexttime=this.prevtime+this.msecFrame;f?(this.loopid=1,a(this)):this.loopid=setInterval(b,this.msecFrame,
-this)},stop:function(){clearInterval(this.loopid);this.loopid=0}}})})();c.ImgLoad=c.klass({init:function(a){var b=this;b.srcs=a.srcs;b.srccount=b.srcs.length;b.loadedsrcs=[];b.onload=a.onload||b.utility.nullFunction;b.onprogress=a.onprogress||b.utility.nullFunction;b.loadcount=0;b.progress=0;b.check=function(){b.loadcount++;b.progress=b.loadcount/b.srccount;b.onprogress(b.progress);if(b.loadcount>=b.srccount)b.onload(b.loadedsrcs)}},properties:{utility:c.utility,_event:new c.Event,start:function(){var a,
-b,c;b=0;for(c=this.srccount;b<c;b++)a=this.utility.makeElement("img"),a.src=this.srcs[b],this.utility.onEvent(a,this._event.load,this.check),this.loadedsrcs.push(a)},getProgress:function(){return this.progress}}});c.Loading=c.klass({init:function(a){if(a&&a.onload)this.onload(a.onload)},properties:{utility:c.utility,_event:new c.Event,onload:function(a){this.utility.onEvent(this.utility.win,this._event.load,a)}}});c.LocalStorage=c.klass({init:function(a){a=a||{};if(a.single&&c.LocalStorage.instance)return c.LocalStorage.instance;
-a.single&&(c.LocalStorage.instance=this)},properties:{utility:c.utility,storage:c.utility.win.localStorage,set:function(a,b){this.storage.setItem(a,JSON.stringify(b));return!0},get:function(a){if(a)return JSON.parse(this.storage.getItem(a));var a={},b;for(b in this.storage)a[b]=JSON.parse(this.storage[b]);return a},remove:function(a){if(!this.storage.getItem(a))return!1;this.storage.removeItem(a);return!0},reset:function(){this.storage.clear();return!0}}});c.LocalStorage.instance=null;(function(){function a(a){a.preventDefault();
-return!1}function b(a,b){a=a?a:f;return a.match(b)?!0:!1}function d(){0===win.pageYOffset&&this.utility.pageTop()}function e(){setTimeout(d,100)}var f=navigator.userAgent;c.Mobile=c.klass({properties:{utility:c.utility,_event:new c.Event,isAndroid:function(a){return b(a,/Android/i)},isIOS:function(a){return b(a,/iPhone|iPad|iPod/i)},isWindows:function(a){return b(a,/IEMobile/i)},isFBAPP:function(a){return b(a,/FBAN/)},isMobile:function(){return this.isAndroid()||this.isIOS()||this.isWindows()||this.isFBAPP()},
-killScroll:function(b){b||this.utility.pageTop();this.utility.onEvent(this.utility.doc,this._event.touchmove,a)},revivalScroll:function(b){b||this.utility.pageTop();this.utility.offEvent(this.utility.doc,this._event.touchmove,a)},hideAddress:function(){this.utility.onEvent(this.utility.win,this._event.load,e,!1);this.utility.onEvent(this.utility.win,this._event.orientationchange,e,!1)},orientationCheck:function(){return 90!==Math.abs(this.utility.win.orientation)&&this.utility.win.innerWidth<this.utility.win.innerHeight?
-{portrait:!0,landscape:!1}:{portrait:!1,landscape:!0}},orientationChange:function(a){function b(a,c){a(e.utility.win,e._event.load,c);a(e.utility.win,e._event.orientationchange,c);a(e.utility.win,e._event.resize,c)}function c(){d();b(e.utility.offEvent,c)}function d(){if(e.orientationCheck().portrait)return a.portrait(),!0;a.landscape()}var e=this;a.immediately&&d();if(a.one)return b(e.utility.onEvent,c),function(){b(e.utility.offEvent,c)};b(e.utility.onEvent,d);return function(){b(e.utility.offEvent,
-d)}}}})})();c.NumberImage=c.klass({init:function(a){a=a||{type:""};this.type=a.type},properties:{make:function(a){var a=(""+a).split(""),b="",c;for(c=a.length;c--;)b='<span class="num_'+(this.type+a[c])+'">&nbsp;</span>'+b;return b}}});c.Observer=c.klass({init:function(a){a=a||{single:!1};if(a.single&&c.Observer.instance)return c.Observer.instance;this.observed={};a.single&&(c.Observer.instance=this)},properties:{getObserved:function(){return this.observed},on:function(a,b){var c=this.observed;c[a]||
-(c[a]=[]);c[a].push(b)},one:function(a,b){var c=this,e=function(f){b(f);c.off(a,e)};c.on(a,e)},off:function(a,b){var c=this.observed;if(!b)return delete c[a],!0;var e=c[a],f;if(!e)return!1;for(f=e.length;f--;)if(b===e[f])return e.splice(f,1),0===e.length&&delete c[a],!0;return!1},fire:function(a,b){var c=this.observed[a],e,f;if(!c)return!1;for(f=c.length;f--;)(e=c[f])&&e(b);return!0}}});c.Observer.instance=null;c.PreRender=c.klass({init:function(a){a=a||{};a.loopblur||(a.loopblur=20);this.elements=
-a.elements||[];this.guesslimit=a.guesslimit||30;this.onrendered=a.onrendered||this.utility.nullFunction;this.looptime=a.looptime||100;this.loopblur=this.looptime+a.loopblur;this.loopid=this.prevtime=null},properties:{utility:c.utility,start:function(){var a;for(a=this.elements.length;a--;)this.utility.showElement(this.elements[a]);this.prevtime=Date.now();this.loopid=setInterval(function(a){var c=Date.now(),e=c-a.prevtime;a.prevtime=c;if(e<a.loopblur&&(a.guesslimit--,1>a.guesslimit)){clearInterval(a.loopid);
-for(c=a.elements.length;c--;)a.utility.hideElement(a.elements[c]);a.onrendered()}},this.looptime,this)}}});c.ScriptLoad=c.klass({properties:{utility:c.utility,_event:new c.Event,requests:function(a){for(var b=0,c=a.length;b<c;b++)this.request(a[b])},request:function(a){var b=this.utility.makeElement("script");b.type="text/javascript";b.src=a.src;this.utility.body.appendChild(b);if(a.callback)this.utility.onEvent(b,this._event.load,a.callback)}}});(function(){function a(a){return e?d.getResponseHeader(a):
-!1}function b(a){var b=new XMLHttpRequest;b.onload=function(){a(b)};b.open("HEAD",location.href+"?update"+Date.now()+"=1");b.send(null);return b}var d,e=!1;c.ServerMeta=c.klass({init:function(a){var a=a||{},c=a.callback||this.utility.nullFunction;d?c(d):d=b(function(){e=!0;c(d)})},properties:{utility:c.utility,date:function(a){return b(function(b){b=new Date(b.getResponseHeader("Date"));a(b)})},connection:function(){return a("Connection")},contentLength:function(){return a("Content-Length")},lastModified:function(){return a("Last-Modified")},
-server:function(){return a("Server")},contentType:function(){return a("Content-Type")},acceptRanges:function(){return a("Accept-Ranges")},keepAlive:function(){return a("Keep-Alive")}}})})();c.SessionStorage=c.klass({init:function(a){a=a||{};if(a.single&&c.SessionStorage.instance)return c.SessionStorage.instance;a.single&&(c.SessionStorage.instance=this)},properties:{utility:c.utility,storage:c.utility.win.sessionStorage,set:function(a,b){this.storage.setItem(a,JSON.stringify(b));return!0},get:function(a){if(a)return JSON.parse(this.storage.getItem(a));
-var a={},b;for(b in this.storage)a[b]=JSON.parse(this.storage[b]);return a},remove:function(a){if(!this.storage.getItem(a))return!1;this.storage.removeItem(a);return!0},reset:function(){this.storage.clear();return!0}}});c.SessionStorage.instance=null;c.Surrogate=c.klass({init:function(a){this.delay=a.delay;this.callback=a.callback;this.waitid=this.args=null},properties:{request:function(a){this.args=a;this.clear();this.waitid=setTimeout(this.flush,this.delay,this)},flush:function(a){a=a||this;a.callback(a.args)},
-clear:function(){clearInterval(this.waitid)}}});c.Throttle=c.klass({init:function(a){this.waittime=a.waittime;this.callback=a.callback;this.locked=!1;this.waitid=null},properties:{request:function(a){if(this.locked)return!1;this.callback(a);this.lock();this.waitid=setTimeout(this.unlock,this.waittime,this)},lock:function(){this.locked=!0},unlock:function(a){a=a||this;a.locked=!1;clearInterval(a.waitid)}}});c.Timer=function(a){function b(){m=Date.now();var a=g-(m-l)/1E3;0>a&&(a=0);p=c(a);i(p);if(m>
-o)return r.stop(),k(),!0;q=setTimeout(b,j);return!1}function c(a){var b;b=(""+a).split(".");a=b[0];b=b[1]?b[1]:"";a=e({num:a,digit:n.integer});b=e({num:b,digit:n.few,isFew:!0});return a+"."+b}function e(a){var b=""+a.num,c=a.digit,d=c-b.length;return!a.isFew?-1<d?f(d,0)+b:f(c,9):0<d?b+f(d,0):b.slice(0,c)}function f(a,b){for(var c="",b=""+b;0<a;)c+=b,a--;return c}var g=a.limit,h=1E3*g,j=1E3*a.interval,i=a.onupdate,k=a.ontimeup,n=function(a){a=a.split(".");return{integer:a[0].length,few:a[1].length}}(a.template),
-l=0,m=0,o=h,p=c(g),q,r={getLimit:function(){return g},getTime:function(){return p},getProgress:function(){return 1-(o-m)/h},setUpdate:function(a){i=a},setTimeup:function(a){k=a},countDown:function(){m=l=Date.now();o=l+h;b()},stop:function(){clearInterval(q)}};return r};c.Tweener=c.klass({init:function(a,b,d){var e,d=d||{};this.target=a;this.property=[];for(e in b)a=b[e],a.name=e,a.distance=a.to-a.from,a.prefix=a.prefix||"",a.suffix=a.suffix||"px",this.property.push(a);this.duration=d.duration||c.Tweener.Duration;
-this.easing=d.easing||this._easing;this.onComplete=d.onComplete;this.begin=Date.now();c.Tweener.Items.push(this);c.Tweener.timerId||this.start()},properties:{_easing:function(a,b,c,e){return c*a/e+b},_requestAnimationFrame:function(){var a=c.utility.win;return a.requestAnimationFrame?function(a){requestAnimationFrame(a)}:a.webkitRequestAnimationFrame?function(a){webkitRequestAnimationFrame(a)}:a.mozRequestAnimationFrame?function(a){mozRequestAnimationFrame(a)}:a.oRequestAnimationFrame?function(a){oRequestAnimationFrame(a)}:
-a.msRequestAnimationFrame?function(a){msRequestAnimationFrame(a)}:function(a){setTimeout(a,1E3/c.Tweener.FPS)}}(),loop:function(){for(var a=this,b=c.Tweener.Items,d,e=Date.now(),f,g=b.length,h,j,i;g--;)if(d=b[g],j=d.property.length,f=e-d.begin,f<d.duration)for(h=0;h<j;h++)i=d.property[h],c.Tweener._setProp(d.target,i,d.easing(f,i.from,i.distance,d.duration));else{for(h=0;h<j;h++)i=d.property[h],c.Tweener._setProp(d.target,i,i.to);if(d.onComplete)d.onComplete();b.splice(g,1)}if(b.length)return a._requestAnimationFrame(function(){a.loop()}),
-!0;this.end()},start:function(){var a=this;c.Tweener.timerId=1;a._requestAnimationFrame(function(){a.loop()})},end:function(){c.Tweener.Items=[];clearInterval(c.Tweener.timerId);c.Tweener.timerId=null}}});c.Tweener._setProp=function(a,b,c){a[b.name]=b.prefix+c+b.suffix};c.Tweener.timerId=null;c.Tweener.Items=[];c.Tweener.FPS=30;c.Tweener.Duration=500;c.Twitter=c.klass({properties:{utility:c.utility,shareURLBase:"https://twitter.com/intent/tweet?",getShareURL:function(a){var b=a.redirect_uri,c=a.caption||
-"",e=a.name||"",a=a.hash||"",f=this.shareURLBase;return f+=this.utility.makeQueryString({url:b,text:c+(e?" \u300c"+e+"\u300d":"")+(a?" "+a:"")})}}});c.XML=c.klass({init:function(a){this.element=this.utility.makeElement("div");this.data={};a&&a.data&&this.setData(a.data)},properties:{utility:c.utility,getData:function(){return this.data},setData:function(a){this.data=this.element.innerHTML=a},$:function(a){return this.utility.$child(a,this.element)},$$:function(a){return this.utility.$$child(a,this.element)}}})})();
+// Cool Is Right.
+var C = {};
+(function() {
+    'use strict';
+    var Global = C;
+/* Test: "../../spec/_src/src/utility/test.js" */
+(function(win, doc) {
+'use strict';
+
+if (!Date.now) {
+    Date.now = function now() {
+        return +(new Date);
+    };
+}
+
+Global.utility = {
+    win: win,
+    doc: doc,
+    body: doc.body,
+    $: function(selector) {
+        return $(selector, doc);
+    },
+    $$: function(selector) {
+        return $$(selector, doc);
+    },
+    $child: $,
+    $$child: $$,
+    $id: function(id) {
+        return doc.getElementById(id);
+    },
+    pageTop: function() {
+        win.scrollTo(0, 1);
+    },
+    onEvent: function(element, eventname, handler) {
+        element.addEventListener(eventname, handler);
+    },
+    offEvent: function(element, eventname, handler) {
+        element.removeEventListener(eventname, handler);
+    },
+    makeElement: function(tagname, attr) {
+        var element = doc.createElement(tagname);
+
+        if (attr) {
+            attrElement(element, attr);
+        }
+
+        return element;
+    },
+    showElement: function(element) {
+        setStyleDisplay(element, 'block');
+    },
+    hideElement: function(element) {
+        setStyleDisplay(element, 'none');
+    },
+    opacityElement: function(element, value) {
+        element.style.opacity = value;
+    },
+    hasClass: hasClass,
+    addClass: addClass,
+    removeClass: removeClass,
+    toggleClass: function(element, cls) {
+        if (hasClass(element, cls)) {
+            return removeClass(element, cls);
+        }
+
+        return addClass(element, cls);
+    },
+    styleElement: function(element, addstyle) {
+        var style = element.style,
+            i,
+            key,
+            value;
+
+        for (i in addstyle) {
+            key = i;
+            value = addstyle[i];
+
+            if (isFinite(value)) {
+                value += 'px';
+            }
+
+            style[key] = value;
+        }
+    },
+    computedStyleElement: function(element) {
+        return doc.defaultView.getComputedStyle(element, null);
+    },
+    appendElement: function(element, addelement) {
+        element.appendChild(addelement);
+    },
+    attrElement: attrElement,
+    innerHTML: function(element, text) {
+        if (text) {
+            element.innerHTML = text;
+        }
+        else {
+            return element.innerHTML;
+        }
+    },
+    override: override,
+    replaceAll: function(targettext, needle, replacetext) {
+        return targettext.split(needle).join(replacetext);
+    },
+    windowOpen: function(url, windowname) {
+        return win.open(url, windowname);
+    },
+    typeCast: typeCast,
+    makeQueryString: function(vars) {
+        var sign = '',
+            query = '';
+
+        for (var i in vars) {
+            if (vars[i]) {
+                query += sign + i + '=' + encodeURIComponent(vars[i]);
+                sign = '&';
+            }
+        }
+
+        return query;
+    },
+    parseQueryString: function(query) {
+        query = query
+            .replace(/^\#/, '')
+            .replace(/^\?/, '');
+
+        var params = query.split('&'),
+            i,
+            p,
+            result = {};
+
+        for (i = params.length; i--;) {
+            p = params[i].split('=');
+            result[p[0]] = typeCast(decodeURIComponent(p[1]));
+        }
+        return result;
+    },
+    is: is,
+    isObject: isObject,
+    isNumber: isNumber,
+    isString: isString,
+    isFunction: isFunction,
+    isBoolean: isBoolean,
+    isTouchDevice: function() {
+        return 'ontouchstart' in win;
+    },
+    nullFunction: function() {
+        return null;
+    }
+};
+
+function is(key, vars) {
+    if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
+        return true;
+    }
+    return false;
+}
+function isObject(vars) {
+    return is('Object', vars);
+}
+function isNumber(vars) {
+    return is('Number', vars);
+}
+function isString(vars) {
+    return is('String', vars);
+}
+function isFunction(vars) {
+    return is('Function', vars);
+}
+function isBoolean(vars) {
+    return is('Boolean', vars);
+}
+
+function override(target, vars) {
+    var i;
+
+    for (i in vars) {
+        target[i] = vars[i];
+    }
+
+    return target;
+}
+
+function attrElement(element, vars, value) {
+    var i;
+
+    if (isObject(vars)) {
+        for (i in vars) {
+            element.setAttribute(i, vars[i]);
+        }
+
+        return true;
+    }
+
+    if (value || value === '') {
+        return element.setAttribute(vars, value);
+    }
+
+    return element.getAttribute(vars);
+}
+
+function hasClass(element, cls) {
+    var clsName = element.className,
+        addedcls = clsName ? clsName.split(' ') : [],
+        i = 0,
+        len = addedcls.length;
+
+    for (; i < len; i++) {
+        if (cls && cls === addedcls[i]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+function addClass(element, cls) {
+    var between = '';
+
+    if (hasClass(element, cls)) {
+        return false;
+    }
+
+    if (element.className) {
+        between = ' ';
+    }
+
+    element.className = element.className + between + cls;
+
+    return true;
+}
+function removeClass(element, cls) {
+    var addedcls,
+        bindcls = [],
+        i,
+        len;
+
+    if (!hasClass(element, cls)) {
+        return false;
+    }
+
+    addedcls = element.className.split(' ');
+    i = 0,
+    len = addedcls.length;
+
+    for (; i < len; i++) {
+        if (cls !== addedcls[i]) {
+            bindcls.push(addedcls[i]);
+        }
+    }
+
+    element.className = bindcls.join(' ');
+
+    return true;
+}
+
+function setStyleDisplay(element, value) {
+    element.style.display = value;
+}
+function $(selector, element) {
+    return element.querySelector(selector);
+}
+function $$(selector, element) {
+    var eles = element.querySelectorAll(selector),
+        arys = [],
+        i,
+        len;
+
+    for (i = 0, len = eles.length; i < len; i++) {
+        arys[i] = eles[i];
+    }
+
+    return arys;
+}
+function typeCast(str) {
+    var matchstr = '' + str;
+
+    if (matchstr.match('^{.*}$')) {
+        return JSON.parse(matchstr);
+    }
+    else if (matchstr.match('^[0-9\.]+$')) {
+        return matchstr * 1;
+    }
+    else if (matchstr === 'true') {
+        return true;
+    }
+    else if (matchstr === 'false') {
+        return false;
+    }
+
+    return str;
+}
+
+}(window, document));
+/* Test: "../../spec/_src/src/klass/test.js" */
+Global.klass = function(config) {
+    'use strict';
+
+    var util = Global.utility,
+        override = util.override,
+        init = config.init || function() {},
+        properties = config.properties,
+        extend = config.extend;
+
+    if (extend) {
+        Global.extend(init, extend);
+    }
+
+    override(init.prototype, properties);
+
+    return init;
+};
+/* Test: "../../spec/_src/src/extend/test.js" */
+Global.extend = function(child, _super) {
+    'use strict';
+
+    function ctor() {
+        this.init = child;
+    }
+
+    ctor.prototype = _super.prototype;
+    child.prototype = new ctor();
+
+    var cpt = child.prototype;
+
+    cpt._superclass = _super;
+    cpt._super = function() {
+        var prev = this._prevctor;
+
+        if (prev) {
+            prev = prev.prototype._superclass;
+        }
+        else {
+            prev = this._prevctor = _super;
+        }
+
+        prev.apply(this, arguments);
+    };
+};
+/* Test: "../../spec/_src/src/selector/test.js" */
+Global.selector = function(query, _parent) {
+    'use strict';
+
+    var Mine = Global.selector,
+        _par = _parent || document,
+        $elements = _par.querySelectorAll(query),
+        base,
+        instance,
+        i = 0,
+        len = $elements.length;
+
+    // if (!len) {
+    //     return $elements;
+    // }
+
+    base = function() {};
+    base.prototype = Mine.methods;
+    instance = new base();
+
+    instance.length = len;
+    instance.selector = query;
+
+    for (; i < len; i++) {
+        instance[i] = $elements[i];
+    }
+
+    return instance;
+};
+/* Test: "../../spec/_src/src/selector.methods/test.js" */
+(function() {
+var util = Global.utility;
+
+function forExe(_this, func, arg) {
+    var i = 0,
+        len = _this.length,
+        ary = makeAry(arg);
+
+    for (; i < len; i++) {
+        ary[0] = _this[i];
+        func.apply(null, ary);
+    }
+
+    return _this;
+}
+function exe(_this, func, arg) {
+    var ary = makeAry(arg);
+
+    ary[0] = _this[0];
+
+    return func.apply(null, ary);
+}
+
+function makeAry(arg) {
+    var ary = [null];
+
+    ary.push.apply(ary, arg)
+
+    return ary;
+}
+
+Global.selector.methods = {
+    _forexe: forExe,
+    _exe: exe,
+    _argary: makeAry,
+    querySelectorAll: function(query) {
+        return this[0].querySelectorAll(query);
+    },
+    find: function(query) {
+        return Global.selector(query, this);
+    },
+    on: function() {
+        return forExe(this, util.onEvent, arguments);
+    },
+    off: function() {
+        return forExe(this, util.offEvent, arguments);
+    },
+    show: function() {
+        return forExe(this, util.showElement);
+    },
+    hide: function() {
+        return forExe(this, util.hideElement);
+    },
+    opacity: function() {
+        return forExe(this, util.opacityElement, arguments);
+    },
+    hasClass: function() {
+        return exe(this, util.hasClass, arguments);
+    },
+    addClass: function() {
+        return forExe(this, util.addClass, arguments);
+    },
+    removeClass: function() {
+        return forExe(this, util.removeClass, arguments);
+    },
+    toggleClass: function() {
+        return forExe(this, util.toggleClass, arguments);
+    },
+    css: function() {
+        return forExe(this, util.styleElement, arguments);
+    },
+    html: function() {
+        return exe(this, util.innerHTML, arguments);
+    },
+    attr: function() {
+        return exe(this, util.attrElement, arguments);
+    },
+    append: function() {
+        return forExe(this, util.appendElement, arguments);
+    }
+};
+}());
+/* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
+(function() {
+'use strict';
+
+var util = Global.utility,
+    methods = Global.selector.methods,
+    EASING = {};
+
+if (Global.easing) {
+    Easing = Global.easing;
+}
+
+util.override(
+    methods,
+    {
+        animate: function() {
+            return methods._forexe(this, animate, arguments);
+        }
+    }
+);
+
+function animate(element, params, duration, easing, callback) {
+    var style = element.style,
+        tweener;
+
+    if (util.isFunction(duration)) {
+        callback = duration;
+        duration = null;
+    }
+    if (util.isFunction(easing)) {
+        callback = easing;
+        easing = null;
+    }
+
+    tweener = new Global.Tweener(
+        element.style,
+        convertTweenerParam(element, params),
+        {
+            duration: duration,
+            easing: EASING[easing],
+            onComplete: callback
+        }
+    );
+}
+function convertTweenerParam(element, params) {
+    var name,
+        computedStyle = util.computedStyleElement(element),
+        tosplit,
+        retobj = {};
+
+    for (name in params) {
+        tosplit = splitSuffix(params[name]);
+
+        retobj[name] = {
+            from: splitSuffix(computedStyle.getPropertyValue(name))[1] * 1 || 0,
+            to: tosplit[1] * 1 || 0,
+            suffix: tosplit[2]
+        };
+    }
+
+    return retobj;
+}
+function splitSuffix(value) {
+    value = value || '';
+    value = '' + value;
+
+    return value.match(/^([0-9\.]+)(.*)/);
+}
+}());
+/* Test: "../../spec/_src/src/easing/test.js" */
+Global.easing = {
+    easeInCubic: function(time, from, dist, duration) {
+        return dist * Math.pow(time / duration, 3) + from;
+    },
+    easeOutCubic: function(time, from, dist, duration) {
+        return dist * (Math.pow(time / duration - 1, 3) + 1) + from;
+    },
+    easeInOutCubic: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(time, 3) + from;
+        }
+        return dist / 2 * (Math.pow(time - 2, 3) + 2) + from;
+    },
+    easeInQuart: function(time, from, dist, duration) {
+        return dist * Math.pow(time / duration, 4) + from;
+    },
+    easeOutQuart: function(time, from, dist, duration) {
+        return -dist * (Math.pow(time / duration - 1, 4) - 1) + from;
+    },
+    easeInOutQuart: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(time, 4) + from;
+        }
+        return -dist / 2 * (Math.pow(time - 2, 4) - 2) + from;
+    },
+    easeInQuint: function(time, from, dist, duration) {
+        return dist * Math.pow(time / duration, 5) + from;
+    },
+    easeOutQuint: function(time, from, dist, duration) {
+        return dist * (Math.pow(time / duration - 1, 5) + 1) + from;
+    },
+    easeInOutQuint: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(time, 5) + from;
+        }
+        return dist / 2 * (Math.pow(time - 2, 5) + 2) + from;
+    },
+    easeInSine: function(time, from, dist, duration) {
+        return dist *
+            (1 - Math.cos(time / duration * (Math.PI / 2))) + from;
+    },
+    easeOutSine: function(time, from, dist, duration) {
+        return dist * Math.sin(time / duration * (Math.PI / 2)) + from;
+    },
+    easeInOutSine: function(time, from, dist, duration) {
+        return dist / 2 * (1 - Math.cos(Math.PI * time / duration)) + from;
+    },
+    easeInExpo: function(time, from, dist, duration) {
+        return dist * Math.pow(2, 10 * (time / duration - 1)) + from;
+    },
+    easeOutExpo: function(time, from, dist, duration) {
+        return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
+    },
+    easeInOutExpo: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * Math.pow(2, 10 * (time - 1)) + from;
+        }
+        return dist / 2 * (-Math.pow(2, -10 * --time) + 2) + from;
+    },
+    easeInCirc: function(time, from, dist, duration) {
+        return dist * (1 - Math.sqrt(1 - (time /= duration) * time)) + from;
+    },
+    easeOutCirc: function(time, from, dist, duration) {
+        return dist *
+            Math.sqrt(1 - (time = time / duration - 1) * time) + from;
+    },
+    easeInOutCirc: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * (1 - Math.sqrt(1 - time * time)) + from;
+        }
+        return dist / 2 * (Math.sqrt(1 - (time -= 2) * time) + 1) + from;
+    },
+    easeInQuad: function(time, from, dist, duration) {
+        return dist * (time /= duration) * time + from;
+    },
+    easeOutQuad: function(time, from, dist, duration) {
+        return -dist * (time /= duration) * (time - 2) + from;
+    },
+    easeInOutQuad: function(time, from, dist, duration) {
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * time * time + from;
+        }
+        return -dist / 2 * ((--time) * (time - 2) - 1) + from;
+    }
+};
+/* Test: "../../spec/_src/src/Event/test.js" */
+(function() {
+'use strict';
+
+var isTouch = Global.utility.isTouchDevice();
+
+Global.Event = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        // singleton
+        if (config.single && Global.Event.instance) {
+            return Global.Event.instance;
+        }
+
+        if (config.single) {
+            Global.Event.instance = this;
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        switchclick: isTouch ? 'touchstart' : 'click',
+        switchdown: isTouch ? 'touchstart' : 'mousedown',
+        switchmove: isTouch ? 'touchmove' : 'mousemove',
+        switchup: isTouch ? 'touchend' : 'mouseup',
+        load: 'load',
+        hashchange: 'hashchange',
+        click: 'click',
+        mousedown: 'mousedown',
+        mousemove: 'mousemove',
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend',
+        orientationchange: 'orientationchange',
+        resize: 'resize'
+    }
+});
+Global.Event.instance = null;
+}());
+/* Test: "../../spec/_src/src/HashController/test.js" */
+Global.HashController = Global.klass({
+    properties: {
+        utility: Global.utility,
+        typeCast: function(str) {
+            var caststr = this.utility.typeCast(str),
+                matchstr;
+
+            if (str === caststr) {
+                matchstr = str.match('^["\'](.*)["\']$');
+
+                if (matchstr) {
+                    return matchstr[1];
+                }
+            }
+
+            return caststr;
+        },
+        makeHash: function(conf) {
+            var hash = '#' + conf.mode,
+                vars = conf.vars,
+                sign = '?',
+                i;
+
+            for (i in vars) {
+                hash +=
+                    sign +
+                    i + '=' +
+                    JSON.stringify(vars[i]);
+                sign = '&';
+            }
+
+            return encodeURI(hash);
+        },
+        setHash: function(vars) {
+            location.hash = this.makeHash(vars);
+            return true;
+        },
+        parseHash: function(hashvars) {
+            var hash,
+                mode,
+                varsHash,
+                vars,
+                splitVar,
+                i;
+
+            hash = decodeURIComponent(hashvars)
+                   .split('#')[1];
+
+            if (!hash) {
+                return false;
+            }
+
+            hash = hash.split('?');
+
+            mode = hash[0];
+
+            if (hash[1]) {
+                vars = {};
+                varsHash = hash[1].split('&');
+
+                // hashをオブジェクトに整形
+                for (i = varsHash.length; i--;) {
+                    if (varsHash[i]) {
+                        splitVar = varsHash[i].split('=');
+                        vars[splitVar[0]] = this.typeCast(splitVar[1]);
+                    }
+                }
+            }
+
+            return {
+                mode: mode,
+                vars: vars
+            };
+        },
+        getHash: function() {
+            return this.parseHash(location.hash);
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Ajax/test.js" */
+Global.Ajax = Global.klass({
+    init: function() {
+        this.xhr = new XMLHttpRequest();
+    },
+    properties: {
+        utility: Global.utility,
+        request: function(vars) {
+            var url = vars.url,
+                callback = vars.callback,
+                error = vars.error,
+                type = vars.type || 'GET',
+                query = '',
+                xhr;
+
+            if (!vars.cash) {
+                if (!vars.query) {
+                    vars.query = {};
+                }
+
+                vars.query['ajaxcash' + Date.now()] = '0';
+            }
+            if (vars.query) {
+                query = this.utility.makeQueryString(vars.query);
+                query = encodeURI(query);
+            }
+
+            this.xhr = new XMLHttpRequest();
+            xhr = this.xhr;
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4) {
+                    return false;
+                }
+
+                if (xhr.status == 200) {
+                    callback(xhr.responseText);
+                }
+                else if (error) {
+                    error(xhr);
+                }
+            }
+
+            xhr.open(type, url);
+
+            if (type === 'POST') {
+                xhr.setRequestHeader('Content-Type',
+                        'application/x-www-form-urlencoded');
+            }
+            xhr.send(query);
+        },
+        abort: function() {
+            this.xhr.abort();
+        },
+        getJSON: function(vars) {
+            this.request({
+                type: vars.type,
+                url: vars.url,
+                callback: function(data) {
+                    vars.callback(JSON.parse(data));
+                },
+                error: function(data) {
+                    if (vars.error) {
+                        vars.error(data);
+                    }
+                }
+            });
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Bind/test.js" */
+Global.Bind = Global.klass({
+    properties: {
+        utility: Global.utility,
+        add: function(vars) {
+            return this.exe(vars, true);
+        },
+        remove: function(vars) {
+            return this.exe(vars, false);
+        },
+        exe: function(vars, isBind) {
+            var util = this.utility,
+                element = vars.element,
+                events = vars.events,
+                onoff = isBind ? util.onEvent : util.offEvent,
+                i;
+
+            for (i in events) {
+                onoff(
+                    element,
+                    i,
+                    events[i]
+                );
+            }
+
+            return vars;
+        }
+    }
+});
+/* Test: "../../spec/_src/src/CanvasImage/test.js" */
+(function() {
+'use strict';
+
+var util = Global.utility,
+    make = util.makeElement;
+
+Global.CanvasImage = function(config) {
+    var canv = make('canvas'),
+        img = make('img'),
+        src = config.src,
+        width = config.width,
+        height = config.height,
+        onload = config.onload;
+
+    img.onload = function() {
+        canv.width = width;
+        canv.height = height;
+        canv.getContext('2d').drawImage(img, 0, 0);
+
+        onload(canv, img);
+    };
+    img.src = src;
+
+    return canv;
+};
+}());
+/* Test: "../../spec/_src/CanvasRender/test.js" */
+Global.CanvasRender = Global.klass({
+    init: function(config) {
+        this.canvas = config.canvas;
+        this.ctx = this.canvas.getContext('2d');
+        this.canvasWidth = this.canvas.width;
+        this.canvasHeight = this.canvas.height;
+
+        this.setSize(config);
+    },
+    properties: {
+        setSize: function(vars) {
+            if (vars.width) {
+                this.canvas.width = this.canvasWidth = vars.width;
+            }
+            if (vars.height) {
+                this.canvas.height = this.canvasHeight = vars.height;
+            }
+        },
+        draw: function(layer) {
+            this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+            for (var i = 0, len = layer.length, item; i < len; i++) {
+                item = layer[i];
+                this.ctx.drawImage(item.image, item.x, item.y);
+            }
+        }
+    }
+});
+/* Test: "../../spec/_src/src/DataStore/test.js" */
+Global.DataStore = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        // singleton
+        if (config.single && Global.DataStore.instance) {
+            return Global.DataStore.instance;
+        }
+
+        this.data = {};
+
+        if (config.single) {
+            Global.DataStore.instance = this;
+        }
+    },
+    properties: {
+        set: function(key, val) {
+            this.data[key] = val;
+            return true;
+        },
+        get: function(key) {
+            var data = this.data;
+
+            if (key) {
+                return data[key];
+            }
+
+            var ret = {},
+                i;
+
+            for (i in data) {
+                ret[i] = data[i];
+            }
+
+            return ret;
+        },
+        remove: function(key) {
+            var data = this.data;
+
+            if (!data[key]) {
+                return false;
+            }
+
+            delete data[key];
+
+            return true;
+        },
+        reset: function() {
+            this.data = {};
+            return true;
+        }
+    }
+});
+Global.DataStore.instance = null;
+/* Test: "../../spec/_src/src/DragFlick/test.js" */
+Global.DragFlick = Global.klass({
+    init: function(config) {
+        if (config) {
+            this.bind(config);
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
+        _getEventTarget: function(e) {
+            var changed = e.changedTouches ? e.changedTouches[0] : e;
+
+            return changed;
+        },
+        amount: function(vars) {
+            var mine = this,
+                startX,
+                startY,
+                dragflg = false;
+
+            mine.utility.onEvent(vars.element, mine._event.switchdown, start);
+            mine.utility.onEvent(mine.utility.win, mine._event.switchup, end);
+
+            function start(e) {
+                var changed = mine._getEventTarget(e);
+
+                startX = changed.pageX;
+                startY = changed.pageY;
+
+                dragflg = true;
+
+                e.preventDefault();
+            }
+            function end(e) {
+                if (dragflg) {
+                    var changed = mine._getEventTarget(e),
+                        amount = {
+                            x: changed.pageX - startX,
+                            y: changed.pageY - startY
+                        };
+
+                    vars.callback(amount);
+
+                    dragflg = false;
+                }
+            }
+        },
+        direction: function(vars) {
+            this.amount({
+                element: vars.element,
+                callback: function(amount) {
+                    var boundary = vars.boundary || 0,
+                        direction = {
+                            change: false,
+                            top: false,
+                            right: false,
+                            bottom: false,
+                            left: false,
+                            amount: amount
+                        };
+
+                    if (Math.abs(amount.x) > boundary) {
+                        if (amount.x > 0) {
+                            direction.right = true;
+                        }
+                        else if (amount.x < 0) {
+                            direction.left = true;
+                        }
+
+                        direction.change = true;
+                    }
+
+                    if (Math.abs(amount.y) > boundary) {
+                        if (amount.y > 0) {
+                            direction.bottom = true;
+                        }
+                        else if (amount.y < 0) {
+                            direction.top = true;
+                        }
+
+                        direction.change = true;
+                    }
+
+                    vars.callback(direction);
+                }
+            });
+        },
+        bind: function(vars) {
+            var mine = this,
+                element = vars.element,
+                e = this._event,
+                util = this.utility,
+                start = vars.start || util.nullFunction,
+                move = vars.move || util.nullFunction,
+                end = vars.end || util.nullFunction,
+                flg = false,
+                startX = 0,
+                startY = 0;
+
+            if (vars.direction) {
+                mine.direction({
+                    element: element,
+                    boundary: vars.boundary,
+                    callback: vars.direction
+                });
+            }
+
+            eventProxy(element, e.switchdown, function(_e) {
+                flg = true;
+
+                startX = _e.pageX;
+                startY = _e.pageY;
+
+                start({
+                    e: _e,
+                    move: {
+                        x: startX,
+                        y: startY
+                    }
+                });
+            });
+            eventProxy(util.doc, e.switchmove, function(_e) {
+                if (flg) {
+                    move({
+                        e: _e,
+                        move: {
+                            x: _e.pageX - startX,
+                            y: _e.pageY - startY
+                        }
+                    });
+                }
+            });
+            eventProxy(util.doc, e.switchup, function(_e) {
+                if (flg) {
+                    end({
+                        e: _e,
+                        move: {
+                            x: _e.pageX - startX,
+                            y: _e.pageY - startY
+                        }
+                    });
+
+                    flg = false;
+                }
+            });
+
+            function eventProxy(element, ev, callback) {
+                util.onEvent(
+                    element, ev, function(e) {
+                        var changed = mine._getEventTarget(e);
+                        callback(changed);
+                    });
+            }
+        }
+    }
+});
+/* Test: "../../spec/_src/src/ExternalInterface/test.js" */
+Global.ExternalInterface = function(config) {
+    config = config || {};
+
+    var external;
+
+    if (config.single && Global.ExternalInterface.instance) {
+        return Global.ExternalInterface.instance;
+    }
+
+    if (config.android) {
+        external = new Global.ExternalInterface.Android(config);
+    }
+    else {
+        external = new Global.ExternalInterface.IOS(config);
+    }
+
+    if (config.single) {
+        Global.ExternalInterface.instance = external;
+    }
+
+    return external;
+};
+Global.ExternalInterface.instance = null;
+/* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
+Global.ExternalInterface.Android = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        this.android = config.android;
+        this.externalObj = config.externalObj;
+
+        if (!this.externalObj) {
+            Global.EXTERNAL_ANDROID = {};
+            this.externalObj = Global.EXTERNAL_ANDROID;
+        }
+    },
+    properties: {
+        hashCtrl: new Global.HashController(),
+        'call': function(conf) {
+            this.android[conf.mode](this.hashCtrl.makeHash(conf));
+        },
+        'addCallback': function(name, func) {
+            var mine = this;
+            mine.externalObj[name] = function(vars) {
+                var objs = mine.hashCtrl.parseHash(vars);
+                return func(objs.vars);
+            };
+        },
+        'removeCallback': function(name) {
+            delete this.externalObj[name];
+        }
+    }
+});
+/* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
+Global.ExternalInterface.IOS = Global.klass({
+    init: function(config) {
+        this.ios = {};
+    },
+    properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
+        hashCtrl: new Global.HashController(),
+        call: function(conf) {
+            this.hashCtrl.setHash(conf);
+        },
+        addCallback: function(name, func) {
+            var mine = this;
+            mine.ios[name] = function(e) {
+                var hash = mine.hashCtrl.getHash();
+
+                if (hash.mode === name) {
+                    func(hash.vars);
+                    return true;
+                }
+                return false;
+            };
+            this.utility.onEvent(
+                this.utility.win, this._event.hashchange, this.ios[name]);
+        },
+        removeCallback: function(name) {
+            this.utility.offEvent(
+                this.utility.win, this._event.hashchange, this.ios[name]);
+            delete this.ios[name];
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Facebook/test.js" */
+Global.Facebook = Global.klass({
+    properties: {
+        utility: Global.utility,
+        shareURLBase: 'https://www.facebook.com/dialog/feed?',
+        getShareURL: function(vars) {
+            var app_id = vars.app_id,
+                redirect_uri = vars.redirect_uri,
+                link = vars.link,
+                picture = vars.picture,
+                name = vars.name,
+                caption = vars.caption,
+                description = vars.description,
+                url = this.shareURLBase +
+                    'app_id=' + app_id + '&' +
+                    'redirect_uri=' + redirect_uri;
+
+            url += this.utility.makeQueryString({
+                'link': link,
+                'picture': picture,
+                'name': name,
+                'caption': caption,
+                'description': description
+            });
+
+            return url;
+        }
+    }
+});
+/* Test: "../../spec/_src/src/FPS/test.js" */
+(function() {
+'use strict';
+
+var instance,
+    util = Global.utility,
+    win = util.win,
+    requestAnimationFrame = (function() {
+        return win.requestAnimationFrame ||
+            win.webkitRequestAnimationFrame ||
+            win.mozRequestAnimationFrame ||
+            win.oRequestAnimationFrame ||
+            win.msRequestAnimationFrame ||
+            false;
+            // function(callback, element){
+            //         window.setTimeout(callback, 1000 / 60);
+            //       };
+    }());
+
+Global.FPS = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        if (!config.criterion) {
+            config.criterion = 20;
+        }
+
+        // singleton
+        if (config.single && instance) {
+            return instance;
+        }
+
+        this.criterion = config.criterion,
+        this.surver = this.criterion,
+        this.enterframe = config.enterframe,
+        this.msecFrame = getFrame(this.criterion),
+        this.prevtime =
+        this.nowtime =
+        this.nexttime =
+        this.loopid = 0;
+
+        if (config.single) {
+            instance = this;
+        }
+    },
+    properties: {
+        getCriterion: function() {
+            return this.criterion;
+        },
+        getSurver: function() {
+            return this.surver;
+        },
+        getFrameTime: function() {
+            return this.msecFrame;
+        },
+        enter: function() {
+            this.enterframe({
+                criterion: this.criterion,
+                surver: this.surver
+            });
+        },
+        start: function() {
+            this.prevtime = Date.now();
+            this.nexttime = this.prevtime + this.msecFrame;
+            loop(this);
+        },
+        stop: function() {
+            clearInterval(this.loopid);
+            this.loopid = 0;
+        }
+    }
+});
+function animationFrame(mine) {
+    if (mine.nexttime <= Date.now()) {
+        _loop(mine);
+        mine.nexttime = mine.nowtime + mine.msecFrame;
+    }
+    if (mine.loopid === 1) {
+        requestAnimationFrame(function() {
+            animationFrame(mine);
+        });
+    }
+}
+function loop(mine) {
+    if (requestAnimationFrame) {
+        mine.loopid = 1;
+        animationFrame(mine);
+    }
+    else {
+        mine.loopid = setInterval(_loop, mine.msecFrame, mine);
+    }
+}
+function _loop(mine) {
+    mine.nowtime = Date.now();
+    mine.surver = getFrame(mine.nowtime - mine.prevtime);
+    mine.prevtime = mine.nowtime;
+
+    mine.enter();
+}
+
+function getFrame(time) {
+    return Math.round(1000 / time);
+}
+}());
+/* Test: "../../spec/_src/src/ImgLoad/test.js" */
+Global.ImgLoad = Global.klass({
+    init: function(config) {
+        var mine = this;
+
+        mine.srcs = config.srcs,
+        mine.srccount = mine.srcs.length,
+        mine.loadedsrcs = [];
+        mine.onload = config.onload || mine.utility.nullFunction,
+        mine.onprogress = config.onprogress || mine.utility.nullFunction,
+        mine.loadcount = 0;
+        mine.progress = 0;
+        mine.check = function() {
+            mine.loadcount++;
+
+            mine.progress = mine.loadcount / mine.srccount;
+            mine.onprogress(mine.progress);
+
+            if (mine.loadcount >= mine.srccount) {
+                mine.onload(mine.loadedsrcs);
+            }
+        };
+    },
+    properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
+        start: function() {
+            var img,
+                i, len;
+
+            for (i = 0, len = this.srccount; i < len; i++) {
+                img = this.utility.makeElement('img');
+                img.src = this.srcs[i];
+
+                this.utility.onEvent(img, this._event.load, this.check);
+
+                this.loadedsrcs.push(img);
+            }
+        },
+        getProgress: function() {
+            return this.progress;
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Loading/test.js" */
+Global.Loading = Global.klass({
+    init: function(config) {
+        if (config && config.onload) {
+            this.onload(config.onload);
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
+        onload: function(func) {
+            this.utility.onEvent(this.utility.win, this._event.load, func);
+        }
+    }
+});
+/* Test: "../../spec/_src/src/LocalStorage/test.js" */
+Global.LocalStorage = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        // singleton
+        if (config.single && Global.LocalStorage.instance) {
+            return Global.LocalStorage.instance;
+        }
+
+        if (config.single) {
+            Global.LocalStorage.instance = this;
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        storage: Global.utility.win.localStorage,
+        set: function(key, val) {
+            this.storage.setItem(key, JSON.stringify(val));
+            return true;
+        },
+        get: function(key) {
+            if (key) {
+                return JSON.parse(this.storage.getItem(key));
+            }
+
+            var ret = {},
+                i;
+
+            for (i in this.storage) {
+                ret[i] = JSON.parse(this.storage[i]);
+            }
+
+            return ret;
+        },
+        remove: function(key) {
+            if (!this.storage.getItem(key)) {
+                return false;
+            }
+
+            this.storage.removeItem(key);
+
+            return true;
+        },
+        reset: function() {
+            this.storage.clear();
+
+            return true;
+        }
+    }
+});
+Global.LocalStorage.instance = null;
+/* Test: "../../spec/_src/src/Mobile/test.js" */
+(function() {
+'use strict';
+
+var userAgent = navigator.userAgent;
+
+Global.Mobile = Global.klass({
+    properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
+        isAndroid: function(ua) {
+            return checkUA(ua, /Android/i);
+        },
+        isIOS: function(ua) {
+            return checkUA(ua, /iPhone|iPad|iPod/i);
+        },
+        isWindows: function(ua) {
+            return checkUA(ua, /IEMobile/i);
+        },
+        isFBAPP: function(ua) {
+            return checkUA(ua, /FBAN/);
+        },
+        isMobile: function() {
+            return (
+                this.isAndroid() ||
+                this.isIOS() ||
+                this.isWindows() ||
+                this.isFBAPP()
+            );
+        },
+        killScroll: function(isNoTop) {
+            if (!isNoTop) {
+                this.utility.pageTop();
+            }
+            this.utility.onEvent(this.utility.doc, this._event.touchmove, preventDefault);
+        },
+        revivalScroll: function(isNoTop) {
+            if (!isNoTop) {
+                this.utility.pageTop();
+            }
+            this.utility.offEvent(this.utility.doc, this._event.touchmove, preventDefault);
+        },
+        hideAddress: function() {
+            this.utility.onEvent(this.utility.win, this._event.load, hideAddressHandler, false);
+            this.utility.onEvent(this.utility.win, this._event.orientationchange, hideAddressHandler, false);
+        },
+        orientationCheck: function() {
+            if (
+                Math.abs(this.utility.win.orientation) !== 90 &&
+                this.utility.win.innerWidth < this.utility.win.innerHeight
+            ) {
+                return {
+                    portrait: true,
+                    landscape: false
+                };
+            }
+
+            return {
+                portrait: false,
+                landscape: true
+            };
+        },
+        orientationChange: function(vars) {
+            var mine = this;
+
+            if (vars.immediately) {
+                change();
+            }
+
+            if (vars.one) {
+                add(onechange);
+
+                return function() {
+                    remove(onechange);
+                };
+            }
+
+            add(change);
+
+            return function() {
+                remove(change);
+            };
+
+            function add(func) {
+                set(mine.utility.onEvent, func);
+            }
+            function remove(func) {
+                set(mine.utility.offEvent, func);
+            }
+            function set(setfunc, handler) {
+                setfunc(mine.utility.win, mine._event.load, handler);
+                setfunc(mine.utility.win, mine._event.orientationchange, handler);
+                setfunc(mine.utility.win, mine._event.resize, handler);
+            }
+            function onechange() {
+                change();
+                remove(onechange);
+            }
+            function change() {
+                if (
+                    mine.orientationCheck().portrait
+                ) {
+                    vars.portrait();
+                    return true;
+                }
+                vars.landscape();
+            }
+        }
+    }
+});
+
+function preventDefault(e) {
+    e.preventDefault();
+    return false;
+}
+function checkUA(ua, pattern) {
+    ua = ua ? ua : userAgent;
+
+    return ua.match(pattern) ? true : false;
+}
+function doScroll() {
+    if (win.pageYOffset === 0) {
+        this.utility.pageTop();
+    }
+}
+function hideAddressHandler() {
+    setTimeout(doScroll, 100);
+}
+}());
+/* Test: "../../spec/_src/src/NumberImage/test.js" */
+Global.NumberImage = Global.klass({
+    init: function(config) {
+        config = config || {type: ''};
+
+        this.type = config.type;
+    },
+    properties: {
+        make: function(x) {
+            var aryX = ('' + x).split(''),
+                tags = '',
+                i;
+
+            for (i = aryX.length; i--;) {
+                tags = make1Digit(this.type + aryX[i]) + tags;
+            }
+
+            function make1Digit(x) {
+                return '<span class="num_' + x + '">&nbsp;</span>';
+            }
+
+            return tags;
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Observer/test.js" */
+Global.Observer = Global.klass({
+    init: function(config) {
+        config = config || {single: false};
+
+        // singleton
+        if (config.single && Global.Observer.instance) {
+            return Global.Observer.instance;
+        }
+
+        this.observed = {};
+
+        if (config.single) {
+            Global.Observer.instance = this;
+        }
+    },
+    properties: {
+        getObserved: function() {
+            return this.observed;
+        },
+        on: function(key, func) {
+            var observed = this.observed;
+
+            if (!observed[key]) {
+                observed[key] = [];
+            }
+
+            observed[key].push(func);
+        },
+        one: function(key, func) {
+            var mine = this,
+                wrapfunc = function(vars) {
+                    func(vars);
+                    mine.off(key, wrapfunc);
+                };
+
+            mine.on(key, wrapfunc);
+        },
+        off: function(key, func) {
+            var observed = this.observed;
+
+            if (!func) {
+                delete observed[key];
+
+                return true;
+            }
+
+            var target = observed[key],
+                i;
+
+            if (!target) {
+                return false;
+            }
+
+
+            for (i = target.length; i--;) {
+                if (func === target[i]) {
+                    target.splice(i, 1);
+
+                    if (target.length === 0) {
+                        delete observed[key];
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        },
+        fire: function(key, vars) {
+            var target = this.observed[key],
+                func,
+                i;
+
+            if (!target) {
+                return false;
+            }
+
+            for (i = target.length; i--;) {
+                func = target[i];
+                if (func) {
+                    func(vars);
+                }
+            }
+
+            return true;
+        }
+    }
+});
+Global.Observer.instance = null;
+/* Test: "../../spec/_src/src/PreRender/test.js" */
+Global.PreRender = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        if (!config.loopblur) {
+            config.loopblur = 20;
+        }
+
+        this.elements = config.elements || [];
+        this.guesslimit = config.guesslimit || 30;
+        this.onrendered = config.onrendered || this.utility.nullFunction;
+        this.looptime = config.looptime || 100;
+        this.loopblur = this.looptime + config.loopblur;
+        this.loopid = this.prevtime = null;
+    },
+    properties: {
+        utility: Global.utility,
+        start: function() {
+            var i;
+
+            for (i = this.elements.length; i--;) {
+                this.utility.showElement(this.elements[i]);
+            }
+            this.prevtime = Date.now();
+            this.loopid = setInterval(check, this.looptime, this);
+
+            function check(mine) {
+                var gettime = Date.now(),
+                    difftime = gettime - mine.prevtime;
+
+                mine.prevtime = gettime;
+
+                if (difftime < mine.loopblur) {
+                    mine.guesslimit--;
+
+                    if (mine.guesslimit < 1) {
+                        clearInterval(mine.loopid);
+
+                        for (var i = mine.elements.length; i--;) {
+                            mine.utility.hideElement(mine.elements[i]);
+                        }
+
+                        mine.onrendered();
+                    }
+                }
+            }
+        }
+    }
+});
+/* Test: "../../spec/_src/src/ScriptLoad/test.js" */
+Global.ScriptLoad = Global.klass({
+    properties: {
+        utility: Global.utility,
+        _event: new Global.Event(),
+        requests: function(varary) {
+            var i = 0,
+                len = varary.length;
+
+            for (; i < len; i++) {
+                this.request(varary[i]);
+            }
+        },
+        request: function(vars) {
+            var script = this.utility.makeElement('script');
+
+            script.type = 'text/javascript';
+            script.src = vars.src;
+            this.utility.body.appendChild(script);
+
+            if (vars.callback) {
+                this.utility.onEvent(script, this._event.load, vars.callback);
+            }
+        }
+    }
+});
+/* Test: "../../spec/_src/src/ServerMeta/test.js" */
+(function() {
+'use strict';
+
+var xhr,
+    isLoaded = false;
+
+Global.ServerMeta = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        var callback = config.callback || this.utility.nullFunction;
+
+        if (!xhr) {
+            xhr = getHeader(function() {
+                isLoaded = true;
+                callback(xhr);
+            });
+        }
+        else {
+            callback(xhr);
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        date: function(callback) {
+            return getHeader(function(xhr) {
+                var time = new Date(xhr.getResponseHeader('Date'));
+                callback(time);
+            });
+        },
+        connection: function() {
+            return getRes('Connection');
+        },
+        contentLength: function() {
+            return getRes('Content-Length');
+        },
+        lastModified: function() {
+            return getRes('Last-Modified');
+        },
+        server: function() {
+            return getRes('Server');
+        },
+        contentType: function() {
+            return getRes('Content-Type');
+        },
+        acceptRanges: function() {
+            return getRes('Accept-Ranges');
+        },
+        keepAlive: function() {
+            return getRes('Keep-Alive');
+        }
+    }
+});
+
+function getRes(value) {
+    if (isLoaded)  {
+        return xhr.getResponseHeader(value);
+    }
+    return false;
+}
+
+function getHeader(callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        callback(xhr);
+    };
+
+    xhr.open('HEAD', location.href + '?update' + Date.now() + '=1');
+    xhr.send(null);
+
+    return xhr;
+}
+}());
+/* Test: "../../spec/_src/src/SessionStorage/test.js" */
+Global.SessionStorage = Global.klass({
+    init: function(config) {
+        config = config || {};
+
+        // singleton
+        if (config.single && Global.SessionStorage.instance) {
+            return Global.SessionStorage.instance;
+        }
+
+        if (config.single) {
+            Global.SessionStorage.instance = this;
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        storage: Global.utility.win.sessionStorage,
+        set: function(key, val) {
+            this.storage.setItem(key, JSON.stringify(val));
+            return true;
+        },
+        get: function(key) {
+            if (key) {
+                return JSON.parse(this.storage.getItem(key));
+            }
+
+            var ret = {},
+                i;
+
+            for (i in this.storage) {
+                ret[i] = JSON.parse(this.storage[i]);
+            }
+
+            return ret;
+        },
+        remove: function(key) {
+            if (!this.storage.getItem(key)) {
+                return false;
+            }
+
+            this.storage.removeItem(key);
+
+            return true;
+        },
+        reset: function() {
+            this.storage.clear();
+
+            return true;
+        }
+    }
+});
+Global.SessionStorage.instance = null;
+/* Test: "../../spec/_src/src/Surrogate/test.js" */
+Global.Surrogate = Global.klass({
+    init: function(config) {
+        this.delay = config.delay;
+        this.callback = config.callback;
+        this.args = null;
+        this.waitid = null;
+    },
+    properties: {
+        request: function(arg) {
+            this.args = arg;
+            this.clear();
+            this.waitid = setTimeout(this.flush, this.delay, this);
+        },
+        flush: function(mine) {
+            mine = mine || this;
+
+            mine.callback(mine.args);
+        },
+        clear: function() {
+            clearInterval(this.waitid);
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Throttle/test.js" */
+Global.Throttle = Global.klass({
+    init: function(config) {
+        this.waittime = config.waittime;
+        this.callback = config.callback;
+        this.locked = false;
+        this.waitid = null;
+    },
+    properties: {
+        request: function(vars) {
+            if (this.locked) {
+                return false;
+            }
+
+            this.callback(vars);
+            this.lock();
+            this.waitid = setTimeout(this.unlock, this.waittime, this);
+        },
+        lock: function() {
+            this.locked = true;
+        },
+        unlock: function(mine) {
+            mine = mine || this;
+
+            mine.locked = false;
+            clearInterval(mine.waitid);
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Timer/test.js" */
+Global.Timer = function(config) {
+    'use strict';
+
+    var limit = config.limit,
+        limitx1000 = limit * 1000,
+        interval = config.interval * 1000,
+        onupdate = config.onupdate,
+        ontimeup = config.ontimeup,
+        digit = template2digit(config.template),
+        starttime = 0,
+        nowtime = 0,
+        endtime = limitx1000,
+        preformedtime = getPreformedNum(limit),
+        loopid,
+        instance = {
+            getLimit: function() {
+                return limit;
+            },
+            getTime: function() {
+                return preformedtime;
+            },
+            getProgress: function() {
+                var diff = endtime - nowtime,
+                    progress = 1 - diff / limitx1000;
+
+                return progress;
+            },
+            setUpdate: function(func) {
+                onupdate = func;
+            },
+            setTimeup: function(func) {
+                ontimeup = func;
+            },
+            countDown: function(vars) {
+                nowtime = starttime = getTime();
+                endtime = starttime + limitx1000;
+                _loop();
+            },
+            stop: function() {
+                clearInterval(loopid);
+            }
+        };
+
+    function loop() {
+        loopid = setTimeout(_loop, interval);
+    }
+    function _loop() {
+        nowtime = getTime();
+
+        var diff = limit - (nowtime - starttime) / 1000;
+
+        if (diff < 0) {
+            diff = 0;
+        }
+
+        preformedtime = getPreformedNum(diff);
+
+        onupdate(preformedtime);
+
+        if (nowtime > endtime) {
+            instance.stop();
+            ontimeup();
+            return true;
+        }
+
+        loop();
+        return false;
+    }
+
+    function getTime() {
+        return Date.now();
+    }
+
+    function getPreformedNum(num) {
+        var parsed = parseNum(num),
+            integer = adaptDigit({
+                num: parsed.integer,
+                digit: digit.integer
+            }),
+            few = adaptDigit({
+                num: parsed.few,
+                digit: digit.few,
+                isFew: true
+            });
+
+        return (integer + '.' + few);
+    }
+
+    function adaptDigit(vars) {
+        var num = '' + vars.num,
+            digit = vars.digit,
+            isFew = vars.isFew,
+            deff = digit - num.length;
+
+        if (!isFew) {
+            if (deff > -1) {
+                return makeFill(deff, 0) + num;
+            }
+
+            return makeFill(digit, 9);
+        }
+
+        if (deff > 0) {
+            return num + makeFill(deff, 0);
+        }
+
+        return num.slice(0, digit);
+    }
+
+    function makeFill(digit, num) {
+        var ret = '';
+
+        num = '' + num;
+
+        while (digit > 0) {
+            ret += num;
+            digit--;
+        }
+
+        return ret;
+    }
+
+    function parseNum(num) {
+        num = ('' + num).split('.');
+
+        var integer = num[0],
+            few = num[1] ? num[1] : '';
+
+        return {
+            integer: integer,
+            few: few
+        };
+    }
+
+    function template2digit(template) {
+        var tempary = template.split('.');
+        return {
+            integer: tempary[0].length,
+            few: tempary[1].length
+        };
+    }
+
+    return instance;
+};
+/* Test: "../../spec/_src/src/Tweener/test.js" */
+Global.Tweener = Global.klass({
+    init: function(target, property, option) {
+        var name,
+            prop;
+
+        option = option || {};
+
+        this.target = target;
+        this.property = [];
+
+        for (name in property) {
+            prop = property[name];
+            prop.name = name;
+
+            prop.distance = prop.to - prop.from;
+            prop.prefix = prop.prefix || '';
+            prop.suffix = prop.suffix || 'px';
+
+            this.property.push(prop);
+        }
+
+        this.duration = option.duration || Global.Tweener.Duration;
+        this.easing = option.easing || this._easing;
+        this.onComplete = option.onComplete;
+
+        this.begin = Date.now();
+
+        Global.Tweener.Items.push(this);
+        if (!Global.Tweener.timerId) {
+            this.start();
+        }
+    },
+    properties: {
+        _easing: function(time, from, dist, duration) {
+            return dist * time / duration + from;
+        },
+        _requestAnimationFrame: (function() {
+            var win = Global.utility.win;
+
+            if (win.requestAnimationFrame) {
+                return function(callback) {
+                    requestAnimationFrame(callback);
+                };
+            }
+            if (win.webkitRequestAnimationFrame) {
+                return function(callback) {
+                    webkitRequestAnimationFrame(callback);
+                };
+            }
+            if (win.mozRequestAnimationFrame) {
+                return function(callback) {
+                    mozRequestAnimationFrame(callback);
+                };
+            }
+            if (win.oRequestAnimationFrame) {
+                return function(callback) {
+                    oRequestAnimationFrame(callback);
+                };
+            }
+            if (win.msRequestAnimationFrame) {
+                return function(callback) {
+                    msRequestAnimationFrame(callback);
+                };
+            }
+
+            return function(callback) {
+                setTimeout(callback, 1000 / Global.Tweener.FPS);
+            };
+        }()),
+        loop: function() {
+            var mine = this,
+                items = Global.Tweener.Items,
+                item,
+                now = Date.now(),
+                time,
+                n = items.length,
+                i,
+                len,
+                prop;
+
+            while (n--) {
+                item = items[n];
+                len = item.property.length;
+                time = now - item.begin;
+
+                if (time < item.duration) {
+                    for (i = 0; i < len; i++) {
+                        prop = item.property[i];
+
+                        Global.Tweener._setProp(item.target, prop, item.easing(
+                            time,
+                            prop.from,
+                            prop.distance,
+                            item.duration
+                        ));
+                    }
+                }
+                else {
+                    for (i = 0; i < len; i++) {
+                        prop = item.property[i];
+
+                        Global.Tweener._setProp(item.target, prop, prop.to);
+                    }
+                    if (item.onComplete) {
+                        item.onComplete();
+                    }
+                    items.splice(n, 1);
+                }
+            }
+
+            if (items.length) {
+                mine._requestAnimationFrame(function() {
+                    mine.loop();
+                });
+
+                return true;
+            }
+
+            this.end();
+        },
+        start: function() {
+            var mine = this;
+
+            Global.Tweener.timerId = 1;
+            mine._requestAnimationFrame(function() {
+                mine.loop();
+            });
+        },
+        end: function() {
+            Global.Tweener.Items = [];
+            clearInterval(Global.Tweener.timerId);
+            Global.Tweener.timerId = null;
+        }
+    }
+});
+Global.Tweener._setProp = function(target, prop, point) {
+    target[prop.name] = prop.prefix + point + prop.suffix;
+};
+Global.Tweener.timerId = null;
+Global.Tweener.Items = [];
+Global.Tweener.FPS = 30;
+Global.Tweener.Duration = 500;
+/* Test: "../../spec/_src/src/Twitter/test.js" */
+Global.Twitter = Global.klass({
+    properties: {
+        utility: Global.utility,
+        shareURLBase: 'https://twitter.com/intent/tweet?',
+        getShareURL: function(vars) {
+            var redirect_uri = vars.redirect_uri,
+                caption = vars.caption || '',
+                name = vars.name || '',
+                hash = vars.hash || '',
+                url = this.shareURLBase;
+
+            name = name ? ' 「' + name + '」' : '';
+            hash = hash ? ' ' + hash : '';
+
+            url += this.utility.makeQueryString({
+                'url': redirect_uri,
+                'text': caption + name + hash
+            });
+
+            return url;
+        }
+    }
+});
+/* Test: "../../spec/_src/src/XML/test.js" */
+Global.XML = Global.klass({
+    init: function(config) {
+        this.element = this.utility.makeElement('div');
+        this.data = {};
+
+        if (config && config.data) {
+            this.setData(config.data);
+        }
+    },
+    properties: {
+        utility: Global.utility,
+        getData: function() {
+            return this.data;
+        },
+        setData: function(d) {
+            this.data =
+            this.element.innerHTML = d;
+        },
+        $: function(selector) {
+            return this.utility.$child(selector, this.element);
+        },
+        $$: function(selector) {
+            return this.utility.$$child(selector, this.element);
+        }
+    }
+});
+}());
