@@ -3,19 +3,23 @@ describe('Tweenerは', function() {
     var tweener,
         element = document.createElement('div');
 
+    if (!window.C) {
+        window.C = window.Global;
+    }
+
     beforeEach(function() {
         // init
     });
     afterEach(function() {
         // clear
-        element.removeAttribute(('style');
+        element.removeAttribute('style');
     });
 
     it('new Tweener(targetObj, property, option)でアニメーションする', function() {
         var comp = false;
         runs(function() {
-            expect(element.style.width).not.toBeDefined();
-            expect(element.style.height).not.toBeDefined();
+            expect(element.style.width).toEqual('');
+            expect(element.style.height).toEqual('');
 
             tweener = new C.Tweener(
                 element.style,
@@ -31,7 +35,7 @@ describe('Tweenerは', function() {
                     }
                 },
                 {
-                    easing: null
+                    easing: null,
                     onComplete: function() {
                         comp = true;
                     }
@@ -50,6 +54,14 @@ describe('Tweenerは', function() {
             expect(element.style.width).toEqual('100px');
             expect(element.style.height).toEqual('100px');
         });
+    });
+
+    it('C.Tweener.FPSでFPSを調整する', function() {
+        expect(C.Tweener.FPS).toBeDefined();
+    });
+
+    it('C.Tweener.Durationでデフォルトのアニメーション実行時間を設定する', function() {
+        expect(C.Tweener.Duration).toBeDefined();
     });
 });
 /*
