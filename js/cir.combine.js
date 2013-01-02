@@ -2103,42 +2103,37 @@ Global.Tweener = Global.klass({
             return dist * time / duration + from;
         },
         _requestAnimationFrame: (function() {
-            var win = Global.utility.win,
-                anime = win.requestAnimationFrame ||
-                    win.webkitRequestAnimationFrame ||
-                    win.mozRequestAnimationFrame ||
-                    win.oRequestAnimationFrame ||
-                    win.msRequestAnimationFrame ||
-                    false;
+            var win = Global.utility.win;
 
-            if (anime) {
-                switch (anime) {
-                    case win.requestAnimationFrame:
-                        return function(callback) {
-                            requestAnimationFrame(callback);
-                        };
-                    case win.webkitRequestAnimationFrame:
-                        return function(callback) {
-                            webkitRequestAnimationFrame(callback);
-                        };
-                    case win.mozRequestAnimationFrame:
-                        return function(callback) {
-                            mozRequestAnimationFrame(callback);
-                        };
-                    case win.oRequestAnimationFrame:
-                        return function(callback) {
-                            oRequestAnimationFrame(callback);
-                        };
-                    case win.msRequestAnimationFrame:
-                        return function(callback) {
-                            msRequestAnimationFrame(callback);
-                        };
-                    default:
-                        return function(callback) {
-                            setTimeout(callback, 1000 / Global.Tweener.FPS);
-                        };
-                }
+            if (win.requestAnimationFrame) {
+                return function(callback) {
+                    requestAnimationFrame(callback);
+                };
             }
+            if (win.webkitRequestAnimationFrame) {
+                return function(callback) {
+                    webkitRequestAnimationFrame(callback);
+                };
+            }
+            if (win.mozRequestAnimationFrame) {
+                return function(callback) {
+                    mozRequestAnimationFrame(callback);
+                };
+            }
+            if (win.oRequestAnimationFrame) {
+                return function(callback) {
+                    oRequestAnimationFrame(callback);
+                };
+            }
+            if (win.msRequestAnimationFrame) {
+                return function(callback) {
+                    msRequestAnimationFrame(callback);
+                };
+            }
+
+            return function(callback) {
+                setTimeout(callback, 1000 / Global.Tweener.FPS);
+            };
         }()),
         loop: function() {
             var mine = this,
