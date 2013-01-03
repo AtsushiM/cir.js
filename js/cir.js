@@ -107,9 +107,10 @@ Global.utility = {
     typeCast: typeCast,
     makeQueryString: function(vars) {
         var sign = '',
-            query = '';
+            query = '',
+            i;
 
-        for (var i in vars) {
+        for (i in vars) {
             if (vars[i]) {
                 query += sign + i + '=' + encodeURIComponent(vars[i]);
                 sign = '&';
@@ -260,15 +261,11 @@ function $(selector, element) {
 }
 function $$(selector, element) {
     var eles = element.querySelectorAll(selector),
-        arys = [],
-        i,
-        len;
+        ary = [];
 
-    for (i = 0, len = eles.length; i < len; i++) {
-        arys[i] = eles[i];
-    }
+    ary.push.apply(ary, eles);
 
-    return arys;
+    return ary;
 }
 function typeCast(str) {
     var matchstr = '' + str;
@@ -932,6 +929,40 @@ Global.DataStore = Global.klass({
     }
 });
 Global.DataStore.instance = null;
+/* Test: "../../spec/_src/src/Deferred/test.js" */
+Global.Deferred = Global.klass({
+    init: function() {
+        this.queue = [];
+        this.data = null;
+    },
+    properties: {
+        isResolve: function() {
+            return !this.queue;
+        },
+        resolve: function(data) {
+            if (this.isResolve()) {
+                return this;
+            }
+
+            var arr = this.queue,
+                len = arr.length,
+                i = 0;
+
+            this.queue = null;
+            this.data = data;
+            for (; i < len; ++i) {
+                arr[i](data);
+            }
+
+            return this;
+        },
+        done: function(func) {
+            this.queue ? this.queue.push(func) : func(this.data);
+
+            return this;
+        }
+    }
+});
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global.DragFlick = Global.klass({
     init: function(config) {

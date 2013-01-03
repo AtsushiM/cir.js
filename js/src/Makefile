@@ -1,11 +1,11 @@
 # Max configuration
-SRC = namespace_start.js utility.js klass.js extend.js selector.js selector.methods.js selector.methods.animate.js Easing.js Event.js HashController.js Ajax.js Bind.js CanvasImage.js CanvasRender.js DataStore.js DragFlick.js ExternalInterface.js ExternalInterface.Android.js ExternalInterface.IOS.js Facebook.js FPS.js ImgLoad.js Loading.js LocalStorage.js Mobile.js NumberImage.js Observer.js PreRender.js ScriptLoad.js ServerMeta.js SessionStorage.js Surrogate.js Throttle.js Timer.js TWeener.js Twitter.js XML.js namespace_end.js
+SRC = namespace_start.js utility.js klass.js extend.js selector.js selector.methods.js selector.methods.animate.js Easing.js Event.js HashController.js Ajax.js Bind.js CanvasImage.js CanvasRender.js DataStore.js Deferred.js DragFlick.js ExternalInterface.js ExternalInterface.Android.js ExternalInterface.IOS.js Facebook.js FPS.js ImgLoad.js Loading.js LocalStorage.js Mobile.js NumberImage.js Observer.js PreRender.js ScriptLoad.js ServerMeta.js SessionStorage.js Surrogate.js Throttle.js Timer.js TWeener.js Twitter.js XML.js namespace_end.js
 
 # Minimum configuration
 # SRC = namespace_start.js utility.js klass.js extend.js Event.js Mobile.js Observer.js namespace_end.js
 
-# Minimum configuration + element selector
-# SRC = namespace_start.js utility.js klass.js extend.js selector.js selector.methods.js Event.js Mobile.js Observer.js namespace_end.js
+# Minimum configuration + element selector + animation
+# SRC = namespace_start.js utility.js klass.js extend.js selector.js selector.methods.js selector.methods.animate.js Tweener.js Event.js Mobile.js Observer.js namespace_end.js
 
 COMBINE = ../cir.js
 COMPRESS = ../cir.min.js

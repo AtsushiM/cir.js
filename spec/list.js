@@ -5,6 +5,7 @@ src/Bind/\n\
 src/CanvasImage/\n\
 src/CanvasRender/\n\
 src/DataStore/\n\
+src/Deferred/\n\
 src/DragFlick/\n\
 src/Event/\n\
 src/ExternalInterface/\n\
@@ -43,6 +44,7 @@ src/utility/\n\
 ../../js/src/CanvasImage.js\n\
 ../../js/src/CanvasRender.js\n\
 ../../js/src/DataStore.js\n\
+../../js/src/Deferred.js\n\
 ../../js/src/DragFlick.js\n\
 ../../js/src/Event.js\n\
 ../../js/src/ExternalInterface.js\n\
@@ -81,6 +83,7 @@ src/utility/\n\
 ../_src/src/CanvasImage/test.js\n\
 ../_src/src/CanvasRender/test.js\n\
 ../_src/src/DataStore/test.js\n\
+../_src/src/Deferred/test.js\n\
 ../_src/src/DragFlick/test.js\n\
 ../_src/src/Event/test.js\n\
 ../_src/src/ExternalInterface/test.js\n\

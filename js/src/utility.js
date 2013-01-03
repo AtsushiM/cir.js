@@ -102,9 +102,10 @@ Global.utility = {
     typeCast: typeCast,
     makeQueryString: function(vars) {
         var sign = '',
-            query = '';
+            query = '',
+            i;
 
-        for (var i in vars) {
+        for (i in vars) {
             if (vars[i]) {
                 query += sign + i + '=' + encodeURIComponent(vars[i]);
                 sign = '&';
@@ -255,15 +256,11 @@ function $(selector, element) {
 }
 function $$(selector, element) {
     var eles = element.querySelectorAll(selector),
-        arys = [],
-        i,
-        len;
+        ary = [];
 
-    for (i = 0, len = eles.length; i < len; i++) {
-        arys[i] = eles[i];
-    }
+    ary.push.apply(ary, eles);
 
-    return arys;
+    return ary;
 }
 function typeCast(str) {
     var matchstr = '' + str;
