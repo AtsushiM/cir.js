@@ -3,16 +3,21 @@ Global.selector = function(query, _parent) {
     'use strict';
 
     var Mine = Global.selector,
+        util = Global.utility,
         _par = _parent || document,
-        $elements = _par.querySelectorAll(query),
+        $elements,
         base,
         instance,
         i = 0,
-        len = $elements.length;
+        len;
 
-    // if (!len) {
-    //     return $elements;
-    // }
+    if (util.isString(query)) {
+        $elements = _par.querySelectorAll(query);
+    }
+    else {
+        $elements = [query];
+    }
+    len = $elements.length;
 
     base = function() {};
     base.prototype = Mine.methods;
