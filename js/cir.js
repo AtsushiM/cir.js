@@ -1937,16 +1937,27 @@ Global.Throttle = Global.klass({
         this.callback = config.callback;
         this.locked = false;
         this.waitid = null;
+        this.waitarg = null;
     },
     properties: {
         request: function(vars) {
-            if (this.locked) {
+            var mine = this;
+
+            if (mine.locked) {
+                mine.waitarg = vars;
                 return false;
             }
 
-            this.callback(vars);
-            this.lock();
-            this.waitid = setTimeout(this.unlock, this.waittime, this);
+            mine.callback(vars);
+            mine.lock();
+            mine.waitid = setTimeout(function() {
+                if (mine.waitarg) {
+                    mine.callback(mine.waitarg);
+                    mine.waitarg = null;
+                }
+
+                mine.unlock();
+            }, mine.waittime, mine);
         },
         lock: function() {
             this.locked = true;

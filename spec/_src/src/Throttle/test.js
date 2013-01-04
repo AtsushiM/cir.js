@@ -21,14 +21,15 @@ describe('Throttleは', function() {
     it('request(arg)でcallback関数をスロットル実行する', function() {
         throttle.request(0);
         throttle.request(1);
+        throttle.request(2);
 
         expect(retarg).toEqual(0);
 
         waits(150);
         runs(function() {
-            expect(retarg).toEqual(0);
-            throttle.request(2);
             expect(retarg).toEqual(2);
+            throttle.request(3);
+            expect(retarg).toEqual(3);
         });
     });
 
