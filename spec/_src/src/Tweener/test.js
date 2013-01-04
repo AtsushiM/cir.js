@@ -25,6 +25,7 @@ describe('Tweenerは', function() {
                 element.style,
                 {
                     width: {
+                        from: 0,
                         to: 100
                     },
                     height: {

@@ -408,6 +408,9 @@ Global.selector.methods = {
     find: function(query) {
         return Global.selector(query, this);
     },
+    parent: function() {
+        return Global.selector(this[0].parentNode);
+    },
     on: function() {
         return forExe(this, util.onEvent, arguments);
     },

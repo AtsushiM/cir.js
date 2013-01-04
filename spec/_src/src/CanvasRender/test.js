@@ -49,14 +49,11 @@ describe('CanvasRenderは', function() {
     });
 
     it('draw([{image, x, y}])でcanvasに描画する', function() {
-        waits(100);
-        runs(function() {
-            canvasrender.draw([
-                { image: r, x: 0, y: 0 },
-                { image: g, x: 10, y: 10 },
-                { image: b, x: 20, y: 20 }
-            ]);
-        });
+        canvasrender.draw([
+            { image: r, x: 0, y: 0 },
+            { image: g, x: 10, y: 10 },
+            { image: b, x: 20, y: 20 }
+        ]);
 
         expect(0).toEqual(0);
     });

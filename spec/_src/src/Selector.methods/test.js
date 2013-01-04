@@ -26,6 +26,12 @@ describe('selector.methodsは', function() {
         );
     });
 
+    it('selector(selector).parent()でselectorに該当するエレメントの親エレメントを取得する', function() {
+        var $body = Global.selector('body');
+
+        expect($body.parent()[0]).toEqual(document.body.parentNode);
+    });
+
     it('selector(selector).on(eventname, handler)でGlobal.utility.onEventを実行する', function() {
         var func = function() {};
 
