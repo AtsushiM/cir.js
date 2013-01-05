@@ -1,10 +1,7 @@
 /* Class: "../../../../js/src/selector.methods.animate.js" */
 describe('selector.methods.animateは', function() {
-    if (window.C) {
-        Global = C;
-    }
-
-    var selector = Global.selector('body');
+    var c = window.C ? C : Global,
+        selector = c.selector('body');
 
     beforeEach(function() {
         // init
@@ -13,7 +10,7 @@ describe('selector.methods.animateは', function() {
         // clear
     });
 
-    it('selector(selector).animate(value)でGlobal.Tweenerを実行する', function() {
+    it('selector(selector).animate(value)でC.Tweenerを実行する', function() {
         var callback = false;
 
         runs(function() {

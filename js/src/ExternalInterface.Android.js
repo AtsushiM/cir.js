@@ -12,14 +12,14 @@ Global.ExternalInterface.Android = Global.klass({
         }
     },
     properties: {
-        hashCtrl: new Global.HashController(),
+        _h: new Global.HashController(),
         'call': function(conf) {
-            this.android[conf.mode](this.hashCtrl.makeHash(conf));
+            this.android[conf.mode](this._h.makeHash(conf));
         },
         'addCallback': function(name, func) {
             var mine = this;
             mine.externalObj[name] = function(vars) {
-                var objs = mine.hashCtrl.parseHash(vars);
+                var objs = mine._h.parseHash(vars);
                 return func(objs.vars);
             };
         },

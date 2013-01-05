@@ -1,12 +1,13 @@
 /* Class: "../../../../js/src/klass.js" */
 describe('klassは', function() {
-    var _super = C.klass({
+    var c = window.C ? C : Global,
+        _super = c.klass({
             init: function() {},
             properties: {
                 test1: function() {},
             }
         }),
-        klass = C.klass({
+        klass = c.klass({
             extend: _super,
             init: function() {},
             properties: {

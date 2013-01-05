@@ -1,18 +1,18 @@
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = Global.klass({
     properties: {
-        utility: Global.utility,
+        _el: Global.element,
         add: function(vars) {
-            return this.exe(vars, true);
+            return this._exe(true, vars);
         },
         remove: function(vars) {
-            return this.exe(vars, false);
+            return this._exe(false, vars);
         },
-        exe: function(vars, isBind) {
-            var util = this.utility,
+        _exe: function(isBind, vars) {
+            var el = this._el,
                 element = vars.element,
                 events = vars.events,
-                onoff = isBind ? util.onEvent : util.offEvent,
+                onoff = isBind ? el.on : el.off,
                 i;
 
             for (i in events) {

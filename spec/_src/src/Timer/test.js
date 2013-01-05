@@ -1,6 +1,7 @@
 /* Class: "../../../../js/src/Timer.js" */
 describe('Timerは', function() {
-    var timer,
+    var c = window.C ? C : Global,
+        timer,
         dammy = {
             onupdate: function(vars) {
                 dammy.onupdateresult = vars;
@@ -12,7 +13,7 @@ describe('Timerは', function() {
 
     beforeEach(function() {
         // init
-        timer = new C.Timer({
+        timer = new c.Timer({
             template: 'xxx.xxx',
             limit: 20,
             interval: 0.05,

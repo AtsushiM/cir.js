@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/Twitter.js" */
 describe('Twitterは', function() {
-    var twitter;
+    var c = window.C ? C : Global,
+        twitter;
 
     beforeEach(function() {
         // init
-        twitter = new C.Twitter();
+        twitter = new c.Twitter();
     });
     afterEach(function() {
         // clear

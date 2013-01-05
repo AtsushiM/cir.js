@@ -6,8 +6,8 @@ Global.ImgLoad = Global.klass({
         mine.srcs = config.srcs,
         mine.srccount = mine.srcs.length,
         mine.loadedsrcs = [];
-        mine.onload = config.onload || mine.utility.nullFunction,
-        mine.onprogress = config.onprogress || mine.utility.nullFunction,
+        mine.onload = config.onload || mine._u.nullFunction,
+        mine.onprogress = config.onprogress || mine._u.nullFunction,
         mine.loadcount = 0;
         mine.progress = 0;
         mine.check = function() {
@@ -22,17 +22,18 @@ Global.ImgLoad = Global.klass({
         };
     },
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
         start: function() {
             var img,
                 i, len;
 
             for (i = 0, len = this.srccount; i < len; i++) {
-                img = this.utility.makeElement('img');
+                img = this._el.create('img');
                 img.src = this.srcs[i];
 
-                this.utility.onEvent(img, this._event.load, this.check);
+                this._el.on(img, this._ev.load, this.check);
 
                 this.loadedsrcs.push(img);
             }

@@ -1,6 +1,7 @@
 /* Class: "../../../../js/src/ExternalInterface.js" */
 describe('ExternalInterfaceは', function() {
-    var extAndroid,
+    var c = window.C ? C : Global,
+        extAndroid,
         extIOS,
         androidMethod = {
             test1: function() {},
@@ -10,10 +11,10 @@ describe('ExternalInterfaceは', function() {
 
     beforeEach(function() {
         // init
-        extAndroid = new C.ExternalInterface({
+        extAndroid = new c.ExternalInterface({
             android: androidMethod
         });
-        extIOS = new C.ExternalInterface({
+        extIOS = new c.ExternalInterface({
             android: false
         });
     });
@@ -22,13 +23,13 @@ describe('ExternalInterfaceは', function() {
     });
 
     it('singleオプションでsingletonになる', function() {
-        var e1 = new C.ExternalInterface({
+        var e1 = new c.ExternalInterface({
                 single: true
             }),
-            e2 = new C.ExternalInterface({
+            e2 = new c.ExternalInterface({
                 single: true
             }),
-            e3 = new C.ExternalInterface({
+            e3 = new c.ExternalInterface({
                 single: false
             });
 

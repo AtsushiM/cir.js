@@ -1,24 +1,21 @@
 /* Class: "../../../../js/src/Event.js" */
 describe('Eventは', function() {
-    var e;
+    var c = window.C ? C : Global,
+        e;
 
     beforeEach(function() {
         // init
-        e = new C.Event({
-            isMobile: function() {
-                return false;
-            }
-        });
+        e = new C.Event();
     });
     afterEach(function() {
         // clear
     });
 
     it('singleオプションでsingletonになる', function() {
-        var e1 = new C.Event({
+        var e1 = new c.Event({
                 single: true
             }),
-            e2 = new C.Event({
+            e2 = new c.Event({
                 single: true
             });
 

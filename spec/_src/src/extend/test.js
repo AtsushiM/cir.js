@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/extend.js" */
 describe('extendは', function() {
-    var extend;
+    var c = window.C ? C : Global,
+        extend;
 
     beforeEach(function() {
         // init
-        extend = C.extend;
+        extend = c.extend;
     });
     afterEach(function() {
         // clear
@@ -26,7 +27,7 @@ describe('extendは', function() {
                 this.text = 'no';
             };
 
-        C.extend(Test2, Test1);
+        extend(Test2, Test1);
 
         Test2.prototype.shout = function() {
             return this.text + '!';

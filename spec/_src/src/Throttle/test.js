@@ -1,6 +1,7 @@
 /* Class: "../../../../js/src/Throttle.js" */
 describe('Throttleは', function() {
-    var throttle,
+    var c = window.C ? C : Global,
+        throttle,
         retarg = null,
         argfunction = function(vars) {
             retarg = vars;
@@ -8,7 +9,7 @@ describe('Throttleは', function() {
 
     beforeEach(function() {
         // init
-        throttle = new C.Throttle({
+        throttle = new c.Throttle({
             waittime: 100,
             callback: argfunction
         });

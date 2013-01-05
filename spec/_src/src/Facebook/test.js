@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/Facebook.js" */
 describe('Facebookは', function() {
-    var facebook;
+    var c = window.C ? C : Global,
+        facebook;
 
     beforeEach(function() {
         // init
-        facebook = new C.Facebook();
+        facebook = new c.Facebook();
     });
     afterEach(function() {
         // clear

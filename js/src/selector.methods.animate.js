@@ -3,21 +3,13 @@
 'use strict';
 
 var util = Global.utility,
+    el = Global.element,
     methods = Global.selector.methods,
     EASING = {};
 
-if (Global.easing) {
-    Easing = Global.easing;
+methods.animate = function() {
+    return methods._forexe(this, animate, arguments);
 }
-
-util.override(
-    methods,
-    {
-        animate: function() {
-            return methods._forexe(this, animate, arguments);
-        }
-    }
-);
 
 function animate(element, params, duration, easing, callback) {
     var style = element.style,
@@ -44,7 +36,7 @@ function animate(element, params, duration, easing, callback) {
 }
 function convertTweenerParam(element, params) {
     var name,
-        computedStyle = util.computedStyleElement(element),
+        computedStyle = el.computedStyle(element),
         tosplit,
         retobj = {};
 

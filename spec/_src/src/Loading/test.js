@@ -1,7 +1,7 @@
 /* Class: "../../../../js/src/Loading.js" */
 describe('Loadingは', function() {
-
-    var dammy = {
+    var c = window.C ? C : Global,
+        dammy = {
             before: {
                 onloadret: false,
                 onload: function() {
@@ -15,17 +15,19 @@ describe('Loadingは', function() {
                 }
             }
         },
-        loading_after = new C.Loading(),
-        loading_before = new C.Loading({
+        loading_after = new c.Loading(),
+        loading_before = new c.Loading({
             onload: dammy.before.onload
         });
 
     loading_after.onload(dammy.after.onload);
 
     it('ページ読み込み時にローディング処理を実行する', function() {
-        //  この時点で既に読み込みは完了してる
-        expect(dammy.before.onloadret).toBeTruthy();
-        expect(dammy.after.onloadret).toBeTruthy();
+        waits(100);
+        runs(function() {
+            expect(dammy.before.onloadret).toBeTruthy();
+            expect(dammy.after.onloadret).toBeTruthy();
+        });
     });
 });
 /*

@@ -5,7 +5,7 @@ describe('selector.methodsは', function() {
     }
 
     var selector = Global.selector('body'),
-        util = Global.utility;
+        el = Global.element;
 
     beforeEach(function() {
         // init
@@ -32,102 +32,102 @@ describe('selector.methodsは', function() {
         expect($body.parent()[0]).toEqual(document.body.parentNode);
     });
 
-    it('selector(selector).on(eventname, handler)でGlobal.utility.onEventを実行する', function() {
+    it('selector(selector).on(eventname, handler)でGlobal.element.onを実行する', function() {
         var func = function() {};
 
-        spyOn(util, 'onEvent').andCallThrough();
+        spyOn(el, 'on').andCallThrough();
         selector.on('click', func);
 
-        expect(util.onEvent).toHaveBeenCalledWith(selector[0], 'click', func);
+        expect(el.on).toHaveBeenCalledWith(selector[0], 'click', func);
     });
 
-    it('selector(selector).off(eventname, handler)でGlobal.utility.offEventを実行する', function() {
+    it('selector(selector).off(eventname, handler)でGlobal.element.offを実行する', function() {
         var func = function() {};
 
-        spyOn(util, 'offEvent').andCallThrough();
+        spyOn(el, 'off').andCallThrough();
         selector.on('click', func);
         selector.off('click', func);
 
-        expect(util.offEvent).toHaveBeenCalledWith(selector[0], 'click', func);
+        expect(el.off).toHaveBeenCalledWith(selector[0], 'click', func);
     });
 
-    it('selector(selector).show()でGlobal.utility.showElementを実行する', function() {
-        spyOn(util, 'showElement').andCallThrough();
+    it('selector(selector).show()でGlobal.element.showを実行する', function() {
+        spyOn(el, 'show').andCallThrough();
         selector.show();
 
-        expect(util.showElement).toHaveBeenCalledWith(selector[0]);
+        expect(el.show).toHaveBeenCalledWith(selector[0]);
     });
 
-    it('selector(selector).hide()でGlobal.utility.hideElementを実行する', function() {
-        spyOn(util, 'hideElement').andCallThrough();
+    it('selector(selector).hide()でGlobal.element.hideを実行する', function() {
+        spyOn(el, 'hide').andCallThrough();
         selector.hide();
 
-        expect(util.hideElement).toHaveBeenCalledWith(selector[0]);
+        expect(el.hide).toHaveBeenCalledWith(selector[0]);
         selector.show();
     });
 
-    it('selector(selector).opacity(value)でGlobal.utility.opacityElementを実行する', function() {
-        spyOn(util, 'opacityElement').andCallThrough();
+    it('selector(selector).opacity(value)でGlobal.el.opacityを実行する', function() {
+        spyOn(el, 'opacity').andCallThrough();
         selector.opacity(0.5);
 
-        expect(util.opacityElement).toHaveBeenCalledWith(selector[0], 0.5);
+        expect(el.opacity).toHaveBeenCalledWith(selector[0], 0.5);
         selector.opacity(1);
     });
 
-    it('selector(selector).hasClass(value)でGlobal.utility.hasClassを実行する', function() {
-        spyOn(util, 'hasClass').andCallThrough();
+    it('selector(selector).hasClass(value)でGlobal.element.hasClassを実行する', function() {
+        spyOn(el, 'hasClass').andCallThrough();
 
         expect(selector.hasClass('test')).toBeFalsy();
-        expect(util.hasClass).toHaveBeenCalledWith(selector[0], 'test');
+        expect(el.hasClass).toHaveBeenCalledWith(selector[0], 'test');
     });
 
-    it('selector(selector).addClass(value)でGlobal.utility.addClassを実行する', function() {
-        spyOn(util, 'addClass').andCallThrough();
+    it('selector(selector).addClass(value)でGlobal.element.addClassを実行する', function() {
+        spyOn(el, 'addClass').andCallThrough();
 
         selector.addClass('test');
-        expect(util.addClass).toHaveBeenCalledWith(selector[0], 'test');
+        expect(el.addClass).toHaveBeenCalledWith(selector[0], 'test');
     });
 
-    it('selector(selector).removeClass(value)でGlobal.utility.removeClassを実行する', function() {
-        spyOn(util, 'removeClass').andCallThrough();
+    it('selector(selector).removeClass(value)でGlobal.element.removeClassを実行する', function() {
+        spyOn(el, 'removeClass').andCallThrough();
 
         selector.removeClass('test');
-        expect(util.removeClass).toHaveBeenCalledWith(selector[0], 'test');
+        expect(el.removeClass).toHaveBeenCalledWith(selector[0], 'test');
     });
 
-    it('selector(selector).toggleClass(value)でGlobal.utility.toggleClassを実行する', function() {
-        spyOn(util, 'toggleClass').andCallThrough();
+    it('selector(selector).toggleClass(value)でGlobal.element.toggleClassを実行する', function() {
+        spyOn(el, 'toggleClass').andCallThrough();
 
         selector.toggleClass('test');
-        expect(util.toggleClass).toHaveBeenCalledWith(selector[0], 'test');
+        expect(el.toggleClass).toHaveBeenCalledWith(selector[0], 'test');
         selector.removeClass('test');
     });
 
-    it('selector(selector).css(object)でGlobal.utility.styleElementを実行する', function() {
+    it('selector(selector).css(object)でGlobal.element.styleを実行する', function() {
         var styleObj = {
                 padding: 10
             };
 
-        spyOn(util, 'styleElement').andCallThrough();
+        spyOn(el, 'style').andCallThrough();
 
         selector.css(styleObj);
-        expect(util.styleElement).toHaveBeenCalledWith(selector[0], styleObj);
+        expect(el.style).toHaveBeenCalledWith(selector[0], styleObj);
         selector.css({
             padding: 0
         });
     });
 
-    it('selector(selector).append(value)でGlobal.utility.appendElementを実行する', function() {
+    it('selector(selector).append(value)でGlobal.element.appendを実行する', function() {
         var div = document.createElement('div');
 
-        spyOn(util, 'appendElement').andCallThrough();
+        spyOn(el, 'append').andCallThrough();
 
         selector.append(div);
-        expect(util.appendElement).toHaveBeenCalledWith(selector[0], div);
+        expect(el.append).toHaveBeenCalledWith(selector[0], div);
     });
 
-    it('selector(selector).html(value)でGlobal.utility.innerHTMLを実行する', function() {
-        spyOn(util, 'innerHTML').andCallThrough();
+    it('selector(selector).html(value)でGlobal.element.htmlを実行する', function() {
+        spyOn(el, 'html').andCallThrough();
 
         var div = document.createElement('div');
 
@@ -137,14 +137,14 @@ describe('selector.methodsは', function() {
         var $div = Global.selector('.selectorTestInnerHTML');
 
         $div.html('test');
-        expect(util.innerHTML).toHaveBeenCalledWith($div[0], 'test');
+        expect(el.html).toHaveBeenCalledWith($div[0], 'test');
     });
 
-    it('selector(selector).attr(value)でGlobal.utility.attrElementを実行する', function() {
-        spyOn(util, 'attrElement').andCallThrough();
+    it('selector(selector).attr(value)でGlobal.element.attrを実行する', function() {
+        spyOn(el, 'attr').andCallThrough();
 
         selector.attr('width');
-        expect(util.attrElement).toHaveBeenCalledWith(selector[0], 'width');
+        expect(el.attr).toHaveBeenCalledWith(selector[0], 'width');
     });
 });
 /*

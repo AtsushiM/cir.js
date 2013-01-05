@@ -1,6 +1,7 @@
 /* Class: "../../../../js/src/Surrogate.js" */
 describe('Surrogateは', function() {
-    var surrogate,
+    var c = window.C ? C : Global,
+        surrogate,
         dammy = {
             callback: function() {
             }
@@ -8,7 +9,7 @@ describe('Surrogateは', function() {
 
     function before() {
         // init
-        surrogate = new C.Surrogate({
+        surrogate = new c.Surrogate({
             delay: 20,
             callback: dammy.callback
         });

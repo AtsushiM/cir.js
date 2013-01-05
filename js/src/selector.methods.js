@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
-var util = Global.utility;
+var el= Global.element;
 
 function forExe(_this, func, arg) {
     var i = 0,
@@ -44,43 +44,43 @@ Global.selector.methods = {
         return Global.selector(this[0].parentNode);
     },
     on: function() {
-        return forExe(this, util.onEvent, arguments);
+        return forExe(this, el.on, arguments);
     },
     off: function() {
-        return forExe(this, util.offEvent, arguments);
+        return forExe(this, el.off, arguments);
     },
     show: function() {
-        return forExe(this, util.showElement);
+        return forExe(this, el.show);
     },
     hide: function() {
-        return forExe(this, util.hideElement);
+        return forExe(this, el.hide);
     },
     opacity: function() {
-        return forExe(this, util.opacityElement, arguments);
+        return forExe(this, el.opacity, arguments);
     },
     hasClass: function() {
-        return exe(this, util.hasClass, arguments);
+        return exe(this, el.hasClass, arguments);
     },
     addClass: function() {
-        return forExe(this, util.addClass, arguments);
+        return forExe(this, el.addClass, arguments);
     },
     removeClass: function() {
-        return forExe(this, util.removeClass, arguments);
+        return forExe(this, el.removeClass, arguments);
     },
     toggleClass: function() {
-        return forExe(this, util.toggleClass, arguments);
+        return forExe(this, el.toggleClass, arguments);
     },
     css: function() {
-        return forExe(this, util.styleElement, arguments);
+        return forExe(this, el.style, arguments);
     },
     html: function() {
-        return exe(this, util.innerHTML, arguments);
+        return exe(this, el.html, arguments);
     },
     attr: function() {
-        return exe(this, util.attrElement, arguments);
+        return exe(this, el.attr, arguments);
     },
     append: function() {
-        return forExe(this, util.appendElement, arguments);
+        return forExe(this, el.append, arguments);
     }
 };
 }());

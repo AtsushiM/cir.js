@@ -1,12 +1,13 @@
 /* Class: "../../../../js/src/ImgLoad.js" */
 describe('ImgLoadは', function() {
-    var imgload,
+    var c = window.C ? C : Global,
+        imgload,
         progress = 0,
         loadend = false;
 
     beforeEach(function() {
         // init
-        imgload = new C.ImgLoad({
+        imgload = new c.ImgLoad({
             srcs: [
                 // img path
                 '/spec/common/r.png',
@@ -41,7 +42,7 @@ describe('ImgLoadは', function() {
     it('getProgress()で読込状況を0~1の間で返す', function() {
         var before = 0;
 
-        imgload = new C.ImgLoad({
+        imgload = new c.ImgLoad({
             srcs: [
                 // img path
                 '/spec/common/r.png',

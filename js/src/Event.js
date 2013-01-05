@@ -18,7 +18,6 @@ Global.Event = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
         switchclick: isTouch ? 'touchstart' : 'click',
         switchdown: isTouch ? 'touchstart' : 'mousedown',
         switchmove: isTouch ? 'touchmove' : 'mousemove',

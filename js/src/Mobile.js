@@ -6,8 +6,9 @@ var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -30,24 +31,24 @@ Global.Mobile = Global.klass({
         },
         killScroll: function(isNoTop) {
             if (!isNoTop) {
-                this.utility.pageTop();
+                this._u.pageTop();
             }
-            this.utility.onEvent(this.utility.doc, this._event.touchmove, preventDefault);
+            this._el.on(this._u.doc, this._ev.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
-                this.utility.pageTop();
+                this._u.pageTop();
             }
-            this.utility.offEvent(this.utility.doc, this._event.touchmove, preventDefault);
+            this._el.off(this._u.doc, this._ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            this.utility.onEvent(this.utility.win, this._event.load, hideAddressHandler, false);
-            this.utility.onEvent(this.utility.win, this._event.orientationchange, hideAddressHandler, false);
+            this._el.on(this._u.win, this._ev.load, hideAddressHandler, false);
+            this._el.on(this._u.win, this._ev.orientationchange, hideAddressHandler, false);
         },
         orientationCheck: function() {
             if (
-                Math.abs(this.utility.win.orientation) !== 90 &&
-                this.utility.win.innerWidth < this.utility.win.innerHeight
+                Math.abs(this._u.win.orientation) !== 90 &&
+                this._u.win.innerWidth < this._u.win.innerHeight
             ) {
                 return {
                     portrait: true,
@@ -82,15 +83,15 @@ Global.Mobile = Global.klass({
             };
 
             function add(func) {
-                set(mine.utility.onEvent, func);
+                set(mine._el.on, func);
             }
             function remove(func) {
-                set(mine.utility.offEvent, func);
+                set(mine._el.off, func);
             }
             function set(setfunc, handler) {
-                setfunc(mine.utility.win, mine._event.load, handler);
-                setfunc(mine.utility.win, mine._event.orientationchange, handler);
-                setfunc(mine.utility.win, mine._event.resize, handler);
+                setfunc(mine._u.win, mine._ev.load, handler);
+                setfunc(mine._u.win, mine._ev.orientationchange, handler);
+                setfunc(mine._u.win, mine._ev.resize, handler);
             }
             function onechange() {
                 change();
@@ -120,7 +121,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        this.utility.pageTop();
+        this._u.pageTop();
     }
 }
 function hideAddressHandler() {

@@ -5,14 +5,14 @@ describe('Bindは', function() {
 
     beforeEach(function() {
         // init
-        bind = new C.Bind();
+        bind = window.C ? new C.Bind() : new Global.Bind();
     });
     afterEach(function() {
         bind.remove(eventHandeler);
     });
 
     it('add({element: element, events: {event: function}})でelementにeventを追加する', function() {
-        spyOn(bind, 'exe').andCallThrough();
+        spyOn(bind, '_exe').andCallThrough();
 
         eventHandeler = bind.add({
             element: document.body,
@@ -22,11 +22,11 @@ describe('Bindは', function() {
             }
         });
 
-        expect(bind.exe).toHaveBeenCalledWith(eventHandeler, true);
+        expect(bind._exe).toHaveBeenCalledWith(true, eventHandeler);
     });
 
     it('remove(eventHandeler)でelementからeventを排除する', function() {
-        spyOn(bind, 'exe').andCallThrough();
+        spyOn(bind, '_exe').andCallThrough();
 
         eventHandeler = bind.add({
             element: document.body,
@@ -41,10 +41,10 @@ describe('Bindは', function() {
             }
         });
 
-        expect(bind.exe).toHaveBeenCalledWith(eventHandeler, false);
+        expect(bind._exe).toHaveBeenCalledWith(false, eventHandeler);
     });
 
-    it('exe(eventHandeler, bool)でelementにeventを設定する', function() {
+    it('_exe(eventHandeler, bool)でelementにeventを設定する', function() {
         eventHandeler = {
             element: document.body,
             events: {
@@ -54,9 +54,9 @@ describe('Bindは', function() {
 
         spyOn(eventHandeler.events, 'click').andCallThrough();
 
-        bind.exe(eventHandeler, true);
+        bind._exe(true, eventHandeler);
         document.body.click();
-        bind.exe(eventHandeler, false);
+        bind._exe(false, eventHandeler);
         document.body.click();
 
         expect(eventHandeler.events.click.callCount).toEqual(1);

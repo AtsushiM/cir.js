@@ -1,20 +1,21 @@
 /* Class: "../../../../js/src/Observer.js" */
 describe('Observerは', function() {
-    var observer;
+    var c = window.C ? C : Global,
+        observer;
 
     beforeEach(function() {
         // init
-        observer = new C.Observer();
+        observer = new c.Observer();
     });
     afterEach(function() {
         // clear
     });
 
     it('singleオプションでsingletonになる', function() {
-        var observer1 = new C.Observer({
+        var observer1 = new c.Observer({
                 single: true
             }),
-            observer2 = new C.Observer({
+            observer2 = new c.Observer({
                 single: true
             });
 

@@ -1,4 +1,4 @@
-/* Test: "../../spec/_src/CanvasRender/test.js" */
+/* Test: "../../spec/_src/src/CanvasRender/test.js" */
 Global.CanvasRender = Global.klass({
     init: function(config) {
         this.canvas = config.canvas;

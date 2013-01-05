@@ -1,11 +1,12 @@
 /* Class: "../../../../js/src/PreRender.js" */
 describe('PreRenderは', function() {
-    var prerender,
+    var c = window.C ? C : Global,
+        prerender,
         $body = document.querySelector('body');
 
     beforeEach(function() {
         // init
-        prerender = new C.PreRender({
+        prerender = new c.PreRender({
             elements: [$body],
             guesslimit: 10,
             looptime: 10,

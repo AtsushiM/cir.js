@@ -13,12 +13,12 @@ src/ExternalInterface.Android/\n\
 src/ExternalInterface.IOS/\n\
 src/FPS/\n\
 src/Facebook/\n\
+src/FontImage/\n\
 src/HashController/\n\
 src/ImgLoad/\n\
 src/Loading/\n\
 src/LocalStorage/\n\
 src/Mobile/\n\
-src/NumberImage/\n\
 src/Observer/\n\
 src/PreRender/\n\
 src/ScriptLoad/\n\
@@ -31,6 +31,7 @@ src/Tweener/\n\
 src/Twitter/\n\
 src/XML/\n\
 src/easing/\n\
+src/element/\n\
 src/extend/\n\
 src/klass/\n\
 src/selector/\n\
@@ -52,12 +53,12 @@ src/utility/\n\
 ../../js/src/ExternalInterface.IOS.js\n\
 ../../js/src/FPS.js\n\
 ../../js/src/Facebook.js\n\
+../../js/src/FontImage.js\n\
 ../../js/src/HashController.js\n\
 ../../js/src/ImgLoad.js\n\
 ../../js/src/Loading.js\n\
 ../../js/src/LocalStorage.js\n\
 ../../js/src/Mobile.js\n\
-../../js/src/NumberImage.js\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/ScriptLoad.js\n\
@@ -70,6 +71,7 @@ src/utility/\n\
 ../../js/src/Twitter.js\n\
 ../../js/src/XML.js\n\
 ../../js/src/easing.js\n\
+../../js/src/element.js\n\
 ../../js/src/extend.js\n\
 ../../js/src/klass.js\n\
 ../../js/src/selector.js\n\
@@ -91,12 +93,12 @@ src/utility/\n\
 ../_src/src/ExternalInterface.IOS/test.js\n\
 ../_src/src/FPS/test.js\n\
 ../_src/src/Facebook/test.js\n\
+../_src/src/FontImage/test.js\n\
 ../_src/src/HashController/test.js\n\
 ../_src/src/ImgLoad/test.js\n\
 ../_src/src/Loading/test.js\n\
 ../_src/src/LocalStorage/test.js\n\
 ../_src/src/Mobile/test.js\n\
-../_src/src/NumberImage/test.js\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
 ../_src/src/ScriptLoad/test.js\n\
@@ -109,6 +111,7 @@ src/utility/\n\
 ../_src/src/Twitter/test.js\n\
 ../_src/src/XML/test.js\n\
 ../_src/src/easing/test.js\n\
+../_src/src/element/test.js\n\
 ../_src/src/extend/test.js\n\
 ../_src/src/klass/test.js\n\
 ../_src/src/selector/test.js\n\

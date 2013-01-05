@@ -1,8 +1,9 @@
 /* Class: "../../../../js/src/ExternalInterface.IOS.js" */
 describe('ExternalInterface.IOSは', function() {
-    var external;
+    var c = window.C ? C : Global,
+        external,
         orgHash = location.hash,
-        hashCntl = new C.HashController(),
+        hashCntl = new c.HashController(),
         iOSMethod = {
             test1: function() {},
             test2: function() {},
@@ -11,7 +12,7 @@ describe('ExternalInterface.IOSは', function() {
 
     beforeEach(function() {
         // init
-        external = new C.ExternalInterface.IOS();
+        external = new c.ExternalInterface.IOS();
     });
     afterEach(function() {
         // clear

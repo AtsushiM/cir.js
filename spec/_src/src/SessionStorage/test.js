@@ -1,11 +1,12 @@
 /* Class: "../../../../js/src/LocalStorage.js" */
 describe('SessionStorageは', function() {
-    var storage,
+    var c = window.C ? C : Global,
+        storage,
         SS = window.sessionStorage;
 
     beforeEach(function() {
         // init
-        storage = new C.SessionStorage();
+        storage = new c.SessionStorage();
     });
     afterEach(function() {
         // clear

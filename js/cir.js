@@ -16,86 +16,9 @@ if (!Date.now) {
 Global.utility = {
     win: win,
     doc: doc,
-    body: doc.body,
-    $: function(selector) {
-        return $(selector, doc);
-    },
-    $$: function(selector) {
-        return $$(selector, doc);
-    },
-    $child: $,
-    $$child: $$,
-    $id: function(id) {
-        return doc.getElementById(id);
-    },
+
     pageTop: function() {
         win.scrollTo(0, 1);
-    },
-    onEvent: function(element, eventname, handler) {
-        element.addEventListener(eventname, handler);
-    },
-    offEvent: function(element, eventname, handler) {
-        element.removeEventListener(eventname, handler);
-    },
-    makeElement: function(tagname, attr) {
-        var element = doc.createElement(tagname);
-
-        if (attr) {
-            attrElement(element, attr);
-        }
-
-        return element;
-    },
-    showElement: function(element) {
-        setStyleDisplay(element, 'block');
-    },
-    hideElement: function(element) {
-        setStyleDisplay(element, 'none');
-    },
-    opacityElement: function(element, value) {
-        element.style.opacity = value;
-    },
-    hasClass: hasClass,
-    addClass: addClass,
-    removeClass: removeClass,
-    toggleClass: function(element, cls) {
-        if (hasClass(element, cls)) {
-            return removeClass(element, cls);
-        }
-
-        return addClass(element, cls);
-    },
-    styleElement: function(element, addstyle) {
-        var style = element.style,
-            i,
-            key,
-            value;
-
-        for (i in addstyle) {
-            key = i;
-            value = addstyle[i];
-
-            if (isFinite(value)) {
-                value += 'px';
-            }
-
-            style[key] = value;
-        }
-    },
-    computedStyleElement: function(element) {
-        return doc.defaultView.getComputedStyle(element, null);
-    },
-    appendElement: function(element, addelement) {
-        element.appendChild(addelement);
-    },
-    attrElement: attrElement,
-    innerHTML: function(element, text) {
-        if (text) {
-            element.innerHTML = text;
-        }
-        else {
-            return element.innerHTML;
-        }
     },
     override: override,
     replaceAll: function(targettext, needle, replacetext) {
@@ -181,22 +104,124 @@ function override(target, vars) {
     return target;
 }
 
-function attrElement(element, vars, value) {
-    var i;
+function typeCast(str) {
+    var matchstr = '' + str;
 
-    if (isObject(vars)) {
-        for (i in vars) {
-            element.setAttribute(i, vars[i]);
-        }
-
+    if (matchstr.match('^{.*}$')) {
+        return JSON.parse(matchstr);
+    }
+    else if (matchstr.match('^[0-9\.]+$')) {
+        return matchstr * 1;
+    }
+    else if (matchstr === 'true') {
         return true;
     }
-
-    if (value || value === '') {
-        return element.setAttribute(vars, value);
+    else if (matchstr === 'false') {
+        return false;
     }
 
-    return element.getAttribute(vars);
+    return str;
+}
+
+}(window, document));
+/* Test: "../../spec/_src/src/element/test.js" */
+(function() {
+'use strict';
+
+var util = Global.utility,
+    win = util.win,
+    doc = util.doc;
+
+Global.element = {
+    $: function(selector) {
+        return $(selector, doc);
+    },
+    $$: function(selector) {
+        return $$(selector, doc);
+    },
+    $child: $,
+    $$child: $$,
+    $id: function(id) {
+        return doc.getElementById(id);
+    },
+    on: function(element, eventname, handler) {
+        element.addEventListener(eventname, handler);
+    },
+    off: function(element, eventname, handler) {
+        element.removeEventListener(eventname, handler);
+    },
+    create: function(tagname, attr) {
+        var element = doc.createElement(tagname);
+
+        if (attr) {
+            attrElement(element, attr);
+        }
+
+        return element;
+    },
+    show: function(element) {
+        element.style.display = 'block';
+    },
+    hide: function(element) {
+        element.style.display = 'none';
+    },
+    opacity: function(element, value) {
+        element.style.opacity = value;
+    },
+    hasClass: hasClass,
+    addClass: addClass,
+    removeClass: removeClass,
+    toggleClass: function(element, cls) {
+        if (hasClass(element, cls)) {
+            return removeClass(element, cls);
+        }
+
+        return addClass(element, cls);
+    },
+    style: function(element, addstyle) {
+        var style = element.style,
+            i,
+            key,
+            value;
+
+        for (i in addstyle) {
+            key = i;
+            value = addstyle[i];
+
+            if (util.isNumber(value)) {
+                value += 'px';
+            }
+
+            style[key] = value;
+        }
+    },
+    computedStyle: function(element) {
+        return doc.defaultView.getComputedStyle(element, null);
+    },
+    append: function(element, addelement) {
+        element.appendChild(addelement);
+    },
+    attr: attrElement,
+    html: function(element, text) {
+        if (text) {
+            element.innerHTML = text;
+        }
+        else {
+            return element.innerHTML;
+        }
+    }
+};
+
+function $(selector, element) {
+    return element.querySelector(selector);
+}
+function $$(selector, element) {
+    var eles = element.querySelectorAll(selector),
+        ary = [];
+
+    ary.push.apply(ary, eles);
+
+    return ary;
 }
 
 function hasClass(element, cls) {
@@ -213,6 +238,7 @@ function hasClass(element, cls) {
 
     return false;
 }
+
 function addClass(element, cls) {
     var between = '';
 
@@ -228,6 +254,7 @@ function addClass(element, cls) {
 
     return true;
 }
+
 function removeClass(element, cls) {
     var addedcls,
         bindcls = [],
@@ -253,40 +280,24 @@ function removeClass(element, cls) {
     return true;
 }
 
-function setStyleDisplay(element, value) {
-    element.style.display = value;
-}
-function $(selector, element) {
-    return element.querySelector(selector);
-}
-function $$(selector, element) {
-    var eles = element.querySelectorAll(selector),
-        ary = [];
+function attrElement(element, vars, value) {
+    var i;
 
-    ary.push.apply(ary, eles);
+    if (util.isObject(vars)) {
+        for (i in vars) {
+            element.setAttribute(i, vars[i]);
+        }
 
-    return ary;
-}
-function typeCast(str) {
-    var matchstr = '' + str;
-
-    if (matchstr.match('^{.*}$')) {
-        return JSON.parse(matchstr);
-    }
-    else if (matchstr.match('^[0-9\.]+$')) {
-        return matchstr * 1;
-    }
-    else if (matchstr === 'true') {
         return true;
     }
-    else if (matchstr === 'false') {
-        return false;
+
+    if (value || value === '') {
+        return element.setAttribute(vars, value);
     }
 
-    return str;
+    return element.getAttribute(vars);
 }
-
-}(window, document));
+}());
 /* Test: "../../spec/_src/src/klass/test.js" */
 Global.klass = function(config) {
     'use strict';
@@ -368,7 +379,7 @@ Global.selector = function(query, _parent) {
 };
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
-var util = Global.utility;
+var el= Global.element;
 
 function forExe(_this, func, arg) {
     var i = 0,
@@ -412,43 +423,43 @@ Global.selector.methods = {
         return Global.selector(this[0].parentNode);
     },
     on: function() {
-        return forExe(this, util.onEvent, arguments);
+        return forExe(this, el.on, arguments);
     },
     off: function() {
-        return forExe(this, util.offEvent, arguments);
+        return forExe(this, el.off, arguments);
     },
     show: function() {
-        return forExe(this, util.showElement);
+        return forExe(this, el.show);
     },
     hide: function() {
-        return forExe(this, util.hideElement);
+        return forExe(this, el.hide);
     },
     opacity: function() {
-        return forExe(this, util.opacityElement, arguments);
+        return forExe(this, el.opacity, arguments);
     },
     hasClass: function() {
-        return exe(this, util.hasClass, arguments);
+        return exe(this, el.hasClass, arguments);
     },
     addClass: function() {
-        return forExe(this, util.addClass, arguments);
+        return forExe(this, el.addClass, arguments);
     },
     removeClass: function() {
-        return forExe(this, util.removeClass, arguments);
+        return forExe(this, el.removeClass, arguments);
     },
     toggleClass: function() {
-        return forExe(this, util.toggleClass, arguments);
+        return forExe(this, el.toggleClass, arguments);
     },
     css: function() {
-        return forExe(this, util.styleElement, arguments);
+        return forExe(this, el.style, arguments);
     },
     html: function() {
-        return exe(this, util.innerHTML, arguments);
+        return exe(this, el.html, arguments);
     },
     attr: function() {
-        return exe(this, util.attrElement, arguments);
+        return exe(this, el.attr, arguments);
     },
     append: function() {
-        return forExe(this, util.appendElement, arguments);
+        return forExe(this, el.append, arguments);
     }
 };
 }());
@@ -457,21 +468,13 @@ Global.selector.methods = {
 'use strict';
 
 var util = Global.utility,
+    el = Global.element,
     methods = Global.selector.methods,
     EASING = {};
 
-if (Global.easing) {
-    Easing = Global.easing;
+methods.animate = function() {
+    return methods._forexe(this, animate, arguments);
 }
-
-util.override(
-    methods,
-    {
-        animate: function() {
-            return methods._forexe(this, animate, arguments);
-        }
-    }
-);
 
 function animate(element, params, duration, easing, callback) {
     var style = element.style,
@@ -498,7 +501,7 @@ function animate(element, params, duration, easing, callback) {
 }
 function convertTweenerParam(element, params) {
     var name,
-        computedStyle = util.computedStyleElement(element),
+        computedStyle = el.computedStyle(element),
         tosplit,
         retobj = {};
 
@@ -627,7 +630,6 @@ Global.Event = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
         switchclick: isTouch ? 'touchstart' : 'click',
         switchdown: isTouch ? 'touchstart' : 'mousedown',
         switchmove: isTouch ? 'touchmove' : 'mousemove',
@@ -733,7 +735,7 @@ Global.Ajax = Global.klass({
         this.xhr = new XMLHttpRequest();
     },
     properties: {
-        utility: Global.utility,
+        _u: Global.utility,
         request: function(vars) {
             var url = vars.url,
                 callback = vars.callback,
@@ -750,7 +752,7 @@ Global.Ajax = Global.klass({
                 vars.query['ajaxcash' + Date.now()] = '0';
             }
             if (vars.query) {
-                query = this.utility.makeQueryString(vars.query);
+                query = this._u.makeQueryString(vars.query);
                 query = encodeURI(query);
             }
 
@@ -800,18 +802,18 @@ Global.Ajax = Global.klass({
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = Global.klass({
     properties: {
-        utility: Global.utility,
+        _el: Global.element,
         add: function(vars) {
-            return this.exe(vars, true);
+            return this._exe(true, vars);
         },
         remove: function(vars) {
-            return this.exe(vars, false);
+            return this._exe(false, vars);
         },
-        exe: function(vars, isBind) {
-            var util = this.utility,
+        _exe: function(isBind, vars) {
+            var el = this._el,
                 element = vars.element,
                 events = vars.events,
-                onoff = isBind ? util.onEvent : util.offEvent,
+                onoff = isBind ? el.on : el.off,
                 i;
 
             for (i in events) {
@@ -830,12 +832,12 @@ Global.Bind = Global.klass({
 (function() {
 'use strict';
 
-var util = Global.utility,
-    make = util.makeElement;
+var el= Global.element,
+    create = el.create;
 
 Global.CanvasImage = function(config) {
-    var canv = make('canvas'),
-        img = make('img'),
+    var canv = create('canvas'),
+        img = create('img'),
         src = config.src,
         width = config.width,
         height = config.height,
@@ -853,7 +855,7 @@ Global.CanvasImage = function(config) {
     return canv;
 };
 }());
-/* Test: "../../spec/_src/CanvasRender/test.js" */
+/* Test: "../../spec/_src/src/CanvasRender/test.js" */
 Global.CanvasRender = Global.klass({
     init: function(config) {
         this.canvas = config.canvas;
@@ -979,8 +981,9 @@ Global.DragFlick = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
         _getEventTarget: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 
@@ -992,8 +995,8 @@ Global.DragFlick = Global.klass({
                 startY,
                 dragflg = false;
 
-            mine.utility.onEvent(vars.element, mine._event.switchdown, start);
-            mine.utility.onEvent(mine.utility.win, mine._event.switchup, end);
+            mine._el.on(vars.element, mine._ev.switchdown, start);
+            mine._el.on(mine._u.win, mine._ev.switchup, end);
 
             function start(e) {
                 var changed = mine._getEventTarget(e);
@@ -1062,8 +1065,9 @@ Global.DragFlick = Global.klass({
         bind: function(vars) {
             var mine = this,
                 element = vars.element,
-                e = this._event,
-                util = this.utility,
+                e = this._ev,
+                el = this._el,
+                util = this._u,
                 start = vars.start || util.nullFunction,
                 move = vars.move || util.nullFunction,
                 end = vars.end || util.nullFunction,
@@ -1119,7 +1123,7 @@ Global.DragFlick = Global.klass({
             });
 
             function eventProxy(element, ev, callback) {
-                util.onEvent(
+                el.on(
                     element, ev, function(e) {
                         var changed = mine._getEventTarget(e);
                         callback(changed);
@@ -1166,14 +1170,14 @@ Global.ExternalInterface.Android = Global.klass({
         }
     },
     properties: {
-        hashCtrl: new Global.HashController(),
+        _h: new Global.HashController(),
         'call': function(conf) {
-            this.android[conf.mode](this.hashCtrl.makeHash(conf));
+            this.android[conf.mode](this._h.makeHash(conf));
         },
         'addCallback': function(name, func) {
             var mine = this;
             mine.externalObj[name] = function(vars) {
-                var objs = mine.hashCtrl.parseHash(vars);
+                var objs = mine._h.parseHash(vars);
                 return func(objs.vars);
             };
         },
@@ -1188,16 +1192,17 @@ Global.ExternalInterface.IOS = Global.klass({
         this.ios = {};
     },
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
-        hashCtrl: new Global.HashController(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
+        _h: new Global.HashController(),
         call: function(conf) {
-            this.hashCtrl.setHash(conf);
+            this._h.setHash(conf);
         },
         addCallback: function(name, func) {
             var mine = this;
             mine.ios[name] = function(e) {
-                var hash = mine.hashCtrl.getHash();
+                var hash = mine._h.getHash();
 
                 if (hash.mode === name) {
                     func(hash.vars);
@@ -1205,12 +1210,12 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            this.utility.onEvent(
-                this.utility.win, this._event.hashchange, this.ios[name]);
+            this._el.on(
+                this._u.win, this._ev.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            this.utility.offEvent(
-                this.utility.win, this._event.hashchange, this.ios[name]);
+            this._el.off(
+                this._u.win, this._ev.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
@@ -1218,7 +1223,7 @@ Global.ExternalInterface.IOS = Global.klass({
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = Global.klass({
     properties: {
-        utility: Global.utility,
+        _u: Global.utility,
         shareURLBase: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
             var app_id = vars.app_id,
@@ -1232,7 +1237,7 @@ Global.Facebook = Global.klass({
                     'app_id=' + app_id + '&' +
                     'redirect_uri=' + redirect_uri;
 
-            url += this.utility.makeQueryString({
+            url += this._u.makeQueryString({
                 'link': link,
                 'picture': picture,
                 'name': name,
@@ -1356,8 +1361,8 @@ Global.ImgLoad = Global.klass({
         mine.srcs = config.srcs,
         mine.srccount = mine.srcs.length,
         mine.loadedsrcs = [];
-        mine.onload = config.onload || mine.utility.nullFunction,
-        mine.onprogress = config.onprogress || mine.utility.nullFunction,
+        mine.onload = config.onload || mine._u.nullFunction,
+        mine.onprogress = config.onprogress || mine._u.nullFunction,
         mine.loadcount = 0;
         mine.progress = 0;
         mine.check = function() {
@@ -1372,17 +1377,18 @@ Global.ImgLoad = Global.klass({
         };
     },
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
         start: function() {
             var img,
                 i, len;
 
             for (i = 0, len = this.srccount; i < len; i++) {
-                img = this.utility.makeElement('img');
+                img = this._el.create('img');
                 img.src = this.srcs[i];
 
-                this.utility.onEvent(img, this._event.load, this.check);
+                this._el.on(img, this._ev.load, this.check);
 
                 this.loadedsrcs.push(img);
             }
@@ -1400,10 +1406,11 @@ Global.Loading = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
         onload: function(func) {
-            this.utility.onEvent(this.utility.win, this._event.load, func);
+            this._el.on(this._u.win, this._ev.load, func);
         }
     }
 });
@@ -1422,37 +1429,36 @@ Global.LocalStorage = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
-        storage: Global.utility.win.localStorage,
+        _s: Global.utility.win.localStorage,
         set: function(key, val) {
-            this.storage.setItem(key, JSON.stringify(val));
+            this._s.setItem(key, JSON.stringify(val));
             return true;
         },
         get: function(key) {
             if (key) {
-                return JSON.parse(this.storage.getItem(key));
+                return JSON.parse(this._s.getItem(key));
             }
 
             var ret = {},
                 i;
 
-            for (i in this.storage) {
-                ret[i] = JSON.parse(this.storage[i]);
+            for (i in this._s) {
+                ret[i] = JSON.parse(this._s[i]);
             }
 
             return ret;
         },
         remove: function(key) {
-            if (!this.storage.getItem(key)) {
+            if (!this._s.getItem(key)) {
                 return false;
             }
 
-            this.storage.removeItem(key);
+            this._s.removeItem(key);
 
             return true;
         },
         reset: function() {
-            this.storage.clear();
+            this._s.clear();
 
             return true;
         }
@@ -1467,8 +1473,9 @@ var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -1491,24 +1498,24 @@ Global.Mobile = Global.klass({
         },
         killScroll: function(isNoTop) {
             if (!isNoTop) {
-                this.utility.pageTop();
+                this._u.pageTop();
             }
-            this.utility.onEvent(this.utility.doc, this._event.touchmove, preventDefault);
+            this._el.on(this._u.doc, this._ev.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
-                this.utility.pageTop();
+                this._u.pageTop();
             }
-            this.utility.offEvent(this.utility.doc, this._event.touchmove, preventDefault);
+            this._el.off(this._u.doc, this._ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            this.utility.onEvent(this.utility.win, this._event.load, hideAddressHandler, false);
-            this.utility.onEvent(this.utility.win, this._event.orientationchange, hideAddressHandler, false);
+            this._el.on(this._u.win, this._ev.load, hideAddressHandler, false);
+            this._el.on(this._u.win, this._ev.orientationchange, hideAddressHandler, false);
         },
         orientationCheck: function() {
             if (
-                Math.abs(this.utility.win.orientation) !== 90 &&
-                this.utility.win.innerWidth < this.utility.win.innerHeight
+                Math.abs(this._u.win.orientation) !== 90 &&
+                this._u.win.innerWidth < this._u.win.innerHeight
             ) {
                 return {
                     portrait: true,
@@ -1543,15 +1550,15 @@ Global.Mobile = Global.klass({
             };
 
             function add(func) {
-                set(mine.utility.onEvent, func);
+                set(mine._el.on, func);
             }
             function remove(func) {
-                set(mine.utility.offEvent, func);
+                set(mine._el.off, func);
             }
             function set(setfunc, handler) {
-                setfunc(mine.utility.win, mine._event.load, handler);
-                setfunc(mine.utility.win, mine._event.orientationchange, handler);
-                setfunc(mine.utility.win, mine._event.resize, handler);
+                setfunc(mine._u.win, mine._ev.load, handler);
+                setfunc(mine._u.win, mine._ev.orientationchange, handler);
+                setfunc(mine._u.win, mine._ev.resize, handler);
             }
             function onechange() {
                 change();
@@ -1581,15 +1588,15 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        this.utility.pageTop();
+        this._u.pageTop();
     }
 }
 function hideAddressHandler() {
     setTimeout(doScroll, 100);
 }
 }());
-/* Test: "../../spec/_src/src/NumberImage/test.js" */
-Global.NumberImage = Global.klass({
+/* Test: "../../spec/_src/src/FontImage/test.js" */
+Global.FontImage = Global.klass({
     init: function(config) {
         config = config || {type: ''};
 
@@ -1714,18 +1721,19 @@ Global.PreRender = Global.klass({
 
         this.elements = config.elements || [];
         this.guesslimit = config.guesslimit || 30;
-        this.onrendered = config.onrendered || this.utility.nullFunction;
+        this.onrendered = config.onrendered || this._u.nullFunction;
         this.looptime = config.looptime || 100;
         this.loopblur = this.looptime + config.loopblur;
         this.loopid = this.prevtime = null;
     },
     properties: {
-        utility: Global.utility,
+        _u: Global.utility,
+        _el: Global.element,
         start: function() {
             var i;
 
             for (i = this.elements.length; i--;) {
-                this.utility.showElement(this.elements[i]);
+                this._el.show(this.elements[i]);
             }
             this.prevtime = Date.now();
             this.loopid = setInterval(check, this.looptime, this);
@@ -1743,7 +1751,7 @@ Global.PreRender = Global.klass({
                         clearInterval(mine.loopid);
 
                         for (var i = mine.elements.length; i--;) {
-                            mine.utility.hideElement(mine.elements[i]);
+                            mine._el.hide(mine.elements[i]);
                         }
 
                         mine.onrendered();
@@ -1756,8 +1764,9 @@ Global.PreRender = Global.klass({
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = Global.klass({
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
         requests: function(varary) {
             var i = 0,
                 len = varary.length;
@@ -1767,14 +1776,14 @@ Global.ScriptLoad = Global.klass({
             }
         },
         request: function(vars) {
-            var script = this.utility.makeElement('script');
+            var script = this._el.create('script');
 
             script.type = 'text/javascript';
             script.src = vars.src;
-            this.utility.body.appendChild(script);
+            this._el.append(this._u.doc.body, script);
 
             if (vars.callback) {
-                this.utility.onEvent(script, this._event.load, vars.callback);
+                this._el.on(script, this._ev.load, vars.callback);
             }
         }
     }
@@ -1790,7 +1799,7 @@ Global.ServerMeta = Global.klass({
     init: function(config) {
         config = config || {};
 
-        var callback = config.callback || this.utility.nullFunction;
+        var callback = config.callback || this._u.nullFunction;
 
         if (!xhr) {
             xhr = getHeader(function() {
@@ -1803,7 +1812,7 @@ Global.ServerMeta = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
+        _u: Global.utility,
         date: function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
@@ -1869,37 +1878,36 @@ Global.SessionStorage = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
-        storage: Global.utility.win.sessionStorage,
+        _s: Global.utility.win.sessionStorage,
         set: function(key, val) {
-            this.storage.setItem(key, JSON.stringify(val));
+            this._s.setItem(key, JSON.stringify(val));
             return true;
         },
         get: function(key) {
             if (key) {
-                return JSON.parse(this.storage.getItem(key));
+                return JSON.parse(this._s.getItem(key));
             }
 
             var ret = {},
                 i;
 
-            for (i in this.storage) {
-                ret[i] = JSON.parse(this.storage[i]);
+            for (i in this._s) {
+                ret[i] = JSON.parse(this._s[i]);
             }
 
             return ret;
         },
         remove: function(key) {
-            if (!this.storage.getItem(key)) {
+            if (!this._s.getItem(key)) {
                 return false;
             }
 
-            this.storage.removeItem(key);
+            this._s.removeItem(key);
 
             return true;
         },
         reset: function() {
-            this.storage.clear();
+            this._s.clear();
 
             return true;
         }
@@ -2261,19 +2269,19 @@ Global.Tweener.Duration = 500;
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = Global.klass({
     properties: {
-        utility: Global.utility,
-        shareURLBase: 'https://twitter.com/intent/tweet?',
+        _u: Global.utility,
+        _b: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
                 caption = vars.caption || '',
                 name = vars.name || '',
                 hash = vars.hash || '',
-                url = this.shareURLBase;
+                url = this._b;
 
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
-            url += this.utility.makeQueryString({
+            url += this._u.makeQueryString({
                 'url': redirect_uri,
                 'text': caption + name + hash
             });
@@ -2285,7 +2293,7 @@ Global.Twitter = Global.klass({
 /* Test: "../../spec/_src/src/XML/test.js" */
 Global.XML = Global.klass({
     init: function(config) {
-        this.element = this.utility.makeElement('div');
+        this.element = this._el.create('div');
         this.data = {};
 
         if (config && config.data) {
@@ -2293,7 +2301,7 @@ Global.XML = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
+        _el: Global.element,
         getData: function() {
             return this.data;
         },
@@ -2302,10 +2310,10 @@ Global.XML = Global.klass({
             this.element.innerHTML = d;
         },
         $: function(selector) {
-            return this.utility.$child(selector, this.element);
+            return this._el.$child(selector, this.element);
         },
         $$: function(selector) {
-            return this.utility.$$child(selector, this.element);
+            return this._el.$$child(selector, this.element);
         }
     }
 });

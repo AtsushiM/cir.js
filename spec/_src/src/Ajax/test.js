@@ -4,7 +4,7 @@ describe('Ajaxは', function() {
 
     beforeEach(function() {
         // init
-        ajax = new C.Ajax();
+        ajax = window.C ? new C.Ajax() : new Global.Ajax();
     });
     afterEach(function() {
         // clear

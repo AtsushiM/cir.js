@@ -1,8 +1,9 @@
 /* Class: "../../../../js/src/ExternalInterface.Android.js" */
 describe('ExternalInterface.Androidは', function() {
-    var external,
+    var c = window.C ? C : Global,
+        external,
         orgHash = location.hash,
-        hashCntl = new C.HashController(),
+        hashCntl = new c.HashController(),
         androidMethod = {
             test1: function() {
             },
@@ -14,26 +15,26 @@ describe('ExternalInterface.Androidは', function() {
 
     beforeEach(function() {
         // init
-        C.EXTERNAL_ANDROID = {};
-        external = new C.ExternalInterface.Android({
+        c.EXTERNAL_ANDROID = {};
+        external = new c.ExternalInterface.Android({
             android: androidMethod,
             // option
-            externalObj: C.EXTERNAL_ANDROID
+            externalObj: c.EXTERNAL_ANDROID
         });
     });
     afterEach(function() {
         // clear
         location.hash = orgHash;
-        delete C.EXTERNAL_ANDROID;
+        delete c.EXTERNAL_ANDROID;
     });
 
     it('C.EXTERNAL_ANDROIDにAndroidネイティブから呼び出すための関数を設定する', function(){
-        delete C.EXTERNAL_ANDROID;
-        external = new C.ExternalInterface.Android({
+        delete c.EXTERNAL_ANDROID;
+        external = new c.ExternalInterface.Android({
             android: androidMethod
         });
 
-        expect(C.EXTERNAL_ANDROID).toBeDefined();
+        expect(c.EXTERNAL_ANDROID).toBeDefined();
     });
 
     it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {
@@ -67,7 +68,7 @@ describe('ExternalInterface.Androidは', function() {
         external.addCallback('load', function(args) {
             returned = args;
         });
-        C.EXTERNAL_ANDROID.load(hashCntl.makeHash(args));
+        c.EXTERNAL_ANDROID.load(hashCntl.makeHash(args));
         expect(returned).toEqual(args.vars);
         returned = null;
     });
@@ -81,7 +82,7 @@ describe('ExternalInterface.Androidは', function() {
         });
         external.removeCallback('load');
 
-        expect(C.EXTERNAL_ANDROID.load).not.toBeDefined();
+        expect(c.EXTERNAL_ANDROID.load).not.toBeDefined();
     });
 });
 /*

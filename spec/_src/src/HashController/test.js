@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/HashController.js" */
 describe('HashControllerは', function() {
-    var controller,
+    var c = window.C ? C : Global,
+        controller,
         orgHash = location.hash;
 
     beforeEach(function() {
-        controller = new C.HashController();
+        controller = new c.HashController();
         location.hash = orgHash;
     });
     afterEach(function() {

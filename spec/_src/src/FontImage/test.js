@@ -1,58 +1,51 @@
-/* Class: "../../../../js/src/ServerMeta.js" */
-describe('ServerMetaは', function() {
+/* Class: "../../../../js/src/FontImage.js" */
+describe('FontImageは', function() {
     var c = window.C ? C : Global,
-        servermeta;
+        numimg,
+        args = {
+            type: 'white'
+        };
 
     beforeEach(function() {
         // init
-        servermeta = new c.ServerMeta();
+        numimg = new c.FontImage(args);
     });
     afterEach(function() {
         // clear
     });
 
-    it('初期化完了時にcallbackを実行する', function() {
-        servermeta = new c.ServerMeta({
-            callback: function() {
-                expect(0).toEqual(0);
-            }
-        });
-    });
+    function expectedMakeAction(i) {
+        return '<span class="num_' + args.type + i + '">&nbsp;</span>';
+    }
 
-    it('date()はサーバ時間を取得する', function() {
-        var after = function(date) {
-                expect(date.getFullYear()).toBeDefined();
-            };
+    it('make(x)で数値xのimgタグを返す', function() {
+        // 0 ~ 9
+        for (var i = 0, len = 10; i < len; i++) {
+            expect(numimg.make(i)).toEqual(expectedMakeAction(i));
+        }
 
-        expect(servermeta.date(after)).toBeDefined();
-    });
+        // 10 ~ 19
+        for (var i = 10, len = 20; i < len; i++) {
+            var j =  ('' + i).split('');
+            expect(numimg.make(i)).toEqual(
+                expectedMakeAction(j[0]) +
+                expectedMakeAction(j[1])
+            );
+        }
 
-    it('connection()はコネクション状態を取得する', function() {
-        expect(servermeta.connection()).toBeDefined();
-    });
-
-    it('contentLength()はコンテンツ長を取得する', function() {
-        expect(servermeta.contentLength()).toBeDefined();
-    });
-
-    it('lastModified()は最終更新時間を取得する', function() {
-        expect(servermeta.lastModified()).toBeDefined();
-    });
-
-    it('server()はサーバ情報を取得する', function() {
-        expect(servermeta.server()).toBeDefined();
-    });
-
-    it('contentType()はコンテンツタイプを取得する', function() {
-        expect(servermeta.contentType()).toBeDefined();
-    });
-
-    it('acceptRanges()はレンジを取得する', function() {
-        expect(servermeta.acceptRanges()).toBeDefined();
-    });
-
-    it('keepAlive()はタイムアウト時間などを取得する', function() {
-        expect(servermeta.keepAlive()).toBeDefined();
+        // 000
+        expect(numimg.make('000')).toEqual(
+            expectedMakeAction(0) +
+            expectedMakeAction(0) +
+            expectedMakeAction(0)
+        );
+        // 9999
+        expect(numimg.make('9999')).toEqual(
+            expectedMakeAction(9) +
+            expectedMakeAction(9) +
+            expectedMakeAction(9) +
+            expectedMakeAction(9)
+        );
     });
 });
 /*

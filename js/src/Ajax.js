@@ -4,7 +4,7 @@ Global.Ajax = Global.klass({
         this.xhr = new XMLHttpRequest();
     },
     properties: {
-        utility: Global.utility,
+        _u: Global.utility,
         request: function(vars) {
             var url = vars.url,
                 callback = vars.callback,
@@ -21,7 +21,7 @@ Global.Ajax = Global.klass({
                 vars.query['ajaxcash' + Date.now()] = '0';
             }
             if (vars.query) {
-                query = this.utility.makeQueryString(vars.query);
+                query = this._u.makeQueryString(vars.query);
                 query = encodeURI(query);
             }
 

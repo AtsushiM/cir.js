@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/Mobile.js" */
 describe('Mobileは', function() {
-    var mb;
+    var c = window.C ? C : Global,
+        mb;
 
     beforeEach(function() {
         // init
-        mb = new C.Mobile();
+        mb = new c.Mobile();
     });
     afterEach(function() {
         // clear

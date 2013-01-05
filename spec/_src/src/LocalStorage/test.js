@@ -1,11 +1,12 @@
 /* Class: "../../../../js/src/LocalStorage.js" */
 describe('LocalStorageは', function() {
-    var storage,
+    var c = window.C ? C : Global,
+        storage,
         LS = window.localStorage;
 
     beforeEach(function() {
         // init
-        storage = new C.LocalStorage();
+        storage = new c.LocalStorage();
     });
     afterEach(function() {
         // clear

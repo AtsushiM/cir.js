@@ -1,6 +1,7 @@
 /* Class: "../../../../js/src/FPS.js" */
 describe('FPSは', function() {
-    var fps,
+    var c = window.C ? C : Global,
+        fps,
         dammy = {
             enterframe: function(vars) {
             }
@@ -8,7 +9,7 @@ describe('FPSは', function() {
         criterion = 10;
 
     function setFPS() {
-        fps = new C.FPS({
+        fps = new c.FPS({
             criterion: criterion,
             enterframe: dammy.enterframe
         });
@@ -24,11 +25,11 @@ describe('FPSは', function() {
     });
 
     it('singleオプションでsingletonになる', function() {
-        var fps1 = new C.FPS({
+        var fps1 = new c.FPS({
                 single: true,
                 enterframe: dammy.enterframe
             }),
-            fps2 = new C.FPS({
+            fps2 = new c.FPS({
                 single: true,
                 enterframe: dammy.enterframe
             });

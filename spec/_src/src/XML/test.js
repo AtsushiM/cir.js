@@ -1,11 +1,12 @@
 /* Class: "../../../../js/src/XML.js" */
 describe('XMLは', function() {
-    var xml,
+    var c = window.C ? C : Global,
+        xml,
         data = '<?xml version="1.0" encoding="UTF-8"?><testdata><data>aaaa</data><data>bbbb</data></testdata>';
 
     beforeEach(function() {
         // init
-        xml = new C.XML({
+        xml = new c.XML({
             data: data
         });
     });

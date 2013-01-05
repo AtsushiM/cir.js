@@ -1,20 +1,21 @@
 /* Class: "../../../../js/src/CanvasRender.js" */
 describe('CanvasRenderは', function() {
-    var canvasrender,
+    var c = window.C ? C : Global,
+        canvasrender,
         canvas = document.createElement('canvas'),
-        r = new C.CanvasImage({
+        r = new c.CanvasImage({
             src: '/spec/common/r.png',
             width: 100,
             height: 100,
             onload: function() {}
         }),
-        g = new C.CanvasImage({
+        g = new c.CanvasImage({
             src: '/spec/common/g.png',
             width: 100,
             height: 100,
             onload: function() {}
         }),
-        b = new C.CanvasImage({
+        b = new c.CanvasImage({
             src: '/spec/common/b.png',
             width: 100,
             height: 100,
@@ -25,7 +26,7 @@ describe('CanvasRenderは', function() {
 
     beforeEach(function() {
         // init
-        canvasrender = new C.CanvasRender({
+        canvasrender = new c.CanvasRender({
             canvas: canvas,
             width: 100,
             height: 100

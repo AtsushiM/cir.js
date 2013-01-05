@@ -1,16 +1,17 @@
 /* Class: "../../../../js/src/CanvasImage.js" */
 describe('CanvasImageは', function() {
-    var canvasimage;
+    var CanvasImage;
 
     beforeEach(function() {
         // before
+        CanvasImage = window.C ? C.CanvasImage : Global.CanvasImage;
     });
     afterEach(function() {
         // clear
     });
 
     it('srcオプションで指定した画像を表示するcanvas要素を作成する', function() {
-        expect(new C.CanvasImage({
+        expect(new CanvasImage({
             src: '/spec/common/r.png',
             width: 100,
             height: 100,

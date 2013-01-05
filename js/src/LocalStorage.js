@@ -13,37 +13,36 @@ Global.LocalStorage = Global.klass({
         }
     },
     properties: {
-        utility: Global.utility,
-        storage: Global.utility.win.localStorage,
+        _s: Global.utility.win.localStorage,
         set: function(key, val) {
-            this.storage.setItem(key, JSON.stringify(val));
+            this._s.setItem(key, JSON.stringify(val));
             return true;
         },
         get: function(key) {
             if (key) {
-                return JSON.parse(this.storage.getItem(key));
+                return JSON.parse(this._s.getItem(key));
             }
 
             var ret = {},
                 i;
 
-            for (i in this.storage) {
-                ret[i] = JSON.parse(this.storage[i]);
+            for (i in this._s) {
+                ret[i] = JSON.parse(this._s[i]);
             }
 
             return ret;
         },
         remove: function(key) {
-            if (!this.storage.getItem(key)) {
+            if (!this._s.getItem(key)) {
                 return false;
             }
 
-            this.storage.removeItem(key);
+            this._s.removeItem(key);
 
             return true;
         },
         reset: function() {
-            this.storage.clear();
+            this._s.clear();
 
             return true;
         }

@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = Global.klass({
     properties: {
-        utility: Global.utility,
+        _u: Global.utility,
         shareURLBase: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
             var app_id = vars.app_id,
@@ -15,7 +15,7 @@ Global.Facebook = Global.klass({
                     'app_id=' + app_id + '&' +
                     'redirect_uri=' + redirect_uri;
 
-            url += this.utility.makeQueryString({
+            url += this._u.makeQueryString({
                 'link': link,
                 'picture': picture,
                 'name': name,

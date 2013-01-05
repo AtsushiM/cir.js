@@ -1,6 +1,7 @@
 /* Class: "../../../js/src/DataStore.js" */
 describe('DataStoreは', function() {
-    var store;
+    var c = window.C ? C : Global,
+        store;
 
     beforeEach(function() {
         store = new C.DataStore();
@@ -10,13 +11,13 @@ describe('DataStoreは', function() {
     });
 
     it('singleオプションでsingletonになる', function() {
-        var store1 = new C.DataStore({
+        var store1 = new c.DataStore({
                 single: true
             }),
-            store2 = new C.DataStore({
+            store2 = new c.DataStore({
                 single: true
             }),
-            store3 = new C.DataStore({
+            store3 = new c.DataStore({
                 single: false
             });
 

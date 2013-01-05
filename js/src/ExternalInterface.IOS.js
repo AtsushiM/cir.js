@@ -4,16 +4,17 @@ Global.ExternalInterface.IOS = Global.klass({
         this.ios = {};
     },
     properties: {
-        utility: Global.utility,
-        _event: new Global.Event(),
-        hashCtrl: new Global.HashController(),
+        _u: Global.utility,
+        _el: Global.element,
+        _ev: new Global.Event(),
+        _h: new Global.HashController(),
         call: function(conf) {
-            this.hashCtrl.setHash(conf);
+            this._h.setHash(conf);
         },
         addCallback: function(name, func) {
             var mine = this;
             mine.ios[name] = function(e) {
-                var hash = mine.hashCtrl.getHash();
+                var hash = mine._h.getHash();
 
                 if (hash.mode === name) {
                     func(hash.vars);
@@ -21,12 +22,12 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            this.utility.onEvent(
-                this.utility.win, this._event.hashchange, this.ios[name]);
+            this._el.on(
+                this._u.win, this._ev.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            this.utility.offEvent(
-                this.utility.win, this._event.hashchange, this.ios[name]);
+            this._el.off(
+                this._u.win, this._ev.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }

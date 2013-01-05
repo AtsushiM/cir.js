@@ -1,21 +1,18 @@
 /* Class: "../../../../js/src/selector.js" */
 describe('selectorは', function() {
-    var selector;
-
-    if (window.C) {
-        Global = C;
-    }
+    var c = window.C ? C : Global,
+        selector;
 
     beforeEach(function() {
         // init
-        /* selector = new Global.selector(); */
+        /* selector = new c.selector(); */
     });
     afterEach(function() {
         // clear
     });
 
     it('selector(string)でjQueryライクなオブジェクトを返す', function() {
-        var selector = new Global.selector('script');
+        var selector = new c.selector('script');
 
         expect(selector.hide()).toEqual(selector);
         expect(selector.show()).toEqual(selector);
@@ -23,14 +20,14 @@ describe('selectorは', function() {
     });
 
     it('selector(string, element)でelementからstringに対応するelementを内包したselectorインスタンスを返す', function() {
-        var selector = new Global.selector('script', document.body);
+        var selector = new c.selector('script', document.body);
 
         expect(selector.hide()).toEqual(selector);
     });
 
     it('selector(string, selector)でselectorからstringに対応するelementを内包したselectorインスタンスを返す', function() {
-        var body = Global.selector('body'),
-            selector = new Global.selector('script', body);
+        var body = c.selector('body'),
+            selector = new c.selector('script', body);
 
         expect(selector.hide()).toEqual(selector);
     });
