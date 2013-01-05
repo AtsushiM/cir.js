@@ -15,7 +15,7 @@ describe('FontImageは', function() {
     });
 
     function expectedMakeAction(i) {
-        return '<span class="num_' + args.type + i + '">&nbsp;</span>';
+        return '<span class="font_' + args.type + '_' + i + '">&nbsp;</span>';
     }
 
     it('make(x)で数値xのimgタグを返す', function() {

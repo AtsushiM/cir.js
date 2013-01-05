@@ -12,11 +12,11 @@ Global.FontImage = Global.klass({
                 i;
 
             for (i = aryX.length; i--;) {
-                tags = make1Digit(this.type + aryX[i]) + tags;
+                tags = make1Digit(this.type + '_' + aryX[i]) + tags;
             }
 
             function make1Digit(x) {
-                return '<span class="num_' + x + '">&nbsp;</span>';
+                return '<span class="font_' + x + '">&nbsp;</span>';
             }
 
             return tags;
