@@ -8,7 +8,7 @@ Global.DragFlick = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         _getEventTarget: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 

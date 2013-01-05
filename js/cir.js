@@ -648,6 +648,7 @@ Global.Event = Global.klass({
     }
 });
 Global.Event.instance = null;
+Global.event = new Global.Event();
 }());
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
@@ -983,7 +984,7 @@ Global.DragFlick = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         _getEventTarget: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 
@@ -1194,7 +1195,7 @@ Global.ExternalInterface.IOS = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         _h: new Global.HashController(),
         call: function(conf) {
             this._h.setHash(conf);
@@ -1379,7 +1380,7 @@ Global.ImgLoad = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         start: function() {
             var img,
                 i, len;
@@ -1408,7 +1409,7 @@ Global.Loading = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         onload: function(func) {
             this._el.on(this._u.win, this._ev.load, func);
         }
@@ -1475,7 +1476,7 @@ Global.Mobile = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -1766,7 +1767,7 @@ Global.ScriptLoad = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         requests: function(varary) {
             var i = 0,
                 len = varary.length;

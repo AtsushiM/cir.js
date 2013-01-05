@@ -8,7 +8,7 @@ Global.Mobile = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },

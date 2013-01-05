@@ -8,7 +8,7 @@ Global.Loading = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         onload: function(func) {
             this._el.on(this._u.win, this._ev.load, func);
         }

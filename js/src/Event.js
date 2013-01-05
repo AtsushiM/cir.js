@@ -36,4 +36,5 @@ Global.Event = Global.klass({
     }
 });
 Global.Event.instance = null;
+Global.event = new Global.Event();
 }());

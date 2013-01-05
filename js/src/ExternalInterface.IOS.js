@@ -6,7 +6,7 @@ Global.ExternalInterface.IOS = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         _h: new Global.HashController(),
         call: function(conf) {
             this._h.setHash(conf);

@@ -24,7 +24,7 @@ Global.ImgLoad = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         start: function() {
             var img,
                 i, len;

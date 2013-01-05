@@ -25,6 +25,10 @@ describe('Eventは', function() {
     it('PCとスマートフォンでイベントを切り替える', function() {
         expect(0).toEqual(0);
     });
+
+    it('初期化時にC.eventにインスタンスを生成する', function() {
+        expect(c.event).toBeDefined();
+    });
 });
 /*
 describe('XXXは', function() {

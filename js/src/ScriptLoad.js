@@ -3,7 +3,7 @@ Global.ScriptLoad = Global.klass({
     properties: {
         _u: Global.utility,
         _el: Global.element,
-        _ev: new Global.Event(),
+        _ev: Global.event,
         requests: function(varary) {
             var i = 0,
                 len = varary.length;
