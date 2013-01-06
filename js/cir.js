@@ -1,4 +1,4 @@
-// Cool Is Right.
+// Cool is Right.
 var C = {};
 (function() {
     'use strict';
@@ -739,8 +739,8 @@ Global.Ajax = Global.klass({
         _u: Global.utility,
         request: function(vars) {
             var url = vars.url,
-                callback = vars.callback,
-                error = vars.error,
+                callback = vars.callback || this._u.nullFunction,
+                error = vars.error || this._u.nullFunction,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -766,11 +766,10 @@ Global.Ajax = Global.klass({
                 }
 
                 if (xhr.status == 200) {
-                    callback(xhr.responseText);
+                    return callback(xhr.responseText);
                 }
-                else if (error) {
-                    error(xhr);
-                }
+
+                return error(xhr);
             }
 
             xhr.open(type, url);
@@ -785,18 +784,19 @@ Global.Ajax = Global.klass({
             this.xhr.abort();
         },
         getJSON: function(vars) {
-            this.request({
-                type: vars.type,
-                url: vars.url,
-                callback: function(data) {
-                    vars.callback(JSON.parse(data));
-                },
-                error: function(data) {
-                    if (vars.error) {
-                        vars.error(data);
-                    }
+            var callback = vars.callback,
+                error = vars.error;
+
+            vars.callback = function(data) {
+                callback(JSON.parse(data));
+            };
+            vars.error = function(data) {
+                if (error) {
+                    error(data);
                 }
-            });
+            };
+
+            this.request(vars);
         }
     }
 });
@@ -895,7 +895,7 @@ Global.DataStore = Global.klass({
             return Global.DataStore.instance;
         }
 
-        this.data = {};
+        this.d = {};
 
         if (config.single) {
             Global.DataStore.instance = this;
@@ -903,11 +903,11 @@ Global.DataStore = Global.klass({
     },
     properties: {
         set: function(key, val) {
-            this.data[key] = val;
+            this.d[key] = val;
             return true;
         },
         get: function(key) {
-            var data = this.data;
+            var data = this.d;
 
             if (key) {
                 return data[key];
@@ -923,7 +923,7 @@ Global.DataStore = Global.klass({
             return ret;
         },
         remove: function(key) {
-            var data = this.data;
+            var data = this.d;
 
             if (!data[key]) {
                 return false;
@@ -934,7 +934,7 @@ Global.DataStore = Global.klass({
             return true;
         },
         reset: function() {
-            this.data = {};
+            this.d = {};
             return true;
         }
     }
@@ -1357,41 +1357,42 @@ function getFrame(time) {
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global.ImgLoad = Global.klass({
     init: function(config) {
-        var mine = this;
-
-        mine.srcs = config.srcs,
-        mine.srccount = mine.srcs.length,
-        mine.loadedsrcs = [];
-        mine.onload = config.onload || mine._u.nullFunction,
-        mine.onprogress = config.onprogress || mine._u.nullFunction,
-        mine.loadcount = 0;
-        mine.progress = 0;
-        mine.check = function() {
-            mine.loadcount++;
-
-            mine.progress = mine.loadcount / mine.srccount;
-            mine.onprogress(mine.progress);
-
-            if (mine.loadcount >= mine.srccount) {
-                mine.onload(mine.loadedsrcs);
-            }
-        };
+        this.srcs = config.srcs,
+        this.srccount = this.srcs.length,
+        this.loadedsrcs = [];
+        this.onload = config.onload || this._u.nullFunction,
+        this.onprogress = config.onprogress || this._u.nullFunction,
+        this.loadcount = 0;
+        this.progress = 0;
     },
     properties: {
         _u: Global.utility,
         _el: Global.element,
         _ev: Global.event,
+        _c: function() {
+            this.loadcount++;
+
+            this.progress = this.loadcount / this.srccount;
+            this.onprogress(this.progress);
+
+            if (this.loadcount >= this.srccount) {
+                this.onload(this.loadedsrcs);
+            }
+        },
         start: function() {
-            var img,
+            var mine = this,
+                img,
                 i, len;
 
-            for (i = 0, len = this.srccount; i < len; i++) {
-                img = this._el.create('img');
-                img.src = this.srcs[i];
+            for (i = 0, len = mine.srccount; i < len; i++) {
+                img = mine._el.create('img');
+                img.src = mine.srcs[i];
 
-                this._el.on(img, this._ev.load, this.check);
+                mine._el.on(img, mine._ev.load, function() {
+                    mine._c();
+                });
 
-                this.loadedsrcs.push(img);
+                mine.loadedsrcs.push(img);
             }
         },
         getProgress: function() {
@@ -1601,7 +1602,7 @@ Global.FontImage = Global.klass({
     init: function(config) {
         config = config || {type: ''};
 
-        this.type = config.type;
+        this.type = config.type ? config.type + '_' : '';
     },
     properties: {
         make: function(x) {
@@ -1610,7 +1611,7 @@ Global.FontImage = Global.klass({
                 i;
 
             for (i = aryX.length; i--;) {
-                tags = make1Digit(this.type + '_' + aryX[i]) + tags;
+                tags = make1Digit(this.type + aryX[i]) + tags;
             }
 
             function make1Digit(x) {

@@ -4,7 +4,7 @@ describe('DataStoreは', function() {
         store;
 
     beforeEach(function() {
-        store = new C.DataStore();
+        store = new c.DataStore();
     });
     afterEach(function() {
         store.reset();

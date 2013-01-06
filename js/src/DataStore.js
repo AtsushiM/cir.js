@@ -8,7 +8,7 @@ Global.DataStore = Global.klass({
             return Global.DataStore.instance;
         }
 
-        this.data = {};
+        this.d = {};
 
         if (config.single) {
             Global.DataStore.instance = this;
@@ -16,11 +16,11 @@ Global.DataStore = Global.klass({
     },
     properties: {
         set: function(key, val) {
-            this.data[key] = val;
+            this.d[key] = val;
             return true;
         },
         get: function(key) {
-            var data = this.data;
+            var data = this.d;
 
             if (key) {
                 return data[key];
@@ -36,7 +36,7 @@ Global.DataStore = Global.klass({
             return ret;
         },
         remove: function(key) {
-            var data = this.data;
+            var data = this.d;
 
             if (!data[key]) {
                 return false;
@@ -47,7 +47,7 @@ Global.DataStore = Global.klass({
             return true;
         },
         reset: function() {
-            this.data = {};
+            this.d = {};
             return true;
         }
     }

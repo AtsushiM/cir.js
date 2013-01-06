@@ -3,7 +3,7 @@ Global.FontImage = Global.klass({
     init: function(config) {
         config = config || {type: ''};
 
-        this.type = config.type;
+        this.type = config.type ? config.type + '_' : '';
     },
     properties: {
         make: function(x) {
@@ -12,7 +12,7 @@ Global.FontImage = Global.klass({
                 i;
 
             for (i = aryX.length; i--;) {
-                tags = make1Digit(this.type + '_' + aryX[i]) + tags;
+                tags = make1Digit(this.type + aryX[i]) + tags;
             }
 
             function make1Digit(x) {

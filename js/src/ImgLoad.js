@@ -1,41 +1,42 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global.ImgLoad = Global.klass({
     init: function(config) {
-        var mine = this;
-
-        mine.srcs = config.srcs,
-        mine.srccount = mine.srcs.length,
-        mine.loadedsrcs = [];
-        mine.onload = config.onload || mine._u.nullFunction,
-        mine.onprogress = config.onprogress || mine._u.nullFunction,
-        mine.loadcount = 0;
-        mine.progress = 0;
-        mine.check = function() {
-            mine.loadcount++;
-
-            mine.progress = mine.loadcount / mine.srccount;
-            mine.onprogress(mine.progress);
-
-            if (mine.loadcount >= mine.srccount) {
-                mine.onload(mine.loadedsrcs);
-            }
-        };
+        this.srcs = config.srcs,
+        this.srccount = this.srcs.length,
+        this.loadedsrcs = [];
+        this.onload = config.onload || this._u.nullFunction,
+        this.onprogress = config.onprogress || this._u.nullFunction,
+        this.loadcount = 0;
+        this.progress = 0;
     },
     properties: {
         _u: Global.utility,
         _el: Global.element,
         _ev: Global.event,
+        _c: function() {
+            this.loadcount++;
+
+            this.progress = this.loadcount / this.srccount;
+            this.onprogress(this.progress);
+
+            if (this.loadcount >= this.srccount) {
+                this.onload(this.loadedsrcs);
+            }
+        },
         start: function() {
-            var img,
+            var mine = this,
+                img,
                 i, len;
 
-            for (i = 0, len = this.srccount; i < len; i++) {
-                img = this._el.create('img');
-                img.src = this.srcs[i];
+            for (i = 0, len = mine.srccount; i < len; i++) {
+                img = mine._el.create('img');
+                img.src = mine.srcs[i];
 
-                this._el.on(img, this._ev.load, this.check);
+                mine._el.on(img, mine._ev.load, function() {
+                    mine._c();
+                });
 
-                this.loadedsrcs.push(img);
+                mine.loadedsrcs.push(img);
             }
         },
         getProgress: function() {

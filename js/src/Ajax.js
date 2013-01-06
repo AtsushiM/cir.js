@@ -7,8 +7,8 @@ Global.Ajax = Global.klass({
         _u: Global.utility,
         request: function(vars) {
             var url = vars.url,
-                callback = vars.callback,
-                error = vars.error,
+                callback = vars.callback || this._u.nullFunction,
+                error = vars.error || this._u.nullFunction,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -34,11 +34,10 @@ Global.Ajax = Global.klass({
                 }
 
                 if (xhr.status == 200) {
-                    callback(xhr.responseText);
+                    return callback(xhr.responseText);
                 }
-                else if (error) {
-                    error(xhr);
-                }
+
+                return error(xhr);
             }
 
             xhr.open(type, url);
@@ -53,18 +52,19 @@ Global.Ajax = Global.klass({
             this.xhr.abort();
         },
         getJSON: function(vars) {
-            this.request({
-                type: vars.type,
-                url: vars.url,
-                callback: function(data) {
-                    vars.callback(JSON.parse(data));
-                },
-                error: function(data) {
-                    if (vars.error) {
-                        vars.error(data);
-                    }
+            var callback = vars.callback,
+                error = vars.error;
+
+            vars.callback = function(data) {
+                callback(JSON.parse(data));
+            };
+            vars.error = function(data) {
+                if (error) {
+                    error(data);
                 }
-            });
+            };
+
+            this.request(vars);
         }
     }
 });

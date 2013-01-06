@@ -1,4 +1,4 @@
-// Cool Is Right.
+// Cool is Right.
 var C = {};
 (function() {
     'use strict';
