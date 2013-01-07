@@ -8,6 +8,7 @@ describe('selector.methods.animateは', function() {
     });
     afterEach(function() {
         // clear
+        selector.stop();
     });
 
     it('$(selector).animate(value)でC.Tweenerを実行する', function() {
@@ -17,7 +18,7 @@ describe('selector.methods.animateは', function() {
             selector.animate({
                 width: 50,
                 height: 100
-            }, 100, 'easeOutExpo', function() {
+            }, 100, c.ease.outExpo, function() {
                 console.log('callback');
                 callback = true;
             });
@@ -35,7 +36,7 @@ describe('selector.methods.animateは', function() {
             selector.animate({
                 width: 50,
                 height: 100
-            }, 100, 'easeOutExpo', function() {
+            }, 100, c.ease.outExpo, function() {
                 console.log('callback');
                 callback = true;
             });

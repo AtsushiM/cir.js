@@ -117,7 +117,7 @@ Global.Tweener = Global.klass({
                 return true;
             }
 
-            this.end();
+            this.stop();
         },
         start: function() {
             var mine = this;
@@ -127,7 +127,7 @@ Global.Tweener = Global.klass({
                 mine.loop();
             });
         },
-        end: function() {
+        stop: function() {
             Global.Tweener.Items = [];
             clearInterval(Global.Tweener.timerId);
             Global.Tweener.timerId = null;

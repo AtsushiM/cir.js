@@ -1,11 +1,8 @@
 /* Class: "../../../../js/src/Tweener.js" */
 describe('Tweenerは', function() {
-    var tweener,
+    var c = window.C ? C : Global,
+        tweener,
         element = document.createElement('div');
-
-    if (!window.C) {
-        window.C = window.Global;
-    }
 
     beforeEach(function() {
         // init
@@ -13,6 +10,7 @@ describe('Tweenerは', function() {
     afterEach(function() {
         // clear
         element.removeAttribute('style');
+        tweener.stop();
     });
 
     it('new Tweener(targetObj, property, option)でアニメーションする', function() {
@@ -21,7 +19,46 @@ describe('Tweenerは', function() {
             expect(element.style.width).toEqual('');
             expect(element.style.height).toEqual('');
 
-            tweener = new C.Tweener(
+            tweener = new c.Tweener(
+                element.style,
+                {
+                    width: {
+                        from: 0,
+                        to: 100
+                    },
+                    height: {
+                        from: 0,
+                        to: 100,
+                        prefix: '',
+                        suffix: 'px'
+                    }
+                },
+                {
+                    ease: c.ease.outExpo,
+                    onComplete: function() {
+                        comp = true;
+                    }
+                }
+            );
+        });
+        waits(C.Tweener.Duration / 2);
+        runs(function() {
+            expect(comp).toBeFalsy();
+            expect(element.style.width).toBeDefined();
+            expect(element.style.height).toBeDefined();
+        });
+        waits(C.Tweener.Duration / 2 + 10);
+        runs(function() {
+            expect(comp).toBeTruthy();
+            expect(element.style.width).toEqual('100px');
+            expect(element.style.height).toEqual('100px');
+        });
+    });
+
+    it('stop()でアニメーションを停止する', function() {
+        var comp = false;
+        runs(function() {
+            tweener = new c.Tweener(
                 element.style,
                 {
                     width: {
@@ -46,14 +83,12 @@ describe('Tweenerは', function() {
         waits(C.Tweener.Duration / 2);
         runs(function() {
             expect(comp).toBeFalsy();
-            expect(element.style.width).toBeDefined();
-            expect(element.style.height).toBeDefined();
+            tweener.stop();
+            expect(comp).toBeFalsy();
         });
-        waits(C.Tweener.Duration / 2 + 10);
+        waits(C.Tweener.Duration / 2);
         runs(function() {
-            expect(comp).toBeTruthy();
-            expect(element.style.width).toEqual('100px');
-            expect(element.style.height).toEqual('100px');
+            expect(comp).toBeFalsy();
         });
     });
 

@@ -479,15 +479,17 @@ methods.animate = function() {
     return methods._forexe(this, animate, arguments);
 }
 methods.stop = function() {
-    var tweeners = this._animate,
-        i = 0,
-        len = tweeners.length;
+    if (this._animate) {
+        var tweeners = this._animate,
+            i = 0,
+            len = tweeners.length;
 
-    for (; i < len; i++) {
-        tweeners[i].end();
+        for (; i < len; i++) {
+            tweeners[i].stop();
+        }
+
+        this._animate = null;
     }
-
-    this._animate = null;
 
     return this;
 }
@@ -500,7 +502,7 @@ function animate(element, params, duration, ease, callback) {
         callback = duration;
         duration = null;
     }
-    if (util.isFunction(ease)) {
+    if (util.isFunction(ease) && !callback) {
         callback = ease;
         ease = null;
     }
@@ -2333,7 +2335,7 @@ Global.Tweener = Global.klass({
                 return true;
             }
 
-            this.end();
+            this.stop();
         },
         start: function() {
             var mine = this;
@@ -2343,7 +2345,7 @@ Global.Tweener = Global.klass({
                 mine.loop();
             });
         },
-        end: function() {
+        stop: function() {
             Global.Tweener.Items = [];
             clearInterval(Global.Tweener.timerId);
             Global.Tweener.timerId = null;
