@@ -388,7 +388,7 @@ function forExe(_this, func, arg) {
 
     for (; i < len; i++) {
         ary[0] = _this[i];
-        func.apply(null, ary);
+        func.apply(_this, ary);
     }
 
     return _this;
@@ -473,7 +473,24 @@ var util = Global.utility,
     EASING = {};
 
 methods.animate = function() {
+    if (!this._animate) {
+        this._animate = [];
+    }
+
     return methods._forexe(this, animate, arguments);
+}
+methods.stop = function() {
+    var tweeners = this._animate,
+        i = 0,
+        len = tweeners.length;
+
+    for (; i < len; i++) {
+        tweeners[i].end();
+    }
+
+    this._animate = null;
+
+    return this;
 }
 
 function animate(element, params, duration, easing, callback) {
@@ -498,7 +515,10 @@ function animate(element, params, duration, easing, callback) {
             onComplete: callback
         }
     );
+
+    this._animate.push(tweener);
 }
+
 function convertTweenerParam(element, params) {
     var name,
         computedStyle = el.computedStyle(element),

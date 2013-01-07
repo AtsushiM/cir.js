@@ -9,7 +9,7 @@ function forExe(_this, func, arg) {
 
     for (; i < len; i++) {
         ary[0] = _this[i];
-        func.apply(null, ary);
+        func.apply(_this, ary);
     }
 
     return _this;

@@ -27,6 +27,28 @@ describe('selector.methods.animateは', function() {
             expect(callback).toBeTruthy();
         });
     });
+
+    it('selector(selector).stop()でanimateメソッドで実行したC.Tweenerを停止する', function() {
+        var callback = false;
+
+        runs(function() {
+            selector.animate({
+                width: 50,
+                height: 100
+            }, 100, 'easeOutExpo', function() {
+                console.log('callback');
+                callback = true;
+            });
+        });
+        waits(50);
+        runs(function() {
+            selector.stop();
+        });
+        waits(150);
+        runs(function() {
+            expect(callback).toBeFalsy();
+        });
+    });
 });
 /*
 describe('XXXは', function() {

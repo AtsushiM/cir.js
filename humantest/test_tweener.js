@@ -21,13 +21,18 @@
         );
 
     function testAnimate() {
-        var $ = C.selector;
+        var $ = C.selector,
+            $test = $('#test');
 
-        $('#test').animate({
+        $test.animate({
             width: 50,
             height: 100
         }, 1000, 'easeOutExpo', function() {
             console.log('anime end.');
         });
+
+        setTimeout(function() {
+            $test.stop();
+        }, 500);
     }
 }());
