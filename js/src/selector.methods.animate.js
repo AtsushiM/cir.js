@@ -4,8 +4,7 @@
 
 var util = Global.utility,
     el = Global.element,
-    methods = Global.$.methods,
-    EASE = {};
+    methods = Global.$.methods;
 
 methods.animate = function() {
     if (!this._animate) {
@@ -46,7 +45,7 @@ function animate(element, params, duration, ease, callback) {
         convertTweenerParam(element, params),
         {
             duration: duration,
-            ease: EASE[ease],
+            ease: ease,
             onComplete: callback
         }
     );
