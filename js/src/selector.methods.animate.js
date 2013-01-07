@@ -4,7 +4,7 @@
 
 var util = Global.utility,
     el = Global.element,
-    methods = Global.selector.methods,
+    methods = Global.$.methods,
     EASE = {};
 
 methods.animate = function() {

@@ -1,7 +1,7 @@
 /* Class: "../../../../js/src/selector.methods.animate.js" */
 describe('selector.methods.animateは', function() {
     var c = window.C ? C : Global,
-        selector = c.selector('body');
+        selector = c.$('body');
 
     beforeEach(function() {
         // init
@@ -10,7 +10,7 @@ describe('selector.methods.animateは', function() {
         // clear
     });
 
-    it('selector(selector).animate(value)でC.Tweenerを実行する', function() {
+    it('$(selector).animate(value)でC.Tweenerを実行する', function() {
         var callback = false;
 
         runs(function() {
@@ -28,7 +28,7 @@ describe('selector.methods.animateは', function() {
         });
     });
 
-    it('selector(selector).stop()でanimateメソッドで実行したC.Tweenerを停止する', function() {
+    it('$(selector).stop()でanimateメソッドで実行したC.Tweenerを停止する', function() {
         var callback = false;
 
         runs(function() {

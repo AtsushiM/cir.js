@@ -1,5 +1,5 @@
 /* Class: "../../../../js/src/selector.js" */
-describe('selectorは', function() {
+describe('$は', function() {
     var c = window.C ? C : Global,
         selector;
 
@@ -11,23 +11,23 @@ describe('selectorは', function() {
         // clear
     });
 
-    it('selector(string)でjQueryライクなオブジェクトを返す', function() {
-        var selector = new c.selector('script');
+    it('$(string)でjQueryライクなオブジェクトを返す', function() {
+        var selector = new c.$('script');
 
         expect(selector.hide()).toEqual(selector);
         expect(selector.show()).toEqual(selector);
         expect(selector.hide().show().hide()).toEqual(selector);
     });
 
-    it('selector(string, element)でelementからstringに対応するelementを内包したselectorインスタンスを返す', function() {
-        var selector = new c.selector('script', document.body);
+    it('$(string, element)でelementからstringに対応するelementを内包したselectorインスタンスを返す', function() {
+        var selector = new c.$('script', document.body);
 
         expect(selector.hide()).toEqual(selector);
     });
 
-    it('selector(string, selector)でselectorからstringに対応するelementを内包したselectorインスタンスを返す', function() {
-        var body = c.selector('body'),
-            selector = new c.selector('script', body);
+    it('$(string, selector)でselectorからstringに対応するelementを内包したselectorインスタンスを返す', function() {
+        var body = c.$('body'),
+            selector = new c.$('script', body);
 
         expect(selector.hide()).toEqual(selector);
     });

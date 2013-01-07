@@ -344,10 +344,10 @@ Global.extend = function(child, _super) {
     };
 };
 /* Test: "../../spec/_src/src/selector/test.js" */
-Global.selector = function(query, _parent) {
+Global.$ = function(query, _parent) {
     'use strict';
 
-    var Mine = Global.selector,
+    var Mine = Global.$,
         util = Global.utility,
         _par = _parent || document,
         $elements,
@@ -409,7 +409,7 @@ function makeAry(arg) {
     return ary;
 }
 
-Global.selector.methods = {
+Global.$.methods = {
     _forexe: forExe,
     _exe: exe,
     _argary: makeAry,
@@ -417,10 +417,10 @@ Global.selector.methods = {
         return this[0].querySelectorAll(query);
     },
     find: function(query) {
-        return Global.selector(query, this);
+        return Global.$(query, this);
     },
     parent: function() {
-        return Global.selector(this[0].parentNode);
+        return Global.$(this[0].parentNode);
     },
     on: function() {
         return forExe(this, el.on, arguments);
@@ -469,8 +469,8 @@ Global.selector.methods = {
 
 var util = Global.utility,
     el = Global.element,
-    methods = Global.selector.methods,
-    EASING = {};
+    methods = Global.$.methods,
+    EASE = {};
 
 methods.animate = function() {
     if (!this._animate) {
@@ -493,7 +493,7 @@ methods.stop = function() {
     return this;
 }
 
-function animate(element, params, duration, easing, callback) {
+function animate(element, params, duration, ease, callback) {
     var style = element.style,
         tweener;
 
@@ -501,9 +501,9 @@ function animate(element, params, duration, easing, callback) {
         callback = duration;
         duration = null;
     }
-    if (util.isFunction(easing)) {
-        callback = easing;
-        easing = null;
+    if (util.isFunction(ease)) {
+        callback = ease;
+        ease = null;
     }
 
     tweener = new Global.Tweener(
@@ -511,7 +511,7 @@ function animate(element, params, duration, easing, callback) {
         convertTweenerParam(element, params),
         {
             duration: duration,
-            easing: EASING[easing],
+            ease: EASE[ease],
             onComplete: callback
         }
     );
@@ -2238,7 +2238,7 @@ Global.Tweener = Global.klass({
         }
 
         this.duration = option.duration || Global.Tweener.Duration;
-        this.easing = option.easing || this._easing;
+        this.ease = option.ease || this._ease;
         this.onComplete = option.onComplete;
 
         this.begin = Date.now();
@@ -2249,7 +2249,7 @@ Global.Tweener = Global.klass({
         }
     },
     properties: {
-        _easing: function(time, from, dist, duration) {
+        _ease: function(time, from, dist, duration) {
             return dist * time / duration + from;
         },
         _requestAnimationFrame: (function() {
@@ -2305,7 +2305,7 @@ Global.Tweener = Global.klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Global.Tweener._setProp(item.target, prop, item.easing(
+                        Global.Tweener._setProp(item.target, prop, item.ease(
                             time,
                             prop.from,
                             prop.distance,

@@ -30,7 +30,7 @@ function makeAry(arg) {
     return ary;
 }
 
-Global.selector.methods = {
+Global.$.methods = {
     _forexe: forExe,
     _exe: exe,
     _argary: makeAry,
@@ -38,10 +38,10 @@ Global.selector.methods = {
         return this[0].querySelectorAll(query);
     },
     find: function(query) {
-        return Global.selector(query, this);
+        return Global.$(query, this);
     },
     parent: function() {
-        return Global.selector(this[0].parentNode);
+        return Global.$(this[0].parentNode);
     },
     on: function() {
         return forExe(this, el.on, arguments);

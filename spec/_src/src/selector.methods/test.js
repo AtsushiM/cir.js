@@ -4,7 +4,7 @@ describe('selector.methodsは', function() {
         Global = C;
     }
 
-    var selector = Global.selector('body'),
+    var selector = Global.$('body'),
         el = Global.element;
 
     beforeEach(function() {
@@ -14,25 +14,25 @@ describe('selector.methodsは', function() {
         // clear
     });
 
-    it('selector(selector).querySelectorAll(query)でthis[0].querySelectorAll(query)を実行する', function() {
+    it('$(selector).querySelectorAll(query)でthis[0].querySelectorAll(query)を実行する', function() {
         expect(selector.querySelectorAll('script')).toEqual(document.body.querySelectorAll('script'));
     });
 
-    it('selector(selector).find(selector)でselectorインスタンス内のselectorに該当するelementを内包したSelecotrインスタンスを返す', function() {
+    it('$(selector).find(selector)でselectorインスタンス内のselectorに該当するelementを内包したSelecotrインスタンスを返す', function() {
         expect(
-            Global.selector('script', document.body)
+            Global.$('script', document.body)
         ).toEqual(
             selector.find('script')
         );
     });
 
-    it('selector(selector).parent()でselectorに該当するエレメントの親エレメントを取得する', function() {
-        var $body = Global.selector('body');
+    it('$(selector).parent()でselectorに該当するエレメントの親エレメントを取得する', function() {
+        var $body = Global.$('body');
 
         expect($body.parent()[0]).toEqual(document.body.parentNode);
     });
 
-    it('selector(selector).on(eventname, handler)でGlobal.element.onを実行する', function() {
+    it('$(selector).on(eventname, handler)でGlobal.element.onを実行する', function() {
         var func = function() {};
 
         spyOn(el, 'on').andCallThrough();
@@ -41,7 +41,7 @@ describe('selector.methodsは', function() {
         expect(el.on).toHaveBeenCalledWith(selector[0], 'click', func);
     });
 
-    it('selector(selector).off(eventname, handler)でGlobal.element.offを実行する', function() {
+    it('$(selector).off(eventname, handler)でGlobal.element.offを実行する', function() {
         var func = function() {};
 
         spyOn(el, 'off').andCallThrough();
@@ -51,14 +51,14 @@ describe('selector.methodsは', function() {
         expect(el.off).toHaveBeenCalledWith(selector[0], 'click', func);
     });
 
-    it('selector(selector).show()でGlobal.element.showを実行する', function() {
+    it('$(selector).show()でGlobal.element.showを実行する', function() {
         spyOn(el, 'show').andCallThrough();
         selector.show();
 
         expect(el.show).toHaveBeenCalledWith(selector[0]);
     });
 
-    it('selector(selector).hide()でGlobal.element.hideを実行する', function() {
+    it('$(selector).hide()でGlobal.element.hideを実行する', function() {
         spyOn(el, 'hide').andCallThrough();
         selector.hide();
 
@@ -66,7 +66,7 @@ describe('selector.methodsは', function() {
         selector.show();
     });
 
-    it('selector(selector).opacity(value)でGlobal.el.opacityを実行する', function() {
+    it('$(selector).opacity(value)でGlobal.el.opacityを実行する', function() {
         spyOn(el, 'opacity').andCallThrough();
         selector.opacity(0.5);
 
@@ -74,28 +74,28 @@ describe('selector.methodsは', function() {
         selector.opacity(1);
     });
 
-    it('selector(selector).hasClass(value)でGlobal.element.hasClassを実行する', function() {
+    it('$(selector).hasClass(value)でGlobal.element.hasClassを実行する', function() {
         spyOn(el, 'hasClass').andCallThrough();
 
         expect(selector.hasClass('test')).toBeFalsy();
         expect(el.hasClass).toHaveBeenCalledWith(selector[0], 'test');
     });
 
-    it('selector(selector).addClass(value)でGlobal.element.addClassを実行する', function() {
+    it('$(selector).addClass(value)でGlobal.element.addClassを実行する', function() {
         spyOn(el, 'addClass').andCallThrough();
 
         selector.addClass('test');
         expect(el.addClass).toHaveBeenCalledWith(selector[0], 'test');
     });
 
-    it('selector(selector).removeClass(value)でGlobal.element.removeClassを実行する', function() {
+    it('$(selector).removeClass(value)でGlobal.element.removeClassを実行する', function() {
         spyOn(el, 'removeClass').andCallThrough();
 
         selector.removeClass('test');
         expect(el.removeClass).toHaveBeenCalledWith(selector[0], 'test');
     });
 
-    it('selector(selector).toggleClass(value)でGlobal.element.toggleClassを実行する', function() {
+    it('$(selector).toggleClass(value)でGlobal.element.toggleClassを実行する', function() {
         spyOn(el, 'toggleClass').andCallThrough();
 
         selector.toggleClass('test');
@@ -103,7 +103,7 @@ describe('selector.methodsは', function() {
         selector.removeClass('test');
     });
 
-    it('selector(selector).css(object)でGlobal.element.cssを実行する', function() {
+    it('$(selector).css(object)でGlobal.element.cssを実行する', function() {
         var styleObj = {
                 padding: 10
             };
@@ -117,7 +117,7 @@ describe('selector.methodsは', function() {
         });
     });
 
-    it('selector(selector).append(value)でGlobal.element.appendを実行する', function() {
+    it('$(selector).append(value)でGlobal.element.appendを実行する', function() {
         var div = document.createElement('div');
 
         spyOn(el, 'append').andCallThrough();
@@ -126,7 +126,7 @@ describe('selector.methodsは', function() {
         expect(el.append).toHaveBeenCalledWith(selector[0], div);
     });
 
-    it('selector(selector).html(value)でGlobal.element.htmlを実行する', function() {
+    it('$(selector).html(value)でGlobal.element.htmlを実行する', function() {
         spyOn(el, 'html').andCallThrough();
 
         var div = document.createElement('div');
@@ -134,13 +134,13 @@ describe('selector.methodsは', function() {
         div.className = 'selectorTestInnerHTML';
         selector.append(div);
 
-        var $div = Global.selector('.selectorTestInnerHTML');
+        var $div = Global.$('.selectorTestInnerHTML');
 
         $div.html('test');
         expect(el.html).toHaveBeenCalledWith($div[0], 'test');
     });
 
-    it('selector(selector).attr(value)でGlobal.element.attrを実行する', function() {
+    it('$(selector).attr(value)でGlobal.element.attrを実行する', function() {
         spyOn(el, 'attr').andCallThrough();
 
         selector.attr('width');
