@@ -2,81 +2,124 @@
 describe('LocalStorageは', function() {
     var c = window.C ? C : Global,
         storage,
+        storagecir,
         LS = window.localStorage;
 
     beforeEach(function() {
         // init
         storage = new c.LocalStorage();
+        storagecir = new c.LocalStorage({
+            namespace: 'cir'
+        });
     });
     afterEach(function() {
         // clear
         LS.clear();
     });
 
-    it('set(key, value)でデータをlocalStorageにデータを保存する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.set('test3', {
-            test: 'test'
-        });
+    it('namespaceオプションでlocalStorage内を区切って管理する', function() {
+        expect(0).toEqual(0);
+    });
 
-        expect(LS.test1).toEqual('1');
-        expect(LS.test2).toEqual('"test"');
-        expect(LS.test3).toEqual('{"test":"test"}');
+    it('set(key, value)でデータをlocalStorageにデータを保存する', function() {
+        test(storage);
+        test(storagecir);
+
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.set('test3', {
+                test: 'test'
+            });
+
+            expect(storage.get('test1')).toEqual(1);
+            expect(storage.get('test2')).toEqual('test');
+            expect(storage.get('test3')).toEqual({test: 'test'});
+        }
     });
 
     it('get(key)でlocalStorageからデータを取得する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.set('test3', {
-            test: 'test'
-        });
+        test(storage);
+        test(storagecir);
 
-        var test1 = storage.get('test1'),
-            test2 = storage.get('test2'),
-            test3 = storage.get('test3');
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.set('test3', {
+                test: 'test'
+            });
 
-        expect(test1).toEqual(1);
-        expect(test2).toEqual('test');
-        expect(test3).toEqual({
-            test: 'test'
-        });
+            var test1 = storage.get('test1'),
+                test2 = storage.get('test2'),
+                test3 = storage.get('test3');
+
+            expect(test1).toEqual(1);
+            expect(test2).toEqual('test');
+            expect(test3).toEqual({
+                test: 'test'
+            });
+        }
     });
 
     it('get()でlocalStorageから全データを取得する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.set('test3', {
-            test: 'test'
-        });
+        test(storage);
+        test(storagecir);
 
-        var test = storage.get();
-
-        expect(test).toEqual({
-            test1: 1,
-            test2: 'test',
-            test3: {
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.set('test3', {
                 test: 'test'
-            }
-        });
+            });
+
+            var test = storage.get();
+
+            expect(test).toEqual({
+                test1: 1,
+                test2: 'test',
+                test3: {
+                    test: 'test'
+                }
+            });
+        }
     });
 
     it('remove(key)でlocalStorageからデータを削除する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.remove('test1');
+        test(storage);
+        test(storagecir);
 
-        expect(storage.get('test1')).toBeNull();
-        expect(storage.get('test2')).toBeDefined();
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.remove('test1');
+
+            expect(storage.get('test1')).toBeNull();
+            expect(storage.get('test2')).toBeDefined();
+        }
     });
 
     it('reset(key)でlocalStorageから全データを削除する', function() {
         storage.set('test1', 1);
         storage.set('test2', 'test');
+        storagecir.set('test1', 1);
+        storagecir.set('test2', 'test');
+
+        storagecir.reset();
+
+        expect(storage.get('test1')).not.toBeNull();
+        expect(storage.get('test2')).not.toBeNull();
+        expect(storagecir.get('test1')).toBeNull();
+        expect(storagecir.get('test2')).toBeNull();
+
+        storagecir.set('test1', 1);
+        storagecir.set('test2', 'test');
+
         storage.reset();
 
         expect(storage.get('test1')).toBeNull();
         expect(storage.get('test2')).toBeNull();
+        expect(storagecir.get('test1')).toBeNull();
+        expect(storagecir.get('test2')).toBeNull();
     });
 });
 /*

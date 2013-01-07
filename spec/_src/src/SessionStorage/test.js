@@ -1,82 +1,126 @@
-/* Class: "../../../../js/src/LocalStorage.js" */
+/* Class: "../../../../js/src/SessionStorage.js" */
 describe('SessionStorageは', function() {
     var c = window.C ? C : Global,
         storage,
+        storagecir,
         SS = window.sessionStorage;
 
     beforeEach(function() {
         // init
         storage = new c.SessionStorage();
+        storagecir = new c.SessionStorage({
+            namespace: 'cir'
+        });
     });
     afterEach(function() {
         // clear
         SS.clear();
     });
 
-    it('set(key, value)でデータをsessionStorageにデータを保存する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.set('test3', {
-            test: 'test'
-        });
+    it('namespaceオプションでsessionStorage内を区切って管理する', function() {
+        expect(0).toEqual(0);
+    });
 
-        expect(SS.test1).toEqual('1');
-        expect(SS.test2).toEqual('"test"');
-        expect(SS.test3).toEqual('{"test":"test"}');
+    it('set(key, value)でデータをsessionStorageにデータを保存する', function() {
+        test(storage);
+        test(storagecir);
+
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.set('test3', {
+                test: 'test'
+            });
+
+            expect(storage.get('test1')).toEqual(1);
+            expect(storage.get('test2')).toEqual('test');
+            expect(storage.get('test3')).toEqual({test: 'test'});
+        }
     });
 
     it('get(key)でsessionStorageからデータを取得する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.set('test3', {
-            test: 'test'
-        });
+        test(storage);
+        test(storagecir);
 
-        var test1 = storage.get('test1'),
-            test2 = storage.get('test2'),
-            test3 = storage.get('test3');
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.set('test3', {
+                test: 'test'
+            });
 
-        expect(test1).toEqual(1);
-        expect(test2).toEqual('test');
-        expect(test3).toEqual({
-            test: 'test'
-        });
+            var test1 = storage.get('test1'),
+                test2 = storage.get('test2'),
+                test3 = storage.get('test3');
+
+            expect(test1).toEqual(1);
+            expect(test2).toEqual('test');
+            expect(test3).toEqual({
+                test: 'test'
+            });
+        }
     });
 
     it('get()でsessionStorageから全データを取得する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.set('test3', {
-            test: 'test'
-        });
+        test(storage);
+        test(storagecir);
 
-        var test = storage.get();
-
-        expect(test).toEqual({
-            test1: 1,
-            test2: 'test',
-            test3: {
+        function test(storage) {
+            storage.reset();
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.set('test3', {
                 test: 'test'
-            }
-        });
+            });
+
+            var test = storage.get();
+
+            expect(test).toEqual({
+                test1: 1,
+                test2: 'test',
+                test3: {
+                    test: 'test'
+                }
+            });
+        }
     });
 
     it('remove(key)でsessionStorageからデータを削除する', function() {
-        storage.set('test1', 1);
-        storage.set('test2', 'test');
-        storage.remove('test1');
+        test(storage);
+        test(storagecir);
 
-        expect(storage.get('test1')).toBeNull();
-        expect(storage.get('test2')).toBeDefined();
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.remove('test1');
+
+            expect(storage.get('test1')).toBeNull();
+            expect(storage.get('test2')).toBeDefined();
+        }
     });
 
     it('reset(key)でsessionStorageから全データを削除する', function() {
         storage.set('test1', 1);
         storage.set('test2', 'test');
+        storagecir.set('test1', 1);
+        storagecir.set('test2', 'test');
+
+        storagecir.reset();
+
+        expect(storage.get('test1')).not.toBeNull();
+        expect(storage.get('test2')).not.toBeNull();
+        expect(storagecir.get('test1')).toBeNull();
+        expect(storagecir.get('test2')).toBeNull();
+
+        storagecir.set('test1', 1);
+        storagecir.set('test2', 'test');
+
         storage.reset();
 
         expect(storage.get('test1')).toBeNull();
         expect(storage.get('test2')).toBeNull();
+        expect(storagecir.get('test1')).toBeNull();
+        expect(storagecir.get('test2')).toBeNull();
     });
 });
 /*
