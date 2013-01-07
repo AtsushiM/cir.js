@@ -30,7 +30,7 @@ src/Timer/\n\
 src/Tweener/\n\
 src/Twitter/\n\
 src/XML/\n\
-src/easing/\n\
+src/ease/\n\
 src/element/\n\
 src/extend/\n\
 src/klass/\n\
@@ -63,14 +63,14 @@ src/utility/\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/ScriptLoad.js\n\
 ../../js/src/ServerMeta.js\n\
-../../js/src/LocalStorage.js\n\
+../../js/src/SessionStorage.js\n\
 ../../js/src/Surrogate.js\n\
 ../../js/src/Throttle.js\n\
 ../../js/src/Timer.js\n\
 ../../js/src/Tweener.js\n\
 ../../js/src/Twitter.js\n\
 ../../js/src/XML.js\n\
-../../js/src/easing.js\n\
+../../js/src/ease.js\n\
 ../../js/src/element.js\n\
 ../../js/src/extend.js\n\
 ../../js/src/klass.js\n\
@@ -110,7 +110,7 @@ src/utility/\n\
 ../_src/src/Tweener/test.js\n\
 ../_src/src/Twitter/test.js\n\
 ../_src/src/XML/test.js\n\
-../_src/src/easing/test.js\n\
+../_src/src/ease/test.js\n\
 ../_src/src/element/test.js\n\
 ../_src/src/extend/test.js\n\
 ../_src/src/klass/test.js\n\

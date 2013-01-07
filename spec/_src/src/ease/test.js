@@ -1,83 +1,83 @@
 /* Class: "../../../../js/src/ease.js" */
 describe('easeは', function() {
-    var easing;
+    var ease;
 
     beforeEach(function() {
         // init
-        easing = Global.easing;
+        ease = Global.ease;
     });
     afterEach(function() {
         // clear
     });
 
     it('inCubicメソッドを持つ', function() {
-        expect(easing.inCubic).toBeDefined();
+        expect(ease.inCubic).toBeDefined();
     });
     it('outCubicメソッドを持つ', function() {
-        expect(easing.outCubic).toBeDefined();
+        expect(ease.outCubic).toBeDefined();
     });
     it('inOutCubicメソッドを持つ', function() {
-        expect(easing.inOutCubic).toBeDefined();
+        expect(ease.inOutCubic).toBeDefined();
     });
 
     it('inQuartメソッドを持つ', function() {
-        expect(easing.inQuart).toBeDefined();
+        expect(ease.inQuart).toBeDefined();
     });
     it('outQuartメソッドを持つ', function() {
-        expect(easing.outQuart).toBeDefined();
+        expect(ease.outQuart).toBeDefined();
     });
     it('inOutQuartメソッドを持つ', function() {
-        expect(easing.inOutQuart).toBeDefined();
+        expect(ease.inOutQuart).toBeDefined();
     });
 
     it('inQuintメソッドを持つ', function() {
-        expect(easing.inQuint).toBeDefined();
+        expect(ease.inQuint).toBeDefined();
     });
     it('outQuintメソッドを持つ', function() {
-        expect(easing.outQuint).toBeDefined();
+        expect(ease.outQuint).toBeDefined();
     });
     it('inOutQuintメソッドを持つ', function() {
-        expect(easing.inOutQuint).toBeDefined();
+        expect(ease.inOutQuint).toBeDefined();
     });
 
     it('inSineメソッドを持つ', function() {
-        expect(easing.inSine).toBeDefined();
+        expect(ease.inSine).toBeDefined();
     });
     it('outSineメソッドを持つ', function() {
-        expect(easing.outSine).toBeDefined();
+        expect(ease.outSine).toBeDefined();
     });
     it('inOutSineメソッドを持つ', function() {
-        expect(easing.inOutSine).toBeDefined();
+        expect(ease.inOutSine).toBeDefined();
     });
 
     it('inExpoメソッドを持つ', function() {
-        expect(easing.inExpo).toBeDefined();
+        expect(ease.inExpo).toBeDefined();
     });
     it('outExpoメソッドを持つ', function() {
-        expect(easing.outExpo).toBeDefined();
+        expect(ease.outExpo).toBeDefined();
     });
     it('inOutExpoメソッドを持つ', function() {
-        expect(easing.inOutExpo).toBeDefined();
+        expect(ease.inOutExpo).toBeDefined();
     });
 
     it('inCircメソッドを持つ', function() {
-        expect(easing.inCirc).toBeDefined();
+        expect(ease.inCirc).toBeDefined();
     });
     it('outCircメソッドを持つ', function() {
-        expect(easing.outCirc).toBeDefined();
+        expect(ease.outCirc).toBeDefined();
     });
     it('inOutCircメソッドを持つ', function() {
-        expect(easing.inOutCirc).toBeDefined();
+        expect(ease.inOutCirc).toBeDefined();
     });
 
     it('inQuadメソッドを持つ', function() {
-        expect(easing.inQuad).toBeDefined();
+        expect(ease.inQuad).toBeDefined();
     });
     it('outQuadメソッドを持つ', function() {
-        expect(easing.outQuad).toBeDefined();
+        expect(ease.outQuad).toBeDefined();
     });
     it('inOutQuadメソッドを持つ', function() {
-        expect(easing.inOutQuad).toBeDefined();
+        expect(ease.inOutQuad).toBeDefined();
     });
 });
 /*
