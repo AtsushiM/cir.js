@@ -45,7 +45,7 @@ Global.Mobile = Global.klass({
             this._el.on(this._u.win, this._ev.load, hideAddressHandler, false);
             this._el.on(this._u.win, this._ev.orientationchange, hideAddressHandler, false);
         },
-        orientationCheck: function() {
+        getOrientation: function() {
             if (
                 Math.abs(this._u.win.orientation) !== 90 &&
                 this._u.win.innerWidth < this._u.win.innerHeight
@@ -61,7 +61,7 @@ Global.Mobile = Global.klass({
                 landscape: true
             };
         },
-        orientationChange: function(vars) {
+        bindOrientation: function(vars) {
             var mine = this;
 
             if (vars.immediately) {
@@ -99,7 +99,7 @@ Global.Mobile = Global.klass({
             }
             function change() {
                 if (
-                    mine.orientationCheck().portrait
+                    mine.getOrientation().portrait
                 ) {
                     vars.portrait();
                     return true;

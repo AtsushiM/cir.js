@@ -67,13 +67,14 @@ describe('Mobileは', function() {
         expect(0).toEqual(0);
     });
 
-    it('orientationCheck()で画面の向きをチェックする', function() {
-        mb.orientationCheck();
-        expect(0).toEqual(0);
+    it('getOrientation()で画面の向きをチェックする', function() {
+        var orient = mb.getOrientation();
+        expect(orient.portrait).toBeDefined();
+        expect(orient.landscape).toBeDefined();
     });
 
-    it('orientationChange()で画面サイズ変更の際の処理を実行する', function() {
-        mb.orientationChange({
+    it('bindOrientation()で画面サイズ変更の際の処理を実行する', function() {
+        mb.bindOrientation({
             landscape: function() {
                 // 横
             },
@@ -84,8 +85,8 @@ describe('Mobileは', function() {
         expect(0).toEqual(0);
     });
 
-    it('orientationChange()は画面向きチェックに紐付けたイベントを削除する関数を返す', function() {
-        var remove = mb.orientationChange({
+    it('bindOrientation()は画面向きチェックに紐付けたイベントを削除する関数を返す', function() {
+        var remove = mb.bindOrientation({
             landscape: function() {
                 // 横
             },
