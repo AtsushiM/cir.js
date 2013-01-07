@@ -1,65 +1,57 @@
 /* Class: "../../../../js/src/Bind.js" */
 describe('Bindは', function() {
-    var bind,
+    var c = window.C ? C : Global,
+        bind,
         eventHandeler;
 
     beforeEach(function() {
         // init
-        bind = window.C ? new C.Bind() : new Global.Bind();
-    });
-    afterEach(function() {
-        bind.remove(eventHandeler);
-    });
-
-    it('add({element: element, events: {event: function}})でelementにeventを追加する', function() {
-        spyOn(bind, '_exe').andCallThrough();
-
-        eventHandeler = bind.add({
-            element: document.body,
-            events: {
-                click: function() {},
-                rollover: function() {}
-            }
-        });
-
-        expect(bind._exe).toHaveBeenCalledWith(true, eventHandeler);
-    });
-
-    it('remove(eventHandeler)でelementからeventを排除する', function() {
-        spyOn(bind, '_exe').andCallThrough();
-
-        eventHandeler = bind.add({
-            element: document.body,
-            events: {
-                click: function() {}
-            }
-        });
-        eventHandeler = bind.remove({
-            element: document.body,
-            events: {
-                click: function() {}
-            }
-        });
-
-        expect(bind._exe).toHaveBeenCalledWith(false, eventHandeler);
-    });
-
-    it('_exe(eventHandeler, bool)でelementにeventを設定する', function() {
         eventHandeler = {
             element: document.body,
             events: {
-                click: function() {}
+                click: function(str) {
+                    eventHandeler.clicktest = true;
+                },
+                rollover: function() {}
             }
         };
+        bind = new c.Bind(eventHandeler);
+    });
+    afterEach(function() {
+    });
 
+    it('初期化時に{element: element, events: {event: function}}に合わせてイベントを追加する', function() {
+        document.body.click();
+        expect(eventHandeler.clicktest).toBeTruthy();
+    });
+
+    it('getHandler()で初期化時の引数を取得する', function() {
+        expect(bind.getHandler()).toEqual(eventHandeler);
+    });
+
+    it('remove()でelementからeventsを排除する', function() {
+        spyOn(bind, '_exe').andCallThrough();
+
+        expect(bind.remove()).toEqual(eventHandeler);
+        expect(bind._exe).toHaveBeenCalledWith(false);
+    });
+
+    it('add()でelementにeventsを追加する', function() {
+        spyOn(bind, '_exe').andCallThrough();
+
+        expect(bind.add()).toEqual(eventHandeler);
+        expect(bind._exe).toHaveBeenCalledWith(true);
+    });
+
+    it('_exe(eventHandeler, bool)でelementにeventを設定する', function() {
         spyOn(eventHandeler.events, 'click').andCallThrough();
 
-        bind._exe(true, eventHandeler);
+        expect(bind._exe(false)).toEqual(eventHandeler);
         document.body.click();
-        bind._exe(false, eventHandeler);
+        expect(eventHandeler.events.click).not.toHaveBeenCalled();
+        expect(bind._exe(true)).toEqual(eventHandeler);
         document.body.click();
-
-        expect(eventHandeler.events.click.callCount).toEqual(1);
+        expect(eventHandeler.events.click).toHaveBeenCalled();
     });
 });
 /*

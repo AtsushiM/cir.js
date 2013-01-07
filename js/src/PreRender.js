@@ -13,6 +13,10 @@ Global.PreRender = Global.klass({
         this.looptime = config.looptime || 100;
         this.loopblur = this.looptime + config.loopblur;
         this.loopid = this.prevtime = null;
+
+        if (!config.manual) {
+            this.start();
+        }
     },
     properties: {
         _u: Global.utility,

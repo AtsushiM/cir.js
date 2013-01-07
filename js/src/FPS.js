@@ -39,6 +39,10 @@ Global.FPS = Global.klass({
         this.nexttime =
         this.loopid = 0;
 
+        if (!config.manual) {
+            this.start();
+        }
+
         if (config.single) {
             instance = this;
         }

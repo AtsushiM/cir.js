@@ -1,29 +1,34 @@
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = Global.klass({
+    init: function(config) {
+        this.handler = config;
+        this.add();
+    },
     properties: {
         _el: Global.element,
-        add: function(vars) {
-            return this._exe(true, vars);
+        getHandler: function() {
+            return this.handler;
         },
-        remove: function(vars) {
-            return this._exe(false, vars);
+        add: function() {
+            return this._exe(true);
         },
-        _exe: function(isBind, vars) {
+        remove: function() {
+            return this._exe(false);
+        },
+        _exe: function(isBind) {
             var el = this._el,
-                element = vars.element,
-                events = vars.events,
                 onoff = isBind ? el.on : el.off,
                 i;
 
-            for (i in events) {
+            for (i in this.handler.events) {
                 onoff(
-                    element,
+                    this.handler.element,
                     i,
-                    events[i]
+                    this.handler.events[i]
                 );
             }
 
-            return vars;
+            return this.handler;
         }
     }
 });

@@ -8,6 +8,11 @@ Global.ImgLoad = Global.klass({
         this.onprogress = config.onprogress || this._u.nullFunction,
         this.loadcount = 0;
         this.progress = 0;
+        this.started = false;
+
+        if (!config.manual) {
+            this.start();
+        }
     },
     properties: {
         _u: Global.utility,
@@ -24,6 +29,12 @@ Global.ImgLoad = Global.klass({
             }
         },
         start: function() {
+            if (this.started) {
+                return false;
+            }
+
+            this.started = true;
+
             var mine = this,
                 img,
                 i, len;

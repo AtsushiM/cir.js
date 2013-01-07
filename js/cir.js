@@ -802,30 +802,35 @@ Global.Ajax = Global.klass({
 });
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = Global.klass({
+    init: function(config) {
+        this.handler = config;
+        this.add();
+    },
     properties: {
         _el: Global.element,
-        add: function(vars) {
-            return this._exe(true, vars);
+        getHandler: function() {
+            return this.handler;
         },
-        remove: function(vars) {
-            return this._exe(false, vars);
+        add: function() {
+            return this._exe(true);
         },
-        _exe: function(isBind, vars) {
+        remove: function() {
+            return this._exe(false);
+        },
+        _exe: function(isBind) {
             var el = this._el,
-                element = vars.element,
-                events = vars.events,
                 onoff = isBind ? el.on : el.off,
                 i;
 
-            for (i in events) {
+            for (i in this.handler.events) {
                 onoff(
-                    element,
+                    this.handler.element,
                     i,
-                    events[i]
+                    this.handler.events[i]
                 );
             }
 
-            return vars;
+            return this.handler;
         }
     }
 });
@@ -1291,6 +1296,10 @@ Global.FPS = Global.klass({
         this.nexttime =
         this.loopid = 0;
 
+        if (!config.manual) {
+            this.start();
+        }
+
         if (config.single) {
             instance = this;
         }
@@ -1364,6 +1373,11 @@ Global.ImgLoad = Global.klass({
         this.onprogress = config.onprogress || this._u.nullFunction,
         this.loadcount = 0;
         this.progress = 0;
+        this.started = false;
+
+        if (!config.manual) {
+            this.start();
+        }
     },
     properties: {
         _u: Global.utility,
@@ -1380,6 +1394,12 @@ Global.ImgLoad = Global.klass({
             }
         },
         start: function() {
+            if (this.started) {
+                return false;
+            }
+
+            this.started = true;
+
             var mine = this,
                 img,
                 i, len;
@@ -1750,6 +1770,10 @@ Global.PreRender = Global.klass({
         this.looptime = config.looptime || 100;
         this.loopblur = this.looptime + config.loopblur;
         this.loopid = this.prevtime = null;
+
+        if (!config.manual) {
+            this.start();
+        }
     },
     properties: {
         _u: Global.utility,
