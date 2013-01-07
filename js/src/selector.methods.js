@@ -71,7 +71,7 @@ Global.selector.methods = {
         return forExe(this, el.toggleClass, arguments);
     },
     css: function() {
-        return forExe(this, el.style, arguments);
+        return forExe(this, el.css, arguments);
     },
     html: function() {
         return exe(this, el.html, arguments);

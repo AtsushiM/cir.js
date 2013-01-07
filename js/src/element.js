@@ -52,7 +52,7 @@ Global.element = {
 
         return addClass(element, cls);
     },
-    style: function(element, addstyle) {
+    css: function(element, addstyle) {
         var style = element.style,
             i,
             key,

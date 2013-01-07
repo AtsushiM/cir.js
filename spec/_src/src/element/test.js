@@ -145,11 +145,11 @@ describe('elementは', function() {
         $body.className = baseCls;
     });
 
-    it('style(element, object)で対象のelementのstyleにobjectを追加する', function() {
+    it('css(element, object)で対象のelementのstyleにobjectを追加する', function() {
         var $body = el.$('body'),
             bodyStyle = $body.style;
 
-        el.style($body, {
+        el.css($body, {
             backgroundColor: 'red',
             paddingTop: 10
         });

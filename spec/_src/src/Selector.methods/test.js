@@ -103,15 +103,15 @@ describe('selector.methodsは', function() {
         selector.removeClass('test');
     });
 
-    it('selector(selector).css(object)でGlobal.element.styleを実行する', function() {
+    it('selector(selector).css(object)でGlobal.element.cssを実行する', function() {
         var styleObj = {
                 padding: 10
             };
 
-        spyOn(el, 'style').andCallThrough();
+        spyOn(el, 'css').andCallThrough();
 
         selector.css(styleObj);
-        expect(el.style).toHaveBeenCalledWith(selector[0], styleObj);
+        expect(el.css).toHaveBeenCalledWith(selector[0], styleObj);
         selector.css({
             padding: 0
         });
