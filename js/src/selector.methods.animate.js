@@ -5,7 +5,7 @@
 var util = Global.utility,
     el = Global.element,
     methods = Global.selector.methods,
-    EASING = {};
+    EASE = {};
 
 methods.animate = function() {
     if (!this._animate) {
@@ -28,7 +28,7 @@ methods.stop = function() {
     return this;
 }
 
-function animate(element, params, duration, easing, callback) {
+function animate(element, params, duration, ease, callback) {
     var style = element.style,
         tweener;
 
@@ -36,9 +36,9 @@ function animate(element, params, duration, easing, callback) {
         callback = duration;
         duration = null;
     }
-    if (util.isFunction(easing)) {
-        callback = easing;
-        easing = null;
+    if (util.isFunction(ease)) {
+        callback = ease;
+        ease = null;
     }
 
     tweener = new Global.Tweener(
@@ -46,7 +46,7 @@ function animate(element, params, duration, easing, callback) {
         convertTweenerParam(element, params),
         {
             duration: duration,
-            easing: EASING[easing],
+            ease: EASE[ease],
             onComplete: callback
         }
     );

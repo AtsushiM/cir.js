@@ -36,7 +36,7 @@ describe('Tweenerは', function() {
                     }
                 },
                 {
-                    easing: null,
+                    ease: null,
                     onComplete: function() {
                         comp = true;
                     }

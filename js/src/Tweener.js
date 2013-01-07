@@ -21,7 +21,7 @@ Global.Tweener = Global.klass({
         }
 
         this.duration = option.duration || Global.Tweener.Duration;
-        this.easing = option.easing || this._easing;
+        this.ease = option.ease || this._ease;
         this.onComplete = option.onComplete;
 
         this.begin = Date.now();
@@ -32,7 +32,7 @@ Global.Tweener = Global.klass({
         }
     },
     properties: {
-        _easing: function(time, from, dist, duration) {
+        _ease: function(time, from, dist, duration) {
             return dist * time / duration + from;
         },
         _requestAnimationFrame: (function() {
@@ -88,7 +88,7 @@ Global.Tweener = Global.klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Global.Tweener._setProp(item.target, prop, item.easing(
+                        Global.Tweener._setProp(item.target, prop, item.ease(
                             time,
                             prop.from,
                             prop.distance,

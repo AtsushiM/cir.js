@@ -15,7 +15,7 @@
                 }
             },
             {
-                easing: null,
+                ease: null,
                 onComplete: testAnimate
             }
         );
