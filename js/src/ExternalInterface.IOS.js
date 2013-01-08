@@ -3,18 +3,18 @@ Global.ExternalInterface.IOS = Global.klass({
     init: function(config) {
         this.ios = {};
     },
+    extend: Global.HashController,
     properties: {
         _u: Global.utility,
         _el: Global.element,
         _ev: Global.event,
-        _h: new Global.HashController(),
         call: function(conf) {
-            this._h.setHash(conf);
+            this.setHash(conf);
         },
         addCallback: function(name, func) {
             var mine = this;
             mine.ios[name] = function(e) {
-                var hash = mine._h.getHash();
+                var hash = mine.getHash();
 
                 if (hash.mode === name) {
                     func(hash.vars);
