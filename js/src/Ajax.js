@@ -21,8 +21,12 @@ Global.Ajax = Global.klass({
                 vars.query['ajaxcash' + Date.now()] = '0';
             }
             if (vars.query) {
-                query = this._u.makeQueryString(vars.query);
-                query = encodeURI(query);
+                query = vars.query;
+
+                if (this._u.isObject(query)) {
+                    query = this._u.makeQueryString(query);
+                    query = encodeURI(query);
+                }
             }
 
             this.xhr = new XMLHttpRequest();
@@ -34,7 +38,7 @@ Global.Ajax = Global.klass({
                 }
 
                 if (xhr.status == 200) {
-                    return callback(xhr.responseText);
+                    return callback(xhr.responseText, xhr);
                 }
 
                 return error(xhr);
