@@ -27,7 +27,8 @@ USEFULL =
 AJAX = Ajax.js
 MB = Mobile.js
 OBS = Observer.js
-# USEFULL = $(AJAX) $(MB) $(OBS)
+RUT = Route.js
+# USEFULL = $(AJAX) $(MB) $(OBS) $(RUT)
 
 HSC = HashController.js
 EXT =

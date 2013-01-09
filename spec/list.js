@@ -21,6 +21,7 @@ src/LocalStorage/\n\
 src/Mobile/\n\
 src/Observer/\n\
 src/PreRender/\n\
+src/Route/\n\
 src/ScriptLoad/\n\
 src/ServerMeta/\n\
 src/SessionStorage/\n\
@@ -61,6 +62,7 @@ src/utility/\n\
 ../../js/src/Mobile.js\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
+../../js/src/Route.js\n\
 ../../js/src/ScriptLoad.js\n\
 ../../js/src/ServerMeta.js\n\
 ../../js/src/SessionStorage.js\n\
@@ -101,6 +103,7 @@ src/utility/\n\
 ../_src/src/Mobile/test.js\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
+../_src/src/Route/test.js\n\
 ../_src/src/ScriptLoad/test.js\n\
 ../_src/src/ServerMeta/test.js\n\
 ../_src/src/SessionStorage/test.js\n\
