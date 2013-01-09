@@ -11,7 +11,7 @@
         });
     }
     else {
-        $ = C.selector;
+        $ = C.$;
     }
 
     var $test;

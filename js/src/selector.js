@@ -4,18 +4,20 @@ Global.$ = function(query, _parent) {
 
     var Mine = Global.$,
         util = Global.utility,
-        _par = _parent || document,
         $elements,
         base,
         instance,
         i = 0,
         len;
 
+    _parent = _parent || document;
+
     if (util.isString(query)) {
-        $elements = _par.querySelectorAll(query);
+        $elements = _parent.querySelectorAll(query);
     }
     else {
         $elements = [query];
+        query = '';
     }
     len = $elements.length;
 
@@ -24,7 +26,8 @@ Global.$ = function(query, _parent) {
     instance = new base();
 
     instance.length = len;
-    instance.selector = query;
+    instance._selector = query;
+    instance._parent = _parent;
 
     for (; i < len; i++) {
         instance[i] = $elements[i];

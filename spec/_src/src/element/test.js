@@ -190,6 +190,16 @@ describe('elementは', function() {
         expect(el.attr($body, 'width')).toEqual('100%');
     });
 
+    it('removeAttr(element, string)でelementのstring名のプロパティを削除する', function() {
+        var $body = el.$('body');
+
+        el.attr($body, {
+            width: '100%'
+        });
+        el.removeAttr($body, 'width');
+        expect(el.attr($body, 'width')).not.toEqual('100%');
+    });
+
     it('append(_parent, element)で_parentにelementをappendChildする', function() {
         var $body = el.$('body'),
             $make = el.create('div');

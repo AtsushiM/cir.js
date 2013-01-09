@@ -23,6 +23,7 @@ Global.Event = Global.klass({
         switchmove: isTouch ? 'touchmove' : 'mousemove',
         switchup: isTouch ? 'touchend' : 'mouseup',
         load: 'load',
+        change: 'change',
         hashchange: 'hashchange',
         click: 'click',
         mousedown: 'mousedown',

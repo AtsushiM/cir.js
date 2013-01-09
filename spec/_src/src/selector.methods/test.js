@@ -14,16 +14,10 @@ describe('selector.methodsは', function() {
         // clear
     });
 
-    it('$(selector).querySelectorAll(query)でthis[0].querySelectorAll(query)を実行する', function() {
-        expect(selector.querySelectorAll('script')).toEqual(document.body.querySelectorAll('script'));
-    });
-
     it('$(selector).find(selector)でselectorインスタンス内のselectorに該当するelementを内包したSelecotrインスタンスを返す', function() {
-        expect(
-            Global.$('script', document.body)
-        ).toEqual(
-            selector.find('script')
-        );
+        var find = selector.find('script');
+
+        expect(find).toBeDefined();
     });
 
     it('$(selector).parent()でselectorに該当するエレメントの親エレメントを取得する', function() {
@@ -145,6 +139,13 @@ describe('selector.methodsは', function() {
 
         selector.attr('width');
         expect(el.attr).toHaveBeenCalledWith(selector[0], 'width');
+    });
+
+    it('$(selector).removeAttr(value)でGlobal.element.removeAttrを実行する', function() {
+        spyOn(el, 'removeAttr').andCallThrough();
+
+        selector.removeAttr('width');
+        expect(el.removeAttr).toHaveBeenCalledWith(selector[0], 'width');
     });
 });
 /*

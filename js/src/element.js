@@ -76,13 +76,15 @@ Global.element = {
         element.appendChild(addelement);
     },
     attr: attrElement,
+    removeAttr: function(element, key) {
+        element.removeAttribute(key);
+    },
     html: function(element, text) {
-        if (text) {
-            element.innerHTML = text;
-        }
-        else {
+        if (!text) {
             return element.innerHTML;
         }
+
+        element.innerHTML = text;
     }
 };
 

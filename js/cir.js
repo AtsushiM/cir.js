@@ -202,13 +202,15 @@ Global.element = {
         element.appendChild(addelement);
     },
     attr: attrElement,
+    removeAttr: function(element, key) {
+        element.removeAttribute(key);
+    },
     html: function(element, text) {
-        if (text) {
-            element.innerHTML = text;
-        }
-        else {
+        if (!text) {
             return element.innerHTML;
         }
+
+        element.innerHTML = text;
     }
 };
 
@@ -349,18 +351,20 @@ Global.$ = function(query, _parent) {
 
     var Mine = Global.$,
         util = Global.utility,
-        _par = _parent || document,
         $elements,
         base,
         instance,
         i = 0,
         len;
 
+    _parent = _parent || document;
+
     if (util.isString(query)) {
-        $elements = _par.querySelectorAll(query);
+        $elements = _parent.querySelectorAll(query);
     }
     else {
         $elements = [query];
+        query = '';
     }
     len = $elements.length;
 
@@ -369,7 +373,8 @@ Global.$ = function(query, _parent) {
     instance = new base();
 
     instance.length = len;
-    instance.selector = query;
+    instance._selector = query;
+    instance._parent = _parent;
 
     for (; i < len; i++) {
         instance[i] = $elements[i];
@@ -417,7 +422,7 @@ Global.$.methods = {
         return this[0].querySelectorAll(query);
     },
     find: function(query) {
-        return Global.$(query, this);
+        return Global.$(query, this._parent);
     },
     parent: function() {
         return Global.$(this[0].parentNode);
@@ -457,6 +462,9 @@ Global.$.methods = {
     },
     attr: function() {
         return exe(this, el.attr, arguments);
+    },
+    removeAttr: function() {
+        return forExe(this, el.removeAttr, arguments);
     },
     append: function() {
         return forExe(this, el.append, arguments);
@@ -656,6 +664,7 @@ Global.Event = Global.klass({
         switchmove: isTouch ? 'touchmove' : 'mousemove',
         switchup: isTouch ? 'touchend' : 'mouseup',
         load: 'load',
+        change: 'change',
         hashchange: 'hashchange',
         click: 'click',
         mousedown: 'mousedown',

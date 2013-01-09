@@ -38,7 +38,7 @@ Global.$.methods = {
         return this[0].querySelectorAll(query);
     },
     find: function(query) {
-        return Global.$(query, this);
+        return Global.$(query, this._parent);
     },
     parent: function() {
         return Global.$(this[0].parentNode);
@@ -78,6 +78,9 @@ Global.$.methods = {
     },
     attr: function() {
         return exe(this, el.attr, arguments);
+    },
+    removeAttr: function() {
+        return forExe(this, el.removeAttr, arguments);
     },
     append: function() {
         return forExe(this, el.append, arguments);
