@@ -1,5 +1,5 @@
-/* Class: "../../../../js/src/Loading.js" */
-describe('Loadingは', function() {
+/* Class: "../../../../js/src/WindowLoad.js" */
+describe('WindowLoadは', function() {
     var c = window.C ? C : Global,
         dammy = {
             before: {
@@ -15,8 +15,8 @@ describe('Loadingは', function() {
                 }
             }
         },
-        loading_after = new c.Loading(),
-        loading_before = new c.Loading({
+        loading_after = new c.WindowLoad(),
+        loading_before = new c.WindowLoad()({
             onload: dammy.before.onload
         });
 

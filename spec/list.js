@@ -16,7 +16,6 @@ src/Facebook/\n\
 src/FontImg/\n\
 src/HashController/\n\
 src/ImgLoad/\n\
-src/Loading/\n\
 src/LocalStorage/\n\
 src/Mobile/\n\
 src/Observer/\n\
@@ -30,6 +29,7 @@ src/Throttle/\n\
 src/Timer/\n\
 src/Tweener/\n\
 src/Twitter/\n\
+src/WindowLoad/\n\
 src/XML/\n\
 src/ease/\n\
 src/element/\n\
@@ -57,7 +57,6 @@ src/utility/\n\
 ../../js/src/FontImg.js\n\
 ../../js/src/HashController.js\n\
 ../../js/src/ImgLoad.js\n\
-../../js/src/Loading.js\n\
 ../../js/src/LocalStorage.js\n\
 ../../js/src/Mobile.js\n\
 ../../js/src/Observer.js\n\
@@ -71,6 +70,7 @@ src/utility/\n\
 ../../js/src/Timer.js\n\
 ../../js/src/Tweener.js\n\
 ../../js/src/Twitter.js\n\
+../../js/src/WindowLoad.js\n\
 ../../js/src/XML.js\n\
 ../../js/src/ease.js\n\
 ../../js/src/element.js\n\
@@ -98,7 +98,6 @@ src/utility/\n\
 ../_src/src/FontImg/test.js\n\
 ../_src/src/HashController/test.js\n\
 ../_src/src/ImgLoad/test.js\n\
-../_src/src/Loading/test.js\n\
 ../_src/src/LocalStorage/test.js\n\
 ../_src/src/Mobile/test.js\n\
 ../_src/src/Observer/test.js\n\
@@ -112,6 +111,7 @@ src/utility/\n\
 ../_src/src/Timer/test.js\n\
 ../_src/src/Tweener/test.js\n\
 ../_src/src/Twitter/test.js\n\
+../_src/src/WindowLoad/test.js\n\
 ../_src/src/XML/test.js\n\
 ../_src/src/ease/test.js\n\
 ../_src/src/element/test.js\n\

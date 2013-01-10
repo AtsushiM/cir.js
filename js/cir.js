@@ -1454,8 +1454,8 @@ Global.ImgLoad = Global.klass({
         }
     }
 });
-/* Test: "../../spec/_src/src/Loading/test.js" */
-Global.Loading = Global.klass({
+/* Test: "../../spec/_src/src/WindowLoad/test.js" */
+Global.WindowLoad = Global.klass({
     init: function(config) {
         if (config && config.onload) {
             this.onload(config.onload);
