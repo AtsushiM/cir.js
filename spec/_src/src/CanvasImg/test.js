@@ -1,51 +1,25 @@
-/* Class: "../../../../js/src/FontImage.js" */
-describe('FontImageは', function() {
-    var c = window.C ? C : Global,
-        numimg,
-        args = {
-            type: 'white'
-        };
+/* Class: "../../../../js/src/CanvasImg.js" */
+describe('CanvasImgは', function() {
+    var CanvasImg;
 
     beforeEach(function() {
-        // init
-        numimg = new c.FontImage(args);
+        // before
+        CanvasImg = window.C ? C.CanvasImg : Global.CanvasImg;
     });
     afterEach(function() {
         // clear
     });
 
-    function expectedMakeAction(i) {
-        return '<span class="font_' + args.type + '_' + i + '">&nbsp;</span>';
-    }
-
-    it('make(x)で数値xのimgタグを返す', function() {
-        // 0 ~ 9
-        for (var i = 0, len = 10; i < len; i++) {
-            expect(numimg.make(i)).toEqual(expectedMakeAction(i));
-        }
-
-        // 10 ~ 19
-        for (var i = 10, len = 20; i < len; i++) {
-            var j =  ('' + i).split('');
-            expect(numimg.make(i)).toEqual(
-                expectedMakeAction(j[0]) +
-                expectedMakeAction(j[1])
-            );
-        }
-
-        // 000
-        expect(numimg.make('000')).toEqual(
-            expectedMakeAction(0) +
-            expectedMakeAction(0) +
-            expectedMakeAction(0)
-        );
-        // 9999
-        expect(numimg.make('9999')).toEqual(
-            expectedMakeAction(9) +
-            expectedMakeAction(9) +
-            expectedMakeAction(9) +
-            expectedMakeAction(9)
-        );
+    it('srcオプションで指定した画像を表示するcanvas要素を作成する', function() {
+        expect(new CanvasImg({
+            src: '/spec/common/r.png',
+            width: 100,
+            height: 100,
+            onload: function(canvas, img) {
+                expect(canvas.getContext).toBeDefined();
+                expect(img.alt).toEqual('');
+            }
+        })).toBeDefined();
     });
 });
 /*

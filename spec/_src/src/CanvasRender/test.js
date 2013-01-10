@@ -3,19 +3,19 @@ describe('CanvasRenderは', function() {
     var c = window.C ? C : Global,
         canvasrender,
         canvas = document.createElement('canvas'),
-        r = new c.CanvasImage({
+        r = new c.CanvasImg({
             src: '/spec/common/r.png',
             width: 100,
             height: 100,
             onload: function() {}
         }),
-        g = new c.CanvasImage({
+        g = new c.CanvasImg({
             src: '/spec/common/g.png',
             width: 100,
             height: 100,
             onload: function() {}
         }),
-        b = new c.CanvasImage({
+        b = new c.CanvasImg({
             src: '/spec/common/b.png',
             width: 100,
             height: 100,

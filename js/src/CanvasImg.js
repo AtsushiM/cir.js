@@ -1,11 +1,11 @@
-/* Test: "../../spec/_src/src/CanvasImage/test.js" */
+/* Test: "../../spec/_src/src/CanvasImg/test.js" */
 (function() {
 'use strict';
 
 var el= Global.element,
     create = el.create;
 
-Global.CanvasImage = function(config) {
+Global.CanvasImg = function(config) {
     var canv = create('canvas'),
         img = create('img'),
         src = config.src,

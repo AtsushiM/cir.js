@@ -2,7 +2,7 @@ document.write('\
 <script type="text/template" id="jasmineBaseList">\
 src/Ajax/\n\
 src/Bind/\n\
-src/CanvasImage/\n\
+src/CanvasImg/\n\
 src/CanvasRender/\n\
 src/DataStore/\n\
 src/Deferred/\n\
@@ -13,7 +13,7 @@ src/ExternalInterface.Android/\n\
 src/ExternalInterface.IOS/\n\
 src/FPS/\n\
 src/Facebook/\n\
-src/FontImage/\n\
+src/FontImg/\n\
 src/HashController/\n\
 src/ImgLoad/\n\
 src/Loading/\n\
@@ -43,7 +43,7 @@ src/utility/\n\
 <script type="text/template" id="jasmineClassList">\
 ../../js/src/Ajax.js\n\
 ../../js/src/Bind.js\n\
-../../js/src/CanvasImage.js\n\
+../../js/src/CanvasImg.js\n\
 ../../js/src/CanvasRender.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/Deferred.js\n\
@@ -54,7 +54,7 @@ src/utility/\n\
 ../../js/src/ExternalInterface.IOS.js\n\
 ../../js/src/FPS.js\n\
 ../../js/src/Facebook.js\n\
-../../js/src/FontImage.js\n\
+../../js/src/FontImg.js\n\
 ../../js/src/HashController.js\n\
 ../../js/src/ImgLoad.js\n\
 ../../js/src/Loading.js\n\
@@ -84,7 +84,7 @@ src/utility/\n\
 <script type="text/template" id="jasmineTestList">\
 ../_src/src/Ajax/test.js\n\
 ../_src/src/Bind/test.js\n\
-../_src/src/CanvasImage/test.js\n\
+../_src/src/CanvasImg/test.js\n\
 ../_src/src/CanvasRender/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/Deferred/test.js\n\
@@ -95,7 +95,7 @@ src/utility/\n\
 ../_src/src/ExternalInterface.IOS/test.js\n\
 ../_src/src/FPS/test.js\n\
 ../_src/src/Facebook/test.js\n\
-../_src/src/FontImage/test.js\n\
+../_src/src/FontImg/test.js\n\
 ../_src/src/HashController/test.js\n\
 ../_src/src/ImgLoad/test.js\n\
 ../_src/src/Loading/test.js\n\

@@ -868,14 +868,14 @@ Global.Bind = Global.klass({
         }
     }
 });
-/* Test: "../../spec/_src/src/CanvasImage/test.js" */
+/* Test: "../../spec/_src/src/CanvasImg/test.js" */
 (function() {
 'use strict';
 
 var el= Global.element,
     create = el.create;
 
-Global.CanvasImage = function(config) {
+Global.CanvasImg = function(config) {
     var canv = create('canvas'),
         img = create('img'),
         src = config.src,
@@ -1674,8 +1674,8 @@ function hideAddressHandler() {
     setTimeout(doScroll, 100);
 }
 }());
-/* Test: "../../spec/_src/src/FontImage/test.js" */
-Global.FontImage = Global.klass({
+/* Test: "../../spec/_src/src/FontImg/test.js" */
+Global.FontImg = Global.klass({
     init: function(config) {
         config = config || {type: ''};
 

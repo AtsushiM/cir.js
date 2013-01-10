@@ -36,11 +36,11 @@ EXT =
 
 ELECTRL =
 BIND = Bind.js
-CIMG = CanvasImage.js
+CIMG = CanvasImg.js
 CREN= CanvasRender.js
 DRAG = DragFlick.js
 ILD = ImgLoad.js
-FONT = FontImage.js
+FONT = FontImg.js
 XML = XML.js
 # ELECTRL = $(BIND) $(CIMG) $(CREN) $(DRAG) $(ILD) $(FONT) $(XML)
 

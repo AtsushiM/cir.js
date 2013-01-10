@@ -1,5 +1,5 @@
-/* Test: "../../spec/_src/src/FontImage/test.js" */
-Global.FontImage = Global.klass({
+/* Test: "../../spec/_src/src/FontImg/test.js" */
+Global.FontImg = Global.klass({
     init: function(config) {
         config = config || {type: ''};
 
