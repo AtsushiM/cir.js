@@ -1,7 +1,6 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = Global.klass({
     properties: {
-        _u: Global.utility,
         _b: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
@@ -13,7 +12,7 @@ Global.Twitter = Global.klass({
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
-            url += this._u.makeQueryString({
+            url += Global.utility.makeQueryString({
                 'url': redirect_uri,
                 'text': caption + name + hash
             });

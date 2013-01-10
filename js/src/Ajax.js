@@ -4,11 +4,10 @@ Global.Ajax = Global.klass({
         this.xhr = new XMLHttpRequest();
     },
     properties: {
-        _u: Global.utility,
         request: function(vars) {
             var url = vars.url,
-                callback = vars.callback || this._u.nullFunction,
-                error = vars.error || this._u.nullFunction,
+                callback = vars.callback || Global.utility.nullFunction,
+                error = vars.error || Global.utility.nullFunction,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -23,8 +22,8 @@ Global.Ajax = Global.klass({
             if (vars.query) {
                 query = vars.query;
 
-                if (this._u.isObject(query)) {
-                    query = this._u.makeQueryString(query);
+                if (Global.utility.isObject(query)) {
+                    query = Global.utility.makeQueryString(query);
                     query = encodeURI(query);
                 }
             }

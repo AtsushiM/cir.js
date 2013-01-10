@@ -1,9 +1,8 @@
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
     properties: {
-        utility: Global.utility,
         typeCast: function(str) {
-            var caststr = this.utility.typeCast(str),
+            var caststr = Global.utility.typeCast(str),
                 matchstr;
 
             if (str === caststr) {

@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/XML/test.js" */
 Global.XML = Global.klass({
     init: function(config) {
-        this.element = this._el.create('div');
+        this.element = Global.element.create('div');
         this.data = {};
 
         if (config && config.data) {
@@ -9,7 +9,6 @@ Global.XML = Global.klass({
         }
     },
     properties: {
-        _el: Global.element,
         getData: function() {
             return this.data;
         },
@@ -18,10 +17,10 @@ Global.XML = Global.klass({
             this.element.innerHTML = d;
         },
         $: function(selector) {
-            return this._el.$child(selector, this.element);
+            return Global.element.$child(selector, this.element);
         },
         $$: function(selector) {
-            return this._el.$$child(selector, this.element);
+            return Global.element.$$child(selector, this.element);
         }
     }
 });

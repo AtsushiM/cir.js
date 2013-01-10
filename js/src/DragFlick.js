@@ -6,9 +6,6 @@ Global.DragFlick = Global.klass({
         }
     },
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         _getEventTarget: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 
@@ -20,8 +17,8 @@ Global.DragFlick = Global.klass({
                 startY,
                 dragflg = false;
 
-            mine._el.on(vars.element, mine._ev.switchdown, start);
-            mine._el.on(mine._u.win, mine._ev.switchup, end);
+            Global.element.on(vars.element, Global.event.switchdown, start);
+            Global.element.on(Global.utility.win, Global.event.switchup, end);
 
             function start(e) {
                 var changed = mine._getEventTarget(e);
@@ -90,9 +87,9 @@ Global.DragFlick = Global.klass({
         bind: function(vars) {
             var mine = this,
                 element = vars.element,
-                e = this._ev,
-                el = this._el,
-                util = this._u,
+                e = Global.event,
+                el = Global.element,
+                util = Global.utility,
                 start = vars.start || util.nullFunction,
                 move = vars.move || util.nullFunction,
                 end = vars.end || util.nullFunction,

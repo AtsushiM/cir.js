@@ -5,7 +5,6 @@ Global.Bind = Global.klass({
         this.add();
     },
     properties: {
-        _el: Global.element,
         getHandler: function() {
             return this.handler;
         },
@@ -16,7 +15,7 @@ Global.Bind = Global.klass({
             return this._exe(false);
         },
         _exe: function(isBind) {
-            var el = this._el,
+            var el = Global.element,
                 onoff = isBind ? el.on : el.off,
                 i;
 

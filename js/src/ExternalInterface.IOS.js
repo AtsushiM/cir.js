@@ -5,9 +5,6 @@ Global.ExternalInterface.IOS = Global.klass({
     },
     extend: Global.HashController,
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         call: function(conf) {
             this.setHash(conf);
         },
@@ -22,12 +19,12 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            this._el.on(
-                this._u.win, this._ev.hashchange, this.ios[name]);
+            Global.element.on(
+                Global.utility.win, Global.event.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            this._el.off(
-                this._u.win, this._ev.hashchange, this.ios[name]);
+            Global.element.off(
+                Global.utility.win, Global.event.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }

@@ -683,9 +683,8 @@ Global.event = new Global.Event();
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
     properties: {
-        utility: Global.utility,
         typeCast: function(str) {
-            var caststr = this.utility.typeCast(str),
+            var caststr = Global.utility.typeCast(str),
                 matchstr;
 
             if (str === caststr) {
@@ -766,11 +765,10 @@ Global.Ajax = Global.klass({
         this.xhr = new XMLHttpRequest();
     },
     properties: {
-        _u: Global.utility,
         request: function(vars) {
             var url = vars.url,
-                callback = vars.callback || this._u.nullFunction,
-                error = vars.error || this._u.nullFunction,
+                callback = vars.callback || Global.utility.nullFunction,
+                error = vars.error || Global.utility.nullFunction,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -785,8 +783,8 @@ Global.Ajax = Global.klass({
             if (vars.query) {
                 query = vars.query;
 
-                if (this._u.isObject(query)) {
-                    query = this._u.makeQueryString(query);
+                if (Global.utility.isObject(query)) {
+                    query = Global.utility.makeQueryString(query);
                     query = encodeURI(query);
                 }
             }
@@ -841,7 +839,6 @@ Global.Bind = Global.klass({
         this.add();
     },
     properties: {
-        _el: Global.element,
         getHandler: function() {
             return this.handler;
         },
@@ -852,7 +849,7 @@ Global.Bind = Global.klass({
             return this._exe(false);
         },
         _exe: function(isBind) {
-            var el = this._el,
+            var el = Global.element,
                 onoff = isBind ? el.on : el.off,
                 i;
 
@@ -1021,9 +1018,6 @@ Global.DragFlick = Global.klass({
         }
     },
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         _getEventTarget: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 
@@ -1035,8 +1029,8 @@ Global.DragFlick = Global.klass({
                 startY,
                 dragflg = false;
 
-            mine._el.on(vars.element, mine._ev.switchdown, start);
-            mine._el.on(mine._u.win, mine._ev.switchup, end);
+            Global.element.on(vars.element, Global.event.switchdown, start);
+            Global.element.on(Global.utility.win, Global.event.switchup, end);
 
             function start(e) {
                 var changed = mine._getEventTarget(e);
@@ -1105,9 +1099,9 @@ Global.DragFlick = Global.klass({
         bind: function(vars) {
             var mine = this,
                 element = vars.element,
-                e = this._ev,
-                el = this._el,
-                util = this._u,
+                e = Global.event,
+                el = Global.element,
+                util = Global.utility,
                 start = vars.start || util.nullFunction,
                 move = vars.move || util.nullFunction,
                 end = vars.end || util.nullFunction,
@@ -1233,9 +1227,6 @@ Global.ExternalInterface.IOS = Global.klass({
     },
     extend: Global.HashController,
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         call: function(conf) {
             this.setHash(conf);
         },
@@ -1250,12 +1241,12 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            this._el.on(
-                this._u.win, this._ev.hashchange, this.ios[name]);
+            Global.element.on(
+                Global.utility.win, Global.event.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            this._el.off(
-                this._u.win, this._ev.hashchange, this.ios[name]);
+            Global.element.off(
+                Global.utility.win, Global.event.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
@@ -1263,8 +1254,7 @@ Global.ExternalInterface.IOS = Global.klass({
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = Global.klass({
     properties: {
-        _u: Global.utility,
-        shareURLBase: 'https://www.facebook.com/dialog/feed?',
+        _b: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
             var app_id = vars.app_id,
                 redirect_uri = vars.redirect_uri,
@@ -1273,11 +1263,11 @@ Global.Facebook = Global.klass({
                 name = vars.name,
                 caption = vars.caption,
                 description = vars.description,
-                url = this.shareURLBase +
+                url = this._b +
                     'app_id=' + app_id + '&' +
                     'redirect_uri=' + redirect_uri;
 
-            url += this._u.makeQueryString({
+            url += Global.utility.makeQueryString({
                 'link': link,
                 'picture': picture,
                 'name': name,
@@ -1403,8 +1393,8 @@ Global.ImgLoad = Global.klass({
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
-        this.onload = config.onload || this._u.nullFunction,
-        this.onprogress = config.onprogress || this._u.nullFunction,
+        this.onload = config.onload || Global.utility.nullFunction,
+        this.onprogress = config.onprogress || Global.utility.nullFunction,
         this.loadcount = 0;
         this.progress = 0;
         this.started = false;
@@ -1414,9 +1404,6 @@ Global.ImgLoad = Global.klass({
         }
     },
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         _c: function() {
             this.loadcount++;
 
@@ -1439,10 +1426,10 @@ Global.ImgLoad = Global.klass({
                 i, len;
 
             for (i = 0, len = mine.srccount; i < len; i++) {
-                img = mine._el.create('img');
+                img = Global.element.create('img');
                 img.src = mine.srcs[i];
 
-                mine._el.on(img, mine._ev.load, function() {
+                Global.element.on(img, Global.event.load, function() {
                     mine._c();
                 });
 
@@ -1462,11 +1449,8 @@ Global.WindowLoad = Global.klass({
         }
     },
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         onload: function(func) {
-            this._el.on(this._u.win, this._ev.load, func);
+            Global.element.on(Global.utility.win, Global.event.load, func);
         }
     }
 });
@@ -1552,9 +1536,6 @@ var userAgent = navigator.userAgent;
 
 Global.Mobile = Global.klass({
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         isAndroid: function(ua) {
             return checkUA(ua, /Android/i);
         },
@@ -1577,24 +1558,24 @@ Global.Mobile = Global.klass({
         },
         killScroll: function(isNoTop) {
             if (!isNoTop) {
-                this._u.pageTop();
+                Global.utility.pageTop();
             }
-            this._el.on(this._u.doc, this._ev.touchmove, preventDefault);
+            Global.element.on(Global.utility.doc, Global.event.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
-                this._u.pageTop();
+                Global.utility.pageTop();
             }
-            this._el.off(this._u.doc, this._ev.touchmove, preventDefault);
+            Global.element.off(Global.utility.doc, Global.event.touchmove, preventDefault);
         },
         hideAddress: function() {
-            this._el.on(this._u.win, this._ev.load, hideAddressHandler, false);
-            this._el.on(this._u.win, this._ev.orientationchange, hideAddressHandler, false);
+            Global.element.on(Global.utility.win, Global.event.load, hideAddressHandler, false);
+            Global.element.on(Global.utility.win, Global.event.orientationchange, hideAddressHandler, false);
         },
         getOrientation: function() {
             if (
-                Math.abs(this._u.win.orientation) !== 90 &&
-                this._u.win.innerWidth < this._u.win.innerHeight
+                Math.abs(Global.utility.win.orientation) !== 90 &&
+                Global.utility.win.innerWidth < Global.utility.win.innerHeight
             ) {
                 return {
                     portrait: true,
@@ -1629,15 +1610,15 @@ Global.Mobile = Global.klass({
             };
 
             function add(func) {
-                set(mine._el.on, func);
+                set(Global.element.on, func);
             }
             function remove(func) {
-                set(mine._el.off, func);
+                set(Global.element.off, func);
             }
             function set(setfunc, handler) {
-                setfunc(mine._u.win, mine._ev.load, handler);
-                setfunc(mine._u.win, mine._ev.orientationchange, handler);
-                setfunc(mine._u.win, mine._ev.resize, handler);
+                setfunc(Global.utility.win, Global.event.load, handler);
+                setfunc(Global.utility.win, Global.event.orientationchange, handler);
+                setfunc(Global.utility.win, Global.event.resize, handler);
             }
             function onechange() {
                 change();
@@ -1667,7 +1648,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        this._u.pageTop();
+        Global.utility.pageTop();
     }
 }
 function hideAddressHandler() {
@@ -1800,7 +1781,7 @@ Global.PreRender = Global.klass({
 
         this.elements = config.elements || [];
         this.guesslimit = config.guesslimit || 30;
-        this.onrendered = config.onrendered || this._u.nullFunction;
+        this.onrendered = config.onrendered || Global.utility.nullFunction;
         this.looptime = config.looptime || 100;
         this.loopblur = this.looptime + config.loopblur;
         this.loopid = this.prevtime = null;
@@ -1810,13 +1791,11 @@ Global.PreRender = Global.klass({
         }
     },
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
         start: function() {
             var i;
 
             for (i = this.elements.length; i--;) {
-                this._el.show(this.elements[i]);
+                Global.element.show(this.elements[i]);
             }
             this.prevtime = Date.now();
             this.loopid = setInterval(check, this.looptime, this);
@@ -1834,7 +1813,7 @@ Global.PreRender = Global.klass({
                         clearInterval(mine.loopid);
 
                         for (var i = mine.elements.length; i--;) {
-                            mine._el.hide(mine.elements[i]);
+                            Global.element.hide(mine.elements[i]);
                         }
 
                         mine.onrendered();
@@ -1886,9 +1865,6 @@ Global.Route = Global.klass({
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = Global.klass({
     properties: {
-        _u: Global.utility,
-        _el: Global.element,
-        _ev: Global.event,
         requests: function(varary) {
             var i = 0,
                 len = varary.length;
@@ -1898,14 +1874,14 @@ Global.ScriptLoad = Global.klass({
             }
         },
         request: function(vars) {
-            var script = this._el.create('script');
+            var script = Global.element.create('script');
 
             script.type = 'text/javascript';
             script.src = vars.src;
-            this._el.append(this._u.doc.body, script);
+            Global.element.append(Global.utility.doc.body, script);
 
             if (vars.callback) {
-                this._el.on(script, this._ev.load, vars.callback);
+                Global.element.on(script, Global.event.load, vars.callback);
             }
         }
     }
@@ -1921,7 +1897,7 @@ Global.ServerMeta = Global.klass({
     init: function(config) {
         config = config || {};
 
-        var callback = config.callback || this._u.nullFunction;
+        var callback = config.callback || Global.utility.nullFunction;
 
         if (!xhr) {
             xhr = getHeader(function() {
@@ -1934,7 +1910,6 @@ Global.ServerMeta = Global.klass({
         }
     },
     properties: {
-        _u: Global.utility,
         date: function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
@@ -1966,7 +1941,7 @@ Global.ServerMeta = Global.klass({
 });
 
 function getRes(value) {
-    if (isLoaded)  {
+    if (isLoaded) {
         return xhr.getResponseHeader(value);
     }
     return false;
@@ -2414,7 +2389,6 @@ Global.Tweener.Duration = 500;
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = Global.klass({
     properties: {
-        _u: Global.utility,
         _b: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {
             var redirect_uri = vars.redirect_uri,
@@ -2426,7 +2400,7 @@ Global.Twitter = Global.klass({
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
-            url += this._u.makeQueryString({
+            url += Global.utility.makeQueryString({
                 'url': redirect_uri,
                 'text': caption + name + hash
             });
@@ -2438,7 +2412,7 @@ Global.Twitter = Global.klass({
 /* Test: "../../spec/_src/src/XML/test.js" */
 Global.XML = Global.klass({
     init: function(config) {
-        this.element = this._el.create('div');
+        this.element = Global.element.create('div');
         this.data = {};
 
         if (config && config.data) {
@@ -2446,7 +2420,6 @@ Global.XML = Global.klass({
         }
     },
     properties: {
-        _el: Global.element,
         getData: function() {
             return this.data;
         },
@@ -2455,10 +2428,10 @@ Global.XML = Global.klass({
             this.element.innerHTML = d;
         },
         $: function(selector) {
-            return this._el.$child(selector, this.element);
+            return Global.element.$child(selector, this.element);
         },
         $$: function(selector) {
-            return this._el.$$child(selector, this.element);
+            return Global.element.$$child(selector, this.element);
         }
     }
 });

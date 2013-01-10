@@ -16,7 +16,7 @@ describe('WindowLoadは', function() {
             }
         },
         loading_after = new c.WindowLoad(),
-        loading_before = new c.WindowLoad()({
+        loading_before = new c.WindowLoad({
             onload: dammy.before.onload
         });
 
