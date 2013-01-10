@@ -14,7 +14,7 @@ Global.ScriptLoad = Global.klass({
 
             script.type = 'text/javascript';
             script.src = vars.src;
-            Global.element.append(Global.utility.doc.body, script);
+            Global.element.append(doc.body, script);
 
             if (vars.callback) {
                 Global.element.on(script, Global.event.load, vars.callback);

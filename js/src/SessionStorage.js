@@ -15,7 +15,7 @@ Global.SessionStorage = Global.klass({
         }
     },
     properties: {
-        _s: Global.utility.win.sessionStorage,
+        _s: win.sessionStorage,
         set: function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
             return true;

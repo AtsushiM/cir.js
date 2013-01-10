@@ -9,7 +9,7 @@ Global.PreRender = Global.klass({
 
         this.elements = config.elements || [];
         this.guesslimit = config.guesslimit || 30;
-        this.onrendered = config.onrendered || Global.utility.nullFunction;
+        this.onrendered = config.onrendered || nullFunction;
         this.looptime = config.looptime || 100;
         this.loopblur = this.looptime + config.loopblur;
         this.loopid = this.prevtime = null;

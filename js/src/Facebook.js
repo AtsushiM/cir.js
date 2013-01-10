@@ -14,7 +14,7 @@ Global.Facebook = Global.klass({
                     'app_id=' + app_id + '&' +
                     'redirect_uri=' + redirect_uri;
 
-            url += Global.utility.makeQueryString({
+            url += makeQueryString({
                 'link': link,
                 'picture': picture,
                 'name': name,

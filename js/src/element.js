@@ -1,11 +1,4 @@
 /* Test: "../../spec/_src/src/element/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    win = util.win,
-    doc = util.doc;
-
 Global.element = {
     $: function(selector) {
         return $(selector, doc);
@@ -62,7 +55,7 @@ Global.element = {
             key = i;
             value = addstyle[i];
 
-            if (util.isNumber(value)) {
+            if (isNumber(value)) {
                 value += 'px';
             }
 
@@ -159,7 +152,7 @@ function removeClass(element, cls) {
 function attrElement(element, vars, value) {
     var i;
 
-    if (util.isObject(vars)) {
+    if (isObject(vars)) {
         for (i in vars) {
             element.setAttribute(i, vars[i]);
         }
@@ -173,4 +166,3 @@ function attrElement(element, vars, value) {
 
     return element.getAttribute(vars);
 }
-}());

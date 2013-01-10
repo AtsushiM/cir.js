@@ -2,8 +2,7 @@
 (function() {
 'use strict';
 
-var util = Global.utility,
-    el = Global.element,
+var el = Global.element,
     methods = Global.$.methods;
 
 methods.animate = function() {
@@ -33,11 +32,11 @@ function animate(element, params, duration, ease, callback) {
     var style = element.style,
         tweener;
 
-    if (util.isFunction(duration)) {
+    if (isFunction(duration)) {
         callback = duration;
         duration = null;
     }
-    if (util.isFunction(ease) && !callback) {
+    if (isFunction(ease) && !callback) {
         callback = ease;
         ease = null;
     }

@@ -28,24 +28,24 @@ Global.Mobile = Global.klass({
         },
         killScroll: function(isNoTop) {
             if (!isNoTop) {
-                Global.utility.pageTop();
+                pageTop();
             }
-            Global.element.on(Global.utility.doc, Global.event.touchmove, preventDefault);
+            Global.element.on(doc, Global.event.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
-                Global.utility.pageTop();
+                pageTop();
             }
-            Global.element.off(Global.utility.doc, Global.event.touchmove, preventDefault);
+            Global.element.off(doc, Global.event.touchmove, preventDefault);
         },
         hideAddress: function() {
-            Global.element.on(Global.utility.win, Global.event.load, hideAddressHandler, false);
-            Global.element.on(Global.utility.win, Global.event.orientationchange, hideAddressHandler, false);
+            Global.element.on(win, Global.event.load, hideAddressHandler, false);
+            Global.element.on(win, Global.event.orientationchange, hideAddressHandler, false);
         },
         getOrientation: function() {
             if (
-                Math.abs(Global.utility.win.orientation) !== 90 &&
-                Global.utility.win.innerWidth < Global.utility.win.innerHeight
+                Math.abs(win.orientation) !== 90 &&
+                win.innerWidth < win.innerHeight
             ) {
                 return {
                     portrait: true,
@@ -86,9 +86,9 @@ Global.Mobile = Global.klass({
                 set(Global.element.off, func);
             }
             function set(setfunc, handler) {
-                setfunc(Global.utility.win, Global.event.load, handler);
-                setfunc(Global.utility.win, Global.event.orientationchange, handler);
-                setfunc(Global.utility.win, Global.event.resize, handler);
+                setfunc(win, Global.event.load, handler);
+                setfunc(win, Global.event.orientationchange, handler);
+                setfunc(win, Global.event.resize, handler);
             }
             function onechange() {
                 change();
@@ -118,7 +118,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        Global.utility.pageTop();
+        pageTop();
     }
 }
 function hideAddressHandler() {

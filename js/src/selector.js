@@ -3,16 +3,15 @@ Global.$ = function(query, _parent) {
     'use strict';
 
     var Mine = Global.$,
-        util = Global.utility,
         $elements,
         base,
         instance,
         i = 0,
         len;
 
-    _parent = _parent || document;
+    _parent = _parent || doc;
 
-    if (util.isString(query)) {
+    if (isString(query)) {
         $elements = _parent.querySelectorAll(query);
     }
     else {

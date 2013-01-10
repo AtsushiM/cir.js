@@ -18,7 +18,7 @@ Global.DragFlick = Global.klass({
                 dragflg = false;
 
             Global.element.on(vars.element, Global.event.switchdown, start);
-            Global.element.on(Global.utility.win, Global.event.switchup, end);
+            Global.element.on(win, Global.event.switchup, end);
 
             function start(e) {
                 var changed = mine._getEventTarget(e);
@@ -89,10 +89,9 @@ Global.DragFlick = Global.klass({
                 element = vars.element,
                 e = Global.event,
                 el = Global.element,
-                util = Global.utility,
-                start = vars.start || util.nullFunction,
-                move = vars.move || util.nullFunction,
-                end = vars.end || util.nullFunction,
+                start = vars.start || nullFunction,
+                move = vars.move || nullFunction,
+                end = vars.end || nullFunction,
                 flg = false,
                 startX = 0,
                 startY = 0;
@@ -119,7 +118,7 @@ Global.DragFlick = Global.klass({
                     }
                 });
             });
-            eventProxy(util.doc, e.switchmove, function(_e) {
+            eventProxy(doc, e.switchmove, function(_e) {
                 if (flg) {
                     move({
                         e: _e,
@@ -130,7 +129,7 @@ Global.DragFlick = Global.klass({
                     });
                 }
             });
-            eventProxy(util.doc, e.switchup, function(_e) {
+            eventProxy(doc, e.switchup, function(_e) {
                 if (flg) {
                     end({
                         e: _e,

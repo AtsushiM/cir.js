@@ -12,7 +12,7 @@ Global.Twitter = Global.klass({
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
-            url += Global.utility.makeQueryString({
+            url += makeQueryString({
                 'url': redirect_uri,
                 'text': caption + name + hash
             });

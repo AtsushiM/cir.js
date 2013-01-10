@@ -2,7 +2,7 @@
 Global.HashController = Global.klass({
     properties: {
         typeCast: function(str) {
-            var caststr = Global.utility.typeCast(str),
+            var caststr = typeCast(str),
                 matchstr;
 
             if (str === caststr) {

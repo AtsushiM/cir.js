@@ -9,7 +9,7 @@ Global.ServerMeta = Global.klass({
     init: function(config) {
         config = config || {};
 
-        var callback = config.callback || Global.utility.nullFunction;
+        var callback = config.callback || nullFunction;
 
         if (!xhr) {
             xhr = getHeader(function() {

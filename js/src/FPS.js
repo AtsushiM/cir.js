@@ -3,8 +3,6 @@
 'use strict';
 
 var instance,
-    util = Global.utility,
-    win = util.win,
     requestAnimationFrame = (function() {
         return win.requestAnimationFrame ||
             win.webkitRequestAnimationFrame ||

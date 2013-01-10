@@ -1,8 +1,5 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
-(function() {
-'use strict';
-
-var isTouch = Global.utility.isTouchDevice();
+var isTouch = isTouchDevice();
 
 Global.Event = Global.klass({
     init: function(config) {
@@ -38,4 +35,3 @@ Global.Event = Global.klass({
 });
 Global.Event.instance = null;
 Global.event = new Global.Event();
-}());

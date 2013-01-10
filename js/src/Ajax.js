@@ -6,8 +6,8 @@ Global.Ajax = Global.klass({
     properties: {
         request: function(vars) {
             var url = vars.url,
-                callback = vars.callback || Global.utility.nullFunction,
-                error = vars.error || Global.utility.nullFunction,
+                callback = vars.callback || nullFunction,
+                error = vars.error || nullFunction,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -22,8 +22,8 @@ Global.Ajax = Global.klass({
             if (vars.query) {
                 query = vars.query;
 
-                if (Global.utility.isObject(query)) {
-                    query = Global.utility.makeQueryString(query);
+                if (isObject(query)) {
+                    query = makeQueryString(query);
                     query = encodeURI(query);
                 }
             }

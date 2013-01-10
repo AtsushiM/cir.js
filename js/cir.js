@@ -1,77 +1,81 @@
 // Cool is Right.
 var C = {};
-(function() {
+(function(win, doc) {
     'use strict';
     var Global = C;
 /* Test: "../../spec/_src/src/utility/test.js" */
-(function(win, doc) {
-'use strict';
-
 if (!Date.now) {
     Date.now = function now() {
         return +(new Date);
     };
 }
 
-Global.utility = {
-    win: win,
-    doc: doc,
+function pageTop() {
+    win.scrollTo(0, 1);
+}
+function override(target, vars) {
+    var i;
 
-    pageTop: function() {
-        win.scrollTo(0, 1);
-    },
-    override: override,
-    replaceAll: function(targettext, needle, replacetext) {
-        return targettext.split(needle).join(replacetext);
-    },
-    windowOpen: function(url, windowname) {
-        return win.open(url, windowname);
-    },
-    typeCast: typeCast,
-    makeQueryString: function(vars) {
-        var sign = '',
-            query = '',
-            i;
-
-        for (i in vars) {
-            if (vars[i]) {
-                query += sign + i + '=' + encodeURIComponent(vars[i]);
-                sign = '&';
-            }
-        }
-
-        return query;
-    },
-    parseQueryString: function(query) {
-        query = query
-            .replace(/^\#/, '')
-            .replace(/^\?/, '');
-
-        var params = query.split('&'),
-            i,
-            p,
-            result = {};
-
-        for (i = params.length; i--;) {
-            p = params[i].split('=');
-            result[p[0]] = typeCast(decodeURIComponent(p[1]));
-        }
-        return result;
-    },
-    is: is,
-    isObject: isObject,
-    isNumber: isNumber,
-    isString: isString,
-    isFunction: isFunction,
-    isBoolean: isBoolean,
-    isTouchDevice: function() {
-        return 'ontouchstart' in win;
-    },
-    nullFunction: function() {
-        return null;
+    for (i in vars) {
+        target[i] = vars[i];
     }
-};
 
+    return target;
+}
+function typeCast(str) {
+    var matchstr = '' + str;
+
+    if (matchstr.match('^{.*}$')) {
+        return JSON.parse(matchstr);
+    }
+    else if (matchstr.match('^[0-9\.]+$')) {
+        return matchstr * 1;
+    }
+    else if (matchstr === 'true') {
+        return true;
+    }
+    else if (matchstr === 'false') {
+        return false;
+    }
+
+    return str;
+}
+function replaceAll(targettext, needle, replacetext) {
+    return targettext.split(needle).join(replacetext);
+}
+function windowOpen(url, windowname) {
+    return win.open(url, windowname);
+}
+function makeQueryString(vars) {
+    var sign = '',
+        query = '',
+        i;
+
+    for (i in vars) {
+        if (vars[i]) {
+            query += sign + i + '=' + encodeURIComponent(vars[i]);
+            sign = '&';
+        }
+    }
+
+    return query;
+}
+function parseQueryString(query) {
+    query = query
+        .replace(/^\#/, '')
+        .replace(/^\?/, '');
+
+    var params = query.split('&'),
+        i,
+        p,
+        result = {};
+
+    for (i = params.length; i--;) {
+        p = params[i].split('=');
+        result[p[0]] = typeCast(decodeURIComponent(p[1]));
+    }
+    return result;
+}
 function is(key, vars) {
     if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
         return true;
@@ -93,45 +97,33 @@ function isFunction(vars) {
 function isBoolean(vars) {
     return is('Boolean', vars);
 }
-
-function override(target, vars) {
-    var i;
-
-    for (i in vars) {
-        target[i] = vars[i];
-    }
-
-    return target;
+function isTouchDevice() {
+    return 'ontouchstart' in win;
+}
+function nullFunction() {
+    return null;
 }
 
-function typeCast(str) {
-    var matchstr = '' + str;
-
-    if (matchstr.match('^{.*}$')) {
-        return JSON.parse(matchstr);
-    }
-    else if (matchstr.match('^[0-9\.]+$')) {
-        return matchstr * 1;
-    }
-    else if (matchstr === 'true') {
-        return true;
-    }
-    else if (matchstr === 'false') {
-        return false;
-    }
-
-    return str;
-}
-
-}(window, document));
+Global.utility = {
+    win: win,
+    doc: doc,
+    pageTop: pageTop,
+    override: override,
+    replaceAll: replaceAll,
+    windowOpen: windowOpen,
+    typeCast: typeCast,
+    makeQueryString: makeQueryString,
+    parseQueryString: parseQueryString,
+    is: is,
+    isObject: isObject,
+    isNumber: isNumber,
+    isString: isString,
+    isFunction: isFunction,
+    isBoolean: isBoolean,
+    isTouchDevice: isTouchDevice,
+    nullFunction: nullFunction
+};
 /* Test: "../../spec/_src/src/element/test.js" */
-(function() {
-'use strict';
-
-var util = Global.utility,
-    win = util.win,
-    doc = util.doc;
-
 Global.element = {
     $: function(selector) {
         return $(selector, doc);
@@ -188,7 +180,7 @@ Global.element = {
             key = i;
             value = addstyle[i];
 
-            if (util.isNumber(value)) {
+            if (isNumber(value)) {
                 value += 'px';
             }
 
@@ -285,7 +277,7 @@ function removeClass(element, cls) {
 function attrElement(element, vars, value) {
     var i;
 
-    if (util.isObject(vars)) {
+    if (isObject(vars)) {
         for (i in vars) {
             element.setAttribute(i, vars[i]);
         }
@@ -299,14 +291,11 @@ function attrElement(element, vars, value) {
 
     return element.getAttribute(vars);
 }
-}());
 /* Test: "../../spec/_src/src/klass/test.js" */
 Global.klass = function(config) {
     'use strict';
 
-    var util = Global.utility,
-        override = util.override,
-        init = config.init || function() {},
+    var init = config.init || function() {},
         properties = config.properties,
         extend = config.extend;
 
@@ -350,16 +339,15 @@ Global.$ = function(query, _parent) {
     'use strict';
 
     var Mine = Global.$,
-        util = Global.utility,
         $elements,
         base,
         instance,
         i = 0,
         len;
 
-    _parent = _parent || document;
+    _parent = _parent || doc;
 
-    if (util.isString(query)) {
+    if (isString(query)) {
         $elements = _parent.querySelectorAll(query);
     }
     else {
@@ -475,8 +463,7 @@ Global.$.methods = {
 (function() {
 'use strict';
 
-var util = Global.utility,
-    el = Global.element,
+var el = Global.element,
     methods = Global.$.methods;
 
 methods.animate = function() {
@@ -506,11 +493,11 @@ function animate(element, params, duration, ease, callback) {
     var style = element.style,
         tweener;
 
-    if (util.isFunction(duration)) {
+    if (isFunction(duration)) {
         callback = duration;
         duration = null;
     }
-    if (util.isFunction(ease) && !callback) {
+    if (isFunction(ease) && !callback) {
         callback = ease;
         ease = null;
     }
@@ -640,10 +627,7 @@ Global.ease = {
     }
 };
 /* Test: "../../spec/_src/src/Event/test.js" */
-(function() {
-'use strict';
-
-var isTouch = Global.utility.isTouchDevice();
+var isTouch = isTouchDevice();
 
 Global.Event = Global.klass({
     init: function(config) {
@@ -679,12 +663,11 @@ Global.Event = Global.klass({
 });
 Global.Event.instance = null;
 Global.event = new Global.Event();
-}());
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
     properties: {
         typeCast: function(str) {
-            var caststr = Global.utility.typeCast(str),
+            var caststr = typeCast(str),
                 matchstr;
 
             if (str === caststr) {
@@ -767,8 +750,8 @@ Global.Ajax = Global.klass({
     properties: {
         request: function(vars) {
             var url = vars.url,
-                callback = vars.callback || Global.utility.nullFunction,
-                error = vars.error || Global.utility.nullFunction,
+                callback = vars.callback || nullFunction,
+                error = vars.error || nullFunction,
                 type = vars.type || 'GET',
                 query = '',
                 xhr;
@@ -783,8 +766,8 @@ Global.Ajax = Global.klass({
             if (vars.query) {
                 query = vars.query;
 
-                if (Global.utility.isObject(query)) {
-                    query = Global.utility.makeQueryString(query);
+                if (isObject(query)) {
+                    query = makeQueryString(query);
                     query = encodeURI(query);
                 }
             }
@@ -1030,7 +1013,7 @@ Global.DragFlick = Global.klass({
                 dragflg = false;
 
             Global.element.on(vars.element, Global.event.switchdown, start);
-            Global.element.on(Global.utility.win, Global.event.switchup, end);
+            Global.element.on(win, Global.event.switchup, end);
 
             function start(e) {
                 var changed = mine._getEventTarget(e);
@@ -1101,10 +1084,9 @@ Global.DragFlick = Global.klass({
                 element = vars.element,
                 e = Global.event,
                 el = Global.element,
-                util = Global.utility,
-                start = vars.start || util.nullFunction,
-                move = vars.move || util.nullFunction,
-                end = vars.end || util.nullFunction,
+                start = vars.start || nullFunction,
+                move = vars.move || nullFunction,
+                end = vars.end || nullFunction,
                 flg = false,
                 startX = 0,
                 startY = 0;
@@ -1131,7 +1113,7 @@ Global.DragFlick = Global.klass({
                     }
                 });
             });
-            eventProxy(util.doc, e.switchmove, function(_e) {
+            eventProxy(doc, e.switchmove, function(_e) {
                 if (flg) {
                     move({
                         e: _e,
@@ -1142,7 +1124,7 @@ Global.DragFlick = Global.klass({
                     });
                 }
             });
-            eventProxy(util.doc, e.switchup, function(_e) {
+            eventProxy(doc, e.switchup, function(_e) {
                 if (flg) {
                     end({
                         e: _e,
@@ -1241,12 +1223,10 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            Global.element.on(
-                Global.utility.win, Global.event.hashchange, this.ios[name]);
+            Global.element.on(win, Global.event.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            Global.element.off(
-                Global.utility.win, Global.event.hashchange, this.ios[name]);
+            Global.element.off(win, Global.event.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
@@ -1267,7 +1247,7 @@ Global.Facebook = Global.klass({
                     'app_id=' + app_id + '&' +
                     'redirect_uri=' + redirect_uri;
 
-            url += Global.utility.makeQueryString({
+            url += makeQueryString({
                 'link': link,
                 'picture': picture,
                 'name': name,
@@ -1284,8 +1264,6 @@ Global.Facebook = Global.klass({
 'use strict';
 
 var instance,
-    util = Global.utility,
-    win = util.win,
     requestAnimationFrame = (function() {
         return win.requestAnimationFrame ||
             win.webkitRequestAnimationFrame ||
@@ -1393,8 +1371,8 @@ Global.ImgLoad = Global.klass({
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
-        this.onload = config.onload || Global.utility.nullFunction,
-        this.onprogress = config.onprogress || Global.utility.nullFunction,
+        this.onload = config.onload || nullFunction,
+        this.onprogress = config.onprogress || nullFunction,
         this.loadcount = 0;
         this.progress = 0;
         this.started = false;
@@ -1450,7 +1428,7 @@ Global.WindowLoad = Global.klass({
     },
     properties: {
         onload: function(func) {
-            Global.element.on(Global.utility.win, Global.event.load, func);
+            Global.element.on(win, Global.event.load, func);
         }
     }
 });
@@ -1471,7 +1449,7 @@ Global.LocalStorage = Global.klass({
         }
     },
     properties: {
-        _s: Global.utility.win.localStorage,
+        _s: win.localStorage,
         set: function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
             return true;
@@ -1558,24 +1536,24 @@ Global.Mobile = Global.klass({
         },
         killScroll: function(isNoTop) {
             if (!isNoTop) {
-                Global.utility.pageTop();
+                pageTop();
             }
-            Global.element.on(Global.utility.doc, Global.event.touchmove, preventDefault);
+            Global.element.on(doc, Global.event.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
-                Global.utility.pageTop();
+                pageTop();
             }
-            Global.element.off(Global.utility.doc, Global.event.touchmove, preventDefault);
+            Global.element.off(doc, Global.event.touchmove, preventDefault);
         },
         hideAddress: function() {
-            Global.element.on(Global.utility.win, Global.event.load, hideAddressHandler, false);
-            Global.element.on(Global.utility.win, Global.event.orientationchange, hideAddressHandler, false);
+            Global.element.on(win, Global.event.load, hideAddressHandler, false);
+            Global.element.on(win, Global.event.orientationchange, hideAddressHandler, false);
         },
         getOrientation: function() {
             if (
-                Math.abs(Global.utility.win.orientation) !== 90 &&
-                Global.utility.win.innerWidth < Global.utility.win.innerHeight
+                Math.abs(win.orientation) !== 90 &&
+                win.innerWidth < win.innerHeight
             ) {
                 return {
                     portrait: true,
@@ -1616,9 +1594,9 @@ Global.Mobile = Global.klass({
                 set(Global.element.off, func);
             }
             function set(setfunc, handler) {
-                setfunc(Global.utility.win, Global.event.load, handler);
-                setfunc(Global.utility.win, Global.event.orientationchange, handler);
-                setfunc(Global.utility.win, Global.event.resize, handler);
+                setfunc(win, Global.event.load, handler);
+                setfunc(win, Global.event.orientationchange, handler);
+                setfunc(win, Global.event.resize, handler);
             }
             function onechange() {
                 change();
@@ -1648,7 +1626,7 @@ function checkUA(ua, pattern) {
 }
 function doScroll() {
     if (win.pageYOffset === 0) {
-        Global.utility.pageTop();
+        pageTop();
     }
 }
 function hideAddressHandler() {
@@ -1781,7 +1759,7 @@ Global.PreRender = Global.klass({
 
         this.elements = config.elements || [];
         this.guesslimit = config.guesslimit || 30;
-        this.onrendered = config.onrendered || Global.utility.nullFunction;
+        this.onrendered = config.onrendered || nullFunction;
         this.looptime = config.looptime || 100;
         this.loopblur = this.looptime + config.loopblur;
         this.loopid = this.prevtime = null;
@@ -1878,7 +1856,7 @@ Global.ScriptLoad = Global.klass({
 
             script.type = 'text/javascript';
             script.src = vars.src;
-            Global.element.append(Global.utility.doc.body, script);
+            Global.element.append(doc.body, script);
 
             if (vars.callback) {
                 Global.element.on(script, Global.event.load, vars.callback);
@@ -1897,7 +1875,7 @@ Global.ServerMeta = Global.klass({
     init: function(config) {
         config = config || {};
 
-        var callback = config.callback || Global.utility.nullFunction;
+        var callback = config.callback || nullFunction;
 
         if (!xhr) {
             xhr = getHeader(function() {
@@ -1977,7 +1955,7 @@ Global.SessionStorage = Global.klass({
         }
     },
     properties: {
-        _s: Global.utility.win.sessionStorage,
+        _s: win.sessionStorage,
         set: function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
             return true;
@@ -2281,8 +2259,6 @@ Global.Tweener = Global.klass({
             return dist * time / duration + from;
         },
         _requestAnimationFrame: (function() {
-            var win = Global.utility.win;
-
             if (win.requestAnimationFrame) {
                 return function(callback) {
                     requestAnimationFrame(callback);
@@ -2400,7 +2376,7 @@ Global.Twitter = Global.klass({
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
-            url += Global.utility.makeQueryString({
+            url += makeQueryString({
                 'url': redirect_uri,
                 'text': caption + name + hash
             });
@@ -2435,4 +2411,4 @@ Global.XML = Global.klass({
         }
     }
 });
-}());
+}(window, document));

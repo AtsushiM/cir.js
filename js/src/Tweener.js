@@ -36,8 +36,6 @@ Global.Tweener = Global.klass({
             return dist * time / duration + from;
         },
         _requestAnimationFrame: (function() {
-            var win = Global.utility.win;
-
             if (win.requestAnimationFrame) {
                 return function(callback) {
                     requestAnimationFrame(callback);

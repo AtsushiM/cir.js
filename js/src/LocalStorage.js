@@ -15,7 +15,7 @@ Global.LocalStorage = Global.klass({
         }
     },
     properties: {
-        _s: Global.utility.win.localStorage,
+        _s: win.localStorage,
         set: function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
             return true;
