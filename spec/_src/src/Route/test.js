@@ -17,7 +17,8 @@ describe('Routeは', function() {
                     // write code.
                 }
             },
-            manual: true
+            manual: true,
+            single: false
         });
     });
     afterEach(function() {
@@ -54,6 +55,41 @@ describe('Routeは', function() {
         });
 
         expect(count).toEqual(3);
+    });
+
+    it('singleオプションでシングルトンになる', function() {
+        var route1 = new c.Route({
+                single: true,
+                manual: true
+            }),
+            route2 = new c.Route({
+                single: true,
+                manual: true
+            });
+
+        expect(route1).toEqual(route2);
+    });
+
+    it('noregexオプションで正規表現を使用せずルーティングする', function() {
+        var count = 0;
+        route = new c.Route({
+            target: 'test',
+            noregex: true,
+            action: {
+                'test': function() {
+                    count += 1;
+                },
+                't.*t': function() {
+                    count += 2;
+                }
+            }
+        });
+
+        expect(count).toEqual(1);
+        route.fire('test');
+        expect(count).toEqual(2);
+        route.fire('t.*t');
+        expect(count).toEqual(4);
     });
 
     it('start()でルーティングを実行する', function() {
