@@ -678,7 +678,7 @@ Global.Event = Global.klass({
     }
 });
 Global.Event.instance = null;
-Global.event = new Global.Event();
+var ev = Global.event = new Global.Event();
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = Global.klass({
     properties: {
@@ -1020,8 +1020,8 @@ Global.DragFlick = Global.klass({
                 startY,
                 dragflg = false;
 
-            on(vars.element, Global.event.switchdown, start);
-            on(win, Global.event.switchup, end);
+            on(vars.element, ev.switchdown, start);
+            on(win, ev.switchup, end);
 
             function start(e) {
                 var changed = mine._getEventTarget(e);
@@ -1090,7 +1090,6 @@ Global.DragFlick = Global.klass({
         bind: function(vars) {
             var mine = this,
                 element = vars.element,
-                e = Global.event,
                 el = Global.element,
                 start = vars.start || nullFunction,
                 move = vars.move || nullFunction,
@@ -1107,7 +1106,7 @@ Global.DragFlick = Global.klass({
                 });
             }
 
-            eventProxy(element, e.switchdown, function(_e) {
+            eventProxy(element, ev.switchdown, function(_e) {
                 flg = true;
 
                 startX = _e.pageX;
@@ -1121,7 +1120,7 @@ Global.DragFlick = Global.klass({
                     }
                 });
             });
-            eventProxy(doc, e.switchmove, function(_e) {
+            eventProxy(doc, ev.switchmove, function(_e) {
                 if (flg) {
                     move({
                         e: _e,
@@ -1132,7 +1131,7 @@ Global.DragFlick = Global.klass({
                     });
                 }
             });
-            eventProxy(doc, e.switchup, function(_e) {
+            eventProxy(doc, ev.switchup, function(_e) {
                 if (flg) {
                     end({
                         e: _e,
@@ -1230,10 +1229,10 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            on(win, Global.event.hashchange, this.ios[name]);
+            on(win, ev.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            off(win, Global.event.hashchange, this.ios[name]);
+            off(win, ev.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
@@ -1414,7 +1413,7 @@ Global.ImgLoad = Global.klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                on(img, Global.event.load, function() {
+                on(img, ev.load, function() {
                     mine._c();
                 });
 
@@ -1435,7 +1434,7 @@ Global.WindowLoad = Global.klass({
     },
     properties: {
         onload: function(func) {
-            on(win, Global.event.load, func);
+            on(win, ev.load, func);
         }
     }
 });
@@ -1545,17 +1544,17 @@ Global.Mobile = Global.klass({
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, Global.event.touchmove, preventDefault);
+            on(doc, ev.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, Global.event.touchmove, preventDefault);
+            off(doc, ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            on(win, Global.event.load, hideAddressHandler, false);
-            on(win, Global.event.orientationchange, hideAddressHandler, false);
+            on(win, ev.load, hideAddressHandler, false);
+            on(win, ev.orientationchange, hideAddressHandler, false);
         },
         getOrientation: function() {
             if (
@@ -1601,9 +1600,9 @@ Global.Mobile = Global.klass({
                 set(off, func);
             }
             function set(setfunc, handler) {
-                setfunc(win, Global.event.load, handler);
-                setfunc(win, Global.event.orientationchange, handler);
-                setfunc(win, Global.event.resize, handler);
+                setfunc(win, ev.load, handler);
+                setfunc(win, ev.orientationchange, handler);
+                setfunc(win, ev.resize, handler);
             }
             function onechange() {
                 change();
@@ -1866,7 +1865,7 @@ Global.ScriptLoad = Global.klass({
             append(doc.body, script);
 
             if (vars.callback) {
-                on(script, Global.event.load, vars.callback);
+                on(script, ev.load, vars.callback);
             }
         }
     }

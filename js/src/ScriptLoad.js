@@ -17,7 +17,7 @@ Global.ScriptLoad = Global.klass({
             append(doc.body, script);
 
             if (vars.callback) {
-                on(script, Global.event.load, vars.callback);
+                on(script, ev.load, vars.callback);
             }
         }
     }

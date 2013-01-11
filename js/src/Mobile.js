@@ -30,17 +30,17 @@ Global.Mobile = Global.klass({
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, Global.event.touchmove, preventDefault);
+            on(doc, ev.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, Global.event.touchmove, preventDefault);
+            off(doc, ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            on(win, Global.event.load, hideAddressHandler, false);
-            on(win, Global.event.orientationchange, hideAddressHandler, false);
+            on(win, ev.load, hideAddressHandler, false);
+            on(win, ev.orientationchange, hideAddressHandler, false);
         },
         getOrientation: function() {
             if (
@@ -86,9 +86,9 @@ Global.Mobile = Global.klass({
                 set(off, func);
             }
             function set(setfunc, handler) {
-                setfunc(win, Global.event.load, handler);
-                setfunc(win, Global.event.orientationchange, handler);
-                setfunc(win, Global.event.resize, handler);
+                setfunc(win, ev.load, handler);
+                setfunc(win, ev.orientationchange, handler);
+                setfunc(win, ev.resize, handler);
             }
             function onechange() {
                 change();

@@ -19,10 +19,10 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            on(win, Global.event.hashchange, this.ios[name]);
+            on(win, ev.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            off(win, Global.event.hashchange, this.ios[name]);
+            off(win, ev.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
