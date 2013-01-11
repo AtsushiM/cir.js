@@ -37,10 +37,10 @@ Global.ImgLoad = Global.klass({
                 i, len;
 
             for (i = 0, len = mine.srccount; i < len; i++) {
-                img = Global.element.create('img');
+                img = create('img');
                 img.src = mine.srcs[i];
 
-                Global.element.on(img, Global.event.load, function() {
+                on(img, Global.event.load, function() {
                     mine._c();
                 });
 

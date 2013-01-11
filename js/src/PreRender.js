@@ -23,7 +23,7 @@ Global.PreRender = Global.klass({
             var i;
 
             for (i = this.elements.length; i--;) {
-                Global.element.show(this.elements[i]);
+                show(this.elements[i]);
             }
             this.prevtime = Date.now();
             this.loopid = setInterval(check, this.looptime, this);
@@ -41,7 +41,7 @@ Global.PreRender = Global.klass({
                         clearInterval(mine.loopid);
 
                         for (var i = mine.elements.length; i--;) {
-                            Global.element.hide(mine.elements[i]);
+                            hide(mine.elements[i]);
                         }
 
                         mine.onrendered();

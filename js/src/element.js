@@ -1,96 +1,23 @@
 /* Test: "../../spec/_src/src/element/test.js" */
-Global.element = {
-    $: function(selector) {
-        return $(selector, doc);
-    },
-    $$: function(selector) {
-        return $$(selector, doc);
-    },
-    $child: $,
-    $$child: $$,
-    $id: function(id) {
-        return doc.getElementById(id);
-    },
-    on: function(element, eventname, handler) {
-        element.addEventListener(eventname, handler);
-    },
-    off: function(element, eventname, handler) {
-        element.removeEventListener(eventname, handler);
-    },
-    create: function(tagname, attr) {
-        var element = doc.createElement(tagname);
-
-        if (attr) {
-            attrElement(element, attr);
-        }
-
-        return element;
-    },
-    show: function(element) {
-        element.style.display = 'block';
-    },
-    hide: function(element) {
-        element.style.display = 'none';
-    },
-    opacity: function(element, value) {
-        element.style.opacity = value;
-    },
-    hasClass: hasClass,
-    addClass: addClass,
-    removeClass: removeClass,
-    toggleClass: function(element, cls) {
-        if (hasClass(element, cls)) {
-            return removeClass(element, cls);
-        }
-
-        return addClass(element, cls);
-    },
-    css: function(element, addstyle) {
-        var style = element.style,
-            i,
-            key,
-            value;
-
-        for (i in addstyle) {
-            key = i;
-            value = addstyle[i];
-
-            if (isNumber(value)) {
-                value += 'px';
-            }
-
-            style[key] = value;
-        }
-    },
-    computedStyle: function(element) {
-        return doc.defaultView.getComputedStyle(element, null);
-    },
-    append: function(element, addelement) {
-        element.appendChild(addelement);
-    },
-    attr: attrElement,
-    removeAttr: function(element, key) {
-        element.removeAttribute(key);
-    },
-    html: function(element, text) {
-        if (!text) {
-            return element.innerHTML;
-        }
-
-        element.innerHTML = text;
-    }
-};
-
-function $(selector, element) {
+function $(selector) {
+    return $child(selector, doc);
+}
+function $$(selector) {
+    return $$child(selector, doc);
+}
+function $child(selector, element) {
     return element.querySelector(selector);
 }
-function $$(selector, element) {
+function $$child(selector, element) {
     var eles = element.querySelectorAll(selector),
         ary = [];
 
     ary.push.apply(ary, eles);
 
     return ary;
+}
+function $id(id) {
+    return doc.getElementById(id);
 }
 
 function hasClass(element, cls) {
@@ -148,8 +75,15 @@ function removeClass(element, cls) {
 
     return true;
 }
+function toggleClass(element, cls) {
+    if (hasClass(element, cls)) {
+        return removeClass(element, cls);
+    }
 
-function attrElement(element, vars, value) {
+    return addClass(element, cls);
+}
+
+function attr(element, vars, value) {
     var i;
 
     if (isObject(vars)) {
@@ -166,3 +100,90 @@ function attrElement(element, vars, value) {
 
     return element.getAttribute(vars);
 }
+function removeAttr(element, key) {
+    element.removeAttribute(key);
+}
+
+function create(tagname, attribute) {
+    var element = doc.createElement(tagname);
+
+    if (attribute) {
+        attr(element, attribute);
+    }
+
+    return element;
+}
+
+function on(element, eventname, handler) {
+    element.addEventListener(eventname, handler);
+}
+function off(element, eventname, handler) {
+    element.removeEventListener(eventname, handler);
+}
+function show(element) {
+    element.style.display = 'block';
+}
+function hide(element) {
+    element.style.display = 'none';
+}
+function opacity(element, value) {
+    element.style.opacity = value;
+}
+function css(element, addstyle) {
+    var style = element.style,
+        i,
+        key,
+        value;
+
+    for (i in addstyle) {
+        key = i;
+        value = addstyle[i];
+
+        if (isNumber(value)) {
+            value += 'px';
+        }
+
+        style[key] = value;
+    }
+}
+function computedStyle(element) {
+    return doc.defaultView.getComputedStyle(element, null);
+}
+function append(element, addelement) {
+    element.appendChild(addelement);
+}
+function html(element, text) {
+    if (!text) {
+        return element.innerHTML;
+    }
+
+    element.innerHTML = text;
+}
+
+Global.element = {
+    $: function(selector) {
+        return $child(selector, doc);
+    },
+    $$: function(selector) {
+        return $$child(selector, doc);
+    },
+    $child: $child,
+    $$child: $$child,
+    $id: $id,
+    on: on,
+    off: off,
+    create: create,
+    show: show,
+    hide: hide,
+    opacity: opacity,
+    hasClass: hasClass,
+    addClass: addClass,
+    removeClass: removeClass,
+    toggleClass: toggleClass,
+    css: css,
+    computedStyle: computedStyle,
+    append: append,
+    attr: attr,
+    removeAttr: removeAttr,
+    html: html
+};

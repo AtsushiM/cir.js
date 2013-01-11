@@ -15,8 +15,7 @@ Global.Bind = Global.klass({
             return this._exe(false);
         },
         _exe: function(isBind) {
-            var el = Global.element,
-                onoff = isBind ? el.on : el.off,
+            var onoff = isBind ? on : off,
                 i;
 
             for (i in this.handler.events) {

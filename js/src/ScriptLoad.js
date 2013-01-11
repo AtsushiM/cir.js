@@ -10,14 +10,14 @@ Global.ScriptLoad = Global.klass({
             }
         },
         request: function(vars) {
-            var script = Global.element.create('script');
+            var script = create('script');
 
             script.type = 'text/javascript';
             script.src = vars.src;
-            Global.element.append(doc.body, script);
+            append(doc.body, script);
 
             if (vars.callback) {
-                Global.element.on(script, Global.event.load, vars.callback);
+                on(script, Global.event.load, vars.callback);
             }
         }
     }

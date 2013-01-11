@@ -2,8 +2,7 @@
 (function() {
 'use strict';
 
-var el = Global.element,
-    methods = Global.$.methods;
+var methods = Global.$.methods;
 
 methods.animate = function() {
     if (!this._animate) {
@@ -56,7 +55,7 @@ function animate(element, params, duration, ease, callback) {
 
 function convertTweenerParam(element, params) {
     var name,
-        computedStyle = el.computedStyle(element),
+        styled = computedStyle(element),
         tosplit,
         retobj = {};
 
@@ -64,7 +63,7 @@ function convertTweenerParam(element, params) {
         tosplit = splitSuffix(params[name]);
 
         retobj[name] = {
-            from: splitSuffix(computedStyle.getPropertyValue(name))[1] * 1 || 0,
+            from: splitSuffix(styled.getPropertyValue(name))[1] * 1 || 0,
             to: tosplit[1] * 1 || 0,
             suffix: tosplit[2]
         };

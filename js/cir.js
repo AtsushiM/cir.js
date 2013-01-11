@@ -1,8 +1,8 @@
 // Cool is Right.
 var C = {};
 (function(win, doc) {
-    'use strict';
-    var Global = C;
+'use strict';
+var Global = C;
 /* Test: "../../spec/_src/src/utility/test.js" */
 if (!Date.now) {
     Date.now = function now() {
@@ -124,98 +124,25 @@ Global.utility = {
     nullFunction: nullFunction
 };
 /* Test: "../../spec/_src/src/element/test.js" */
-Global.element = {
-    $: function(selector) {
-        return $(selector, doc);
-    },
-    $$: function(selector) {
-        return $$(selector, doc);
-    },
-    $child: $,
-    $$child: $$,
-    $id: function(id) {
-        return doc.getElementById(id);
-    },
-    on: function(element, eventname, handler) {
-        element.addEventListener(eventname, handler);
-    },
-    off: function(element, eventname, handler) {
-        element.removeEventListener(eventname, handler);
-    },
-    create: function(tagname, attr) {
-        var element = doc.createElement(tagname);
-
-        if (attr) {
-            attrElement(element, attr);
-        }
-
-        return element;
-    },
-    show: function(element) {
-        element.style.display = 'block';
-    },
-    hide: function(element) {
-        element.style.display = 'none';
-    },
-    opacity: function(element, value) {
-        element.style.opacity = value;
-    },
-    hasClass: hasClass,
-    addClass: addClass,
-    removeClass: removeClass,
-    toggleClass: function(element, cls) {
-        if (hasClass(element, cls)) {
-            return removeClass(element, cls);
-        }
-
-        return addClass(element, cls);
-    },
-    css: function(element, addstyle) {
-        var style = element.style,
-            i,
-            key,
-            value;
-
-        for (i in addstyle) {
-            key = i;
-            value = addstyle[i];
-
-            if (isNumber(value)) {
-                value += 'px';
-            }
-
-            style[key] = value;
-        }
-    },
-    computedStyle: function(element) {
-        return doc.defaultView.getComputedStyle(element, null);
-    },
-    append: function(element, addelement) {
-        element.appendChild(addelement);
-    },
-    attr: attrElement,
-    removeAttr: function(element, key) {
-        element.removeAttribute(key);
-    },
-    html: function(element, text) {
-        if (!text) {
-            return element.innerHTML;
-        }
-
-        element.innerHTML = text;
-    }
-};
-
-function $(selector, element) {
+function $(selector) {
+    return $child(selector, doc);
+}
+function $$(selector) {
+    return $$child(selector, doc);
+}
+function $child(selector, element) {
     return element.querySelector(selector);
 }
-function $$(selector, element) {
+function $$child(selector, element) {
     var eles = element.querySelectorAll(selector),
         ary = [];
 
     ary.push.apply(ary, eles);
 
     return ary;
+}
+function $id(id) {
+    return doc.getElementById(id);
 }
 
 function hasClass(element, cls) {
@@ -273,8 +200,15 @@ function removeClass(element, cls) {
 
     return true;
 }
+function toggleClass(element, cls) {
+    if (hasClass(element, cls)) {
+        return removeClass(element, cls);
+    }
 
-function attrElement(element, vars, value) {
+    return addClass(element, cls);
+}
+
+function attr(element, vars, value) {
     var i;
 
     if (isObject(vars)) {
@@ -291,6 +225,93 @@ function attrElement(element, vars, value) {
 
     return element.getAttribute(vars);
 }
+function removeAttr(element, key) {
+    element.removeAttribute(key);
+}
+
+function create(tagname, attribute) {
+    var element = doc.createElement(tagname);
+
+    if (attribute) {
+        attr(element, attribute);
+    }
+
+    return element;
+}
+
+function on(element, eventname, handler) {
+    element.addEventListener(eventname, handler);
+}
+function off(element, eventname, handler) {
+    element.removeEventListener(eventname, handler);
+}
+function show(element) {
+    element.style.display = 'block';
+}
+function hide(element) {
+    element.style.display = 'none';
+}
+function opacity(element, value) {
+    element.style.opacity = value;
+}
+function css(element, addstyle) {
+    var style = element.style,
+        i,
+        key,
+        value;
+
+    for (i in addstyle) {
+        key = i;
+        value = addstyle[i];
+
+        if (isNumber(value)) {
+            value += 'px';
+        }
+
+        style[key] = value;
+    }
+}
+function computedStyle(element) {
+    return doc.defaultView.getComputedStyle(element, null);
+}
+function append(element, addelement) {
+    element.appendChild(addelement);
+}
+function html(element, text) {
+    if (!text) {
+        return element.innerHTML;
+    }
+
+    element.innerHTML = text;
+}
+
+Global.element = {
+    $: function(selector) {
+        return $child(selector, doc);
+    },
+    $$: function(selector) {
+        return $$child(selector, doc);
+    },
+    $child: $child,
+    $$child: $$child,
+    $id: $id,
+    on: on,
+    off: off,
+    create: create,
+    show: show,
+    hide: hide,
+    opacity: opacity,
+    hasClass: hasClass,
+    addClass: addClass,
+    removeClass: removeClass,
+    toggleClass: toggleClass,
+    css: css,
+    computedStyle: computedStyle,
+    append: append,
+    attr: attr,
+    removeAttr: removeAttr,
+    html: html
+};
 /* Test: "../../spec/_src/src/klass/test.js" */
 Global.klass = function(config) {
     'use strict';
@@ -463,8 +484,7 @@ Global.$.methods = {
 (function() {
 'use strict';
 
-var el = Global.element,
-    methods = Global.$.methods;
+var methods = Global.$.methods;
 
 methods.animate = function() {
     if (!this._animate) {
@@ -517,7 +537,7 @@ function animate(element, params, duration, ease, callback) {
 
 function convertTweenerParam(element, params) {
     var name,
-        computedStyle = el.computedStyle(element),
+        styled = computedStyle(element),
         tosplit,
         retobj = {};
 
@@ -525,7 +545,7 @@ function convertTweenerParam(element, params) {
         tosplit = splitSuffix(params[name]);
 
         retobj[name] = {
-            from: splitSuffix(computedStyle.getPropertyValue(name))[1] * 1 || 0,
+            from: splitSuffix(styled.getPropertyValue(name))[1] * 1 || 0,
             to: tosplit[1] * 1 || 0,
             suffix: tosplit[2]
         };
@@ -832,8 +852,7 @@ Global.Bind = Global.klass({
             return this._exe(false);
         },
         _exe: function(isBind) {
-            var el = Global.element,
-                onoff = isBind ? el.on : el.off,
+            var onoff = isBind ? on : off,
                 i;
 
             for (i in this.handler.events) {
@@ -849,12 +868,6 @@ Global.Bind = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/CanvasImg/test.js" */
-(function() {
-'use strict';
-
-var el= Global.element,
-    create = el.create;
-
 Global.CanvasImg = function(config) {
     var canv = create('canvas'),
         img = create('img'),
@@ -874,7 +887,6 @@ Global.CanvasImg = function(config) {
 
     return canv;
 };
-}());
 /* Test: "../../spec/_src/src/CanvasRender/test.js" */
 Global.CanvasRender = Global.klass({
     init: function(config) {
@@ -1012,8 +1024,8 @@ Global.DragFlick = Global.klass({
                 startY,
                 dragflg = false;
 
-            Global.element.on(vars.element, Global.event.switchdown, start);
-            Global.element.on(win, Global.event.switchup, end);
+            on(vars.element, Global.event.switchdown, start);
+            on(win, Global.event.switchup, end);
 
             function start(e) {
                 var changed = mine._getEventTarget(e);
@@ -1139,11 +1151,10 @@ Global.DragFlick = Global.klass({
             });
 
             function eventProxy(element, ev, callback) {
-                el.on(
-                    element, ev, function(e) {
-                        var changed = mine._getEventTarget(e);
-                        callback(changed);
-                    });
+                on(element, ev, function(e) {
+                    var changed = mine._getEventTarget(e);
+                    callback(changed);
+                });
             }
         }
     }
@@ -1223,10 +1234,10 @@ Global.ExternalInterface.IOS = Global.klass({
                 }
                 return false;
             };
-            Global.element.on(win, Global.event.hashchange, this.ios[name]);
+            on(win, Global.event.hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            Global.element.off(win, Global.event.hashchange, this.ios[name]);
+            off(win, Global.event.hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
@@ -1404,10 +1415,10 @@ Global.ImgLoad = Global.klass({
                 i, len;
 
             for (i = 0, len = mine.srccount; i < len; i++) {
-                img = Global.element.create('img');
+                img = create('img');
                 img.src = mine.srcs[i];
 
-                Global.element.on(img, Global.event.load, function() {
+                on(img, Global.event.load, function() {
                     mine._c();
                 });
 
@@ -1428,7 +1439,7 @@ Global.WindowLoad = Global.klass({
     },
     properties: {
         onload: function(func) {
-            Global.element.on(win, Global.event.load, func);
+            on(win, Global.event.load, func);
         }
     }
 });
@@ -1538,17 +1549,17 @@ Global.Mobile = Global.klass({
             if (!isNoTop) {
                 pageTop();
             }
-            Global.element.on(doc, Global.event.touchmove, preventDefault);
+            on(doc, Global.event.touchmove, preventDefault);
         },
         revivalScroll: function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            Global.element.off(doc, Global.event.touchmove, preventDefault);
+            off(doc, Global.event.touchmove, preventDefault);
         },
         hideAddress: function() {
-            Global.element.on(win, Global.event.load, hideAddressHandler, false);
-            Global.element.on(win, Global.event.orientationchange, hideAddressHandler, false);
+            on(win, Global.event.load, hideAddressHandler, false);
+            on(win, Global.event.orientationchange, hideAddressHandler, false);
         },
         getOrientation: function() {
             if (
@@ -1588,10 +1599,10 @@ Global.Mobile = Global.klass({
             };
 
             function add(func) {
-                set(Global.element.on, func);
+                set(on, func);
             }
             function remove(func) {
-                set(Global.element.off, func);
+                set(off, func);
             }
             function set(setfunc, handler) {
                 setfunc(win, Global.event.load, handler);
@@ -1773,7 +1784,7 @@ Global.PreRender = Global.klass({
             var i;
 
             for (i = this.elements.length; i--;) {
-                Global.element.show(this.elements[i]);
+                show(this.elements[i]);
             }
             this.prevtime = Date.now();
             this.loopid = setInterval(check, this.looptime, this);
@@ -1791,7 +1802,7 @@ Global.PreRender = Global.klass({
                         clearInterval(mine.loopid);
 
                         for (var i = mine.elements.length; i--;) {
-                            Global.element.hide(mine.elements[i]);
+                            hide(mine.elements[i]);
                         }
 
                         mine.onrendered();
@@ -1852,14 +1863,14 @@ Global.ScriptLoad = Global.klass({
             }
         },
         request: function(vars) {
-            var script = Global.element.create('script');
+            var script = create('script');
 
             script.type = 'text/javascript';
             script.src = vars.src;
-            Global.element.append(doc.body, script);
+            append(doc.body, script);
 
             if (vars.callback) {
-                Global.element.on(script, Global.event.load, vars.callback);
+                on(script, Global.event.load, vars.callback);
             }
         }
     }
@@ -2388,7 +2399,7 @@ Global.Twitter = Global.klass({
 /* Test: "../../spec/_src/src/XML/test.js" */
 Global.XML = Global.klass({
     init: function(config) {
-        this.element = Global.element.create('div');
+        this.element = create('div');
         this.data = {};
 
         if (config && config.data) {
@@ -2404,10 +2415,10 @@ Global.XML = Global.klass({
             this.element.innerHTML = d;
         },
         $: function(selector) {
-            return Global.element.$child(selector, this.element);
+            return $child(selector, this.element);
         },
         $$: function(selector) {
-            return Global.element.$$child(selector, this.element);
+            return $$child(selector, this.element);
         }
     }
 });
