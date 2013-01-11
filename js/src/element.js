@@ -161,12 +161,8 @@ function html(element, text) {
 }
 
 Global.element = {
-    $: function(selector) {
-        return $child(selector, doc);
-    },
-    $$: function(selector) {
-        return $$child(selector, doc);
-    },
+    $: $,
+    $$: $$,
     $child: $child,
     $$child: $$child,
     $id: $id,
