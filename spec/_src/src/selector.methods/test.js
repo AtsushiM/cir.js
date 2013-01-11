@@ -27,102 +27,99 @@ describe('selector.methodsは', function() {
     });
 
     it('$(selector).on(eventname, handler)でGlobal.element.onを実行する', function() {
-        var func = function() {};
+        var count = 0,
+            func = function() {
+                count++;
+            };
 
-        spyOn(el, 'on').andCallThrough();
+        /* spyOn(el, 'on').andCallThrough(); */
         selector.on('click', func);
+        document.body.click();
 
-        expect(el.on).toHaveBeenCalledWith(selector[0], 'click', func);
+        /* expect(el.on).toHaveBeenCalledWith(selector[0], 'click', func); */
+        expect(count).toEqual(1);
+        selector.off('click', func);
     });
 
     it('$(selector).off(eventname, handler)でGlobal.element.offを実行する', function() {
-        var func = function() {};
+        var count = 0,
+            func = function() {
+                count++;
+            };
 
-        spyOn(el, 'off').andCallThrough();
+        /* spyOn(el, 'on').andCallThrough(); */
         selector.on('click', func);
         selector.off('click', func);
+        document.body.click();
 
-        expect(el.off).toHaveBeenCalledWith(selector[0], 'click', func);
+        /* expect(el.on).toHaveBeenCalledWith(selector[0], 'click', func); */
+        expect(count).toEqual(0);
     });
 
     it('$(selector).show()でGlobal.element.showを実行する', function() {
-        spyOn(el, 'show').andCallThrough();
         selector.show();
 
-        expect(el.show).toHaveBeenCalledWith(selector[0]);
+        expect(document.body.style.display).toEqual('block');
     });
 
     it('$(selector).hide()でGlobal.element.hideを実行する', function() {
-        spyOn(el, 'hide').andCallThrough();
         selector.hide();
-
-        expect(el.hide).toHaveBeenCalledWith(selector[0]);
+        expect(document.body.style.display).toEqual('none');
         selector.show();
     });
 
     it('$(selector).opacity(value)でGlobal.el.opacityを実行する', function() {
-        spyOn(el, 'opacity').andCallThrough();
         selector.opacity(0.5);
-
-        expect(el.opacity).toHaveBeenCalledWith(selector[0], 0.5);
+        expect(document.body.style.opacity).toEqual('0.5');
         selector.opacity(1);
     });
 
     it('$(selector).hasClass(value)でGlobal.element.hasClassを実行する', function() {
-        spyOn(el, 'hasClass').andCallThrough();
-
+        document.body.className = 'test';
+        expect(selector.hasClass('test')).toBeTruthy();
+        document.body.className = '';
         expect(selector.hasClass('test')).toBeFalsy();
-        expect(el.hasClass).toHaveBeenCalledWith(selector[0], 'test');
     });
 
     it('$(selector).addClass(value)でGlobal.element.addClassを実行する', function() {
-        spyOn(el, 'addClass').andCallThrough();
-
         selector.addClass('test');
-        expect(el.addClass).toHaveBeenCalledWith(selector[0], 'test');
+        expect(selector.hasClass('test')).toBeTruthy();
+        document.body.className = '';
     });
 
     it('$(selector).removeClass(value)でGlobal.element.removeClassを実行する', function() {
-        spyOn(el, 'removeClass').andCallThrough();
-
+        selector.addClass('test');
         selector.removeClass('test');
-        expect(el.removeClass).toHaveBeenCalledWith(selector[0], 'test');
+        expect(selector.hasClass('test')).toBeFalsy();
     });
 
     it('$(selector).toggleClass(value)でGlobal.element.toggleClassを実行する', function() {
-        spyOn(el, 'toggleClass').andCallThrough();
-
         selector.toggleClass('test');
-        expect(el.toggleClass).toHaveBeenCalledWith(selector[0], 'test');
+        expect(selector.hasClass('test')).toBeTruthy();
         selector.removeClass('test');
+        expect(selector.hasClass('test')).toBeFalsy();
     });
 
     it('$(selector).css(object)でGlobal.element.cssを実行する', function() {
-        var styleObj = {
-                padding: 10
-            };
-
-        spyOn(el, 'css').andCallThrough();
-
-        selector.css(styleObj);
-        expect(el.css).toHaveBeenCalledWith(selector[0], styleObj);
+        selector.css({
+            padding: 10
+        });
+        expect(document.body.style.padding).toEqual('10px');
         selector.css({
             padding: 0
         });
     });
 
-    it('$(selector).append(value)でGlobal.element.appendを実行する', function() {
+    it('$(selector).append(element)でGlobal.element.appendを実行する', function() {
         var div = document.createElement('div');
 
-        spyOn(el, 'append').andCallThrough();
+        div.className = 'appendTest';
 
         selector.append(div);
-        expect(el.append).toHaveBeenCalledWith(selector[0], div);
+        expect(document.querySelector('.appendTest')).toBeDefined();
     });
 
     it('$(selector).html(value)でGlobal.element.htmlを実行する', function() {
-        spyOn(el, 'html').andCallThrough();
-
         var div = document.createElement('div');
 
         div.className = 'selectorTestInnerHTML';
@@ -131,21 +128,17 @@ describe('selector.methodsは', function() {
         var $div = Global.$('.selectorTestInnerHTML');
 
         $div.html('test');
-        expect(el.html).toHaveBeenCalledWith($div[0], 'test');
+        expect($div.html()).toEqual('test');
     });
 
     it('$(selector).attr(value)でGlobal.element.attrを実行する', function() {
-        spyOn(el, 'attr').andCallThrough();
-
-        selector.attr('width');
-        expect(el.attr).toHaveBeenCalledWith(selector[0], 'width');
+        expect(selector.attr('style')).toBeDefined();
     });
 
     it('$(selector).removeAttr(value)でGlobal.element.removeAttrを実行する', function() {
-        spyOn(el, 'removeAttr').andCallThrough();
-
-        selector.removeAttr('width');
-        expect(el.removeAttr).toHaveBeenCalledWith(selector[0], 'width');
+        selector.addClass('test');
+        selector.removeAttr('class');
+        expect(document.body.className).toEqual('');
     });
 });
 /*
