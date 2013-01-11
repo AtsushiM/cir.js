@@ -25,7 +25,7 @@ function exe(_this, func, arg) {
 function makeAry(arg) {
     var ary = [null];
 
-    ary.push.apply(ary, arg)
+    ary.push.apply(ary, arg);
 
     return ary;
 }
@@ -44,46 +44,46 @@ Global.$.methods = {
         return Global.$(this[0].parentNode);
     },
     on: function() {
-        return forExe(this, el.on, arguments);
+        return forExe(this, on, arguments);
     },
     off: function() {
-        return forExe(this, el.off, arguments);
+        return forExe(this, off, arguments);
     },
     show: function() {
-        return forExe(this, el.show);
+        return forExe(this, show);
     },
     hide: function() {
-        return forExe(this, el.hide);
+        return forExe(this, hide);
     },
     opacity: function() {
-        return forExe(this, el.opacity, arguments);
+        return forExe(this, opacity, arguments);
     },
     hasClass: function() {
-        return exe(this, el.hasClass, arguments);
+        return exe(this, hasClass, arguments);
     },
     addClass: function() {
-        return forExe(this, el.addClass, arguments);
+        return forExe(this, addClass, arguments);
     },
     removeClass: function() {
-        return forExe(this, el.removeClass, arguments);
+        return forExe(this, removeClass, arguments);
     },
     toggleClass: function() {
-        return forExe(this, el.toggleClass, arguments);
+        return forExe(this, toggleClass, arguments);
     },
     css: function() {
-        return forExe(this, el.css, arguments);
+        return forExe(this, css, arguments);
     },
     html: function() {
-        return exe(this, el.html, arguments);
+        return exe(this, html, arguments);
     },
     attr: function() {
-        return exe(this, el.attr, arguments);
+        return exe(this, attr, arguments);
     },
     removeAttr: function() {
-        return forExe(this, el.removeAttr, arguments);
+        return forExe(this, removeAttr, arguments);
     },
     append: function() {
-        return forExe(this, el.append, arguments);
+        return forExe(this, append, arguments);
     }
 };
 }());
