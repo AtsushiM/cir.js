@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global.Ajax = Global.klass({
+Global.Ajax = klass({
     init: function() {
         this.xhr = new XMLHttpRequest();
     },
@@ -54,7 +54,7 @@ Global.Ajax = Global.klass({
         abort: function() {
             this.xhr.abort();
         },
-        getJSON: function(vars) {
+        json: function(vars) {
             var callback = vars.callback,
                 error = vars.error;
 

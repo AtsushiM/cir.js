@@ -1,9 +1,9 @@
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-Global.ExternalInterface.IOS = Global.klass({
+Global.ExternalInterface.IOS = klass({
+    extend: Global.HashController,
     init: function(config) {
         this.ios = {};
     },
-    extend: Global.HashController,
     properties: {
         call: function(conf) {
             this.setHash(conf);

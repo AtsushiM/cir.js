@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-Global.DataStore = Global.klass({
+Global.DataStore = klass({
     init: function(config) {
         config = config || {};
 
@@ -8,7 +8,7 @@ Global.DataStore = Global.klass({
             return Global.DataStore.instance;
         }
 
-        this.d = {};
+        this.data = {};
 
         if (config.single) {
             Global.DataStore.instance = this;
@@ -16,40 +16,31 @@ Global.DataStore = Global.klass({
     },
     properties: {
         set: function(key, val) {
-            this.d[key] = val;
-            return true;
+            this.data[key] = val;
         },
         get: function(key) {
-            var data = this.d;
-
-            if (key) {
-                return data[key];
-            }
-
             var ret = {},
                 i;
 
-            for (i in data) {
-                ret[i] = data[i];
+            if (key) {
+                return this.data[key];
+            }
+
+            for (i in this.data) {
+                ret[i] = this.data[i];
             }
 
             return ret;
         },
         remove: function(key) {
-            var data = this.d;
-
-            if (!data[key]) {
+            if (!this.data[key]) {
                 return false;
             }
 
-            delete data[key];
-
-            return true;
+            delete this.data[key];
         },
         reset: function() {
-            this.d = {};
-            return true;
+            this.data = {};
         }
     }
 });
-Global.DataStore.instance = null;

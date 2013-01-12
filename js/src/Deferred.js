@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Deferred/test.js" */
-Global.Deferred = Global.klass({
+Global.Deferred = klass({
     init: function() {
         this.queue = [];
         this.data = null;

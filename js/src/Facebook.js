@@ -1,25 +1,18 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-Global.Facebook = Global.klass({
+Global.Facebook = klass({
     properties: {
         _b: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
-            var app_id = vars.app_id,
-                redirect_uri = vars.redirect_uri,
-                link = vars.link,
-                picture = vars.picture,
-                name = vars.name,
-                caption = vars.caption,
-                description = vars.description,
-                url = this._b +
-                    'app_id=' + app_id + '&' +
-                    'redirect_uri=' + redirect_uri;
+            var url = this._b +
+                    'app_id=' + vars.app_id + '&' +
+                    'redirect_uri=' + vars.redirect_uri;
 
             url += makeQueryString({
-                'link': link,
-                'picture': picture,
-                'name': name,
-                'caption': caption,
-                'description': description
+                'link': vars.link,
+                'picture': vars.picture,
+                'name': vars.name,
+                'caption': vars.caption,
+                'description': vars.description
             });
 
             return url;

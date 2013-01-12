@@ -1,11 +1,11 @@
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-Global.Throttle = Global.klass({
+Global.Throttle = klass({
     init: function(config) {
         this.waittime = config.waittime;
         this.callback = config.callback;
-        this.locked = false;
-        this.waitid = null;
-        this.waitarg = null;
+        // this.locked = false;
+        // this.waitid = null;
+        // this.waitarg = null;
     },
     properties: {
         request: function(vars) {

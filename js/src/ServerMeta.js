@@ -5,7 +5,7 @@
 var xhr,
     isLoaded = false;
 
-Global.ServerMeta = Global.klass({
+Global.ServerMeta = klass({
     init: function(config) {
         config = config || {};
 

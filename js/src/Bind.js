@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Bind/test.js" */
-Global.Bind = Global.klass({
+Global.Bind = klass({
     init: function(config) {
         this.handler = config;
         this.add();
@@ -9,12 +9,12 @@ Global.Bind = Global.klass({
             return this.handler;
         },
         add: function() {
-            return this._exe(true);
+            this._e(true);
         },
         remove: function() {
-            return this._exe(false);
+            this._e(false);
         },
-        _exe: function(isBind) {
+        _e: function(isBind) {
             var onoff = isBind ? on : off,
                 i;
 
@@ -25,8 +25,6 @@ Global.Bind = Global.klass({
                     this.handler.events[i]
                 );
             }
-
-            return this.handler;
         }
     }
 });

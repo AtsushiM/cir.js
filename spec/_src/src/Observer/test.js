@@ -22,30 +22,23 @@ describe('Observerは', function() {
         expect(observer1).toBe(observer2);
     });
 
-    it('getObserved()で登録イベント一覧を取得する', function() {
-        expect(observer.getObserved()).toBeDefined();
-    });
-
     it('on()でイベントを登録する', function() {
-        var dammy = function() {
-            },
-            getobj;
+        var count = 0,
+            dammy = function() {
+                count++;
+            };
 
         observer.on('test', dammy);
-
-        getobj = observer.getObserved();
-        expect(getobj.test[0]).toBe(dammy);
-
         observer.on('test', dammy);
-
-        getobj = observer.getObserved();
-        expect(getobj.test[1]).toBe(dammy);
-
         observer.on('test1', function() {
+            count += 2;
         });
 
-        getobj = observer.getObserved();
-        expect(getobj.test1[0]).not.toBe(dammy);
+        observer.fire('test');
+        expect(count).toEqual(2);
+
+        observer.fire('test1');
+        expect(count).toEqual(4);
     });
 
     it('one()で一度のみ発火するイベントを登録する', function() {
@@ -64,25 +57,17 @@ describe('Observerは', function() {
     });
 
     it('off()でイベントを削除する', function() {
-        var dammy1 = function() {
-            },
-            dammy2 = function() {
-            },
-            getobj;
+        var count = 0,
+            dammy1 = function() {
+                count++;
+            };
 
         observer.on('test', dammy1);
         observer.off('test');
-        getobj = observer.getObserved();
 
-        expect(getobj).toEqual({});
+        observer.fire('test');
 
-        observer.on('test1', dammy1);
-        observer.on('test2', dammy2);
-        observer.off('test1', dammy1);
-        getobj = observer.getObserved();
-
-        expect(getobj.test1).not.toBeDefined();
-        expect(getobj.test2[0]).toBe(dammy2);
+        expect(count).toEqual(0);
     });
 
     it('fire()でイベントを発火する', function() {

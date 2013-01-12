@@ -1,22 +1,17 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-(function() {
-'use strict';
-
-var userAgent = navigator.userAgent;
-
-Global.Mobile = Global.klass({
+Global.Mobile = klass({
     properties: {
         isAndroid: function(ua) {
-            return checkUA(ua, /Android/i);
+            return checkUserAgent(ua, /Android/i);
         },
         isIOS: function(ua) {
-            return checkUA(ua, /iPhone|iPad|iPod/i);
+            return checkUserAgent(ua, /iPhone|iPad|iPod/i);
         },
         isWindows: function(ua) {
-            return checkUA(ua, /IEMobile/i);
+            return checkUserAgent(ua, /IEMobile/i);
         },
         isFBAPP: function(ua) {
-            return checkUA(ua, /FBAN/);
+            return checkUserAgent(ua, /FBAN/);
         },
         isMobile: function() {
             return (
@@ -41,6 +36,15 @@ Global.Mobile = Global.klass({
         hideAddress: function() {
             on(win, ev.load, hideAddressHandler, false);
             on(win, ev.orientationchange, hideAddressHandler, false);
+
+            function doScroll() {
+                if (win.pageYOffset === 0) {
+                    pageTop();
+                }
+            }
+            function hideAddressHandler() {
+                setTimeout(doScroll, 100);
+            }
         },
         getOrientation: function() {
             if (
@@ -106,22 +110,3 @@ Global.Mobile = Global.klass({
         }
     }
 });
-
-function preventDefault(e) {
-    e.preventDefault();
-    return false;
-}
-function checkUA(ua, pattern) {
-    ua = ua ? ua : userAgent;
-
-    return ua.match(pattern) ? true : false;
-}
-function doScroll() {
-    if (win.pageYOffset === 0) {
-        pageTop();
-    }
-}
-function hideAddressHandler() {
-    setTimeout(doScroll, 100);
-}
-}());

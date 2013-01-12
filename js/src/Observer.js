@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global.Observer = Global.klass({
+Global.Observer = klass({
     init: function(config) {
         config = config || {single: false};
 
@@ -15,9 +15,6 @@ Global.Observer = Global.klass({
         }
     },
     properties: {
-        getObserved: function() {
-            return this.observed;
-        },
         on: function(key, func) {
             var observed = this.observed;
 
@@ -87,4 +84,3 @@ Global.Observer = Global.klass({
         }
     }
 });
-Global.Observer.instance = null;

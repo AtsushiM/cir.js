@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Route/test.js" */
-Global.Route = Global.klass({
+Global.Route = klass({
     init: function(config) {
         // singleton
         if (config.single && Global.Route.instance) {

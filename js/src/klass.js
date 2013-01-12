@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/klass/test.js" */
-Global.klass = function(config) {
+var klass = Global.klass = function(config) {
     'use strict';
 
     var init = config.init || function() {},

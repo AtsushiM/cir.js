@@ -1,12 +1,12 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-Global.DragFlick = Global.klass({
+Global.DragFlick = klass({
     init: function(config) {
         if (config) {
             this.bind(config);
         }
     },
     properties: {
-        _getEventTarget: function(e) {
+        _t: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 
             return changed;
@@ -21,7 +21,7 @@ Global.DragFlick = Global.klass({
             on(win, ev.switchup, end);
 
             function start(e) {
-                var changed = mine._getEventTarget(e);
+                var changed = mine._t(e);
 
                 startX = changed.pageX;
                 startY = changed.pageY;
@@ -32,7 +32,7 @@ Global.DragFlick = Global.klass({
             }
             function end(e) {
                 if (dragflg) {
-                    var changed = mine._getEventTarget(e),
+                    var changed = mine._t(e),
                         amount = {
                             x: changed.pageX - startX,
                             y: changed.pageY - startY
@@ -144,7 +144,7 @@ Global.DragFlick = Global.klass({
 
             function eventProxy(element, ev, callback) {
                 on(element, ev, function(e) {
-                    var changed = mine._getEventTarget(e);
+                    var changed = mine._t(e);
                     callback(changed);
                 });
             }

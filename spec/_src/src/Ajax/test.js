@@ -57,9 +57,9 @@ describe('Ajaxは', function() {
         });
     });
 
-    it('getJSON({url, callback})で非同期でjsonを取得する', function() {
+    it('json({url, callback})で非同期でjsonを取得する', function() {
         var data = '';
-        ajax.getJSON({
+        ajax.json({
             url: '/spec/common/test.json',
             callback: function(d) {
                 data = d;

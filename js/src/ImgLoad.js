@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-Global.ImgLoad = Global.klass({
+Global.ImgLoad = klass({
     init: function(config) {
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
@@ -34,17 +34,20 @@ Global.ImgLoad = Global.klass({
 
             var mine = this,
                 img,
-                i, len;
+                i = 0,
+                len = mine.srccount;
 
-            for (i = 0, len = mine.srccount; i < len; i++) {
+            for (; i < len; i++) {
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                on(img, ev.load, function() {
-                    mine._c();
-                });
+                on(img, ev.load, countup);
 
                 mine.loadedsrcs.push(img);
+            }
+
+            function countup() {
+                mine._c();
             }
         },
         getProgress: function() {

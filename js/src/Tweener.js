@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Global.Tweener = Global.klass({
+Global.Tweener = klass({
     init: function(target, property, option) {
         var name,
             prop;
@@ -135,7 +135,7 @@ Global.Tweener = Global.klass({
 Global.Tweener._setProp = function(target, prop, point) {
     target[prop.name] = prop.prefix + point + prop.suffix;
 };
-Global.Tweener.timerId = null;
+/* Global.Tweener.timerId = null; */
 Global.Tweener.Items = [];
 Global.Tweener.FPS = 30;
 Global.Tweener.Duration = 500;

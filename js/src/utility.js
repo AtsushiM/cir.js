@@ -98,6 +98,15 @@ function isTouchDevice() {
 function nullFunction() {
     return null;
 }
+function preventDefault(e) {
+    e.preventDefault();
+    return false;
+}
+function checkUserAgent(ua, pattern) {
+    ua = ua ? ua : navigator.userAgent;
+
+    return ua.match(pattern) ? true : false;
+}
 
 Global.utility = {
     win: win,
@@ -116,5 +125,7 @@ Global.utility = {
     isFunction: isFunction,
     isBoolean: isBoolean,
     isTouchDevice: isTouchDevice,
-    nullFunction: nullFunction
+    nullFunction: nullFunction,
+    preventDefault: preventDefault,
+    checkUserAgent: checkUserAgent
 };

@@ -1,7 +1,8 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
-var isTouch = isTouchDevice();
+var isTouch = isTouchDevice(),
+    ev;
 
-Global.Event = Global.klass({
+ev = klass({
     init: function(config) {
         config = config || {};
 
@@ -33,5 +34,5 @@ Global.Event = Global.klass({
         resize: 'resize'
     }
 });
-Global.Event.instance = null;
-var ev = Global.event = new Global.Event();
+Global.Event = ev;
+ev = Global.event = new ev();

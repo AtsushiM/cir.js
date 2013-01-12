@@ -2,8 +2,7 @@
 Global.$ = function(query, _parent) {
     'use strict';
 
-    var Mine = Global.$,
-        $elements,
+    var $elements,
         base,
         instance,
         i = 0,
@@ -21,7 +20,7 @@ Global.$ = function(query, _parent) {
     len = $elements.length;
 
     base = function() {};
-    base.prototype = Mine.methods;
+    base.prototype = Global.$.methods;
     instance = new base();
 
     instance.length = len;

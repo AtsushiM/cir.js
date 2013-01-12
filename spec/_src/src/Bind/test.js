@@ -30,26 +30,23 @@ describe('Bindは', function() {
     });
 
     it('remove()でelementからeventsを排除する', function() {
-        spyOn(bind, '_exe').andCallThrough();
-
-        expect(bind.remove()).toEqual(eventHandeler);
-        expect(bind._exe).toHaveBeenCalledWith(false);
+        spyOn(bind, '_e').andCallThrough();
+        bind.remove();
+        expect(bind._e).toHaveBeenCalledWith(false);
     });
 
     it('add()でelementにeventsを追加する', function() {
-        spyOn(bind, '_exe').andCallThrough();
-
-        expect(bind.add()).toEqual(eventHandeler);
-        expect(bind._exe).toHaveBeenCalledWith(true);
+        spyOn(bind, '_e').andCallThrough();
+        bind.add();
+        expect(bind._e).toHaveBeenCalledWith(true);
     });
 
-    it('_exe(eventHandeler, bool)でelementにeventを設定する', function() {
+    it('_e(eventHandeler, bool)でelementにeventを設定する', function() {
         spyOn(eventHandeler.events, 'click').andCallThrough();
-
-        expect(bind._exe(false)).toEqual(eventHandeler);
+        bind._e(false);
         document.body.click();
         expect(eventHandeler.events.click).not.toHaveBeenCalled();
-        expect(bind._exe(true)).toEqual(eventHandeler);
+        bind._e(true);
         document.body.click();
         expect(eventHandeler.events.click).toHaveBeenCalled();
     });

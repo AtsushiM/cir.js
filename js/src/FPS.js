@@ -15,7 +15,7 @@ var instance,
             //       };
     }());
 
-Global.FPS = Global.klass({
+Global.FPS = klass({
     init: function(config) {
         config = config || {};
 

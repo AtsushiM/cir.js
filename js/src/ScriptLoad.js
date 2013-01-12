@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-Global.ScriptLoad = Global.klass({
+Global.ScriptLoad = klass({
     properties: {
         requests: function(varary) {
             var i = 0,
@@ -12,7 +12,7 @@ Global.ScriptLoad = Global.klass({
         request: function(vars) {
             var script = create('script');
 
-            script.type = 'text/javascript';
+            /* script.type = 'text/javascript'; */
             script.src = vars.src;
             append(doc.body, script);
 

@@ -2,23 +2,23 @@
 Global.ExternalInterface = function(config) {
     config = config || {};
 
-    var external;
+    var Mine = Global.ExternalInterface,
+        external;
 
-    if (config.single && Global.ExternalInterface.instance) {
-        return Global.ExternalInterface.instance;
+    if (config.single && Mine.instance) {
+        return Mine.instance;
     }
 
     if (config.android) {
-        external = new Global.ExternalInterface.Android(config);
+        external = new Mine.Android(config);
     }
     else {
-        external = new Global.ExternalInterface.IOS(config);
+        external = new Mine.IOS(config);
     }
 
     if (config.single) {
-        Global.ExternalInterface.instance = external;
+        Mine.instance = external;
     }
 
     return external;
 };
-Global.ExternalInterface.instance = null;

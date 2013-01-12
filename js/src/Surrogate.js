@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-Global.Surrogate = Global.klass({
+Global.Surrogate = klass({
     init: function(config) {
         this.delay = config.delay;
         this.callback = config.callback;
-        this.args = null;
-        this.waitid = null;
+        // this.args = null;
+        // this.waitid = null;
     },
     properties: {
         request: function(arg) {

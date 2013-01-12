@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
-Global.SessionStorage = Global.klass({
+Global.SessionStorage = klass({
     init: function(config) {
         config = config || {};
 
@@ -21,15 +21,13 @@ Global.SessionStorage = Global.klass({
             return true;
         },
         get: function(key) {
-            var mine = this;
+            var mine = this,
+                ret = {},
+                i;
 
             if (key) {
                 return JSON.parse(mine._s.getItem(mine._n + key));
             }
-
-            var ret = {},
-                i,
-                key;
 
             for (i in mine._s) {
                 if (!this._n) {
@@ -71,4 +69,3 @@ Global.SessionStorage = Global.klass({
         }
     }
 });
-Global.SessionStorage.instance = null;

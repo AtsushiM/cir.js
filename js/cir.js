@@ -103,6 +103,15 @@ function isTouchDevice() {
 function nullFunction() {
     return null;
 }
+function preventDefault(e) {
+    e.preventDefault();
+    return false;
+}
+function checkUserAgent(ua, pattern) {
+    ua = ua ? ua : navigator.userAgent;
+
+    return ua.match(pattern) ? true : false;
+}
 
 Global.utility = {
     win: win,
@@ -121,7 +130,9 @@ Global.utility = {
     isFunction: isFunction,
     isBoolean: isBoolean,
     isTouchDevice: isTouchDevice,
-    nullFunction: nullFunction
+    nullFunction: nullFunction,
+    preventDefault: preventDefault,
+    checkUserAgent: checkUserAgent
 };
 /* Test: "../../spec/_src/src/element/test.js" */
 function $(selector) {
@@ -309,7 +320,7 @@ Global.element = {
     html: html
 };
 /* Test: "../../spec/_src/src/klass/test.js" */
-Global.klass = function(config) {
+var klass = Global.klass = function(config) {
     'use strict';
 
     var init = config.init || function() {},
@@ -355,8 +366,7 @@ Global.extend = function(child, _super) {
 Global.$ = function(query, _parent) {
     'use strict';
 
-    var Mine = Global.$,
-        $elements,
+    var $elements,
         base,
         instance,
         i = 0,
@@ -374,7 +384,7 @@ Global.$ = function(query, _parent) {
     len = $elements.length;
 
     base = function() {};
-    base.prototype = Mine.methods;
+    base.prototype = Global.$.methods;
     instance = new base();
 
     instance.length = len;
@@ -643,9 +653,10 @@ Global.ease = {
     }
 };
 /* Test: "../../spec/_src/src/Event/test.js" */
-var isTouch = isTouchDevice();
+var isTouch = isTouchDevice(),
+    ev;
 
-Global.Event = Global.klass({
+ev = klass({
     init: function(config) {
         config = config || {};
 
@@ -677,10 +688,10 @@ Global.Event = Global.klass({
         resize: 'resize'
     }
 });
-Global.Event.instance = null;
-var ev = Global.event = new Global.Event();
+Global.Event = ev;
+ev = Global.event = new ev();
 /* Test: "../../spec/_src/src/HashController/test.js" */
-Global.HashController = Global.klass({
+Global.HashController = klass({
     properties: {
         typeCast: function(str) {
             var caststr = typeCast(str),
@@ -759,7 +770,7 @@ Global.HashController = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global.Ajax = Global.klass({
+Global.Ajax = klass({
     init: function() {
         this.xhr = new XMLHttpRequest();
     },
@@ -814,7 +825,7 @@ Global.Ajax = Global.klass({
         abort: function() {
             this.xhr.abort();
         },
-        getJSON: function(vars) {
+        json: function(vars) {
             var callback = vars.callback,
                 error = vars.error;
 
@@ -832,7 +843,7 @@ Global.Ajax = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Bind/test.js" */
-Global.Bind = Global.klass({
+Global.Bind = klass({
     init: function(config) {
         this.handler = config;
         this.add();
@@ -842,12 +853,12 @@ Global.Bind = Global.klass({
             return this.handler;
         },
         add: function() {
-            return this._exe(true);
+            this._e(true);
         },
         remove: function() {
-            return this._exe(false);
+            this._e(false);
         },
-        _exe: function(isBind) {
+        _e: function(isBind) {
             var onoff = isBind ? on : off,
                 i;
 
@@ -858,52 +869,44 @@ Global.Bind = Global.klass({
                     this.handler.events[i]
                 );
             }
-
-            return this.handler;
         }
     }
 });
 /* Test: "../../spec/_src/src/CanvasImg/test.js" */
 Global.CanvasImg = function(config) {
     var canv = create('canvas'),
-        img = create('img'),
-        src = config.src,
-        width = config.width,
-        height = config.height,
-        onload = config.onload;
+        img = create('img');
 
     img.onload = function() {
-        canv.width = width;
-        canv.height = height;
+        canv.width = config.width;
+        canv.height = config.height;
         canv.getContext('2d').drawImage(img, 0, 0);
 
-        onload(canv, img);
+        config.onload(canv, img);
     };
-    img.src = src;
+    img.src = config.src;
 
     return canv;
 };
 /* Test: "../../spec/_src/src/CanvasRender/test.js" */
-Global.CanvasRender = Global.klass({
+Global.CanvasRender = klass({
     init: function(config) {
         this.canvas = config.canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.canvasWidth = this.canvas.width;
-        this.canvasHeight = this.canvas.height;
 
         this.setSize(config);
     },
     properties: {
         setSize: function(vars) {
             if (vars.width) {
-                this.canvas.width = this.canvasWidth = vars.width;
+                this.canvas.width = vars.width;
             }
             if (vars.height) {
-                this.canvas.height = this.canvasHeight = vars.height;
+                this.canvas.height = vars.height;
             }
         },
         draw: function(layer) {
-            this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
             for (var i = 0, len = layer.length, item; i < len; i++) {
                 item = layer[i];
@@ -913,7 +916,7 @@ Global.CanvasRender = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-Global.DataStore = Global.klass({
+Global.DataStore = klass({
     init: function(config) {
         config = config || {};
 
@@ -922,7 +925,7 @@ Global.DataStore = Global.klass({
             return Global.DataStore.instance;
         }
 
-        this.d = {};
+        this.data = {};
 
         if (config.single) {
             Global.DataStore.instance = this;
@@ -930,45 +933,36 @@ Global.DataStore = Global.klass({
     },
     properties: {
         set: function(key, val) {
-            this.d[key] = val;
-            return true;
+            this.data[key] = val;
         },
         get: function(key) {
-            var data = this.d;
-
-            if (key) {
-                return data[key];
-            }
-
             var ret = {},
                 i;
 
-            for (i in data) {
-                ret[i] = data[i];
+            if (key) {
+                return this.data[key];
+            }
+
+            for (i in this.data) {
+                ret[i] = this.data[i];
             }
 
             return ret;
         },
         remove: function(key) {
-            var data = this.d;
-
-            if (!data[key]) {
+            if (!this.data[key]) {
                 return false;
             }
 
-            delete data[key];
-
-            return true;
+            delete this.data[key];
         },
         reset: function() {
-            this.d = {};
-            return true;
+            this.data = {};
         }
     }
 });
-Global.DataStore.instance = null;
 /* Test: "../../spec/_src/src/Deferred/test.js" */
-Global.Deferred = Global.klass({
+Global.Deferred = klass({
     init: function() {
         this.queue = [];
         this.data = null;
@@ -1002,14 +996,14 @@ Global.Deferred = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-Global.DragFlick = Global.klass({
+Global.DragFlick = klass({
     init: function(config) {
         if (config) {
             this.bind(config);
         }
     },
     properties: {
-        _getEventTarget: function(e) {
+        _t: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 
             return changed;
@@ -1024,7 +1018,7 @@ Global.DragFlick = Global.klass({
             on(win, ev.switchup, end);
 
             function start(e) {
-                var changed = mine._getEventTarget(e);
+                var changed = mine._t(e);
 
                 startX = changed.pageX;
                 startY = changed.pageY;
@@ -1035,7 +1029,7 @@ Global.DragFlick = Global.klass({
             }
             function end(e) {
                 if (dragflg) {
-                    var changed = mine._getEventTarget(e),
+                    var changed = mine._t(e),
                         amount = {
                             x: changed.pageX - startX,
                             y: changed.pageY - startY
@@ -1147,7 +1141,7 @@ Global.DragFlick = Global.klass({
 
             function eventProxy(element, ev, callback) {
                 on(element, ev, function(e) {
-                    var changed = mine._getEventTarget(e);
+                    var changed = mine._t(e);
                     callback(changed);
                 });
             }
@@ -1158,28 +1152,29 @@ Global.DragFlick = Global.klass({
 Global.ExternalInterface = function(config) {
     config = config || {};
 
-    var external;
+    var Mine = Global.ExternalInterface,
+        external;
 
-    if (config.single && Global.ExternalInterface.instance) {
-        return Global.ExternalInterface.instance;
+    if (config.single && Mine.instance) {
+        return Mine.instance;
     }
 
     if (config.android) {
-        external = new Global.ExternalInterface.Android(config);
+        external = new Mine.Android(config);
     }
     else {
-        external = new Global.ExternalInterface.IOS(config);
+        external = new Mine.IOS(config);
     }
 
     if (config.single) {
-        Global.ExternalInterface.instance = external;
+        Mine.instance = external;
     }
 
     return external;
 };
-Global.ExternalInterface.instance = null;
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-Global.ExternalInterface.Android = Global.klass({
+Global.ExternalInterface.Android = klass({
+    extend: Global.HashController,
     init: function(config) {
         config = config || {};
 
@@ -1191,29 +1186,28 @@ Global.ExternalInterface.Android = Global.klass({
             this.externalObj = Global.EXTERNAL_ANDROID;
         }
     },
-    extend: Global.HashController,
     properties: {
-        'call': function(conf) {
+        call: function(conf) {
             this.android[conf.mode](this.makeHash(conf));
         },
-        'addCallback': function(name, func) {
+        addCallback: function(name, func) {
             var mine = this;
             mine.externalObj[name] = function(vars) {
                 var objs = mine.parseHash(vars);
                 return func(objs.vars);
             };
         },
-        'removeCallback': function(name) {
+        removeCallback: function(name) {
             delete this.externalObj[name];
         }
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-Global.ExternalInterface.IOS = Global.klass({
+Global.ExternalInterface.IOS = klass({
+    extend: Global.HashController,
     init: function(config) {
         this.ios = {};
     },
-    extend: Global.HashController,
     properties: {
         call: function(conf) {
             this.setHash(conf);
@@ -1238,27 +1232,20 @@ Global.ExternalInterface.IOS = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-Global.Facebook = Global.klass({
+Global.Facebook = klass({
     properties: {
         _b: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
-            var app_id = vars.app_id,
-                redirect_uri = vars.redirect_uri,
-                link = vars.link,
-                picture = vars.picture,
-                name = vars.name,
-                caption = vars.caption,
-                description = vars.description,
-                url = this._b +
-                    'app_id=' + app_id + '&' +
-                    'redirect_uri=' + redirect_uri;
+            var url = this._b +
+                    'app_id=' + vars.app_id + '&' +
+                    'redirect_uri=' + vars.redirect_uri;
 
             url += makeQueryString({
-                'link': link,
-                'picture': picture,
-                'name': name,
-                'caption': caption,
-                'description': description
+                'link': vars.link,
+                'picture': vars.picture,
+                'name': vars.name,
+                'caption': vars.caption,
+                'description': vars.description
             });
 
             return url;
@@ -1282,7 +1269,7 @@ var instance,
             //       };
     }());
 
-Global.FPS = Global.klass({
+Global.FPS = klass({
     init: function(config) {
         config = config || {};
 
@@ -1372,7 +1359,7 @@ function getFrame(time) {
 }
 }());
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-Global.ImgLoad = Global.klass({
+Global.ImgLoad = klass({
     init: function(config) {
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
@@ -1407,17 +1394,20 @@ Global.ImgLoad = Global.klass({
 
             var mine = this,
                 img,
-                i, len;
+                i = 0,
+                len = mine.srccount;
 
-            for (i = 0, len = mine.srccount; i < len; i++) {
+            for (; i < len; i++) {
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                on(img, ev.load, function() {
-                    mine._c();
-                });
+                on(img, ev.load, countup);
 
                 mine.loadedsrcs.push(img);
+            }
+
+            function countup() {
+                mine._c();
             }
         },
         getProgress: function() {
@@ -1426,7 +1416,7 @@ Global.ImgLoad = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
-Global.WindowLoad = Global.klass({
+Global.WindowLoad = klass({
     init: function(config) {
         if (config && config.onload) {
             this.onload(config.onload);
@@ -1439,7 +1429,7 @@ Global.WindowLoad = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
-Global.LocalStorage = Global.klass({
+Global.LocalStorage = klass({
     init: function(config) {
         config = config || {};
 
@@ -1461,15 +1451,13 @@ Global.LocalStorage = Global.klass({
             return true;
         },
         get: function(key) {
-            var mine = this;
+            var mine = this,
+                ret = {},
+                i;
 
             if (key) {
                 return JSON.parse(mine._s.getItem(mine._n + key));
             }
-
-            var ret = {},
-                i,
-                key;
 
             for (i in mine._s) {
                 if (!this._n) {
@@ -1511,26 +1499,20 @@ Global.LocalStorage = Global.klass({
         }
     }
 });
-Global.LocalStorage.instance = null;
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-(function() {
-'use strict';
-
-var userAgent = navigator.userAgent;
-
-Global.Mobile = Global.klass({
+Global.Mobile = klass({
     properties: {
         isAndroid: function(ua) {
-            return checkUA(ua, /Android/i);
+            return checkUserAgent(ua, /Android/i);
         },
         isIOS: function(ua) {
-            return checkUA(ua, /iPhone|iPad|iPod/i);
+            return checkUserAgent(ua, /iPhone|iPad|iPod/i);
         },
         isWindows: function(ua) {
-            return checkUA(ua, /IEMobile/i);
+            return checkUserAgent(ua, /IEMobile/i);
         },
         isFBAPP: function(ua) {
-            return checkUA(ua, /FBAN/);
+            return checkUserAgent(ua, /FBAN/);
         },
         isMobile: function() {
             return (
@@ -1555,6 +1537,15 @@ Global.Mobile = Global.klass({
         hideAddress: function() {
             on(win, ev.load, hideAddressHandler, false);
             on(win, ev.orientationchange, hideAddressHandler, false);
+
+            function doScroll() {
+                if (win.pageYOffset === 0) {
+                    pageTop();
+                }
+            }
+            function hideAddressHandler() {
+                setTimeout(doScroll, 100);
+            }
         },
         getOrientation: function() {
             if (
@@ -1620,27 +1611,8 @@ Global.Mobile = Global.klass({
         }
     }
 });
-
-function preventDefault(e) {
-    e.preventDefault();
-    return false;
-}
-function checkUA(ua, pattern) {
-    ua = ua ? ua : userAgent;
-
-    return ua.match(pattern) ? true : false;
-}
-function doScroll() {
-    if (win.pageYOffset === 0) {
-        pageTop();
-    }
-}
-function hideAddressHandler() {
-    setTimeout(doScroll, 100);
-}
-}());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
-Global.FontImg = Global.klass({
+Global.FontImg = klass({
     init: function(config) {
         config = config || {type: ''};
 
@@ -1665,7 +1637,7 @@ Global.FontImg = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global.Observer = Global.klass({
+Global.Observer = klass({
     init: function(config) {
         config = config || {single: false};
 
@@ -1681,9 +1653,6 @@ Global.Observer = Global.klass({
         }
     },
     properties: {
-        getObserved: function() {
-            return this.observed;
-        },
         on: function(key, func) {
             var observed = this.observed;
 
@@ -1753,9 +1722,8 @@ Global.Observer = Global.klass({
         }
     }
 });
-Global.Observer.instance = null;
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-Global.PreRender = Global.klass({
+Global.PreRender = klass({
     init: function(config) {
         config = config || {};
 
@@ -1808,7 +1776,7 @@ Global.PreRender = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
-Global.Route = Global.klass({
+Global.Route = klass({
     init: function(config) {
         // singleton
         if (config.single && Global.Route.instance) {
@@ -1847,7 +1815,7 @@ Global.Route = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-Global.ScriptLoad = Global.klass({
+Global.ScriptLoad = klass({
     properties: {
         requests: function(varary) {
             var i = 0,
@@ -1860,7 +1828,7 @@ Global.ScriptLoad = Global.klass({
         request: function(vars) {
             var script = create('script');
 
-            script.type = 'text/javascript';
+            /* script.type = 'text/javascript'; */
             script.src = vars.src;
             append(doc.body, script);
 
@@ -1877,7 +1845,7 @@ Global.ScriptLoad = Global.klass({
 var xhr,
     isLoaded = false;
 
-Global.ServerMeta = Global.klass({
+Global.ServerMeta = klass({
     init: function(config) {
         config = config || {};
 
@@ -1945,7 +1913,7 @@ function getHeader(callback) {
 }
 }());
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
-Global.SessionStorage = Global.klass({
+Global.SessionStorage = klass({
     init: function(config) {
         config = config || {};
 
@@ -1967,15 +1935,13 @@ Global.SessionStorage = Global.klass({
             return true;
         },
         get: function(key) {
-            var mine = this;
+            var mine = this,
+                ret = {},
+                i;
 
             if (key) {
                 return JSON.parse(mine._s.getItem(mine._n + key));
             }
-
-            var ret = {},
-                i,
-                key;
 
             for (i in mine._s) {
                 if (!this._n) {
@@ -2017,14 +1983,13 @@ Global.SessionStorage = Global.klass({
         }
     }
 });
-Global.SessionStorage.instance = null;
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-Global.Surrogate = Global.klass({
+Global.Surrogate = klass({
     init: function(config) {
         this.delay = config.delay;
         this.callback = config.callback;
-        this.args = null;
-        this.waitid = null;
+        // this.args = null;
+        // this.waitid = null;
     },
     properties: {
         request: function(arg) {
@@ -2043,13 +2008,13 @@ Global.Surrogate = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-Global.Throttle = Global.klass({
+Global.Throttle = klass({
     init: function(config) {
         this.waittime = config.waittime;
         this.callback = config.callback;
-        this.locked = false;
-        this.waitid = null;
-        this.waitarg = null;
+        // this.locked = false;
+        // this.waitid = null;
+        // this.waitarg = null;
     },
     properties: {
         request: function(vars) {
@@ -2228,7 +2193,7 @@ Global.Timer = function(config) {
     return instance;
 };
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Global.Tweener = Global.klass({
+Global.Tweener = klass({
     init: function(target, property, option) {
         var name,
             prop;
@@ -2364,26 +2329,25 @@ Global.Tweener = Global.klass({
 Global.Tweener._setProp = function(target, prop, point) {
     target[prop.name] = prop.prefix + point + prop.suffix;
 };
-Global.Tweener.timerId = null;
+/* Global.Tweener.timerId = null; */
 Global.Tweener.Items = [];
 Global.Tweener.FPS = 30;
 Global.Tweener.Duration = 500;
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-Global.Twitter = Global.klass({
+Global.Twitter = klass({
     properties: {
         _b: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {
-            var redirect_uri = vars.redirect_uri,
-                caption = vars.caption || '',
-                name = vars.name || '',
-                hash = vars.hash || '',
+            var caption = vars.caption || '',
+                name = vars.name,
+                hash = vars.hash,
                 url = this._b;
 
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
             url += makeQueryString({
-                'url': redirect_uri,
+                'url': vars.redirect_uri,
                 'text': caption + name + hash
             });
 
@@ -2392,7 +2356,7 @@ Global.Twitter = Global.klass({
     }
 });
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global.XML = Global.klass({
+Global.XML = klass({
     init: function(config) {
         this.element = create('div');
         this.data = {};
