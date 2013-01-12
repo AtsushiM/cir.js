@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/DragFlick.js" */
 describe('DragFlickは', function() {
-    var dragflick;
+    var c = window.C ? C : Global,
+        dragflick;
 
     beforeEach(function() {
         // init
-        dragflick = new Global.DragFlick();
+        dragflick = new c.DragFlick();
     });
     afterEach(function() {
         // clear

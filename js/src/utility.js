@@ -102,7 +102,7 @@ function preventDefault(e) {
     e.preventDefault();
     return false;
 }
-function checkUserAgent(ua, pattern) {
+function checkUserAgent(pattern, ua) {
     ua = ua ? ua : navigator.userAgent;
 
     return ua.match(pattern) ? true : false;

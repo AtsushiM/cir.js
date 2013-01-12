@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/Deferred.js" */
 describe('Deferredは', function() {
-    var deferred;
+    var c = window.C ? C : Global,
+        deferred;
 
     beforeEach(function() {
         // init
-        deferred = new Global.Deferred();
+        deferred = new c.Deferred();
     });
     afterEach(function() {
         // clear

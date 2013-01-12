@@ -1,10 +1,11 @@
 /* Class: "../../../../js/src/ease.js" */
 describe('easeは', function() {
-    var ease;
+    var c = window.C ? C : Global,
+        ease;
 
     beforeEach(function() {
         // init
-        ease = Global.ease;
+        ease = c.ease;
     });
     afterEach(function() {
         // clear

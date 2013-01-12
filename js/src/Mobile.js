@@ -2,16 +2,16 @@
 Global.Mobile = klass({
     properties: {
         isAndroid: function(ua) {
-            return checkUserAgent(ua, /Android/i);
+            return checkUserAgent(/Android/i, ua);
         },
         isIOS: function(ua) {
-            return checkUserAgent(ua, /iPhone|iPad|iPod/i);
+            return checkUserAgent(/iPhone|iPad|iPod/i, ua);
         },
         isWindows: function(ua) {
-            return checkUserAgent(ua, /IEMobile/i);
+            return checkUserAgent(/IEMobile/i, ua);
         },
         isFBAPP: function(ua) {
-            return checkUserAgent(ua, /FBAN/);
+            return checkUserAgent(/FBAN/, ua);
         },
         isMobile: function() {
             return (
