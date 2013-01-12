@@ -27,6 +27,7 @@ src/SessionStorage/\n\
 src/Surrogate/\n\
 src/Throttle/\n\
 src/Timer/\n\
+src/Transition/\n\
 src/Tweener/\n\
 src/Twitter/\n\
 src/WindowLoad/\n\
@@ -68,6 +69,7 @@ src/utility/\n\
 ../../js/src/Surrogate.js\n\
 ../../js/src/Throttle.js\n\
 ../../js/src/Timer.js\n\
+../../js/src/Transition.js\n\
 ../../js/src/Tweener.js\n\
 ../../js/src/Twitter.js\n\
 ../../js/src/WindowLoad.js\n\
@@ -109,6 +111,7 @@ src/utility/\n\
 ../_src/src/Surrogate/test.js\n\
 ../_src/src/Throttle/test.js\n\
 ../_src/src/Timer/test.js\n\
+../_src/src/Transition/test.js\n\
 ../_src/src/Tweener/test.js\n\
 ../_src/src/Twitter/test.js\n\
 ../_src/src/WindowLoad/test.js\n\
