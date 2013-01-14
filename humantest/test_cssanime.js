@@ -10,7 +10,7 @@
             }
         });
 
-    setTimeout(function() {
-        anime.stop();
-    }, 500);
+    // setTimeout(function() {
+    //     anime.stop();
+    // }, 500);
 }());

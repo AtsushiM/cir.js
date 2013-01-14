@@ -679,8 +679,7 @@ var prop = [
     css_prefix,
     event_key = 'animation',
     i = 0,
-    len = prop.length,
-    style;
+    len = prop.length;
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
@@ -691,10 +690,6 @@ for (; i < len; i++) {
             css_prefix = '-' + prefix.toLowerCase() + '-';
             event_key = prefix + 'Animation';
         }
-
-        style = document.querySelector('head')
-            .appendChild(document.createElement('style'));
-        style.type = 'text/css';
 
         break;
     }
@@ -715,13 +710,15 @@ Global.Animation = klass({
         Global.Animation.id++;
         this.id = 'ciranim' + Global.Animation.id;
 
+        var style = document.querySelector('head')
+            .appendChild(document.createElement('style'));
+        style.type = 'text/css';
+
         this.style = style;
 
         var duration = option.duration || Global.Animation.Duration,
             ease = option.ease || 'ease',
             sheet = style.sheet;
-
-        this.sheet = sheet;
 
         // property
         var i,
@@ -746,18 +743,16 @@ Global.Animation = klass({
             ';'
         );
 
-        this.keyframe = '@' + css_prefix + 'keyframes ' + this.id + '{to' + prop + '}';
         sheet.insertRule(
-            this.keyframe,
+            '@' + css_prefix + 'keyframes ' + this.id + '{to' + prop + '}',
             sheet.cssRules.length);
 
-        this.rule = '.' + this.id +
+        sheet.insertRule('.' + this.id +
             '{' +
                 css_prefix + 'animation:' +
                 this.id + ' ' +
                 duration + 'ms ' +
-                ease + ' 0s 1 normal forwards}';
-        sheet.insertRule(this.rule,
+                ease + ' 0s 1 normal forwards}',
             sheet.cssRules.length);
 
         if (!option.manual) {
@@ -774,31 +769,12 @@ Global.Animation = klass({
             addClass(mine.element, mine.id);
 
             function endaction(e) {
-                var i = 0,
-                    rule,
-                    count = 0,
-                    len = mine.sheet.cssRules.length;
-
                 mine.stop();
 
                 css(mine.element, mine.property);
                 removeClass(mine.element, mine.id);
 
-                for (; i < len; i++) {
-                    rule = mine.sheet.cssRules[i];
-
-                    if (
-                        rule === mine.keyframe ||
-                        rule === mine.rule
-                    ) {
-                        count++;
-                        mine.sheet.deleteRule(i);
-
-                        if (count === 2) {
-                            break;
-                        }
-                    }
-                }
+                remove(mine.style);
 
                 mine.onComplete(e);
             }
