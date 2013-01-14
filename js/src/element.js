@@ -150,7 +150,7 @@ function computedStyle(element) {
     return doc.defaultView.getComputedStyle(element, null);
 }
 function append(element, addelement) {
-    element.appendChild(addelement);
+    return element.appendChild(addelement);
 }
 function parent(element) {
     return element.parentNode;

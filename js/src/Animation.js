@@ -14,7 +14,8 @@ var prop = [
     css_prefix,
     event_key = 'animation',
     i = 0,
-    len = prop.length;
+    len = prop.length,
+    style;
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
@@ -25,6 +26,10 @@ for (; i < len; i++) {
             css_prefix = '-' + prefix.toLowerCase() + '-';
             event_key = prefix + 'Animation';
         }
+
+        style = document.querySelector('head')
+            .appendChild(document.createElement('style'));
+        style.type = 'text/css';
 
         break;
     }
@@ -44,10 +49,6 @@ Global.Animation = klass({
 
         Global.Animation.id++;
         this.id = 'ciranim' + Global.Animation.id;
-
-        var style = document.querySelector('head')
-            .appendChild(document.createElement('style'));
-        style.type = 'text/css';
 
         this.style = style;
 
@@ -104,12 +105,25 @@ Global.Animation = klass({
             addClass(mine.element, mine.id);
 
             function endaction(e) {
+                var sheet = mine.style.sheet,
+                    rule = sheet.cssRules,
+                    len = rule.length,
+                    name,
+                    dels = [];
+
                 mine.stop();
 
                 css(mine.element, mine.property);
                 removeClass(mine.element, mine.id);
 
-                remove(mine.style);
+                for (; len--;) {
+                    name = rule[len].name ||
+                        ('' + rule[len].selectorText).split('.')[1];
+
+                    if (name === mine.id) {
+                        sheet.deleteRule(len);
+                    }
+                }
 
                 mine.onComplete(e);
             }
