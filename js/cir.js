@@ -673,7 +673,7 @@ var prop = [
         // 'oAnimation',
         'animation'
     ],
-    el = C.element.create('p'),
+    el = create('p'),
     support = false,
     prefix,
     css_prefix,
@@ -721,6 +721,8 @@ Global.Animation = klass({
             ease = option.ease || 'ease',
             sheet = style.sheet;
 
+        this.sheet = sheet;
+
         // property
         var i,
             prop = {};
@@ -736,7 +738,7 @@ Global.Animation = klass({
             }
         }
 
-        /* this.property = prop; */
+        this.property = prop;
 
         prop = replaceAll(
             replaceAll(JSON.stringify(prop), '"', ''),
@@ -744,21 +746,18 @@ Global.Animation = klass({
             ';'
         );
 
-        sheet.insertRule('@' + css_prefix + 'keyframes ' + this.id + ' {' +
-                'to' + prop +
-            '}', sheet.cssRules.length);
+        this.keyframe = '@' + css_prefix + 'keyframes ' + this.id + '{to' + prop + '}';
+        sheet.insertRule(
+            this.keyframe,
+            sheet.cssRules.length);
 
-        sheet.insertRule('.' + this.id +
+        this.rule = '.' + this.id +
             '{' +
                 css_prefix + 'animation:' +
                 this.id + ' ' +
                 duration + 'ms ' +
-                ease + ' ' +
-                '0s ' +
-                '1 ' +
-                'normal ' +
-                'forwards' +
-            '}',
+                ease + ' 0s 1 normal forwards}';
+        sheet.insertRule(this.rule,
             sheet.cssRules.length);
 
         if (!option.manual) {
@@ -775,19 +774,43 @@ Global.Animation = klass({
             addClass(mine.element, mine.id);
 
             function endaction(e) {
+                var i = 0,
+                    rule,
+                    count = 0,
+                    len = mine.sheet.cssRules.length;
+
                 mine.stop();
-                // css(mine.element, mine.property);
-                // removeClass(mine.element, mine.id);
-                // remove(mine.style);
+
+                css(mine.element, mine.property);
+                removeClass(mine.element, mine.id);
+
+                for (; i < len; i++) {
+                    rule = mine.sheet.cssRules[i];
+
+                    if (
+                        rule === mine.keyframe ||
+                        rule === mine.rule
+                    ) {
+                        count++;
+                        mine.sheet.deleteRule(i);
+
+                        if (count === 2) {
+                            break;
+                        }
+                    }
+                }
+
                 mine.onComplete(e);
             }
         },
         stop: function() {
-            css(this.element, {
-                '-webkit-animation-play-state': 'paused'
-            });
-            on(this.element, event_key + 'End');
-            on(this.element, 'animationend');
+            var stopobj = {};
+
+            stopobj[css_prefix + 'animation-play-state'] = 'paused';
+
+            css(this.element, stopobj);
+            off(this.element, event_key + 'End');
+            off(this.element, 'animationend');
         }
     }
 });
