@@ -1,7 +1,7 @@
 (function() {
     var anime = new C.Animation(C.$('#box')[0], {
             'margin-left': 100,
-            transform: 'rotate(180deg)'
+            transform: "rotate(180deg)"
         }, {
             duration: 1000,
             manual: false,

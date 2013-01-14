@@ -42,10 +42,13 @@ Global.Transition = klass({
 
         var transProp = [],
             animeProp = override({}, property),
-            i;
+            i,
+            ease;
 
         option = option || {};
         option.onComplete = option.onComplete || nullFunction;
+
+        ease = option.ease || 'ease';
 
         for (i in property) {
             transProp.push(i);
@@ -59,6 +62,7 @@ Global.Transition = klass({
         animeProp[css_prefix + 'transition-property'] = transProp.join(' ');
         animeProp[css_prefix + 'transition-duration'] =
             (option.duration || Global.Transition.Duration) + 'ms';
+        animeProp[css_prefix + 'transition-timing-function'] = ease;
 
         this.element = element;
         this.property = animeProp;

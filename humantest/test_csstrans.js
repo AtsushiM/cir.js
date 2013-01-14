@@ -18,8 +18,9 @@
                 opacity: '0'
             }, {
                 /* manual: true, */
+                ease: 'linear',
                 duration: 1000,
-                callback: function(e) {
+                onComplete: function(e) {
                     console.log(e);
 
                     new C.Transition(mine, {
@@ -29,8 +30,8 @@
                 }
             });
 
-        setTimeout(function() {
-            mine.style.opacity = 1;
-        }, 500);
+        // setTimeout(function() {
+        //     mine.style.opacity = 1;
+        // }, 500);
     });
 }());
