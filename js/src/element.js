@@ -152,6 +152,12 @@ function computedStyle(element) {
 function append(element, addelement) {
     element.appendChild(addelement);
 }
+function parent(element) {
+    return element.parentNode;
+}
+function remove(element) {
+    return parent(element).removeChild(element);
+}
 function html(element, text) {
     if (!text) {
         return element.innerHTML;
@@ -179,6 +185,8 @@ Global.element = {
     css: css,
     computedStyle: computedStyle,
     append: append,
+    parent: parent,
+    remove: remove,
     attr: attr,
     removeAttr: removeAttr,
     html: html

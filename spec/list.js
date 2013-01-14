@@ -1,6 +1,7 @@
 document.write('\
 <script type="text/template" id="jasmineBaseList">\
 src/Ajax/\n\
+src/Animation/\n\
 src/Bind/\n\
 src/CanvasImg/\n\
 src/CanvasRender/\n\
@@ -43,6 +44,7 @@ src/utility/\n\
 </script>\
 <script type="text/template" id="jasmineClassList">\
 ../../js/src/Ajax.js\n\
+../../js/src/Animation.js\n\
 ../../js/src/Bind.js\n\
 ../../js/src/CanvasImg.js\n\
 ../../js/src/CanvasRender.js\n\
@@ -85,6 +87,7 @@ src/utility/\n\
 </script>\
 <script type="text/template" id="jasmineTestList">\
 ../_src/src/Ajax/test.js\n\
+../_src/src/Animation/test.js\n\
 ../_src/src/Bind/test.js\n\
 ../_src/src/CanvasImg/test.js\n\
 ../_src/src/CanvasRender/test.js\n\

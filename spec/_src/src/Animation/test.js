@@ -1,7 +1,7 @@
-/* Class: "../../../../js/src/Transition.js" */
-describe('Transitionは', function() {
+/* Class: "../../../../js/src/Animation.js" */
+describe('Animationは', function() {
     var c = window.C ? C : Global,
-        transition,
+        animation,
         div;
 
     beforeEach(function() {
@@ -11,23 +11,23 @@ describe('Transitionは', function() {
     });
     afterEach(function() {
         // clear
-        div.removeAttribute('style');
         c.element.remove(div);
     });
 
-    it('CSS Trasitionでアニメーションする', function() {
+    it('CSS Animationでアニメーションする', function() {
         var count = 0;
 
-        transition = new c.Transition(div, {
+        animation = new c.Animation(div, {
             opacity: '0'
         }, {
-            callback: function() {
+            onComplete: function() {
                 count = 1;
             }
         });
 
         expect(count).toEqual(0);
-        waits(c.Transition.Duration + 200);
+
+        waits(c.Animation.Duration + 200);
         runs(function() {
             expect(count).toEqual(1);
         });
@@ -36,45 +36,44 @@ describe('Transitionは', function() {
     it('start()でアニメーションを開始する', function() {
         var count = 0;
 
-        transition = new c.Transition(div, {
+        animation = new c.Animation(div, {
             opacity: '0'
         }, {
             manual: true,
-            callback: function() {
+            onComplete: function() {
                 count = 1;
             }
         });
 
-        waits(c.Transition.Duration + 200);
+        waits(c.Animation.Duration + 200);
         runs(function() {
             expect(count).toEqual(0);
-            transition.start();
+            animation.start();
         });
-        waits(c.Transition.Duration + 200);
+        waits(c.Animation.Duration + 200);
         runs(function() {
             expect(count).toEqual(1);
         });
     });
 
-    it('stop()でアニメーションを停止する', function() {
+    it('stop()でアニメーションを開始する', function() {
         var count = 0;
 
-        transition = new c.Transition(div, {
+        animation = new c.Animation(div, {
             opacity: '0'
         }, {
-            callback: function() {
+            onComplete: function() {
                 count = 1;
             }
         });
 
-        transition.stop();
+        animation.stop();
 
-        waits(c.Transition.Duration + 200);
+        waits(c.Animation.Duration + 200);
         runs(function() {
             expect(count).toEqual(0);
         });
     });
-
 });
 /*
 describe('XXXは', function() {

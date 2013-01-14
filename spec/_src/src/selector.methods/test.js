@@ -119,6 +119,21 @@ describe('selector.methodsは', function() {
         expect(document.querySelector('.appendTest')).toBeDefined();
     });
 
+    it('$(selector).remove(element)でGlobal.element.removeを実行する', function() {
+        var div = document.createElement('div');
+
+        div.className = 'appendTest';
+
+        selector.append(div);
+
+        selector = Global.$('.appendTest');
+        console.log(selector);
+        selector.remove();
+
+        console.log(document.querySelector('.appendTest'));
+        expect(document.querySelector('.appendTest')).toBeDefined();
+    });
+
     it('$(selector).html(value)でGlobal.element.htmlを実行する', function() {
         var div = document.createElement('div');
 

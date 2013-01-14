@@ -209,6 +209,29 @@ describe('elementは', function() {
         expect(el.$('.appendTest')).toBeNull();
         el.append($body, $make);
         expect(el.$('.appendTest')).toBeDefined();
+        el.remove($make);
+    });
+
+    it('parent(element)でelementの親エレメントを取得する', function() {
+        var $body = el.$('body'),
+            $make = el.create('div');
+
+        $make.className = 'appendTest';
+
+        el.append($body, $make);
+        expect(el.parent($make)).toEqual($body);
+        el.remove($make);
+    });
+
+    it('remove(element)でelementを削除する', function() {
+        var $body = el.$('body'),
+            $make = el.create('div');
+
+        $make.className = 'appendTest';
+
+        el.append($body, $make);
+        el.remove($make);
+        expect(el.$('.appendTest')).toBeNull();
     });
 
     it('html(element, text)でelement.innerHTMLにtextを設定する', function() {

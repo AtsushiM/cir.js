@@ -4,36 +4,35 @@
 
 var prop = [
         'webkitTransitionProperty',
-        'MozTransitionProperty',
-        'mozTransitionProperty',
-        'msTransitionProperty',
-        'oTransitionProperty',
+        // 'MozTransitionProperty',
+        // 'mozTransitionProperty',
+        // 'msTransitionProperty',
+        // 'oTransitionProperty',
         'transitionProperty'
     ],
     el = create('p'),
     support = false,
-    prefix = '',
-    css_prefix = '',
+    prefix,
+    css_prefix,
     event_key = 'transition',
-    p,
     i = 0,
     len = prop.length;
 
 for (; i < len; i++) {
-    p = prop[i];
-
-    if (el.style[p] !== undefined) {
+    if (el.style[prop[i]] !== undefined) {
         support = true;
-        prefix = p.match(/^(.*?)transitionproperty$/i)[1];
+        prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];
 
         if (prefix) {
-            css_prefix = '-' + prefix + '-';
+            css_prefix = '-' + prefix.toLowerCase() + '-';
             event_key = prefix + 'Transition';
         }
 
         break;
     }
 }
+
+/* console.log(support, prefix, css_prefix, event_key); */
 
 Global.Transition = klass({
     init: function(element, property, option) {
@@ -77,10 +76,10 @@ Global.Transition = klass({
         start: function() {
             var mine = this;
 
-            mine._endfunc = function() {
+            mine._endfunc = function(e) {
                 mine.stop();
                 setTimeout(function() {
-                    mine.option.callback();
+                    mine.option.callback(e);
                 }, 1);
             };
 
