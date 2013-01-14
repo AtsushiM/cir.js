@@ -27,8 +27,8 @@ for (; i < len; i++) {
             event_key = prefix + 'Animation';
         }
 
-        style = document.querySelector('head')
-            .appendChild(document.createElement('style'));
+        style = append($('head'),
+            create('style'));
         style.type = 'text/css';
 
         break;
