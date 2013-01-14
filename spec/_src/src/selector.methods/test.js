@@ -127,20 +127,17 @@ describe('selector.methodsは', function() {
         selector.append(div);
 
         selector = Global.$('.appendTest');
-        console.log(selector);
         selector.remove();
 
-        console.log(document.querySelector('.appendTest'));
-        expect(document.querySelector('.appendTest')).toBeDefined();
+        expect(document.querySelector('.appendTest')).toBeNull();
     });
 
     it('$(selector).html(value)でGlobal.element.htmlを実行する', function() {
         var div = document.createElement('div');
 
         div.className = 'selectorTestInnerHTML';
-        selector.append(div);
 
-        var $div = Global.$('.selectorTestInnerHTML');
+        var $div = Global.$(div);
 
         $div.html('test');
         expect($div.html()).toEqual('test');

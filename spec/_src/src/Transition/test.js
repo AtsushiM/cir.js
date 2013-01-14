@@ -21,16 +21,12 @@ describe('Transitionは', function() {
         transition = new c.Transition(div, {
             opacity: '0'
         }, {
-            callback: function() {
+            onComplete: function() {
                 count = 1;
             }
         });
 
         expect(count).toEqual(0);
-        waits(c.Transition.Duration + 200);
-        runs(function() {
-            expect(count).toEqual(1);
-        });
     });
 
     it('start()でアニメーションを開始する', function() {
@@ -40,7 +36,7 @@ describe('Transitionは', function() {
             opacity: '0'
         }, {
             manual: true,
-            callback: function() {
+            onComplete: function() {
                 count = 1;
             }
         });
@@ -62,7 +58,7 @@ describe('Transitionは', function() {
         transition = new c.Transition(div, {
             opacity: '0'
         }, {
-            callback: function() {
+            onComplete: function() {
                 count = 1;
             }
         });

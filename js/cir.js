@@ -2381,7 +2381,7 @@ Global.Transition = klass({
             i;
 
         option = option || {};
-        option.callback = option.callback || nullFunction;
+        option.onComplete = option.onComplete || nullFunction;
 
         for (i in property) {
             transProp.push(i);
@@ -2415,7 +2415,7 @@ Global.Transition = klass({
             mine._endfunc = function(e) {
                 mine.stop();
                 setTimeout(function() {
-                    mine.option.callback(e);
+                    mine.option.onComplete(e);
                 }, 1);
             };
 
@@ -2425,8 +2425,6 @@ Global.Transition = klass({
         stop: function() {
             off(this.element, event_key + 'End', this._endfunc);
             css(this.element, this._stopprop);
-
-            return this.option.callback;
         }
     }
 });
