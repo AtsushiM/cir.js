@@ -111,7 +111,8 @@ Global.Animation = klass({
                     name,
                     dels = [];
 
-                mine.stop();
+                off(mine.element, event_key + 'End');
+                off(mine.element, 'animationend');
 
                 css(mine.element, mine.property);
                 removeClass(mine.element, mine.id);

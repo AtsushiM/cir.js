@@ -15,7 +15,7 @@
                 }
             },
             {
-                ease: null,
+                ease: C.ease.inBack,
                 onComplete: testAnimate
             }
         );

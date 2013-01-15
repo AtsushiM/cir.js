@@ -4,7 +4,7 @@
 
     $cssanime.css({
         position: 'absolute',
-        top: 300,
+        top: 400,
         left: 0,
         width: 200,
         height: 200,
@@ -18,7 +18,7 @@
                 opacity: '0'
             }, {
                 /* manual: true, */
-                ease: 'linear',
+                ease: C.cssease.inExpo,
                 duration: 1000,
                 onComplete: function(e) {
                     console.log(e);
