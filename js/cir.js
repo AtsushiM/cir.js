@@ -556,15 +556,25 @@ function convertTweenerParam(element, params) {
     var name,
         styled = computedStyle(element),
         tosplit,
+        from,
         retobj = {};
 
     for (name in params) {
         tosplit = splitSuffix(params[name]);
+        from = styled.getPropertyValue(name);
+
+        if (from === 'none') {
+            from = 0;
+        }
+        else {
+            from = splitSuffix(from)[2] * 1;
+        }
 
         retobj[name] = {
-            from: splitSuffix(styled.getPropertyValue(name))[1] * 1 || 0,
-            to: tosplit[1] * 1 || 0,
-            suffix: tosplit[2]
+            from: from,
+            to: tosplit[2] * 1 || 0,
+            prefix: tosplit[1],
+            suffix: tosplit[3]
         };
     }
 
@@ -574,7 +584,7 @@ function splitSuffix(value) {
     value = value || '';
     value = '' + value;
 
-    return value.match(/^([0-9\.]+)(.*)/);
+    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 }());
 /* Test: "../../spec/_src/src/ease/test.js" */
