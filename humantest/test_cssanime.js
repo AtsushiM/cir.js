@@ -5,6 +5,7 @@
         }, {
             duration: 1000,
             manual: false,
+            ease: C.cssease.inExpo,
             onComplete: function(e) {
                 console.log(e);
             }
