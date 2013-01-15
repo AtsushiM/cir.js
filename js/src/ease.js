@@ -82,5 +82,29 @@ Global.ease = {
             return dist / 2 * time * time + from;
         }
         return -dist / 2 * ((--time) * (time - 2) - 1) + from;
+    },
+    inBack: function(time, from, dist, duration, s) {
+        /* if (s == undefined) { */
+            s = 1.70158;
+        /* } */
+        return dist * (time /= duration) * time * ((s + 1) * time - s) + from;
+    },
+    outBack: function(time, from, dist, duration, s) {
+        /* if (s == undefined) { */
+            s = 1.70158;
+        /* } */
+        return dist * ((time = time / duration - 1) * time *
+                ((s + 1) * time + s) + 1) + from;
+    },
+    inOutBack: function(time, from, dist, duration, s) {
+        /* if (s == undefined) { */
+            s = 1.70158;
+        /* } */
+        if ((time /= duration / 2) < 1) {
+            return dist / 2 * (time * time *
+                    (((s *= (1.525)) + 1) * time - s)) + from;
+        }
+        return dist / 2 * ((time -= 2) * time *
+                (((s *= (1.525)) + 1) * time + s) + 2) + from;
     }
 };

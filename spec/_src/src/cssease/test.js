@@ -1,93 +1,93 @@
-/* Class: "../../../../js/src/ease.js" */
-describe('easeは', function() {
+/* Class: "../../../../js/src/cssease.js" */
+describe('csseaseは', function() {
     var c = window.C ? C : Global,
         ease;
 
     beforeEach(function() {
         // init
-        ease = c.ease;
+        ease = c.cssease;
     });
     afterEach(function() {
         // clear
     });
 
-    it('inCubicメソッドを持つ', function() {
+    it('inCubicプロパティを持つ', function() {
         expect(ease.inCubic).toBeDefined();
     });
-    it('outCubicメソッドを持つ', function() {
+    it('outCubicプロパティを持つ', function() {
         expect(ease.outCubic).toBeDefined();
     });
-    it('inOutCubicメソッドを持つ', function() {
+    it('inOutCubicプロパティを持つ', function() {
         expect(ease.inOutCubic).toBeDefined();
     });
 
-    it('inQuartメソッドを持つ', function() {
+    it('inQuartプロパティを持つ', function() {
         expect(ease.inQuart).toBeDefined();
     });
-    it('outQuartメソッドを持つ', function() {
+    it('outQuartプロパティを持つ', function() {
         expect(ease.outQuart).toBeDefined();
     });
-    it('inOutQuartメソッドを持つ', function() {
+    it('inOutQuartプロパティを持つ', function() {
         expect(ease.inOutQuart).toBeDefined();
     });
 
-    it('inQuintメソッドを持つ', function() {
+    it('inQuintプロパティを持つ', function() {
         expect(ease.inQuint).toBeDefined();
     });
-    it('outQuintメソッドを持つ', function() {
+    it('outQuintプロパティを持つ', function() {
         expect(ease.outQuint).toBeDefined();
     });
-    it('inOutQuintメソッドを持つ', function() {
+    it('inOutQuintプロパティを持つ', function() {
         expect(ease.inOutQuint).toBeDefined();
     });
 
-    it('inSineメソッドを持つ', function() {
+    it('inSineプロパティを持つ', function() {
         expect(ease.inSine).toBeDefined();
     });
-    it('outSineメソッドを持つ', function() {
+    it('outSineプロパティを持つ', function() {
         expect(ease.outSine).toBeDefined();
     });
-    it('inOutSineメソッドを持つ', function() {
+    it('inOutSineプロパティを持つ', function() {
         expect(ease.inOutSine).toBeDefined();
     });
 
-    it('inExpoメソッドを持つ', function() {
+    it('inExpoプロパティを持つ', function() {
         expect(ease.inExpo).toBeDefined();
     });
-    it('outExpoメソッドを持つ', function() {
+    it('outExpoプロパティを持つ', function() {
         expect(ease.outExpo).toBeDefined();
     });
-    it('inOutExpoメソッドを持つ', function() {
+    it('inOutExpoプロパティを持つ', function() {
         expect(ease.inOutExpo).toBeDefined();
     });
 
-    it('inCircメソッドを持つ', function() {
+    it('inCircプロパティを持つ', function() {
         expect(ease.inCirc).toBeDefined();
     });
-    it('outCircメソッドを持つ', function() {
+    it('outCircプロパティを持つ', function() {
         expect(ease.outCirc).toBeDefined();
     });
-    it('inOutCircメソッドを持つ', function() {
+    it('inOutCircプロパティを持つ', function() {
         expect(ease.inOutCirc).toBeDefined();
     });
 
-    it('inQuadメソッドを持つ', function() {
+    it('inQuadプロパティを持つ', function() {
         expect(ease.inQuad).toBeDefined();
     });
-    it('outQuadメソッドを持つ', function() {
+    it('outQuadプロパティを持つ', function() {
         expect(ease.outQuad).toBeDefined();
     });
-    it('inOutQuadメソッドを持つ', function() {
+    it('inOutQuadプロパティを持つ', function() {
         expect(ease.inOutQuad).toBeDefined();
     });
 
-    it('inBackメソッドを持つ', function() {
+    it('inBackプロパティを持つ', function() {
         expect(ease.inBack).toBeDefined();
     });
-    it('outBackメソッドを持つ', function() {
+    it('outBackプロパティを持つ', function() {
         expect(ease.outBack).toBeDefined();
     });
-    it('inOutBackメソッドを持つ', function() {
+    it('inOutBackプロパティを持つ', function() {
         expect(ease.inOutBack).toBeDefined();
     });
 });
