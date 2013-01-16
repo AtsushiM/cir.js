@@ -18,7 +18,7 @@
                 opacity: '0'
             }, {
                 /* manual: true, */
-                ease: C.cssease.inExpo,
+                ease: C.cssease.inOutBack,
                 duration: 1000,
                 onComplete: function(e) {
                     console.log(e);

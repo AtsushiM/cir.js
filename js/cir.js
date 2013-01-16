@@ -825,32 +825,8 @@ Mine = Global.Animation = klass({
         if (!isArray(ease)) {
             ease = [ease];
         }
-        // sheet.insertRule('.' + this.id +
-        //     '{' +
-        //         css_prefix + 'animation:' +
-        //         this.id + ' ' +
-        //         duration + 'ms ' +
-        //         ease + ' 0s 1 normal forwards}',
-        //     sheet.cssRules.length);
 
         addCSSRule(sheet, this.id, css_prefix, duration, ease);
-
-        function addCSSRule(sheet, id, css_prefix, duration, eases) {
-            var i = 0,
-                len = eases.length,
-                rule = '';
-
-            for (; i < len; i++) {
-                rule += css_prefix + 'animation:' +
-                        id + ' ' +
-                        duration + 'ms ' +
-                        eases[i] + ' 0s 1 normal forwards;';
-            }
-
-            sheet.insertRule('.' + id +
-                '{' + rule + '}',
-                sheet.cssRules.length);
-        }
 
         if (!option.manual) {
             this.start();
@@ -906,6 +882,23 @@ Mine = Global.Animation = klass({
 });
 Mine.id = 0;
 Mine.Duration = 500;
+
+function addCSSRule(sheet, id, css_prefix, duration, eases) {
+    var i = 0,
+        len = eases.length,
+        rule = '';
+
+    for (; i < len; i++) {
+        rule += css_prefix + 'animation:' +
+                id + ' ' +
+                duration + 'ms ' +
+                eases[i] + ' 0s 1 normal forwards;';
+    }
+
+    sheet.insertRule('.' + id +
+        '{' + rule + '}',
+        sheet.cssRules.length);
+}
 }());
 /* Test: "../../spec/_src/src/Event/test.js" */
 var isTouch = isTouchDevice(),
@@ -2481,8 +2474,6 @@ for (; i < len; i++) {
     }
 }
 
-/* console.log(support, prefix, css_prefix, event_key); */
-
 Global.Transition = klass({
     init: function(element, property, option) {
         if (!support) {
@@ -2499,6 +2490,10 @@ Global.Transition = klass({
 
         ease = option.ease || 'ease';
 
+        if (isArray(ease)) {
+            ease = [ease];
+        }
+
         for (i in property) {
             transProp.push(i);
         }
@@ -2506,7 +2501,7 @@ Global.Transition = klass({
         animeProp[css_prefix + 'transition-property'] = transProp.join(' ');
         animeProp[css_prefix + 'transition-duration'] =
             (option.duration || Global.Transition.Duration) + 'ms';
-        animeProp[css_prefix + 'transition-timing-function'] = ease;
+        animeProp[css_prefix + 'transition-timing-function'] = ease[0];
 
         this.element = element;
         this.property = animeProp;

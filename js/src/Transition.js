@@ -32,8 +32,6 @@ for (; i < len; i++) {
     }
 }
 
-/* console.log(support, prefix, css_prefix, event_key); */
-
 Global.Transition = klass({
     init: function(element, property, option) {
         if (!support) {
@@ -50,6 +48,10 @@ Global.Transition = klass({
 
         ease = option.ease || 'ease';
 
+        if (isArray(ease)) {
+            ease = [ease];
+        }
+
         for (i in property) {
             transProp.push(i);
         }
@@ -57,7 +59,7 @@ Global.Transition = klass({
         animeProp[css_prefix + 'transition-property'] = transProp.join(' ');
         animeProp[css_prefix + 'transition-duration'] =
             (option.duration || Global.Transition.Duration) + 'ms';
-        animeProp[css_prefix + 'transition-timing-function'] = ease;
+        animeProp[css_prefix + 'transition-timing-function'] = ease[0];
 
         this.element = element;
         this.property = animeProp;
