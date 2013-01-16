@@ -1,5 +1,8 @@
 /* Test: "../../spec/_src/src/ease/test.js" */
 Global.ease = {
+    linear: function(time, from, dist, duration) {
+        return dist * time / duration + from;
+    },
     inCubic: function(time, from, dist, duration) {
         return dist * Math.pow(time / duration, 3) + from;
     },

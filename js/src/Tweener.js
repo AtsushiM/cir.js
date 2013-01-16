@@ -32,8 +32,9 @@ Global.Tweener = klass({
         }
     },
     properties: {
+        // easeOutExpo
         _ease: function(time, from, dist, duration) {
-            return dist * time / duration + from;
+            return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
         },
         _requestAnimationFrame: (function() {
             if (win.requestAnimationFrame) {

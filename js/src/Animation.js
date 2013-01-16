@@ -65,10 +65,6 @@ Global.Animation = klass({
             if (isNumber(prop[i])) {
                 prop[i] = prop[i] + 'px';
             }
-            if (i === 'transform') {
-                prop[css_prefix + i] = prop[i];
-                delete prop[i];
-            }
         }
 
         this.property = prop;

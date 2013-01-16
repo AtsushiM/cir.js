@@ -14,7 +14,7 @@
     $cssanime.on(C.event.click, function() {
         var mine = this,
             anime = new C.Transition(mine, {
-                'transform': 'rotate(180deg)',
+                '-webkit-transform': 'rotate(180deg)',
                 opacity: '0'
             }, {
                 /* manual: true, */
@@ -24,7 +24,7 @@
                     console.log(e);
 
                     new C.Transition(mine, {
-                        'transform': 'rotate(0deg)',
+                        '-webkit-transform': 'rotate(0deg)',
                         opacity: '1'
                     });
                 }

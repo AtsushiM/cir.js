@@ -589,6 +589,9 @@ function splitSuffix(value) {
 }());
 /* Test: "../../spec/_src/src/ease/test.js" */
 Global.ease = {
+    linear: function(time, from, dist, duration) {
+        return dist * time / duration + from;
+    },
     inCubic: function(time, from, dist, duration) {
         return dist * Math.pow(time / duration, 3) + from;
     },
@@ -699,6 +702,8 @@ Global.ease = {
 };
 /* Test: "../../spec/_src/src/cssease/test.js" */
 Global.cssease = {
+    linear: 'linear',
+
     inCubic: 'cubic-bezier(0.550, 0.055, 0.675, 0.190)',
     outCubic: 'cubic-bezier(0.215, 0.610, 0.355, 1.000)',
     inOutCubic: 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
@@ -727,7 +732,7 @@ Global.cssease = {
     outQuad: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
     inOutQuad: 'cubic-bezier(0.455, 0.030, 0.515, 0.955)',
 
-    inBack: 'cubic-bezier(0.600, 0, 0.735, 0.045)',
+    inBack: 'cubic-bezier(0.600, -0.280, 0.735, 0.045)',
     outBack: 'cubic-bezier(0.175, 0.885, 0.320, 1.275)',
     inOutBack: 'cubic-bezier(0.680, -0.550, 0.265, 1.550)'
 };
@@ -797,10 +802,6 @@ Global.Animation = klass({
             prop[i] = property[i];
             if (isNumber(prop[i])) {
                 prop[i] = prop[i] + 'px';
-            }
-            if (i === 'transform') {
-                prop[css_prefix + i] = prop[i];
-                delete prop[i];
             }
         }
 
@@ -2472,11 +2473,6 @@ Global.Transition = klass({
             transProp.push(i);
         }
 
-        if (animeProp.transform) {
-            animeProp[css_prefix + 'transform'] = animeProp.transform;
-            delete animeProp.transform;
-        }
-
         animeProp[css_prefix + 'transition-property'] = transProp.join(' ');
         animeProp[css_prefix + 'transition-duration'] =
             (option.duration || Global.Transition.Duration) + 'ms';
@@ -2550,8 +2546,9 @@ Global.Tweener = klass({
         }
     },
     properties: {
+        // easeOutExpo
         _ease: function(time, from, dist, duration) {
-            return dist * time / duration + from;
+            return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
         },
         _requestAnimationFrame: (function() {
             if (win.requestAnimationFrame) {

@@ -1,5 +1,7 @@
 /* Test: "../../spec/_src/src/cssease/test.js" */
 Global.cssease = {
+    linear: 'linear',
+
     inCubic: 'cubic-bezier(0.550, 0.055, 0.675, 0.190)',
     outCubic: 'cubic-bezier(0.215, 0.610, 0.355, 1.000)',
     inOutCubic: 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
@@ -28,7 +30,7 @@ Global.cssease = {
     outQuad: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
     inOutQuad: 'cubic-bezier(0.455, 0.030, 0.515, 0.955)',
 
-    inBack: 'cubic-bezier(0.600, 0, 0.735, 0.045)',
+    inBack: 'cubic-bezier(0.600, -0.280, 0.735, 0.045)',
     outBack: 'cubic-bezier(0.175, 0.885, 0.320, 1.275)',
     inOutBack: 'cubic-bezier(0.680, -0.550, 0.265, 1.550)'
 };

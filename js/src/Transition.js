@@ -54,11 +54,6 @@ Global.Transition = klass({
             transProp.push(i);
         }
 
-        if (animeProp.transform) {
-            animeProp[css_prefix + 'transform'] = animeProp.transform;
-            delete animeProp.transform;
-        }
-
         animeProp[css_prefix + 'transition-property'] = transProp.join(' ');
         animeProp[css_prefix + 'transition-duration'] =
             (option.duration || Global.Transition.Duration) + 'ms';
