@@ -11,6 +11,10 @@ describe('Mobileは', function() {
         // clear
     });
 
+    it('getZoom()で画面の拡大率を取得する', function() {
+        expect(mb.getZoom()).toBeGreaterThan(0);
+    });
+
     it('isAndroid()でAndroid端末かどうかチェック', function() {
         expect(mb.isAndroid()).toBeFalsy();
         expect(mb.isAndroid('Android')).toBeTruthy();

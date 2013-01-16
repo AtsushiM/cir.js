@@ -1749,6 +1749,9 @@ Global.LocalStorage = klass({
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 Global.Mobile = klass({
     properties: {
+        getZoom: function() {
+            return doc.body.clientWidth / win.innerWidth;
+        },
         isAndroid: function(ua) {
             return checkUserAgent(/Android/i, ua);
         },
