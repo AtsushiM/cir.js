@@ -16,7 +16,8 @@ var prop = [
     css_prefix,
     event_key = 'transition',
     i = 0,
-    len = prop.length;
+    len = prop.length,
+    style;
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
@@ -28,6 +29,10 @@ for (; i < len; i++) {
             event_key = prefix + 'Transition';
         }
 
+        style = append($('head'),
+            create('style'));
+        style.type = 'text/css';
+
         break;
     }
 }
@@ -38,17 +43,22 @@ Global.Transition = klass({
             return false;
         }
 
-        var transProp = [],
-            animeProp = override({}, property),
-            i,
-            ease;
-
         option = option || {};
         option.onComplete = option.onComplete || nullFunction;
 
-        ease = option.ease || 'ease';
+        Global.Transition.id++;
+        this.id = 'cirtrans' + Global.Transition.id;
 
-        if (isArray(ease)) {
+        this.style = style;
+
+        var transProp = [],
+            animeProp = override({}, property),
+            i,
+            duration = option.duration || Global.Transition.Duration,
+            ease = option.ease || 'ease',
+            sheet = style.sheet;
+
+        if (!isArray(ease)) {
             ease = [ease];
         }
 
@@ -56,18 +66,11 @@ Global.Transition = klass({
             transProp.push(i);
         }
 
-        animeProp[css_prefix + 'transition-property'] = transProp.join(' ');
-        animeProp[css_prefix + 'transition-duration'] =
-            (option.duration || Global.Transition.Duration) + 'ms';
-        animeProp[css_prefix + 'transition-timing-function'] = ease[0];
+        addCSSRule(sheet, this.id, css_prefix, duration, ease, transProp);
 
         this.element = element;
-        this.property = animeProp;
+        this.property = property;
         this.option = option;
-
-        this._stopprop = {};
-        this._stopprop[css_prefix + 'transition-property'] =
-        this._stopprop[css_prefix + 'transition-duration'] = '';
 
         if (!option.manual) {
             this.start();
@@ -85,13 +88,50 @@ Global.Transition = klass({
             };
 
             on(mine.element, event_key + 'End', mine._endfunc);
+            addClass(mine.element, mine.id);
             css(mine.element, mine.property);
         },
         stop: function() {
+            var sheet = this.style.sheet,
+                rule = sheet.cssRules,
+                len = rule.length,
+                name;
+
             off(this.element, event_key + 'End', this._endfunc);
-            css(this.element, this._stopprop);
+            removeClass(this.element, this.id);
+
+            for (; len--;) {
+                name = rule[len].name ||
+                    ('' + rule[len].selectorText).split('.')[1];
+
+                if (name === this.id) {
+                    sheet.deleteRule(len);
+                    break;
+                }
+            }
         }
     }
 });
+Global.Transition.id = 0;
 Global.Transition.Duration = 500;
+
+function addCSSRule(sheet, id, css_prefix, duration, eases, transProp) {
+    var i = 0,
+        len = eases.length,
+        rule = '';
+
+    rule +=
+        css_prefix + 'transition-property:' + transProp.join(' ') + ';' +
+        css_prefix + 'transition-duration:' + duration + 'ms;';
+
+    for (; i < len; i++) {
+        rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
+    }
+
+    console.log('.' + id +
+        '{' + rule + '}');
+    sheet.insertRule('.' + id +
+        '{' + rule + '}',
+        sheet.cssRules.length);
+}
 }());

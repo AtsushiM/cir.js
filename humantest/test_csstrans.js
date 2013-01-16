@@ -15,7 +15,7 @@
         var mine = this,
             anime = new C.Transition(mine, {
                 '-webkit-transform': 'rotate(180deg)',
-                opacity: '0'
+                opacity: '0.5'
             }, {
                 /* manual: true, */
                 ease: C.cssease.inOutBack,

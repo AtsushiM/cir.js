@@ -108,8 +108,7 @@ Mine = Global.Animation = klass({
                 var sheet = mine.style.sheet,
                     rule = sheet.cssRules,
                     len = rule.length,
-                    name,
-                    dels = [];
+                    name;
 
                 mine._off();
 
