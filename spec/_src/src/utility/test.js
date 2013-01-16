@@ -129,6 +129,11 @@ describe('utilityは', function() {
         expect(util.isBoolean(false)).toBeTruthy();
         expect(util.isBoolean(1)).toBeFalsy();
     });
+    it('isArray(vars)でvarsがArrayかどうか調べる', function() {
+        expect(util.isArray([])).toBeTruthy();
+        expect(util.isArray([1,2,3])).toBeTruthy();
+        expect(util.isArray({})).toBeFalsy();
+    });
 
     it('nullFunction()はnullを返す', function() {
         expect(util.nullFunction()).toEqual(null);

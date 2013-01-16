@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Global.Tweener = klass({
+(function() {
+var Mine = Global.Tweener = klass({
     init: function(target, property, option) {
         var name,
             prop;
@@ -20,7 +21,7 @@ Global.Tweener = klass({
             this.property.push(prop);
         }
 
-        this.duration = option.duration || Global.Tweener.Duration;
+        this.duration = option.duration || Mine.Duration;
         this.ease = option.ease || this._ease;
         this.onComplete = option.onComplete;
 
@@ -61,12 +62,12 @@ Global.Tweener = klass({
             }
 
             return function(callback) {
-                setTimeout(callback, 1000 / Global.Tweener.FPS);
+                setTimeout(callback, 1000 / Mine.FPS);
             };
         }()),
         loop: function() {
             var mine = this,
-                items = Global.Tweener.Items,
+                items = Mine.Items,
                 item,
                 now = Date.now(),
                 time,
@@ -84,7 +85,7 @@ Global.Tweener = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Global.Tweener._setProp(item.target, prop, item.ease(
+                        Mine._setProp(item.target, prop, item.ease(
                             time,
                             prop.from,
                             prop.distance,
@@ -96,7 +97,7 @@ Global.Tweener = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Global.Tweener._setProp(item.target, prop, prop.to);
+                        Mine._setProp(item.target, prop, prop.to);
                     }
                     if (item.onComplete) {
                         item.onComplete();
@@ -120,25 +121,26 @@ Global.Tweener = klass({
 
             mine.begin = Date.now();
 
-            Global.Tweener.Items.push(mine);
-            if (!Global.Tweener.timerId) {
-                Global.Tweener.timerId = 1;
+            Mine.Items.push(mine);
+            if (!Mine.timerId) {
+                Mine.timerId = 1;
                 mine._requestAnimationFrame(function() {
                     mine.loop();
                 });
             }
         },
         stop: function() {
-            Global.Tweener.Items = [];
-            clearInterval(Global.Tweener.timerId);
-            Global.Tweener.timerId = null;
+            Mine.Items = [];
+            clearInterval(Mine.timerId);
+            Mine.timerId = null;
         }
     }
 });
-Global.Tweener._setProp = function(target, prop, point) {
+Mine._setProp = function(target, prop, point) {
     target[prop.name] = prop.prefix + point + prop.suffix;
 };
-/* Global.Tweener.timerId = null; */
-Global.Tweener.Items = [];
-Global.Tweener.FPS = 30;
-Global.Tweener.Duration = 500;
+/* Mine.timerId = null; */
+Mine.Items = [];
+Mine.FPS = 30;
+Mine.Duration = 500;
+}());

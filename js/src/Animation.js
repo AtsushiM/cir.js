@@ -15,7 +15,8 @@ var prop = [
     event_key = 'animation',
     i = 0,
     len = prop.length,
-    style;
+    style,
+    Mine;
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
@@ -35,7 +36,7 @@ for (; i < len; i++) {
     }
 }
 
-Global.Animation = klass({
+Mine = Global.Animation = klass({
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -47,12 +48,12 @@ Global.Animation = klass({
 
         this.element = element;
 
-        Global.Animation.id++;
-        this.id = 'ciranim' + Global.Animation.id;
+        Mine.id++;
+        this.id = 'ciranim' + Mine.id;
 
         this.style = style;
 
-        var duration = option.duration || Global.Animation.Duration,
+        var duration = option.duration || Mine.Duration,
             ease = option.ease || 'ease',
             sheet = style.sheet;
 
@@ -79,13 +80,35 @@ Global.Animation = klass({
             '@' + css_prefix + 'keyframes ' + this.id + '{to' + prop + '}',
             sheet.cssRules.length);
 
-        sheet.insertRule('.' + this.id +
-            '{' +
-                css_prefix + 'animation:' +
-                this.id + ' ' +
-                duration + 'ms ' +
-                ease + ' 0s 1 normal forwards}',
-            sheet.cssRules.length);
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
+        // sheet.insertRule('.' + this.id +
+        //     '{' +
+        //         css_prefix + 'animation:' +
+        //         this.id + ' ' +
+        //         duration + 'ms ' +
+        //         ease + ' 0s 1 normal forwards}',
+        //     sheet.cssRules.length);
+
+        addCSSRule(sheet, this.id, css_prefix, duration, ease);
+
+        function addCSSRule(sheet, id, css_prefix, duration, eases) {
+            var i = 0,
+                len = eases.length,
+                rule = '';
+
+            for (; i < len; i++) {
+                rule += css_prefix + 'animation:' +
+                        id + ' ' +
+                        duration + 'ms ' +
+                        eases[i] + ' 0s 1 normal forwards;';
+            }
+
+            sheet.insertRule('.' + id +
+                '{' + rule + '}',
+                sheet.cssRules.length);
+        }
 
         if (!option.manual) {
             this.start();
@@ -139,6 +162,6 @@ Global.Animation = klass({
         }
     }
 });
-Global.Animation.id = 0;
-Global.Animation.Duration = 500;
+Mine.id = 0;
+Mine.Duration = 500;
 }());

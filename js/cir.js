@@ -97,6 +97,9 @@ function isFunction(vars) {
 function isBoolean(vars) {
     return is('Boolean', vars);
 }
+function isArray(vars) {
+    return is('Array', vars);
+}
 function isTouchDevice() {
     return 'ontouchstart' in win;
 }
@@ -129,6 +132,7 @@ Global.utility = {
     isString: isString,
     isFunction: isFunction,
     isBoolean: isBoolean,
+    isArray: isArray,
     isTouchDevice: isTouchDevice,
     nullFunction: nullFunction,
     preventDefault: preventDefault,
@@ -732,9 +736,9 @@ Global.cssease = {
     outQuad: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
     inOutQuad: 'cubic-bezier(0.455, 0.030, 0.515, 0.955)',
 
-    inBack: 'cubic-bezier(0.600, -0.280, 0.735, 0.045)',
-    outBack: 'cubic-bezier(0.175, 0.885, 0.320, 1.275)',
-    inOutBack: 'cubic-bezier(0.680, -0.550, 0.265, 1.550)'
+    inBack: ['cubic-bezier(0.600, 0, 0.735, 0.045)', 'cubic-bezier(0.600, -0.280, 0.735, 0.045)'],
+    outBack: ['cubic-bezier(0.175, 0.885, 0.320, 1)', 'cubic-bezier(0.175, 0.885, 0.320, 1.275)'],
+    inOutBack: ['cubic-bezier(0.680, 0, 0.265, 1)', 'cubic-bezier(0.680, -0.550, 0.265, 1.550)']
 };
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
@@ -753,7 +757,8 @@ var prop = [
     event_key = 'animation',
     i = 0,
     len = prop.length,
-    style;
+    style,
+    Mine;
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
@@ -773,7 +778,7 @@ for (; i < len; i++) {
     }
 }
 
-Global.Animation = klass({
+Mine = Global.Animation = klass({
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -785,12 +790,12 @@ Global.Animation = klass({
 
         this.element = element;
 
-        Global.Animation.id++;
-        this.id = 'ciranim' + Global.Animation.id;
+        Mine.id++;
+        this.id = 'ciranim' + Mine.id;
 
         this.style = style;
 
-        var duration = option.duration || Global.Animation.Duration,
+        var duration = option.duration || Mine.Duration,
             ease = option.ease || 'ease',
             sheet = style.sheet;
 
@@ -817,13 +822,35 @@ Global.Animation = klass({
             '@' + css_prefix + 'keyframes ' + this.id + '{to' + prop + '}',
             sheet.cssRules.length);
 
-        sheet.insertRule('.' + this.id +
-            '{' +
-                css_prefix + 'animation:' +
-                this.id + ' ' +
-                duration + 'ms ' +
-                ease + ' 0s 1 normal forwards}',
-            sheet.cssRules.length);
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
+        // sheet.insertRule('.' + this.id +
+        //     '{' +
+        //         css_prefix + 'animation:' +
+        //         this.id + ' ' +
+        //         duration + 'ms ' +
+        //         ease + ' 0s 1 normal forwards}',
+        //     sheet.cssRules.length);
+
+        addCSSRule(sheet, this.id, css_prefix, duration, ease);
+
+        function addCSSRule(sheet, id, css_prefix, duration, eases) {
+            var i = 0,
+                len = eases.length,
+                rule = '';
+
+            for (; i < len; i++) {
+                rule += css_prefix + 'animation:' +
+                        id + ' ' +
+                        duration + 'ms ' +
+                        eases[i] + ' 0s 1 normal forwards;';
+            }
+
+            sheet.insertRule('.' + id +
+                '{' + rule + '}',
+                sheet.cssRules.length);
+        }
 
         if (!option.manual) {
             this.start();
@@ -877,8 +904,8 @@ Global.Animation = klass({
         }
     }
 });
-Global.Animation.id = 0;
-Global.Animation.Duration = 500;
+Mine.id = 0;
+Mine.Duration = 500;
 }());
 /* Test: "../../spec/_src/src/Event/test.js" */
 var isTouch = isTouchDevice(),
@@ -2516,7 +2543,8 @@ Global.Transition = klass({
 Global.Transition.Duration = 500;
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Global.Tweener = klass({
+(function() {
+var Mine = Global.Tweener = klass({
     init: function(target, property, option) {
         var name,
             prop;
@@ -2537,7 +2565,7 @@ Global.Tweener = klass({
             this.property.push(prop);
         }
 
-        this.duration = option.duration || Global.Tweener.Duration;
+        this.duration = option.duration || Mine.Duration;
         this.ease = option.ease || this._ease;
         this.onComplete = option.onComplete;
 
@@ -2578,12 +2606,12 @@ Global.Tweener = klass({
             }
 
             return function(callback) {
-                setTimeout(callback, 1000 / Global.Tweener.FPS);
+                setTimeout(callback, 1000 / Mine.FPS);
             };
         }()),
         loop: function() {
             var mine = this,
-                items = Global.Tweener.Items,
+                items = Mine.Items,
                 item,
                 now = Date.now(),
                 time,
@@ -2601,7 +2629,7 @@ Global.Tweener = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Global.Tweener._setProp(item.target, prop, item.ease(
+                        Mine._setProp(item.target, prop, item.ease(
                             time,
                             prop.from,
                             prop.distance,
@@ -2613,7 +2641,7 @@ Global.Tweener = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Global.Tweener._setProp(item.target, prop, prop.to);
+                        Mine._setProp(item.target, prop, prop.to);
                     }
                     if (item.onComplete) {
                         item.onComplete();
@@ -2637,28 +2665,29 @@ Global.Tweener = klass({
 
             mine.begin = Date.now();
 
-            Global.Tweener.Items.push(mine);
-            if (!Global.Tweener.timerId) {
-                Global.Tweener.timerId = 1;
+            Mine.Items.push(mine);
+            if (!Mine.timerId) {
+                Mine.timerId = 1;
                 mine._requestAnimationFrame(function() {
                     mine.loop();
                 });
             }
         },
         stop: function() {
-            Global.Tweener.Items = [];
-            clearInterval(Global.Tweener.timerId);
-            Global.Tweener.timerId = null;
+            Mine.Items = [];
+            clearInterval(Mine.timerId);
+            Mine.timerId = null;
         }
     }
 });
-Global.Tweener._setProp = function(target, prop, point) {
+Mine._setProp = function(target, prop, point) {
     target[prop.name] = prop.prefix + point + prop.suffix;
 };
-/* Global.Tweener.timerId = null; */
-Global.Tweener.Items = [];
-Global.Tweener.FPS = 30;
-Global.Tweener.Duration = 500;
+/* Mine.timerId = null; */
+Mine.Items = [];
+Mine.FPS = 30;
+Mine.Duration = 500;
+}());
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = klass({
     properties: {

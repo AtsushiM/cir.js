@@ -92,6 +92,9 @@ function isFunction(vars) {
 function isBoolean(vars) {
     return is('Boolean', vars);
 }
+function isArray(vars) {
+    return is('Array', vars);
+}
 function isTouchDevice() {
     return 'ontouchstart' in win;
 }
@@ -124,6 +127,7 @@ Global.utility = {
     isString: isString,
     isFunction: isFunction,
     isBoolean: isBoolean,
+    isArray: isArray,
     isTouchDevice: isTouchDevice,
     nullFunction: nullFunction,
     preventDefault: preventDefault,
