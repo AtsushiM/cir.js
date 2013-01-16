@@ -11,6 +11,10 @@ describe('csseaseは', function() {
         // clear
     });
 
+    it('linearプロパティを持つ', function() {
+        expect(ease.linear).toBeDefined();
+    });
+
     it('inCubicプロパティを持つ', function() {
         expect(ease.inCubic).toBeDefined();
     });

@@ -1,12 +1,12 @@
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var prop = [
-        'webkitAnimation',
+        'animation',
+        'webkitAnimation'
         // 'MozAnimation',
         // 'mozAnimation',
         // 'msAnimation',
         // 'oAnimation',
-        'animation'
     ],
     el = create('p'),
     support = false,
@@ -92,9 +92,14 @@ Global.Animation = klass({
         }
     },
     properties: {
+        _off: function() {
+            off(this.element, event_key + 'End', this.end);
+            off(this.element, 'animationend', this.end);
+        },
         start: function() {
             var mine = this;
 
+            mine.end = endaction;
             on(mine.element, event_key + 'End', endaction);
             on(mine.element, 'animationend', endaction);
 
@@ -107,8 +112,7 @@ Global.Animation = klass({
                     name,
                     dels = [];
 
-                off(mine.element, event_key + 'End');
-                off(mine.element, 'animationend');
+                mine._off();
 
                 css(mine.element, mine.property);
                 removeClass(mine.element, mine.id);
@@ -131,8 +135,7 @@ Global.Animation = klass({
             stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
             css(this.element, stopobj);
-            off(this.element, event_key + 'End');
-            off(this.element, 'animationend');
+            this._off();
         }
     }
 });

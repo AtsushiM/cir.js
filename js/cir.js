@@ -563,7 +563,7 @@ function convertTweenerParam(element, params) {
         tosplit = splitSuffix(params[name]);
         from = styled.getPropertyValue(name);
 
-        if (from === 'none') {
+        if (!from || from === 'none') {
             from = 0;
         }
         else {
@@ -739,12 +739,12 @@ Global.cssease = {
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var prop = [
-        'webkitAnimation',
+        'animation',
+        'webkitAnimation'
         // 'MozAnimation',
         // 'mozAnimation',
         // 'msAnimation',
         // 'oAnimation',
-        'animation'
     ],
     el = create('p'),
     support = false,
@@ -830,9 +830,14 @@ Global.Animation = klass({
         }
     },
     properties: {
+        _off: function() {
+            off(this.element, event_key + 'End', this.end);
+            off(this.element, 'animationend', this.end);
+        },
         start: function() {
             var mine = this;
 
+            mine.end = endaction;
             on(mine.element, event_key + 'End', endaction);
             on(mine.element, 'animationend', endaction);
 
@@ -845,8 +850,7 @@ Global.Animation = klass({
                     name,
                     dels = [];
 
-                off(mine.element, event_key + 'End');
-                off(mine.element, 'animationend');
+                mine._off();
 
                 css(mine.element, mine.property);
                 removeClass(mine.element, mine.id);
@@ -869,8 +873,7 @@ Global.Animation = klass({
             stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
             css(this.element, stopobj);
-            off(this.element, event_key + 'End');
-            off(this.element, 'animationend');
+            this._off();
         }
     }
 });
@@ -2422,12 +2425,12 @@ Global.Timer = function(config) {
 'use strict';
 
 var prop = [
-        'webkitTransitionProperty',
+        'transitionProperty',
+        'webkitTransitionProperty'
         // 'MozTransitionProperty',
         // 'mozTransitionProperty',
         // 'msTransitionProperty',
-        // 'oTransitionProperty',
-        'transitionProperty'
+        // 'oTransitionProperty'
     ],
     el = create('p'),
     support = false,
@@ -2538,10 +2541,7 @@ Global.Tweener = klass({
         this.ease = option.ease || this._ease;
         this.onComplete = option.onComplete;
 
-        this.begin = Date.now();
-
-        Global.Tweener.Items.push(this);
-        if (!Global.Tweener.timerId) {
+        if (!option.manual) {
             this.start();
         }
     },
@@ -2635,10 +2635,15 @@ Global.Tweener = klass({
         start: function() {
             var mine = this;
 
-            Global.Tweener.timerId = 1;
-            mine._requestAnimationFrame(function() {
-                mine.loop();
-            });
+            mine.begin = Date.now();
+
+            Global.Tweener.Items.push(mine);
+            if (!Global.Tweener.timerId) {
+                Global.Tweener.timerId = 1;
+                mine._requestAnimationFrame(function() {
+                    mine.loop();
+                });
+            }
         },
         stop: function() {
             Global.Tweener.Items = [];

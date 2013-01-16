@@ -11,6 +11,10 @@ describe('easeは', function() {
         // clear
     });
 
+    it('linearメソッドを持つ', function() {
+        expect(ease.linear).toBeDefined();
+    });
+
     it('inCubicメソッドを持つ', function() {
         expect(ease.inCubic).toBeDefined();
     });

@@ -15,10 +15,13 @@
                 }
             },
             {
+                manual: true,
                 ease: C.ease.inBack,
                 onComplete: testAnimate
             }
         );
+
+    tweener.start();
 
     function testAnimate() {
         var $ = C.$,

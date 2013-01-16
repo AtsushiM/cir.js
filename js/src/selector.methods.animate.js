@@ -64,7 +64,7 @@ function convertTweenerParam(element, params) {
         tosplit = splitSuffix(params[name]);
         from = styled.getPropertyValue(name);
 
-        if (from === 'none') {
+        if (!from || from === 'none') {
             from = 0;
         }
         else {

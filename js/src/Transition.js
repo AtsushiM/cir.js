@@ -3,12 +3,12 @@
 'use strict';
 
 var prop = [
-        'webkitTransitionProperty',
+        'transitionProperty',
+        'webkitTransitionProperty'
         // 'MozTransitionProperty',
         // 'mozTransitionProperty',
         // 'msTransitionProperty',
-        // 'oTransitionProperty',
-        'transitionProperty'
+        // 'oTransitionProperty'
     ],
     el = create('p'),
     support = false,

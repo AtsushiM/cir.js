@@ -24,10 +24,7 @@ Global.Tweener = klass({
         this.ease = option.ease || this._ease;
         this.onComplete = option.onComplete;
 
-        this.begin = Date.now();
-
-        Global.Tweener.Items.push(this);
-        if (!Global.Tweener.timerId) {
+        if (!option.manual) {
             this.start();
         }
     },
@@ -121,10 +118,15 @@ Global.Tweener = klass({
         start: function() {
             var mine = this;
 
-            Global.Tweener.timerId = 1;
-            mine._requestAnimationFrame(function() {
-                mine.loop();
-            });
+            mine.begin = Date.now();
+
+            Global.Tweener.Items.push(mine);
+            if (!Global.Tweener.timerId) {
+                Global.Tweener.timerId = 1;
+                mine._requestAnimationFrame(function() {
+                    mine.loop();
+                });
+            }
         },
         stop: function() {
             Global.Tweener.Items = [];
