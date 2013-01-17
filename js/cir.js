@@ -1101,11 +1101,11 @@ Global.Sound = klass({
         getCurrent: function() {
             return this._audio.currentTime;
         },
-        setCurrent: function(num) {
-            this._audio.currentTime = num;
-        },
         getDuration: function() {
             return this._audio.duration;
+        },
+        setCurrent: function(num) {
+            this._audio.currentTime = num;
         },
         play: function() {
             this._audio.play();
@@ -2156,12 +2156,12 @@ Global.Route = klass({
             var i;
 
             if (this.noregex && this.action[action]) {
-                return this.action[action]();
+                return this.action[action](action);
             }
 
             for (i in this.action) {
                 if (action.match(i)) {
-                    this.action[i]();
+                    this.action[i](i);
                 }
             }
         }

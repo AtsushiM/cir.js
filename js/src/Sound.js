@@ -48,11 +48,11 @@ Global.Sound = klass({
         getCurrent: function() {
             return this._audio.currentTime;
         },
-        setCurrent: function(num) {
-            this._audio.currentTime = num;
-        },
         getDuration: function() {
             return this._audio.duration;
+        },
+        setCurrent: function(num) {
+            this._audio.currentTime = num;
         },
         play: function() {
             this._audio.play();

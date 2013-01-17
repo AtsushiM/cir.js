@@ -26,12 +26,12 @@ Global.Route = klass({
             var i;
 
             if (this.noregex && this.action[action]) {
-                return this.action[action]();
+                return this.action[action](action);
             }
 
             for (i in this.action) {
                 if (action.match(i)) {
-                    this.action[i]();
+                    this.action[i](i);
                 }
             }
         }
