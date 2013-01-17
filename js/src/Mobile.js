@@ -38,7 +38,7 @@ Global.Mobile = klass({
         },
         hideAddress: function() {
             on(win, ev.load, hideAddressHandler, false);
-            on(win, ev.orientationchange, hideAddressHandler, false);
+            on(win, ev_orientationchange, hideAddressHandler, false);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -94,7 +94,7 @@ Global.Mobile = klass({
             }
             function set(setfunc, handler) {
                 setfunc(win, ev.load, handler);
-                setfunc(win, ev.orientationchange, handler);
+                setfunc(win, ev_orientationchange, handler);
                 setfunc(win, ev.resize, handler);
             }
             function onechange() {

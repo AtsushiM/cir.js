@@ -901,7 +901,9 @@ function addCSSRule(sheet, id, css_prefix, duration, eases) {
 }());
 /* Test: "../../spec/_src/src/Event/test.js" */
 var isTouch = isTouchDevice(),
-    ev;
+    ev,
+    ev_hashchange = 'hashchange',
+    ev_orientationchange = 'orientationchange';
 
 ev = klass({
     init: function(config) {
@@ -923,7 +925,7 @@ ev = klass({
         switchup: isTouch ? 'touchend' : 'mouseup',
         load: 'load',
         change: 'change',
-        hashchange: 'hashchange',
+        /* hashchange: 'hashchange', */
         click: 'click',
         mousedown: 'mousedown',
         mousemove: 'mousemove',
@@ -931,7 +933,7 @@ ev = klass({
         touchstart: 'touchstart',
         touchmove: 'touchmove',
         touchend: 'touchend',
-        orientationchange: 'orientationchange',
+        /* orientationchange: 'orientationchange', */
         resize: 'resize'
     }
 });
@@ -1573,10 +1575,10 @@ Global.ExternalInterface.IOS = klass({
                 }
                 return false;
             };
-            on(win, ev.hashchange, this.ios[name]);
+            on(win, ev_hashchange, this.ios[name]);
         },
         removeCallback: function(name) {
-            off(win, ev.hashchange, this.ios[name]);
+            off(win, ev_hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
@@ -1889,7 +1891,7 @@ Global.Mobile = klass({
         },
         hideAddress: function() {
             on(win, ev.load, hideAddressHandler, false);
-            on(win, ev.orientationchange, hideAddressHandler, false);
+            on(win, ev_orientationchange, hideAddressHandler, false);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -1945,7 +1947,7 @@ Global.Mobile = klass({
             }
             function set(setfunc, handler) {
                 setfunc(win, ev.load, handler);
-                setfunc(win, ev.orientationchange, handler);
+                setfunc(win, ev_orientationchange, handler);
                 setfunc(win, ev.resize, handler);
             }
             function onechange() {

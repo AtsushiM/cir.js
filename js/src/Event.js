@@ -1,6 +1,8 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
 var isTouch = isTouchDevice(),
-    ev;
+    ev,
+    ev_hashchange = 'hashchange',
+    ev_orientationchange = 'orientationchange';
 
 ev = klass({
     init: function(config) {
@@ -22,7 +24,7 @@ ev = klass({
         switchup: isTouch ? 'touchend' : 'mouseup',
         load: 'load',
         change: 'change',
-        hashchange: 'hashchange',
+        /* hashchange: 'hashchange', */
         click: 'click',
         mousedown: 'mousedown',
         mousemove: 'mousemove',
@@ -30,7 +32,7 @@ ev = klass({
         touchstart: 'touchstart',
         touchmove: 'touchmove',
         touchend: 'touchend',
-        orientationchange: 'orientationchange',
+        /* orientationchange: 'orientationchange', */
         resize: 'resize'
     }
 });

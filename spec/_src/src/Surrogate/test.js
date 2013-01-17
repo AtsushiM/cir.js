@@ -10,7 +10,7 @@ describe('Surrogateは', function() {
     function before() {
         // init
         surrogate = new c.Surrogate({
-            delay: 20,
+            delay: 50,
             callback: dammy.callback
         });
     }
@@ -40,7 +40,7 @@ describe('Surrogateは', function() {
         runs(function() {
             surrogate.request('b');
         });
-        waits(30);
+        waits(100);
         runs(function() {
             expect(dammy.callback).toHaveBeenCalledWith('b');
             expect(surrogate.flush.callCount).toEqual(1);
@@ -54,7 +54,7 @@ describe('Surrogateは', function() {
         surrogate.request();
         surrogate.clear();
 
-        waits(30);
+        waits(100);
         runs(function() {
             expect(dammy.callback).not.toHaveBeenCalled();
         });
