@@ -1,4 +1,4 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Audio/test.js" */
 Global.Audio = function(config) {
     if (!win.HTMLAudioElement) {
         return false;

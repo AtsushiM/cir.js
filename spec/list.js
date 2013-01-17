@@ -2,6 +2,7 @@ document.write('\
 <script type="text/template" id="jasmineBaseList">\
 src/Ajax/\n\
 src/Animation/\n\
+src/Audio/\n\
 src/Bind/\n\
 src/CanvasImg/\n\
 src/CanvasRender/\n\
@@ -25,6 +26,7 @@ src/Route/\n\
 src/ScriptLoad/\n\
 src/ServerMeta/\n\
 src/SessionStorage/\n\
+src/Sound/\n\
 src/Surrogate/\n\
 src/Throttle/\n\
 src/Timer/\n\
@@ -46,6 +48,7 @@ src/utility/\n\
 <script type="text/template" id="jasmineClassList">\
 ../../js/src/Ajax.js\n\
 ../../js/src/Animation.js\n\
+../../js/src/Audio.js\n\
 ../../js/src/Bind.js\n\
 ../../js/src/CanvasImg.js\n\
 ../../js/src/CanvasRender.js\n\
@@ -69,6 +72,7 @@ src/utility/\n\
 ../../js/src/ScriptLoad.js\n\
 ../../js/src/ServerMeta.js\n\
 ../../js/src/SessionStorage.js\n\
+../../js/src/Sound.js\n\
 ../../js/src/Surrogate.js\n\
 ../../js/src/Throttle.js\n\
 ../../js/src/Timer.js\n\
@@ -90,6 +94,7 @@ src/utility/\n\
 <script type="text/template" id="jasmineTestList">\
 ../_src/src/Ajax/test.js\n\
 ../_src/src/Animation/test.js\n\
+../_src/src/Audio/test.js\n\
 ../_src/src/Bind/test.js\n\
 ../_src/src/CanvasImg/test.js\n\
 ../_src/src/CanvasRender/test.js\n\
@@ -113,6 +118,7 @@ src/utility/\n\
 ../_src/src/ScriptLoad/test.js\n\
 ../_src/src/ServerMeta/test.js\n\
 ../_src/src/SessionStorage/test.js\n\
+../_src/src/Sound/test.js\n\
 ../_src/src/Surrogate/test.js\n\
 ../_src/src/Throttle/test.js\n\
 ../_src/src/Timer/test.js\n\

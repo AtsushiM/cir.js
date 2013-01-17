@@ -1016,7 +1016,7 @@ Global.HashController = klass({
         }
     }
 });
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Audio/test.js" */
 Global.Audio = function(config) {
     if (!win.HTMLAudioElement) {
         return false;
@@ -1051,7 +1051,7 @@ Global.Audio = function(config) {
 
     return audio;
 };
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Sound/test.js" */
 Global.Sound = klass({
     init: function(config) {
         var mine = this,
@@ -1067,6 +1067,7 @@ Global.Sound = klass({
         config.loop = false;
 
         audio = new Global.Audio(config);
+        mine._audio = audio;
 
         if (!audio) {
             return false;
@@ -1092,8 +1093,6 @@ Global.Sound = klass({
         }
 
         append(doc.body, audio);
-
-        mine._audio = audio;
     },
     properties: {
         getAudio: function() {
