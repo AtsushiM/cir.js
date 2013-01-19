@@ -24,7 +24,11 @@ describe('Soundは', function() {
                 // write code.
             }
         });
-        expect(sound.getAudio().nodeName).toEqual('AUDIO');
+
+        waits(100);
+        runs(function() {
+            expect(sound.getAudio().nodeName).toEqual('AUDIO');
+        });
     });
 
     it('getCurrent()で現在秒数を取得する', function() {
@@ -40,7 +44,11 @@ describe('Soundは', function() {
                 // write code.
             }
         });
-        expect(sound.getCurrent()).toBeGreaterThan(-1);
+
+        waits(100);
+        runs(function() {
+            expect(sound.getCurrent()).toBeGreaterThan(-1);
+        });
     });
 
     it('setCurrent(num)で現在秒数を設定する', function() {
@@ -51,14 +59,16 @@ describe('Soundは', function() {
             loop: false,
             oncanplay: function(e) {
                 // write code.
-                setTimeout(function() {
-                    sound.setCurrent(1);
-                    expect(sound.getCurrent()).toEqual(1);
-                }, 100);
             },
             onended: function(e) {
                 // write code.
             }
+        });
+
+        waits(100);
+        runs(function() {
+            sound.setCurrent(1);
+            expect(sound.getCurrent()).toEqual(1);
         });
     });
 
@@ -70,15 +80,21 @@ describe('Soundは', function() {
             loop: false,
             oncanplay: function(e) {
                 // write code.
-                expect(sound.getDuration()).toBeGreaterThan(0);
             },
             onended: function(e) {
                 // write code.
             }
         });
+
+        waits(100);
+        runs(function() {
+            expect(sound.getDuration()).toBeGreaterThan(0);
+        });
     });
 
     it('play()で再生する', function() {
+        var end = false;
+
         sound = new c.Sound({
             dir: '/spec/common/',
             name: 'tm2_door000',
@@ -86,11 +102,19 @@ describe('Soundは', function() {
             loop: false,
             oncanplay: function(e) {
                 // write code.
-                sound.play();
             },
             onended: function(e) {
-                expect(e).toBeDefined();
+                end = true;
             }
+        });
+
+        waits(100);
+        runs(function() {
+            sound.play();
+        });
+        waits(1500);
+        runs(function() {
+            expect(end).toBeTruthy();
         });
     });
 
@@ -102,15 +126,20 @@ describe('Soundは', function() {
             loop: false,
             oncanplay: function(e) {
                 // write code.
-                sound.play();
-                setTimeout(function() {
-                    sound.pause();
-                    expect(sound.getCurrent()).not.toEqual(0);
-                }, sound.getDuration() / 2);
             },
             onended: function(e) {
                 expect(0).toEqual(1);
             }
+        });
+
+        waits(100);
+        runs(function() {
+            sound.play();
+        });
+        waits(500);
+        runs(function() {
+            sound.pause();
+            expect(sound.getCurrent()).not.toEqual(0);
         });
     });
 
@@ -121,15 +150,20 @@ describe('Soundは', function() {
             autoplay: false,
             loop: false,
             oncanplay: function(e) {
-                sound.play();
-                setTimeout(function() {
-                    sound.stop();
-                    expect(sound.getCurrent()).toEqual(0);
-                }, sound.getDuration() / 2);
             },
             onended: function(e) {
                 expect(0).toEqual(1);
             }
+        });
+
+        waits(100);
+        runs(function() {
+            sound.play();
+        });
+        waits(500);
+        runs(function() {
+            sound.stop();
+            expect(sound.getCurrent()).toEqual(0);
         });
     });
 });
