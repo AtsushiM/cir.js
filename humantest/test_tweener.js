@@ -1,7 +1,4 @@
 (function() {
-    // C.Tweener.Duration = 1000;
-    // C.Tweener.FPS = 60;
-
     var tweener = new C.Tweener(
             document.getElementById('test').style,
             {
@@ -31,12 +28,8 @@
             width: 50,
             height: 100,
             '-webkit-transform': 'rotate(180deg)'
-        }, 1000, C.ease.outExpo, function() {
+        }, 1000, 'outExpo', function() {
             console.log('anime end.');
         });
-//
-//         setTimeout(function() {
-//             $test.stop();
-//         }, 500);
     }
 }());

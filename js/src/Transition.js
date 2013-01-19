@@ -113,6 +113,7 @@ Global.Transition = klass({
     }
 });
 Global.Transition.id = 0;
+Global.Transition.support = support;
 Global.Transition.Duration = 500;
 
 function addCSSRule(sheet, id, css_prefix, duration, eases, transProp) {
@@ -128,8 +129,6 @@ function addCSSRule(sheet, id, css_prefix, duration, eases, transProp) {
         rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
     }
 
-    console.log('.' + id +
-        '{' + rule + '}');
     sheet.insertRule('.' + id +
         '{' + rule + '}',
         sheet.cssRules.length);

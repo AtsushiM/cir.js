@@ -2,7 +2,17 @@
 (function() {
 'use strict';
 
-var methods = Global.$.methods;
+var methods = Global.$.methods,
+    Animation = Global.Animation || {},
+    csssupport = Animation.support,
+    EASE = {};
+
+if (csssupport && Global.cssease) {
+    EASE = Global.cssease;
+}
+else if (Global.ease) {
+    EASE = Global.ease;
+}
 
 methods.animate = function() {
     if (!this._animate) {
@@ -13,12 +23,11 @@ methods.animate = function() {
 }
 methods.stop = function() {
     if (this._animate) {
-        var tweeners = this._animate,
-            i = 0,
-            len = tweeners.length;
+        var i = 0,
+            len = this._animate.length;
 
         for (; i < len; i++) {
-            tweeners[i].stop();
+            this._animate[i].stop();
         }
 
         this._animate = null;
@@ -29,7 +38,8 @@ methods.stop = function() {
 
 function animate(element, params, duration, ease, callback) {
     var style = element.style,
-        tweener;
+        anime,
+        option;
 
     if (isFunction(duration)) {
         callback = duration;
@@ -40,17 +50,32 @@ function animate(element, params, duration, ease, callback) {
         ease = null;
     }
 
-    tweener = new Global.Tweener(
-        element.style,
-        convertTweenerParam(element, params),
-        {
-            duration: duration,
-            ease: ease,
-            onComplete: callback
-        }
-    );
+    if (ease) {
+        ease = EASE[ease];
+    }
 
-    this._animate.push(tweener);
+    option = {
+        duration: duration,
+        ease: ease,
+        onComplete: callback
+    };
+
+    if (csssupport) {
+        anime = new Animation(
+            element,
+            params,
+            option
+        );
+    }
+    else {
+        anime = new Global.Tweener(
+            element.style,
+            convertTweenerParam(element, params),
+            option
+        );
+    }
+
+    this._animate.push(anime);
 }
 
 function convertTweenerParam(element, params) {

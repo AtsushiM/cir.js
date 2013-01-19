@@ -374,223 +374,6 @@ Global.extend = function(child, _super) {
         prev.apply(this, arguments);
     };
 };
-/* Test: "../../spec/_src/src/selector/test.js" */
-Global.$ = function(query, _parent) {
-    'use strict';
-
-    var $elements,
-        base,
-        instance,
-        i = 0,
-        len;
-
-    _parent = _parent || doc;
-
-    if (isString(query)) {
-        $elements = _parent.querySelectorAll(query);
-    }
-    else {
-        $elements = [query];
-        query = '';
-    }
-    len = $elements.length;
-
-    base = function() {};
-    base.prototype = Global.$.methods;
-    instance = new base();
-
-    instance.length = len;
-    instance._selector = query;
-    instance._parent = _parent;
-
-    for (; i < len; i++) {
-        instance[i] = $elements[i];
-    }
-
-    return instance;
-};
-/* Test: "../../spec/_src/src/selector.methods/test.js" */
-(function() {
-var el= Global.element;
-
-function forExe(_this, func, arg) {
-    var i = 0,
-        len = _this.length,
-        ary = makeAry(arg);
-
-    for (; i < len; i++) {
-        ary[0] = _this[i];
-        func.apply(_this, ary);
-    }
-
-    return _this;
-}
-function exe(_this, func, arg) {
-    var ary = makeAry(arg);
-
-    ary[0] = _this[0];
-
-    return func.apply(null, ary);
-}
-
-function makeAry(arg) {
-    var ary = [null];
-
-    ary.push.apply(ary, arg);
-
-    return ary;
-}
-
-Global.$.methods = {
-    _forexe: forExe,
-    _exe: exe,
-    _argary: makeAry,
-    querySelectorAll: function(query) {
-        return this[0].querySelectorAll(query);
-    },
-    find: function(query) {
-        return Global.$(query, this._parent);
-    },
-    parent: function() {
-        return Global.$(parent(this[0]));
-    },
-    on: function() {
-        return forExe(this, on, arguments);
-    },
-    off: function() {
-        return forExe(this, off, arguments);
-    },
-    show: function() {
-        return forExe(this, show);
-    },
-    hide: function() {
-        return forExe(this, hide);
-    },
-    opacity: function() {
-        return forExe(this, opacity, arguments);
-    },
-    hasClass: function() {
-        return exe(this, hasClass, arguments);
-    },
-    addClass: function() {
-        return forExe(this, addClass, arguments);
-    },
-    removeClass: function() {
-        return forExe(this, removeClass, arguments);
-    },
-    toggleClass: function() {
-        return forExe(this, toggleClass, arguments);
-    },
-    css: function() {
-        return forExe(this, css, arguments);
-    },
-    html: function() {
-        return exe(this, html, arguments);
-    },
-    attr: function() {
-        return exe(this, attr, arguments);
-    },
-    removeAttr: function() {
-        return forExe(this, removeAttr, arguments);
-    },
-    append: function() {
-        return forExe(this, append, arguments);
-    },
-    remove: function() {
-        return forExe(this, remove, arguments);
-    }
-};
-}());
-/* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
-(function() {
-'use strict';
-
-var methods = Global.$.methods;
-
-methods.animate = function() {
-    if (!this._animate) {
-        this._animate = [];
-    }
-
-    return methods._forexe(this, animate, arguments);
-}
-methods.stop = function() {
-    if (this._animate) {
-        var tweeners = this._animate,
-            i = 0,
-            len = tweeners.length;
-
-        for (; i < len; i++) {
-            tweeners[i].stop();
-        }
-
-        this._animate = null;
-    }
-
-    return this;
-}
-
-function animate(element, params, duration, ease, callback) {
-    var style = element.style,
-        tweener;
-
-    if (isFunction(duration)) {
-        callback = duration;
-        duration = null;
-    }
-    if (isFunction(ease) && !callback) {
-        callback = ease;
-        ease = null;
-    }
-
-    tweener = new Global.Tweener(
-        element.style,
-        convertTweenerParam(element, params),
-        {
-            duration: duration,
-            ease: ease,
-            onComplete: callback
-        }
-    );
-
-    this._animate.push(tweener);
-}
-
-function convertTweenerParam(element, params) {
-    var name,
-        styled = computedStyle(element),
-        tosplit,
-        from,
-        retobj = {};
-
-    for (name in params) {
-        tosplit = splitSuffix(params[name]);
-        from = styled.getPropertyValue(name);
-
-        if (!from || from === 'none') {
-            from = 0;
-        }
-        else {
-            from = splitSuffix(from)[2] * 1;
-        }
-
-        retobj[name] = {
-            from: from,
-            to: tosplit[2] * 1 || 0,
-            prefix: tosplit[1],
-            suffix: tosplit[3]
-        };
-    }
-
-    return retobj;
-}
-function splitSuffix(value) {
-    value = value || '';
-    value = '' + value;
-
-    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
-}
-}());
 /* Test: "../../spec/_src/src/ease/test.js" */
 Global.ease = {
     linear: function(time, from, dist, duration) {
@@ -881,6 +664,7 @@ Mine = Global.Animation = klass({
 });
 Mine.id = 0;
 Mine.Duration = 500;
+Mine.support = support;
 
 function addCSSRule(sheet, id, css_prefix, duration, eases) {
     var i = 0,
@@ -897,6 +681,248 @@ function addCSSRule(sheet, id, css_prefix, duration, eases) {
     sheet.insertRule('.' + id +
         '{' + rule + '}',
         sheet.cssRules.length);
+}
+}());
+/* Test: "../../spec/_src/src/selector/test.js" */
+Global.$ = function(query, _parent) {
+    'use strict';
+
+    var $elements,
+        base,
+        instance,
+        i = 0,
+        len;
+
+    _parent = _parent || doc;
+
+    if (isString(query)) {
+        $elements = _parent.querySelectorAll(query);
+    }
+    else {
+        $elements = [query];
+        query = '';
+    }
+    len = $elements.length;
+
+    base = function() {};
+    base.prototype = Global.$.methods;
+    instance = new base();
+
+    instance.length = len;
+    instance._selector = query;
+    instance._parent = _parent;
+
+    for (; i < len; i++) {
+        instance[i] = $elements[i];
+    }
+
+    return instance;
+};
+/* Test: "../../spec/_src/src/selector.methods/test.js" */
+(function() {
+var el= Global.element;
+
+function forExe(_this, func, arg) {
+    var i = 0,
+        len = _this.length,
+        ary = makeAry(arg);
+
+    for (; i < len; i++) {
+        ary[0] = _this[i];
+        func.apply(_this, ary);
+    }
+
+    return _this;
+}
+function exe(_this, func, arg) {
+    var ary = makeAry(arg);
+
+    ary[0] = _this[0];
+
+    return func.apply(null, ary);
+}
+
+function makeAry(arg) {
+    var ary = [null];
+
+    ary.push.apply(ary, arg);
+
+    return ary;
+}
+
+Global.$.methods = {
+    _forexe: forExe,
+    _exe: exe,
+    _argary: makeAry,
+    querySelectorAll: function(query) {
+        return this[0].querySelectorAll(query);
+    },
+    find: function(query) {
+        return Global.$(query, this._parent);
+    },
+    parent: function() {
+        return Global.$(parent(this[0]));
+    },
+    on: function() {
+        return forExe(this, on, arguments);
+    },
+    off: function() {
+        return forExe(this, off, arguments);
+    },
+    show: function() {
+        return forExe(this, show);
+    },
+    hide: function() {
+        return forExe(this, hide);
+    },
+    opacity: function() {
+        return forExe(this, opacity, arguments);
+    },
+    hasClass: function() {
+        return exe(this, hasClass, arguments);
+    },
+    addClass: function() {
+        return forExe(this, addClass, arguments);
+    },
+    removeClass: function() {
+        return forExe(this, removeClass, arguments);
+    },
+    toggleClass: function() {
+        return forExe(this, toggleClass, arguments);
+    },
+    css: function() {
+        return forExe(this, css, arguments);
+    },
+    html: function() {
+        return exe(this, html, arguments);
+    },
+    attr: function() {
+        return exe(this, attr, arguments);
+    },
+    removeAttr: function() {
+        return forExe(this, removeAttr, arguments);
+    },
+    append: function() {
+        return forExe(this, append, arguments);
+    },
+    remove: function() {
+        return forExe(this, remove, arguments);
+    }
+};
+}());
+/* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
+(function() {
+'use strict';
+
+var methods = Global.$.methods,
+    Animation = Global.Animation || {},
+    csssupport = Animation.support,
+    EASE = {};
+
+if (csssupport && Global.cssease) {
+    EASE = Global.cssease;
+}
+else if (Global.ease) {
+    EASE = Global.ease;
+}
+
+methods.animate = function() {
+    if (!this._animate) {
+        this._animate = [];
+    }
+
+    return methods._forexe(this, animate, arguments);
+}
+methods.stop = function() {
+    if (this._animate) {
+        var i = 0,
+            len = this._animate.length;
+
+        for (; i < len; i++) {
+            this._animate[i].stop();
+        }
+
+        this._animate = null;
+    }
+
+    return this;
+}
+
+function animate(element, params, duration, ease, callback) {
+    var style = element.style,
+        anime,
+        option;
+
+    if (isFunction(duration)) {
+        callback = duration;
+        duration = null;
+    }
+    if (isFunction(ease) && !callback) {
+        callback = ease;
+        ease = null;
+    }
+
+    if (ease) {
+        ease = EASE[ease];
+    }
+
+    option = {
+        duration: duration,
+        ease: ease,
+        onComplete: callback
+    };
+
+    if (csssupport) {
+        anime = new Animation(
+            element,
+            params,
+            option
+        );
+    }
+    else {
+        anime = new Global.Tweener(
+            element.style,
+            convertTweenerParam(element, params),
+            option
+        );
+    }
+
+    this._animate.push(anime);
+}
+
+function convertTweenerParam(element, params) {
+    var name,
+        styled = computedStyle(element),
+        tosplit,
+        from,
+        retobj = {};
+
+    for (name in params) {
+        tosplit = splitSuffix(params[name]);
+        from = styled.getPropertyValue(name);
+
+        if (!from || from === 'none') {
+            from = 0;
+        }
+        else {
+            from = splitSuffix(from)[2] * 1;
+        }
+
+        retobj[name] = {
+            from: from,
+            to: tosplit[2] * 1 || 0,
+            prefix: tosplit[1],
+            suffix: tosplit[3]
+        };
+    }
+
+    return retobj;
+}
+function splitSuffix(value) {
+    value = value || '';
+    value = '' + value;
+
+    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 }());
 /* Test: "../../spec/_src/src/Event/test.js" */
@@ -2661,6 +2687,7 @@ Global.Transition = klass({
     }
 });
 Global.Transition.id = 0;
+Global.Transition.support = support;
 Global.Transition.Duration = 500;
 
 function addCSSRule(sheet, id, css_prefix, duration, eases, transProp) {
@@ -2676,8 +2703,6 @@ function addCSSRule(sheet, id, css_prefix, duration, eases, transProp) {
         rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
     }
 
-    console.log('.' + id +
-        '{' + rule + '}');
     sheet.insertRule('.' + id +
         '{' + rule + '}',
         sheet.cssRules.length);

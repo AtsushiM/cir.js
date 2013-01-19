@@ -139,6 +139,7 @@ Mine = Global.Animation = klass({
 });
 Mine.id = 0;
 Mine.Duration = 500;
+Mine.support = support;
 
 function addCSSRule(sheet, id, css_prefix, duration, eases) {
     var i = 0,
