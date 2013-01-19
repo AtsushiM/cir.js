@@ -17,7 +17,9 @@ var prop = [
     event_key = 'transition',
     i = 0,
     len = prop.length,
-    style;
+    style,
+    sheet,
+    Mine;
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
@@ -30,14 +32,16 @@ for (; i < len; i++) {
         }
 
         style = append($('head'),
-            create('style'));
-        style.type = 'text/css';
+            create('style', {
+                type: 'text/css'
+            }));
+        sheet = style.sheet;
 
         break;
     }
 }
 
-Global.Transition = klass({
+Mine = Global.Transition = klass({
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -46,17 +50,14 @@ Global.Transition = klass({
         option = option || {};
         option.onComplete = option.onComplete || nullFunction;
 
-        Global.Transition.id++;
-        this.id = 'cirtrans' + Global.Transition.id;
-
-        this.style = style;
+        Mine.id++;
+        this.id = 'cirtrans' + Mine.id;
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option.duration || Global.Transition.Duration,
-            ease = option.ease || 'ease',
-            sheet = style.sheet;
+            duration = option.duration || Mine.Duration,
+            ease = option.ease || 'ease';
 
         if (!isArray(ease)) {
             ease = [ease];
@@ -66,7 +67,7 @@ Global.Transition = klass({
             transProp.push(i);
         }
 
-        addCSSRule(sheet, this.id, css_prefix, duration, ease, transProp);
+        addCSSRule(this.id, css_prefix, duration, ease, transProp);
 
         this.element = element;
         this.property = property;
@@ -92,8 +93,7 @@ Global.Transition = klass({
             css(mine.element, mine.property);
         },
         stop: function() {
-            var sheet = this.style.sheet,
-                rule = sheet.cssRules,
+            var rule = sheet.cssRules,
                 len = rule.length,
                 name;
 
@@ -112,11 +112,11 @@ Global.Transition = klass({
         }
     }
 });
-Global.Transition.id = 0;
-Global.Transition.support = support;
-Global.Transition.Duration = 500;
+Mine.id = 0;
+Mine.support = support;
+Mine.Duration = 500;
 
-function addCSSRule(sheet, id, css_prefix, duration, eases, transProp) {
+function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
         len = eases.length,
         rule = '';

@@ -2,56 +2,74 @@
 describe('FPSは', function() {
     var c = window.C ? C : Global,
         fps,
-        dammy = {
-            enterframe: function(vars) {
-            }
-        },
+        dammy,
         criterion = 10;
 
     function setFPS() {
-        fps = new c.FPS({
-            criterion: criterion,
-            enterframe: dammy.enterframe
-        });
     }
 
     beforeEach(function() {
         // init
-        setFPS();
     });
     afterEach(function() {
         // clear
         fps.stop();
+        fps = null;
     });
 
     it('singleオプションでsingletonになる', function() {
-        var fps1 = new c.FPS({
-                single: true,
-                enterframe: dammy.enterframe
-            }),
-            fps2 = new c.FPS({
-                single: true,
-                enterframe: dammy.enterframe
-            });
+        var dammy = {
+                enterframe: function() {}
+            };
 
-        expect(fps1).toBe(fps2);
+        fps = new c.FPS({
+            single: true,
+            enterframe: dammy.enterframe
+        });
+
+        expect(fps).toBe(new c.FPS({
+            single: true,
+            enterframe: dammy.enterframe
+        }));
     });
 
     it('getCriterion()で目標FPSを取得する', function() {
+        fps = new c.FPS({
+            criterion: criterion,
+            enterframe: function() {
+            }
+        });
         expect(fps.getCriterion()).toEqual(criterion);
     });
 
     it('getSurver()で現在FPSを取得する', function() {
+        fps = new c.FPS({
+            criterion: criterion,
+            enterframe: function() {
+            }
+        });
         expect(fps.getSurver()).toEqual(fps.getCriterion());
     });
 
     it('getFrameTime()で1フレームあたりのミリ秒数を取得する', function() {
+        fps = new c.FPS({
+            criterion: criterion,
+            enterframe: function() {
+            }
+        });
         expect(fps.getFrameTime()).toEqual(1000 / criterion);
     });
 
     it('enter()で毎フレーム実行するメソッドを実行する', function() {
+        dammy = {
+            enterframe: function() {
+            }
+        };
         spyOn(dammy, 'enterframe').andCallThrough();
-        setFPS();
+        fps = new c.FPS({
+            criterion: criterion,
+            enterframe: dammy.enterframe
+        });
         fps.enter();
 
         expect(dammy.enterframe).toHaveBeenCalledWith({
@@ -61,11 +79,14 @@ describe('FPSは', function() {
     });
 
     it('start()でフレームごとの実行を開始する', function() {
+        dammy = {
+            enterframe: function() {
+            }
+        };
         spyOn(dammy, 'enterframe').andCallThrough();
-        setFPS();
-        waits(100);
-        runs(function() {
-            fps.start();
+        fps = new c.FPS({
+            criterion: criterion,
+            enterframe: dammy.enterframe
         });
         waits(Math.ceil(fps.getFrameTime() * 20));
         runs(function() {
@@ -75,12 +96,18 @@ describe('FPSは', function() {
     });
 
     it('stop()でフレームごとの実行を停止する', function() {
+        dammy = {
+            enterframe: function() {
+            }
+        };
         spyOn(dammy, 'enterframe').andCallThrough();
-        setFPS();
-        fps.start();
+        fps = new c.FPS({
+            criterion: criterion,
+            enterframe: dammy.enterframe
+        });
         fps.stop();
 
-        waits(fps.getFrameTime() + 10);
+        waits(fps.getFrameTime());
         runs(function() {
             expect(dammy.enterframe.callCount).toEqual(0);
         });

@@ -255,10 +255,10 @@ function create(tagname, attribute) {
 }
 
 function on(element, eventname, handler) {
-    element.addEventListener(eventname, handler);
+    element.addEventListener(eventname, handler, false);
 }
 function off(element, eventname, handler) {
-    element.removeEventListener(eventname, handler);
+    element.removeEventListener(eventname, handler, false);
 }
 function show(element) {
     element.style.display = 'block';
@@ -541,6 +541,7 @@ var prop = [
     i = 0,
     len = prop.length,
     style,
+    sheet,
     Mine;
 
 for (; i < len; i++) {
@@ -554,8 +555,10 @@ for (; i < len; i++) {
         }
 
         style = append($('head'),
-            create('style'));
-        style.type = 'text/css';
+            create('style', {
+                type: 'text/css'
+            }));
+        sheet = style.sheet;
 
         break;
     }
@@ -576,11 +579,8 @@ Mine = Global.Animation = klass({
         Mine.id++;
         this.id = 'ciranim' + Mine.id;
 
-        this.style = style;
-
         var duration = option.duration || Mine.Duration,
-            ease = option.ease || 'ease',
-            sheet = style.sheet;
+            ease = option.ease || 'ease';
 
         // property
         var i,
@@ -609,7 +609,7 @@ Mine = Global.Animation = klass({
             ease = [ease];
         }
 
-        addCSSRule(sheet, this.id, css_prefix, duration, ease);
+        addCSSRule(this.id, css_prefix, duration, ease);
 
         if (!option.manual) {
             this.start();
@@ -630,8 +630,7 @@ Mine = Global.Animation = klass({
             addClass(mine.element, mine.id);
 
             function endaction(e) {
-                var sheet = mine.style.sheet,
-                    rule = sheet.cssRules,
+                var rule = sheet.cssRules,
                     len = rule.length,
                     name;
 
@@ -666,7 +665,7 @@ Mine.id = 0;
 Mine.Duration = 500;
 Mine.support = support;
 
-function addCSSRule(sheet, id, css_prefix, duration, eases) {
+function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
         len = eases.length,
         rule = '';
@@ -1149,11 +1148,19 @@ Global.Sound = klass({
 });
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = klass({
-    init: function() {
-        this.xhr = new XMLHttpRequest();
+    init: function(config) {
+        if (config) {
+            this.request(config);
+        }
     },
     properties: {
         request: function(vars) {
+            if (vars.dataType === 'json') {
+                delete vars.dataType;
+
+                return this.json(vars);
+            }
+
             var url = vars.url,
                 callback = vars.callback || nullFunction,
                 error = vars.error || nullFunction,
@@ -1166,7 +1173,7 @@ Global.Ajax = klass({
                     vars.query = {};
                 }
 
-                vars.query['ajaxcash' + Date.now()] = '0';
+                vars.query['cirajaxcash' + Date.now()] = '0';
             }
             if (vars.query) {
                 query = vars.query;
@@ -1192,6 +1199,18 @@ Global.Ajax = klass({
                 return error(xhr);
             }
 
+            if (type === 'GET') {
+                if (url.indexOf('?') !== -1) {
+                    url += '&';
+                }
+                else {
+                    url += '?';
+                }
+                url += query;
+
+                query = '';
+            }
+
             xhr.open(type, url);
 
             if (type === 'POST') {
@@ -1201,7 +1220,9 @@ Global.Ajax = klass({
             xhr.send(query);
         },
         abort: function() {
-            this.xhr.abort();
+            if (this.xhr) {
+                this.xhr.abort();
+            }
         },
         json: function(vars) {
             var callback = vars.callback,
@@ -1631,22 +1652,6 @@ Global.Facebook = klass({
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
-(function() {
-'use strict';
-
-var instance,
-    requestAnimationFrame = (function() {
-        return win.requestAnimationFrame ||
-            win.webkitRequestAnimationFrame ||
-            win.mozRequestAnimationFrame ||
-            win.oRequestAnimationFrame ||
-            win.msRequestAnimationFrame ||
-            false;
-            // function(callback, element){
-            //         window.setTimeout(callback, 1000 / 60);
-            //       };
-    }());
-
 Global.FPS = klass({
     init: function(config) {
         config = config || {};
@@ -1656,17 +1661,16 @@ Global.FPS = klass({
         }
 
         // singleton
-        if (config.single && instance) {
-            return instance;
+        if (config.single && Global.FPS.instance) {
+            return Global.FPS.instance;
         }
 
         this.criterion = config.criterion,
         this.surver = this.criterion,
         this.enterframe = config.enterframe,
-        this.msecFrame = getFrame(this.criterion),
+        this.msecFrame = this._getFrame(this.criterion),
         this.prevtime =
         this.nowtime =
-        this.nexttime =
         this.loopid = 0;
 
         if (!config.manual) {
@@ -1674,7 +1678,7 @@ Global.FPS = klass({
         }
 
         if (config.single) {
-            instance = this;
+            Global.FPS.instance = this;
         }
     },
     properties: {
@@ -1695,47 +1699,23 @@ Global.FPS = klass({
         },
         start: function() {
             this.prevtime = Date.now();
-            this.nexttime = this.prevtime + this.msecFrame;
-            loop(this);
+            this.loopid = setInterval(this._loop, this.msecFrame, this);
+        },
+        _loop: function(mine) {
+            mine.nowtime = Date.now();
+            mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
+            mine.prevtime = mine.nowtime;
+
+            mine.enter();
+        },
+        _getFrame: function(time) {
+            return Math.round(1000 / time);
         },
         stop: function() {
             clearInterval(this.loopid);
-            this.loopid = 0;
         }
     }
 });
-function animationFrame(mine) {
-    if (mine.nexttime <= Date.now()) {
-        _loop(mine);
-        mine.nexttime = mine.nowtime + mine.msecFrame;
-    }
-    if (mine.loopid === 1) {
-        requestAnimationFrame(function() {
-            animationFrame(mine);
-        });
-    }
-}
-function loop(mine) {
-    if (requestAnimationFrame) {
-        mine.loopid = 1;
-        animationFrame(mine);
-    }
-    else {
-        mine.loopid = setInterval(_loop, mine.msecFrame, mine);
-    }
-}
-function _loop(mine) {
-    mine.nowtime = Date.now();
-    mine.surver = getFrame(mine.nowtime - mine.prevtime);
-    mine.prevtime = mine.nowtime;
-
-    mine.enter();
-}
-
-function getFrame(time) {
-    return Math.round(1000 / time);
-}
-}());
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global.ImgLoad = klass({
     init: function(config) {
@@ -2591,7 +2571,9 @@ var prop = [
     event_key = 'transition',
     i = 0,
     len = prop.length,
-    style;
+    style,
+    sheet,
+    Mine;
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
@@ -2604,14 +2586,16 @@ for (; i < len; i++) {
         }
 
         style = append($('head'),
-            create('style'));
-        style.type = 'text/css';
+            create('style', {
+                type: 'text/css'
+            }));
+        sheet = style.sheet;
 
         break;
     }
 }
 
-Global.Transition = klass({
+Mine = Global.Transition = klass({
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -2620,17 +2604,14 @@ Global.Transition = klass({
         option = option || {};
         option.onComplete = option.onComplete || nullFunction;
 
-        Global.Transition.id++;
-        this.id = 'cirtrans' + Global.Transition.id;
-
-        this.style = style;
+        Mine.id++;
+        this.id = 'cirtrans' + Mine.id;
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option.duration || Global.Transition.Duration,
-            ease = option.ease || 'ease',
-            sheet = style.sheet;
+            duration = option.duration || Mine.Duration,
+            ease = option.ease || 'ease';
 
         if (!isArray(ease)) {
             ease = [ease];
@@ -2640,7 +2621,7 @@ Global.Transition = klass({
             transProp.push(i);
         }
 
-        addCSSRule(sheet, this.id, css_prefix, duration, ease, transProp);
+        addCSSRule(this.id, css_prefix, duration, ease, transProp);
 
         this.element = element;
         this.property = property;
@@ -2666,8 +2647,7 @@ Global.Transition = klass({
             css(mine.element, mine.property);
         },
         stop: function() {
-            var sheet = this.style.sheet,
-                rule = sheet.cssRules,
+            var rule = sheet.cssRules,
                 len = rule.length,
                 name;
 
@@ -2686,11 +2666,11 @@ Global.Transition = klass({
         }
     }
 });
-Global.Transition.id = 0;
-Global.Transition.support = support;
-Global.Transition.Duration = 500;
+Mine.id = 0;
+Mine.support = support;
+Mine.Duration = 500;
 
-function addCSSRule(sheet, id, css_prefix, duration, eases, transProp) {
+function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
         len = eases.length,
         rule = '';

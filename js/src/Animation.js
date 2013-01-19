@@ -16,6 +16,7 @@ var prop = [
     i = 0,
     len = prop.length,
     style,
+    sheet,
     Mine;
 
 for (; i < len; i++) {
@@ -29,8 +30,10 @@ for (; i < len; i++) {
         }
 
         style = append($('head'),
-            create('style'));
-        style.type = 'text/css';
+            create('style', {
+                type: 'text/css'
+            }));
+        sheet = style.sheet;
 
         break;
     }
@@ -51,11 +54,8 @@ Mine = Global.Animation = klass({
         Mine.id++;
         this.id = 'ciranim' + Mine.id;
 
-        this.style = style;
-
         var duration = option.duration || Mine.Duration,
-            ease = option.ease || 'ease',
-            sheet = style.sheet;
+            ease = option.ease || 'ease';
 
         // property
         var i,
@@ -84,7 +84,7 @@ Mine = Global.Animation = klass({
             ease = [ease];
         }
 
-        addCSSRule(sheet, this.id, css_prefix, duration, ease);
+        addCSSRule(this.id, css_prefix, duration, ease);
 
         if (!option.manual) {
             this.start();
@@ -105,8 +105,7 @@ Mine = Global.Animation = klass({
             addClass(mine.element, mine.id);
 
             function endaction(e) {
-                var sheet = mine.style.sheet,
-                    rule = sheet.cssRules,
+                var rule = sheet.cssRules,
                     len = rule.length,
                     name;
 
@@ -141,7 +140,7 @@ Mine.id = 0;
 Mine.Duration = 500;
 Mine.support = support;
 
-function addCSSRule(sheet, id, css_prefix, duration, eases) {
+function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
         len = eases.length,
         rule = '';

@@ -115,10 +115,10 @@ function create(tagname, attribute) {
 }
 
 function on(element, eventname, handler) {
-    element.addEventListener(eventname, handler);
+    element.addEventListener(eventname, handler, false);
 }
 function off(element, eventname, handler) {
-    element.removeEventListener(eventname, handler);
+    element.removeEventListener(eventname, handler, false);
 }
 function show(element) {
     element.style.display = 'block';

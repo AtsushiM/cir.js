@@ -10,6 +10,21 @@ describe('Ajaxは', function() {
         // clear
     });
 
+    it('インスタンス生成時にrequest()に渡す形式の引数を指定した場合、request()を呼び出す', function() {
+        var data = '',
+            ajax = new C.Ajax({
+                url: '/spec/common/test.xml',
+                callback: function(d) {
+                    data = d;
+                }
+            });
+
+        waits(500);
+        runs(function() {
+            expect(data).not.toEqual('');
+        });
+    });
+
     it('request({url, callback})で非同期でurlの実行結果を取得する', function() {
         var data = '';
         ajax.request({
