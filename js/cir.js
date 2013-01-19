@@ -1975,16 +1975,15 @@ Global.FontImg = klass({
         this.tag = config.tag || 'span';
     },
     properties: {
-        _1: function(x) {
-            return '<' + this.tag + ' class="font_' + x + '">&nbsp;</' + this.tag + '>';
-        },
         make: function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',
                 i;
 
             for (i = aryX.length; i--;) {
-                tags = this._1(this.type + aryX[i]) + tags;
+                tags = '<' + this.tag +
+                    ' class="font_' + this.type + aryX[i] +
+                    '">&nbsp;</' + this.tag + '>' + tags;
             }
 
             return tags;

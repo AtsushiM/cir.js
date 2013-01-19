@@ -3,7 +3,8 @@ describe('FontImgは', function() {
     var c = window.C ? C : Global,
         numimg,
         args = {
-            type: 'white'
+            type: 'white',
+            tag: 'p' // default: span
         };
 
     beforeEach(function() {
@@ -15,7 +16,7 @@ describe('FontImgは', function() {
     });
 
     function expectedMakeAction(i) {
-        return '<span class="font_' + args.type + '_' + i + '">&nbsp;</span>';
+        return '<p class="font_' + args.type + '_' + i + '">&nbsp;</p>';
     }
 
     it('make(x)で数値xのimgタグを返す', function() {
