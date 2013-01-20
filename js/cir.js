@@ -420,11 +420,11 @@ var Base = Global.Base = klass({
         dispose: function() {
             var i;
 
-            if (this._added) {
-                i = this._added.lenght;
+            if (this._dispose) {
+                i = this._dispose.lenght;
 
                 for (; i--;) {
-                    off.call(null, this._added[i]);
+                    off.call(null, this._dispose[i]);
                 }
             }
 
@@ -1108,7 +1108,7 @@ Global.Audio = function(config) {
 Global.Sound = klass({
     extend: Base,
     init: function(config) {
-        this._added = [];
+        this._dispose = [];
 
         var mine = this,
             autoplay = config.autoplay,
@@ -1135,7 +1135,7 @@ Global.Sound = klass({
             };
 
             on(audio, e_canplay, autoplay);
-            this._added.push([audio, e_canplay, autoplay]);
+            this._dispose.push([audio, e_canplay, autoplay]);
         }
         if (loop) {
             loop = function() {
@@ -1144,16 +1144,16 @@ Global.Sound = klass({
             };
 
             on(audio, e_ended, loop);
-            this._added.push([audio, e_ended, loop]);
+            this._dispose.push([audio, e_ended, loop]);
         }
 
         if (config.oncanplay) {
             on(audio, e_canplay, config.oncanplay);
-            this._added.push([audio, e_canplay, config.oncanplay]);
+            this._dispose.push([audio, e_canplay, config.oncanplay]);
         }
         if (config.onended) {
             on(audio, e_ended, config.onended);
-            this._added.push([audio, e_ended, config.onended]);
+            this._dispose.push([audio, e_ended, config.onended]);
         }
 
         append(doc.body, audio);
@@ -1810,7 +1810,7 @@ Global.FPS = klass({
 Global.ImgLoad = klass({
     extend: Base,
     init: function(config) {
-        this._added = [];
+        this._dispose = [];
 
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
@@ -1853,7 +1853,7 @@ Global.ImgLoad = klass({
                 img.src = mine.srcs[i];
 
                 on(img, ev.load, countup);
-                this._added.push([img, ev.load, countup]);
+                this._dispose.push([img, ev.load, countup]);
 
                 mine.loadedsrcs.push(img);
             }
@@ -1960,7 +1960,7 @@ Global.LocalStorage = klass({
 Global.Mobile = klass({
     extend: Base,
     init: function() {
-        this._added = [];
+        this._dispose = [];
     },
     properties: {
         getZoom: function() {
@@ -2002,8 +2002,8 @@ Global.Mobile = klass({
             console.log(this);
             on(win, ev.load, hideAddressHandler, false);
             on(win, ev_orientationchange, hideAddressHandler, false);
-            this._added.push([win, ev.load, hideAddressHandler]);
-            this._added.push([win, ev_orientationchange, hideAddressHandler]);
+            this._dispose.push([win, ev.load, hideAddressHandler]);
+            this._dispose.push([win, ev_orientationchange, hideAddressHandler]);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -2051,7 +2051,7 @@ Global.Mobile = klass({
             ret_remove = function() {
                 remove(change);
             };
-            mine._added.push(ret_remove);
+            mine._dispose.push(ret_remove);
 
             return ret_remove;
 
@@ -2065,9 +2065,9 @@ Global.Mobile = klass({
                 setfunc(win, ev.load, handler);
                 setfunc(win, ev_orientationchange, handler);
                 setfunc(win, ev.resize, handler);
-                mine._added.push([win, ev.load, handler]);
-                mine._added.push([win, ev_orientationchange, handler]);
-                mine._added.push([win, ev.resize, handler]);
+                mine._dispose.push([win, ev.load, handler]);
+                mine._dispose.push([win, ev_orientationchange, handler]);
+                mine._dispose.push([win, ev.resize, handler]);
             }
             function onechange() {
                 change();
@@ -2295,7 +2295,7 @@ Global.Route = klass({
 Global.ScriptLoad = klass({
     extend: Base,
     init: function() {
-        this._added = [];
+        this._dispose = [];
     },
     properties: {
         requests: function(varary) {
@@ -2315,7 +2315,7 @@ Global.ScriptLoad = klass({
 
             if (vars.callback) {
                 on(script, ev.load, vars.callback);
-                this._added.push([script, ev.load, vars.callback]);
+                this._dispose.push([script, ev.load, vars.callback]);
             }
         }
     }

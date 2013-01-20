@@ -2,7 +2,7 @@
 Global.ScriptLoad = klass({
     extend: Base,
     init: function() {
-        this._added = [];
+        this._dispose = [];
     },
     properties: {
         requests: function(varary) {
@@ -22,7 +22,7 @@ Global.ScriptLoad = klass({
 
             if (vars.callback) {
                 on(script, ev.load, vars.callback);
-                this._added.push([script, ev.load, vars.callback]);
+                this._dispose.push([script, ev.load, vars.callback]);
             }
         }
     }

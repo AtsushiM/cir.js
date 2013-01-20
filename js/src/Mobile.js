@@ -2,7 +2,7 @@
 Global.Mobile = klass({
     extend: Base,
     init: function() {
-        this._added = [];
+        this._dispose = [];
     },
     properties: {
         getZoom: function() {
@@ -44,8 +44,8 @@ Global.Mobile = klass({
             console.log(this);
             on(win, ev.load, hideAddressHandler, false);
             on(win, ev_orientationchange, hideAddressHandler, false);
-            this._added.push([win, ev.load, hideAddressHandler]);
-            this._added.push([win, ev_orientationchange, hideAddressHandler]);
+            this._dispose.push([win, ev.load, hideAddressHandler]);
+            this._dispose.push([win, ev_orientationchange, hideAddressHandler]);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -93,7 +93,7 @@ Global.Mobile = klass({
             ret_remove = function() {
                 remove(change);
             };
-            mine._added.push(ret_remove);
+            mine._dispose.push(ret_remove);
 
             return ret_remove;
 
@@ -107,9 +107,9 @@ Global.Mobile = klass({
                 setfunc(win, ev.load, handler);
                 setfunc(win, ev_orientationchange, handler);
                 setfunc(win, ev.resize, handler);
-                mine._added.push([win, ev.load, handler]);
-                mine._added.push([win, ev_orientationchange, handler]);
-                mine._added.push([win, ev.resize, handler]);
+                mine._dispose.push([win, ev.load, handler]);
+                mine._dispose.push([win, ev_orientationchange, handler]);
+                mine._dispose.push([win, ev.resize, handler]);
             }
             function onechange() {
                 change();
