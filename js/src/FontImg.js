@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/FontImg/test.js" */
 Global.FontImg = klass({
+    extend: Base,
     init: function(config) {
         config = config || {type: ''};
 

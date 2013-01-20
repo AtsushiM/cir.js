@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global.DragFlick = klass({
+    extend: Base,
     init: function(config) {
         if (config) {
             this.bind(config);

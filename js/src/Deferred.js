@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Deferred/test.js" */
 Global.Deferred = klass({
+    extend: Base,
     init: function() {
         this.queue = [];
         this.data = null;

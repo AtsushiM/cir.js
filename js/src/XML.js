@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/XML/test.js" */
 Global.XML = klass({
+    extend: Base,
     init: function(config) {
         this.element = create('div');
         this.data = {};

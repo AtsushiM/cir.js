@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 Global.Mobile = klass({
+    extend: Base,
     properties: {
         getZoom: function() {
             return doc.body.clientWidth / win.innerWidth;

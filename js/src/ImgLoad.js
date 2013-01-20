@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global.ImgLoad = klass({
+    extend: Base,
     init: function(config) {
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,

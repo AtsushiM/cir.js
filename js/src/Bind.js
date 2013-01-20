@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = klass({
+    extend: Base,
     init: function(config) {
         this.handler = config;
         this.add();

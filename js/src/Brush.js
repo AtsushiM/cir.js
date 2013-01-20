@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Brush/test.js" */
 Global.Brush = klass({
+    extend: Base,
     init: function(config) {
         this.canvas = config.canvas;
         this.ctx = this.canvas.getContext('2d');

@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = klass({
+    extend: Base,
     properties: {
         requests: function(varary) {
             var i = 0,

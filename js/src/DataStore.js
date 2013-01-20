@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 Global.DataStore = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 

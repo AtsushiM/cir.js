@@ -374,6 +374,60 @@ Global.extend = function(child, _super) {
         prev.apply(this, arguments);
     };
 };
+/* Test: "../../spec/_src/src/Event/test.js" */
+var isTouch = isTouchDevice(),
+    ev,
+    ev_hashchange = 'hashchange',
+    ev_orientationchange = 'orientationchange';
+
+ev = klass({
+    init: function(config) {
+        config = config || {};
+
+        // singleton
+        if (config.single && Global.Event.instance) {
+            return Global.Event.instance;
+        }
+
+        if (config.single) {
+            Global.Event.instance = this;
+        }
+    },
+    properties: {
+        switchclick: isTouch ? 'touchstart' : 'click',
+        switchdown: isTouch ? 'touchstart' : 'mousedown',
+        switchmove: isTouch ? 'touchmove' : 'mousemove',
+        switchup: isTouch ? 'touchend' : 'mouseup',
+        load: 'load',
+        change: 'change',
+        /* hashchange: 'hashchange', */
+        click: 'click',
+        mousedown: 'mousedown',
+        mousemove: 'mousemove',
+        mouseup: 'mouseup',
+        touchstart: 'touchstart',
+        touchmove: 'touchmove',
+        touchend: 'touchend',
+        /* orientationchange: 'orientationchange', */
+        resize: 'resize'
+    }
+});
+Global.Event = ev;
+ev = Global.event = new ev();
+/* Test: "%JASMINE_TEST_PATH%" */
+var Base = Global.Base = klass({
+    properties: {
+        dispose: function() {
+            var i;
+
+            for (i in this) {
+                delete this[i];
+            }
+
+            this.__proto__ = null;
+        }
+    }
+});
 /* Test: "../../spec/_src/src/ease/test.js" */
 Global.ease = {
     linear: function(time, from, dist, duration) {
@@ -526,17 +580,17 @@ Global.cssease = {
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var prop = [
-        'animation',
-        'webkitAnimation'
+        'webkitAnimation',
         // 'MozAnimation',
         // 'mozAnimation',
         // 'msAnimation',
         // 'oAnimation',
+        'animation'
     ],
     el = create('p'),
     support = false,
     prefix,
-    css_prefix,
+    css_prefix = '',
     event_key = 'animation',
     i = 0,
     len = prop.length,
@@ -565,6 +619,7 @@ for (; i < len; i++) {
 }
 
 Mine = Global.Animation = klass({
+    extend: Base,
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -636,18 +691,20 @@ Mine = Global.Animation = klass({
 
                 mine._off();
 
-                css(mine.element, mine.property);
-                removeClass(mine.element, mine.id);
 
-                for (; len--;) {
-                    name = rule[len].name ||
-                        ('' + rule[len].selectorText).split('.')[1];
+                if (prefix === 'webkit') {
+                    for (; len--;) {
+                        name = rule[len].name ||
+                            ('' + rule[len].selectorText).split('.')[1];
 
-                    if (name === mine.id) {
-                        sheet.deleteRule(len);
+                        if (name === mine.id) {
+                            sheet.deleteRule(len);
+                        }
                     }
-                }
+                    removeClass(mine.element, mine.id);
 
+                    css(mine.element, mine.property);
+                }
                 mine.onComplete(e);
             }
         },
@@ -674,7 +731,7 @@ function addCSSRule(id, css_prefix, duration, eases) {
         rule += css_prefix + 'animation:' +
                 id + ' ' +
                 duration + 'ms ' +
-                eases[i] + ' 0s 1 normal forwards;';
+                eases[i] + ' 0s 1 normal both;';
     }
 
     sheet.insertRule('.' + id +
@@ -924,48 +981,9 @@ function splitSuffix(value) {
     return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 }());
-/* Test: "../../spec/_src/src/Event/test.js" */
-var isTouch = isTouchDevice(),
-    ev,
-    ev_hashchange = 'hashchange',
-    ev_orientationchange = 'orientationchange';
-
-ev = klass({
-    init: function(config) {
-        config = config || {};
-
-        // singleton
-        if (config.single && Global.Event.instance) {
-            return Global.Event.instance;
-        }
-
-        if (config.single) {
-            Global.Event.instance = this;
-        }
-    },
-    properties: {
-        switchclick: isTouch ? 'touchstart' : 'click',
-        switchdown: isTouch ? 'touchstart' : 'mousedown',
-        switchmove: isTouch ? 'touchmove' : 'mousemove',
-        switchup: isTouch ? 'touchend' : 'mouseup',
-        load: 'load',
-        change: 'change',
-        /* hashchange: 'hashchange', */
-        click: 'click',
-        mousedown: 'mousedown',
-        mousemove: 'mousemove',
-        mouseup: 'mouseup',
-        touchstart: 'touchstart',
-        touchmove: 'touchmove',
-        touchend: 'touchend',
-        /* orientationchange: 'orientationchange', */
-        resize: 'resize'
-    }
-});
-Global.Event = ev;
-ev = Global.event = new ev();
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = klass({
+    extend: Base,
     properties: {
         typeCast: function(str) {
             var caststr = typeCast(str),
@@ -1080,6 +1098,7 @@ Global.Audio = function(config) {
 };
 /* Test: "../../spec/_src/src/Sound/test.js" */
 Global.Sound = klass({
+    extend: Base,
     init: function(config) {
         var mine = this,
             autoplay = config.autoplay,
@@ -1148,6 +1167,7 @@ Global.Sound = klass({
 });
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = klass({
+    extend: Base,
     init: function(config) {
         if (config) {
             this.request(config);
@@ -1243,6 +1263,7 @@ Global.Ajax = klass({
 });
 /* Test: "../../spec/_src/src/Bind/test.js" */
 Global.Bind = klass({
+    extend: Base,
     init: function(config) {
         this.handler = config;
         this.add();
@@ -1273,6 +1294,7 @@ Global.Bind = klass({
 });
 /* Test: "../../spec/_src/src/Brush/test.js" */
 Global.Brush = klass({
+    extend: Base,
     init: function(config) {
         this.canvas = config.canvas;
         this.ctx = this.canvas.getContext('2d');
@@ -1348,6 +1370,7 @@ Global.Brush = klass({
 });
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 Global.DataStore = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 
@@ -1394,6 +1417,7 @@ Global.DataStore = klass({
 });
 /* Test: "../../spec/_src/src/Deferred/test.js" */
 Global.Deferred = klass({
+    extend: Base,
     init: function() {
         this.queue = [];
         this.data = null;
@@ -1428,6 +1452,7 @@ Global.Deferred = klass({
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global.DragFlick = klass({
+    extend: Base,
     init: function(config) {
         if (config) {
             this.bind(config);
@@ -1664,6 +1689,7 @@ Global.ExternalInterface.IOS = klass({
 });
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = klass({
+    extend: Base,
     properties: {
         _b: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {
@@ -1685,6 +1711,7 @@ Global.Facebook = klass({
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
 Global.FPS = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 
@@ -1750,6 +1777,7 @@ Global.FPS = klass({
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global.ImgLoad = klass({
+    extend: Base,
     init: function(config) {
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
@@ -1807,6 +1835,7 @@ Global.ImgLoad = klass({
 });
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
 Global.WindowLoad = klass({
+    extend: Base,
     init: function(config) {
         if (config && config.onload) {
             this.onload(config.onload);
@@ -1820,6 +1849,7 @@ Global.WindowLoad = klass({
 });
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
 Global.LocalStorage = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 
@@ -1891,6 +1921,7 @@ Global.LocalStorage = klass({
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 Global.Mobile = klass({
+    extend: Base,
     properties: {
         getZoom: function() {
             return doc.body.clientWidth / win.innerWidth;
@@ -2006,6 +2037,7 @@ Global.Mobile = klass({
 });
 /* Test: "../../spec/_src/src/FontImg/test.js" */
 Global.FontImg = klass({
+    extend: Base,
     init: function(config) {
         config = config || {type: ''};
 
@@ -2030,6 +2062,7 @@ Global.FontImg = klass({
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
 Global.Observer = klass({
+    extend: Base,
     init: function(config) {
         config = config || {single: false};
 
@@ -2116,6 +2149,7 @@ Global.Observer = klass({
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 Global.PreRender = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 
@@ -2169,6 +2203,7 @@ Global.PreRender = klass({
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
 Global.Route = klass({
+    extend: Base,
     init: function(config) {
         // singleton
         if (config.single && Global.Route.instance) {
@@ -2208,6 +2243,7 @@ Global.Route = klass({
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = klass({
+    extend: Base,
     properties: {
         requests: function(varary) {
             var i = 0,
@@ -2306,6 +2342,7 @@ function getHeader(callback) {
 }());
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
 Global.SessionStorage = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 
@@ -2377,6 +2414,7 @@ Global.SessionStorage = klass({
 });
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
 Global.Surrogate = klass({
+    extend: Base,
     init: function(config) {
         this.delay = config.delay;
         this.callback = config.callback;
@@ -2401,6 +2439,7 @@ Global.Surrogate = klass({
 });
 /* Test: "../../spec/_src/src/Throttle/test.js" */
 Global.Throttle = klass({
+    extend: Base,
     init: function(config) {
         this.waittime = config.waittime;
         this.callback = config.callback;
@@ -2589,17 +2628,13 @@ Global.Timer = function(config) {
 'use strict';
 
 var prop = [
-        'transitionProperty',
-        'webkitTransitionProperty'
-        // 'MozTransitionProperty',
-        // 'mozTransitionProperty',
-        // 'msTransitionProperty',
-        // 'oTransitionProperty'
+        'webkitTransitionProperty',
+        'transitionProperty'
     ],
     el = create('p'),
     support = false,
     prefix,
-    css_prefix,
+    css_prefix = '',
     event_key = 'transition',
     i = 0,
     len = prop.length,
@@ -2614,7 +2649,7 @@ for (; i < len; i++) {
 
         if (prefix) {
             css_prefix = '-' + prefix.toLowerCase() + '-';
-            event_key = prefix + 'Transition';
+            event_key = prefix.toLowerCase() + 'Transition';
         }
 
         style = append($('head'),
@@ -2628,6 +2663,7 @@ for (; i < len; i++) {
 }
 
 Mine = Global.Transition = klass({
+    extend: Base,
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -2675,6 +2711,7 @@ Mine = Global.Transition = klass({
             };
 
             on(mine.element, event_key + 'End', mine._endfunc);
+            on(mine.element, 'transitionend', mine._endfunc);
             addClass(mine.element, mine.id);
             css(mine.element, mine.property);
         },
@@ -2684,6 +2721,7 @@ Mine = Global.Transition = klass({
                 name;
 
             off(this.element, event_key + 'End', this._endfunc);
+            off(this.element, 'transitionend', this._endfunc);
             removeClass(this.element, this.id);
 
             for (; len--;) {
@@ -2723,6 +2761,7 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 (function() {
 var Mine = Global.Tweener = klass({
+    extend: Base,
     init: function(target, property, option) {
         var name,
             prop;
@@ -2868,6 +2907,7 @@ Mine.Duration = 500;
 }());
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = klass({
+    extend: Base,
     properties: {
         _b: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {
@@ -2890,6 +2930,7 @@ Global.Twitter = klass({
 });
 /* Test: "../../spec/_src/src/XML/test.js" */
 Global.XML = klass({
+    extend: Base,
     init: function(config) {
         this.element = create('div');
         this.data = {};

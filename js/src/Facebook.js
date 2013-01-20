@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
 Global.Facebook = klass({
+    extend: Base,
     properties: {
         _b: 'https://www.facebook.com/dialog/feed?',
         getShareURL: function(vars) {

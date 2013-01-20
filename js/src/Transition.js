@@ -3,17 +3,13 @@
 'use strict';
 
 var prop = [
-        'transitionProperty',
-        'webkitTransitionProperty'
-        // 'MozTransitionProperty',
-        // 'mozTransitionProperty',
-        // 'msTransitionProperty',
-        // 'oTransitionProperty'
+        'webkitTransitionProperty',
+        'transitionProperty'
     ],
     el = create('p'),
     support = false,
     prefix,
-    css_prefix,
+    css_prefix = '',
     event_key = 'transition',
     i = 0,
     len = prop.length,
@@ -28,7 +24,7 @@ for (; i < len; i++) {
 
         if (prefix) {
             css_prefix = '-' + prefix.toLowerCase() + '-';
-            event_key = prefix + 'Transition';
+            event_key = prefix.toLowerCase() + 'Transition';
         }
 
         style = append($('head'),
@@ -42,6 +38,7 @@ for (; i < len; i++) {
 }
 
 Mine = Global.Transition = klass({
+    extend: Base,
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -89,6 +86,7 @@ Mine = Global.Transition = klass({
             };
 
             on(mine.element, event_key + 'End', mine._endfunc);
+            on(mine.element, 'transitionend', mine._endfunc);
             addClass(mine.element, mine.id);
             css(mine.element, mine.property);
         },
@@ -98,6 +96,7 @@ Mine = Global.Transition = klass({
                 name;
 
             off(this.element, event_key + 'End', this._endfunc);
+            off(this.element, 'transitionend', this._endfunc);
             removeClass(this.element, this.id);
 
             for (; len--;) {

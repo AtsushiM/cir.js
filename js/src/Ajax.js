@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global.Ajax = klass({
+    extend: Base,
     init: function(config) {
         if (config) {
             this.request(config);

@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
 Global.Twitter = klass({
+    extend: Base,
     properties: {
         _b: 'https://twitter.com/intent/tweet?',
         getShareURL: function(vars) {

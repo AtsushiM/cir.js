@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
 Global.WindowLoad = klass({
+    extend: Base,
     init: function(config) {
         if (config && config.onload) {
             this.onload(config.onload);

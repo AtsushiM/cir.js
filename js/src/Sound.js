@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Sound/test.js" */
 Global.Sound = klass({
+    extend: Base,
     init: function(config) {
         var mine = this,
             autoplay = config.autoplay,

@@ -1,17 +1,17 @@
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var prop = [
-        'animation',
-        'webkitAnimation'
+        'webkitAnimation',
         // 'MozAnimation',
         // 'mozAnimation',
         // 'msAnimation',
         // 'oAnimation',
+        'animation'
     ],
     el = create('p'),
     support = false,
     prefix,
-    css_prefix,
+    css_prefix = '',
     event_key = 'animation',
     i = 0,
     len = prop.length,
@@ -40,6 +40,7 @@ for (; i < len; i++) {
 }
 
 Mine = Global.Animation = klass({
+    extend: Base,
     init: function(element, property, option) {
         if (!support) {
             return false;
@@ -111,18 +112,20 @@ Mine = Global.Animation = klass({
 
                 mine._off();
 
-                css(mine.element, mine.property);
-                removeClass(mine.element, mine.id);
 
-                for (; len--;) {
-                    name = rule[len].name ||
-                        ('' + rule[len].selectorText).split('.')[1];
+                if (prefix === 'webkit') {
+                    for (; len--;) {
+                        name = rule[len].name ||
+                            ('' + rule[len].selectorText).split('.')[1];
 
-                    if (name === mine.id) {
-                        sheet.deleteRule(len);
+                        if (name === mine.id) {
+                            sheet.deleteRule(len);
+                        }
                     }
-                }
+                    removeClass(mine.element, mine.id);
 
+                    css(mine.element, mine.property);
+                }
                 mine.onComplete(e);
             }
         },
@@ -149,7 +152,7 @@ function addCSSRule(id, css_prefix, duration, eases) {
         rule += css_prefix + 'animation:' +
                 id + ' ' +
                 duration + 'ms ' +
-                eases[i] + ' 0s 1 normal forwards;';
+                eases[i] + ' 0s 1 normal both;';
     }
 
     sheet.insertRule('.' + id +

@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/HashController/test.js" */
 Global.HashController = klass({
+    extend: Base,
     properties: {
         typeCast: function(str) {
             var caststr = typeCast(str),

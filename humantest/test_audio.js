@@ -6,10 +6,10 @@
             autoplay: true,
             loop: true,
             oncanplay: function(e) {
-                console.log('canplay');
+                /* console.log('canplay'); */
             },
             onended: function(e) {
-                console.log('ended');
+                /* console.log('ended'); */
             }
         });
 

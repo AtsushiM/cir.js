@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Throttle/test.js" */
 Global.Throttle = klass({
+    extend: Base,
     init: function(config) {
         this.waittime = config.waittime;
         this.callback = config.callback;

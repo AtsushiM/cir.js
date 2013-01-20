@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 Global.PreRender = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 

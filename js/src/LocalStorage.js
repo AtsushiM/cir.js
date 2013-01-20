@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
 Global.LocalStorage = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 

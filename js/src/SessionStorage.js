@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
 Global.SessionStorage = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 

@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
 Global.Observer = klass({
+    extend: Base,
     init: function(config) {
         config = config || {single: false};
 

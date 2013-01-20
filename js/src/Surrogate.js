@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
 Global.Surrogate = klass({
+    extend: Base,
     init: function(config) {
         this.delay = config.delay;
         this.callback = config.callback;

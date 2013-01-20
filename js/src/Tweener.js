@@ -1,6 +1,7 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 (function() {
 var Mine = Global.Tweener = klass({
+    extend: Base,
     init: function(target, property, option) {
         var name,
             prop;

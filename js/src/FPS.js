@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
 Global.FPS = klass({
+    extend: Base,
     init: function(config) {
         config = config || {};
 
