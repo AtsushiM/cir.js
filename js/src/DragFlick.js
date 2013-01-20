@@ -153,7 +153,7 @@ Global.DragFlick = klass({
                         callback(changed);
                     };
                 on(element, ev, handler);
-                this._dispose.push([element, ev, handler]);
+                mine._dispose.push([element, ev, handler]);
             }
         }
     }
