@@ -31,16 +31,19 @@ describe('Brushは', function() {
         expect(canvas.height).toEqual(150);
     });
 
-    it('pigment({src, width, height, onload})でsrcオプションで指定した画像を表示するcanvas要素を作成する', function() {
-        expect(brush.pigment({
-            src: '/spec/common/r.png',
-            width: 100,
-            height: 100,
-            onload: function(canvas, img) {
-                expect(canvas.getContext).toBeDefined();
-                expect(img.alt).toEqual('');
-            }
-        })).toBeDefined();
+    it('pigment({src, width, height, onload})でsrcオプションで指定した画像を表示するcanvas要素を含んだオブジェクトを作成する', function() {
+        var pigment = brush.pigment({
+                src: '/spec/common/r.png',
+                width: 100,
+                height: 100,
+                onload: function(canvas, img) {
+                    expect(canvas.getContext).toBeDefined();
+                    expect(img.alt).toEqual('');
+                }
+            });
+        expect(pigment.image.nodeName).toEqual('CANVAS');
+        expect(pigment.x).toEqual(0);
+        expect(pigment.y).toEqual(0);
     });
 
     it('pigments({name: {src, width, height, onload}})でsrcオプションで指定した画像を表示するcanvas要素を含むオブジェクトを作成する', function() {
@@ -77,9 +80,15 @@ describe('Brushは', function() {
                 ret = r;
             });
 
-        expect(pigments.r.nodeName).toEqual('CANVAS');
-        expect(pigments.g.nodeName).toEqual('CANVAS');
-        expect(pigments.b.nodeName).toEqual('CANVAS');
+        expect(pigments.r.image.nodeName).toEqual('CANVAS');
+        expect(pigments.g.image.nodeName).toEqual('CANVAS');
+        expect(pigments.b.image.nodeName).toEqual('CANVAS');
+        expect(pigments.r.x).toEqual(0);
+        expect(pigments.g.x).toEqual(0);
+        expect(pigments.b.x).toEqual(0);
+        expect(pigments.r.y).toEqual(0);
+        expect(pigments.g.y).toEqual(0);
+        expect(pigments.b.y).toEqual(0);
 
         waits(100);
         runs(function() {
@@ -118,9 +127,9 @@ describe('Brushは', function() {
                 }
             }, function() {
                 brush.draw([
-                    { image: pigments.r, x: 0, y: 0 },
-                    { image: pigments.g, x: 10, y: 10 },
-                    { image: pigments.b, x: 20, y: 20 }
+                    pigments.r,
+                    pigments.g,
+                    pigments.b
                 ]);
             });
 

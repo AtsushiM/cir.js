@@ -1301,7 +1301,7 @@ Global.Brush = klass({
             };
             img.src = vars.src;
 
-            return canv;
+            return {image: canv, x: vars.x || 0, y: vars.y || 0};
         },
         pigments: function(vars, callback) {
             var mine = this,
