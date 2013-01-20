@@ -8,6 +8,10 @@ Global.Surrogate = klass({
         // this.waitid = null;
     },
     properties: {
+        dispose: function() {
+            this.clear();
+            this.__proto__.dispose();
+        },
         request: function(arg) {
             this.args = arg;
             this.clear();

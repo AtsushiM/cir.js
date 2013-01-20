@@ -6,6 +6,10 @@ Global.Bind = klass({
         this.add();
     },
     properties: {
+        dispose: function() {
+            this.remove();
+            this.__proto__.dispose();
+        },
         getHandler: function() {
             return this.handler;
         },

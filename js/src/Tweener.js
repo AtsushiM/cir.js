@@ -31,6 +31,10 @@ var Mine = Global.Tweener = klass({
         }
     },
     properties: {
+        dispose: function() {
+            this.stop();
+            this.__proto__.dispose();
+        },
         // easeOutExpo
         _ease: function(time, from, dist, duration) {
             return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;

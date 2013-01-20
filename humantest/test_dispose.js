@@ -10,9 +10,9 @@
     }
 
     setTimeout(function() {
-        /* console.log(obs[0]); */
+        console.log(obs[0]);
         for (i = 0; i < len; i++) {
-            obs[i].dispose();
+            /* obs[i].dispose(); */
         }
 
         /* console.log(obs[0]); */

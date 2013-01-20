@@ -4,6 +4,14 @@ var Base = Global.Base = klass({
         dispose: function() {
             var i;
 
+            if (this._added) {
+                i = this._added.lenght;
+
+                for (; i--;) {
+                    off.call(null, this._added[i]);
+                }
+            }
+
             for (i in this) {
                 delete this[i];
             }

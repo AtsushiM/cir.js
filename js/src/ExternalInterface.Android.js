@@ -6,11 +6,6 @@ Global.ExternalInterface.Android = klass({
 
         this.android = config.android;
         this.externalObj = config.externalObj;
-
-        if (!this.externalObj) {
-            Global.EXTERNAL_ANDROID = {};
-            this.externalObj = Global.EXTERNAL_ANDROID;
-        }
     },
     properties: {
         call: function(conf) {

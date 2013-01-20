@@ -420,6 +420,14 @@ var Base = Global.Base = klass({
         dispose: function() {
             var i;
 
+            if (this._added) {
+                i = this._added.lenght;
+
+                for (; i--;) {
+                    off.call(null, this._added[i]);
+                }
+            }
+
             for (i in this) {
                 delete this[i];
             }
@@ -1100,6 +1108,8 @@ Global.Audio = function(config) {
 Global.Sound = klass({
     extend: Base,
     init: function(config) {
+        this._added = [];
+
         var mine = this,
             autoplay = config.autoplay,
             loop = config.loop,
@@ -1120,22 +1130,30 @@ Global.Sound = klass({
         }
 
         if (autoplay) {
-            on(audio, e_canplay, function() {
+            autoplay = function() {
                 mine.play();
-            });
+            };
+
+            on(audio, e_canplay, autoplay);
+            this._added.push([audio, e_canplay, autoplay]);
         }
         if (loop) {
-            on(audio, e_ended, function() {
+            loop = function() {
                 mine.stop();
                 mine.play();
-            });
+            };
+
+            on(audio, e_ended, loop);
+            this._added.push([audio, e_ended, loop]);
         }
 
         if (config.oncanplay) {
             on(audio, e_canplay, config.oncanplay);
+            this._added.push([audio, e_canplay, config.oncanplay]);
         }
         if (config.onended) {
             on(audio, e_ended, config.onended);
+            this._added.push([audio, e_ended, config.onended]);
         }
 
         append(doc.body, audio);
@@ -1269,6 +1287,10 @@ Global.Bind = klass({
         this.add();
     },
     properties: {
+        dispose: function() {
+            this.remove();
+            this.__proto__.dispose();
+        },
         getHandler: function() {
             return this.handler;
         },
@@ -1359,9 +1381,11 @@ Global.Brush = klass({
             return ret;
         },
         draw: function(layer) {
+            var i = 0, len = layer.length, item;
+
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-            for (var i = 0, len = layer.length, item; i < len; i++) {
+            for (; i < len; i++) {
                 item = layer[i];
                 this.ctx.drawImage(item.image, item.x, item.y);
             }
@@ -1636,11 +1660,6 @@ Global.ExternalInterface.Android = klass({
 
         this.android = config.android;
         this.externalObj = config.externalObj;
-
-        if (!this.externalObj) {
-            Global.EXTERNAL_ANDROID = {};
-            this.externalObj = Global.EXTERNAL_ANDROID;
-        }
     },
     properties: {
         call: function(conf) {
@@ -1665,6 +1684,14 @@ Global.ExternalInterface.IOS = klass({
         this.ios = {};
     },
     properties: {
+        dispose: function() {
+            var i;
+
+            for (i in this.ios) {
+                this.removeCallback(i);
+            }
+            this.__proto__.dispose();
+        },
         call: function(conf) {
             this.setHash(conf);
         },
@@ -1679,7 +1706,7 @@ Global.ExternalInterface.IOS = klass({
                 }
                 return false;
             };
-            on(win, ev_hashchange, this.ios[name]);
+            on(win, ev_hashchange, mine.ios[name]);
         },
         removeCallback: function(name) {
             off(win, ev_hashchange, this.ios[name]);
@@ -1741,6 +1768,10 @@ Global.FPS = klass({
         }
     },
     properties: {
+        dispose: function() {
+            this.stop();
+            this.__proto__.dispose();
+        },
         getCriterion: function() {
             return this.criterion;
         },
@@ -1779,6 +1810,8 @@ Global.FPS = klass({
 Global.ImgLoad = klass({
     extend: Base,
     init: function(config) {
+        this._added = [];
+
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
@@ -1820,6 +1853,7 @@ Global.ImgLoad = klass({
                 img.src = mine.srcs[i];
 
                 on(img, ev.load, countup);
+                this._added.push([img, ev.load, countup]);
 
                 mine.loadedsrcs.push(img);
             }
@@ -1837,6 +1871,8 @@ Global.ImgLoad = klass({
 Global.WindowLoad = klass({
     extend: Base,
     init: function(config) {
+        this._added = [];
+
         if (config && config.onload) {
             this.onload(config.onload);
         }
@@ -1844,6 +1880,7 @@ Global.WindowLoad = klass({
     properties: {
         onload: function(func) {
             on(win, ev.load, func);
+            this._added.push(win, ev.load, func);
         }
     }
 });
@@ -1922,6 +1959,9 @@ Global.LocalStorage = klass({
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 Global.Mobile = klass({
     extend: Base,
+    init: function() {
+        this._added = [];
+    },
     properties: {
         getZoom: function() {
             return doc.body.clientWidth / win.innerWidth;
@@ -1959,8 +1999,11 @@ Global.Mobile = klass({
             off(doc, ev.touchmove, preventDefault);
         },
         hideAddress: function() {
+            console.log(this);
             on(win, ev.load, hideAddressHandler, false);
             on(win, ev_orientationchange, hideAddressHandler, false);
+            this._added.push([win, ev.load, hideAddressHandler]);
+            this._added.push([win, ev_orientationchange, hideAddressHandler]);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -1988,7 +2031,8 @@ Global.Mobile = klass({
             };
         },
         bindOrientation: function(vars) {
-            var mine = this;
+            var mine = this,
+                ret_remove;
 
             if (vars.immediately) {
                 change();
@@ -2004,9 +2048,12 @@ Global.Mobile = klass({
 
             add(change);
 
-            return function() {
+            ret_remove = function() {
                 remove(change);
             };
+            mine._added.push(ret_remove);
+
+            return ret_remove;
 
             function add(func) {
                 set(on, func);
@@ -2018,6 +2065,9 @@ Global.Mobile = klass({
                 setfunc(win, ev.load, handler);
                 setfunc(win, ev_orientationchange, handler);
                 setfunc(win, ev.resize, handler);
+                mine._added.push([win, ev.load, handler]);
+                mine._added.push([win, ev_orientationchange, handler]);
+                mine._added.push([win, ev.resize, handler]);
             }
             function onechange() {
                 change();
@@ -2244,6 +2294,9 @@ Global.Route = klass({
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = klass({
     extend: Base,
+    init: function() {
+        this._added = [];
+    },
     properties: {
         requests: function(varary) {
             var i = 0,
@@ -2262,6 +2315,7 @@ Global.ScriptLoad = klass({
 
             if (vars.callback) {
                 on(script, ev.load, vars.callback);
+                this._added.push([script, ev.load, vars.callback]);
             }
         }
     }
@@ -2422,6 +2476,10 @@ Global.Surrogate = klass({
         // this.waitid = null;
     },
     properties: {
+        dispose: function() {
+            this.clear();
+            this.__proto__.dispose();
+        },
         request: function(arg) {
             this.args = arg;
             this.clear();
@@ -2448,6 +2506,10 @@ Global.Throttle = klass({
         // this.waitarg = null;
     },
     properties: {
+        dispose: function() {
+            this.unlock();
+            this.__proto__.dispose();
+        },
         request: function(vars) {
             var mine = this;
 
@@ -2700,6 +2762,10 @@ Mine = Global.Transition = klass({
         }
     },
     properties: {
+        dispose: function() {
+            this.stop();
+            this.__proto__.dispose();
+        },
         start: function() {
             var mine = this;
 
@@ -2791,6 +2857,10 @@ var Mine = Global.Tweener = klass({
         }
     },
     properties: {
+        dispose: function() {
+            this.stop();
+            this.__proto__.dispose();
+        },
         // easeOutExpo
         _ease: function(time, from, dist, duration) {
             return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;

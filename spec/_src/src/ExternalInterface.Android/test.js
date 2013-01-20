@@ -28,15 +28,6 @@ describe('ExternalInterface.Androidは', function() {
         delete c.EXTERNAL_ANDROID;
     });
 
-    it('C.EXTERNAL_ANDROIDにAndroidネイティブから呼び出すための関数を設定する', function(){
-        delete c.EXTERNAL_ANDROID;
-        external = new c.ExternalInterface.Android({
-            android: androidMethod
-        });
-
-        expect(c.EXTERNAL_ANDROID).toBeDefined();
-    });
-
     it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {
         var args = {
                 id: 0,

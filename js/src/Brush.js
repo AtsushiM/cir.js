@@ -65,9 +65,11 @@ Global.Brush = klass({
             return ret;
         },
         draw: function(layer) {
+            var i = 0, len = layer.length, item;
+
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-            for (var i = 0, len = layer.length, item; i < len; i++) {
+            for (; i < len; i++) {
                 item = layer[i];
                 this.ctx.drawImage(item.image, item.x, item.y);
             }

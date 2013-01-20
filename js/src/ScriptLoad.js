@@ -1,6 +1,9 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global.ScriptLoad = klass({
     extend: Base,
+    init: function() {
+        this._added = [];
+    },
     properties: {
         requests: function(varary) {
             var i = 0,
@@ -19,6 +22,7 @@ Global.ScriptLoad = klass({
 
             if (vars.callback) {
                 on(script, ev.load, vars.callback);
+                this._added.push([script, ev.load, vars.callback]);
             }
         }
     }

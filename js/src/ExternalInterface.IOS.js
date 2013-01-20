@@ -5,6 +5,14 @@ Global.ExternalInterface.IOS = klass({
         this.ios = {};
     },
     properties: {
+        dispose: function() {
+            var i;
+
+            for (i in this.ios) {
+                this.removeCallback(i);
+            }
+            this.__proto__.dispose();
+        },
         call: function(conf) {
             this.setHash(conf);
         },
@@ -19,7 +27,7 @@ Global.ExternalInterface.IOS = klass({
                 }
                 return false;
             };
-            on(win, ev_hashchange, this.ios[name]);
+            on(win, ev_hashchange, mine.ios[name]);
         },
         removeCallback: function(name) {
             off(win, ev_hashchange, this.ios[name]);
