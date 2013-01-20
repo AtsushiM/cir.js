@@ -4,8 +4,7 @@ src/Ajax/\n\
 src/Animation/\n\
 src/Audio/\n\
 src/Bind/\n\
-src/CanvasImg/\n\
-src/CanvasRender/\n\
+src/Brush/\n\
 src/DataStore/\n\
 src/Deferred/\n\
 src/DragFlick/\n\
@@ -50,8 +49,7 @@ src/utility/\n\
 ../../js/src/Animation.js\n\
 ../../js/src/Audio.js\n\
 ../../js/src/Bind.js\n\
-../../js/src/CanvasImg.js\n\
-../../js/src/CanvasRender.js\n\
+../../js/src/Brush.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/Deferred.js\n\
 ../../js/src/DragFlick.js\n\
@@ -96,8 +94,7 @@ src/utility/\n\
 ../_src/src/Animation/test.js\n\
 ../_src/src/Audio/test.js\n\
 ../_src/src/Bind/test.js\n\
-../_src/src/CanvasImg/test.js\n\
-../_src/src/CanvasRender/test.js\n\
+../_src/src/Brush/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/Deferred/test.js\n\
 ../_src/src/DragFlick/test.js\n\
