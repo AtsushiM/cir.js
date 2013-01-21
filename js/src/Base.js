@@ -8,7 +8,7 @@ var Base = Global.Base = klass({
                 i = this._dispose.lenght;
 
                 for (; i--;) {
-                    off.call(null, this._dispose[i]);
+                    off.apply(null, this._dispose[i]);
                 }
             }
 

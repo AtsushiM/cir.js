@@ -11,7 +11,7 @@ Global.ExternalInterface.IOS = klass({
             for (i in this.ios) {
                 this.removeCallback(i);
             }
-            this.__proto__.__proto__.dispose.call(this, []);
+            this.__proto__.__proto__.dispose.call(this);
         },
         call: function(conf) {
             this.setHash(conf);

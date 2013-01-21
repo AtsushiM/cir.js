@@ -10,7 +10,7 @@ Global.Surrogate = klass({
     properties: {
         dispose: function() {
             this.clear();
-            this.__proto__.__proto__.dispose.call(this, []);
+            this.__proto__.__proto__.dispose.call(this);
         },
         request: function(arg) {
             this.args = arg;
