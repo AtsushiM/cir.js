@@ -35,7 +35,7 @@ describe('ScriptLoadは', function() {
         });
     });
 
-    it('requests([{src, callback}])で複数scriptファイルをhtmlに読み込む', function() {
+    it('requests([{src, callback}], callback)で複数scriptファイルをhtmlに読み込む', function() {
         var arg = [
                 {
                     src: '/spec/common/test2.js',
@@ -45,9 +45,12 @@ describe('ScriptLoadは', function() {
                     src: '/spec/common/test3.js',
                     callback: function() {}
                 }
-            ];
+            ],
+            ret = false;
 
-        scriptload.requests(arg);
+        scriptload.requests(arg, function() {
+            ret = true;
+        });
 
         waits(100);
         runs(function() {
@@ -57,6 +60,8 @@ describe('ScriptLoadは', function() {
             expect(
                 document.querySelectorAll('script[src="/spec/common/test3.js"]')
             ).toBeDefined();
+
+            expect(ret).toBeTruthy();
         });
     });
 });
