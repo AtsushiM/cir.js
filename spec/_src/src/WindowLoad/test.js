@@ -22,6 +22,11 @@ describe('WindowLoadは', function() {
 
     loading_after.onload(dammy.after.onload);
 
+    it('dispose()でインスタンスを解放する', function() {
+        loading_after.dispose();
+        expect(loading_after).toEqual({});
+    });
+
     it('ページ読み込み時にローディング処理を実行する', function() {
         waits(100);
         runs(function() {

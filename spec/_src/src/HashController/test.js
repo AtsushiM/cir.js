@@ -12,6 +12,11 @@ describe('HashControllerは', function() {
         location.hash = orgHash;
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        controller.dispose();
+        expect(controller).toEqual({});
+    });
+
     it('makeHash({mode: string, contents: {key: val}})でデータをlocation.hash用に変換した文字列を返す', function() {
         var argvars = {
                 test1: true,

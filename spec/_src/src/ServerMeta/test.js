@@ -19,6 +19,11 @@ describe('ServerMetaは', function() {
         });
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        servermeta.dispose();
+        expect(servermeta).toEqual({});
+    });
+
     it('date()はサーバ時間を取得する', function() {
         var after = function(date) {
                 expect(date.getFullYear()).toBeDefined();

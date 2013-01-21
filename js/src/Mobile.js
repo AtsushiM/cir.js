@@ -41,7 +41,6 @@ Global.Mobile = klass({
             off(doc, ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            console.log(this);
             on(win, ev.load, hideAddressHandler, false);
             on(win, ev_orientationchange, hideAddressHandler, false);
             this._dispose.push([win, ev.load, hideAddressHandler]);

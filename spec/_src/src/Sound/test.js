@@ -11,6 +11,23 @@ describe('Soundは', function() {
         delete sound;
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        sound = new c.Sound({
+            dir: '/spec/common/',
+            name: 'tm2_door000',
+            autoplay: false,
+            loop: false,
+            oncanplay: function(e) {
+                // write code.
+            },
+            onended: function(e) {
+                // write code.
+            }
+        });
+        sound.dispose();
+        expect(sound).toEqual({});
+    });
+
     it('getAudio()でAudio要素を取得する', function() {
         sound = new c.Sound({
             dir: '/spec/common/',

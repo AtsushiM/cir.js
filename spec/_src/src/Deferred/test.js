@@ -11,6 +11,11 @@ describe('Deferredは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        deferred.dispose();
+        expect(deferred).toEqual({});
+    });
+
     it('isResolve()でresolve()が実行されたかどうかboolを返す', function() {
         expect(deferred.isResolve()).toBeFalsy();
         deferred.resolve();

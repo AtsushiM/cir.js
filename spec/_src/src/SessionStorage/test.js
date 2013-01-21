@@ -17,6 +17,11 @@ describe('SessionStorageは', function() {
         SS.clear();
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        storage.dispose();
+        expect(storage).toEqual({});
+    });
+
     it('namespaceオプションでsessionStorage内を区切って管理する', function() {
         expect(0).toEqual(0);
     });

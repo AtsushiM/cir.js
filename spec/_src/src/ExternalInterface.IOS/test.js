@@ -19,6 +19,11 @@ describe('ExternalInterface.IOSは', function() {
         location.hash = orgHash;
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        external.dispose();
+        expect(external).toEqual({});
+    });
+
     it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {
         // iOSの場合はhash,
         var args = {

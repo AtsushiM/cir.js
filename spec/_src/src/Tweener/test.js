@@ -10,15 +10,44 @@ describe('Tweenerは', function() {
     afterEach(function() {
         // clear
         element.removeAttribute('style');
-        tweener.stop();
+        if (tweener.stop) {
+            tweener.stop();
+        }
+    });
+
+    it('dispose()でインスタンスを解放する', function() {
+        tweener = new c.Tweener(
+            element.style,
+            {
+                width: {
+                    from: 0,
+                    to: 100
+                },
+                height: {
+                    from: 0,
+                    to: 100,
+                    prefix: '',
+                    suffix: 'px'
+                }
+            },
+            {
+                duration: 500,
+                ease: c.ease.outExpo,
+                onComplete: function() {
+                }
+            }
+        );
+
+        waits(1000);
+        runs(function() {
+            tweener.dispose();
+            expect(tweener).toEqual({});
+        });
     });
 
     it('new Tweener(targetObj, property, option)でアニメーションする', function() {
         var comp = false;
         runs(function() {
-            expect(element.style.width).toEqual('');
-            expect(element.style.height).toEqual('');
-
             tweener = new c.Tweener(
                 element.style,
                 {

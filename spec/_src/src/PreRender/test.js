@@ -19,6 +19,11 @@ describe('PreRenderは', function() {
     afterEach(function() {
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        prerender.dispose();
+        expect(prerender).toEqual({});
+    });
+
     it('start()でelementsで指定したエレメントのプリレンダリングを開始する', function() {
         prerender.start();
         expect(0).toEqual(0);

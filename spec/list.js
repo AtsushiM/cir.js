@@ -3,6 +3,7 @@ document.write('\
 src/Ajax/\n\
 src/Animation/\n\
 src/Audio/\n\
+src/Base/\n\
 src/Bind/\n\
 src/Brush/\n\
 src/DataStore/\n\
@@ -48,6 +49,7 @@ src/utility/\n\
 ../../js/src/Ajax.js\n\
 ../../js/src/Animation.js\n\
 ../../js/src/Audio.js\n\
+../../js/src/Base.js\n\
 ../../js/src/Bind.js\n\
 ../../js/src/Brush.js\n\
 ../../js/src/DataStore.js\n\
@@ -93,6 +95,7 @@ src/utility/\n\
 ../_src/src/Ajax/test.js\n\
 ../_src/src/Animation/test.js\n\
 ../_src/src/Audio/test.js\n\
+../_src/src/Base/test.js\n\
 ../_src/src/Bind/test.js\n\
 ../_src/src/Brush/test.js\n\
 ../_src/src/DataStore/test.js\n\

@@ -6,6 +6,7 @@ var xhr,
     isLoaded = false;
 
 Global.ServerMeta = klass({
+    extend : Base,
     init: function(config) {
         config = config || {};
 

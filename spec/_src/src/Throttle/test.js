@@ -19,6 +19,11 @@ describe('Throttleは', function() {
         retarg = null;
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        throttle.dispose();
+        expect(throttle).toEqual({});
+    });
+
     it('request(arg)でcallback関数をスロットル実行する', function() {
         throttle.request(0);
         throttle.request(1);

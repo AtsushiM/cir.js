@@ -18,6 +18,11 @@ describe('Brushは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        brush.dispose();
+        expect(brush).toEqual({});
+    });
+
     it('setSize({width, height})でサイズを変更する', function() {
         expect(canvas.width).toEqual(100);
         expect(canvas.height).toEqual(100);

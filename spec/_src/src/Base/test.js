@@ -1,73 +1,24 @@
-/* Class: "../../../../js/src/ScriptLoad.js" */
-describe('ScriptLoadは', function() {
-    var scriptload;
+/* Class: "../../../../js/src/Base.js" */
+describe('Baseは', function() {
+    var c = window.C ? C : Global,
+        base;
 
     beforeEach(function() {
         // init
-        if (window.C) {
-            scriptload = new C.ScriptLoad();
-        }
-        else {
-            scriptload = new Global.ScriptLoad();
-        }
+        base = new c.Base();
     });
     afterEach(function() {
         // clear
     });
 
-    it('dispose()でインスタンスを解放する', function() {
-        scriptload.dispose();
-        expect(scriptload).toEqual({});
-    });
-
-    it('request({src, callback})でscriptファイルをhtmlに読み込む', function() {
-        var callbackarg = 0,
-            arg = {
-                src: '/spec/common/test.js',
-                callback: function() {
-                    callbackarg = 1;
-                }
-            };
-
-        scriptload.request(arg);
-
-        waits(100);
-        runs(function() {
-            expect(callbackarg).toEqual(1);
-            expect(
-                document.querySelector('script[src="/spec/common/test.js"]')
-            ).toBeDefined();
-        });
-    });
-
-    it('requests([{src, callback}], callback)で複数scriptファイルをhtmlに読み込む', function() {
-        var arg = [
-                {
-                    src: '/spec/common/test2.js',
-                    callback: function() {}
-                },
-                {
-                    src: '/spec/common/test3.js',
-                    callback: function() {}
-                }
-            ],
-            ret = false;
-
-        scriptload.requests(arg, function() {
-            ret = true;
-        });
-
-        waits(100);
-        runs(function() {
-            expect(
-                document.querySelectorAll('script[src="/spec/common/test2.js"]')
-            ).toBeDefined();
-            expect(
-                document.querySelectorAll('script[src="/spec/common/test3.js"]')
-            ).toBeDefined();
-
-            expect(ret).toBeTruthy();
-        });
+    it('dispose()でプロパティとメソッドを破棄し、メモリーを解放する', function() {
+        base.test1 = 1;
+        base.test2 = '2';
+        base.test3 = {};
+        base.test4 = function() {};
+        base.dispose();
+        expect(base).toEqual({});
+        expect(base.dispose).not.toBeDefined();
     });
 });
 /*

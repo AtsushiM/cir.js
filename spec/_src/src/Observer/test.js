@@ -11,6 +11,11 @@ describe('Observerは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        observer.dispose();
+        expect(observer).toEqual({});
+    });
+
     it('singleオプションでsingletonになる', function() {
         var observer1 = new c.Observer({
                 single: true

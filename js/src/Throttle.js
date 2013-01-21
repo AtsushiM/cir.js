@@ -11,7 +11,7 @@ Global.Throttle = klass({
     properties: {
         dispose: function() {
             this.unlock();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         request: function(vars) {
             var mine = this;

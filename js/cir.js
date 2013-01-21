@@ -414,7 +414,7 @@ ev = klass({
 });
 Global.Event = ev;
 ev = Global.event = new ev();
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Base/test.js" */
 var Base = Global.Base = klass({
     properties: {
         dispose: function() {
@@ -1289,7 +1289,7 @@ Global.Bind = klass({
     properties: {
         dispose: function() {
             this.remove();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         getHandler: function() {
             return this.handler;
@@ -1696,7 +1696,7 @@ Global.ExternalInterface.IOS = klass({
             for (i in this.ios) {
                 this.removeCallback(i);
             }
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         call: function(conf) {
             this.setHash(conf);
@@ -1776,7 +1776,7 @@ Global.FPS = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         getCriterion: function() {
             return this.criterion;
@@ -2005,7 +2005,6 @@ Global.Mobile = klass({
             off(doc, ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            console.log(this);
             on(win, ev.load, hideAddressHandler, false);
             on(win, ev_orientationchange, hideAddressHandler, false);
             this._dispose.push([win, ev.load, hideAddressHandler]);
@@ -2356,6 +2355,7 @@ var xhr,
     isLoaded = false;
 
 Global.ServerMeta = klass({
+    extend : Base,
     init: function(config) {
         config = config || {};
 
@@ -2506,7 +2506,7 @@ Global.Surrogate = klass({
     properties: {
         dispose: function() {
             this.clear();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         request: function(arg) {
             this.args = arg;
@@ -2536,7 +2536,7 @@ Global.Throttle = klass({
     properties: {
         dispose: function() {
             this.unlock();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         request: function(vars) {
             var mine = this;
@@ -2792,7 +2792,7 @@ Mine = Global.Transition = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         start: function() {
             var mine = this;
@@ -2887,7 +2887,7 @@ var Mine = Global.Tweener = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         // easeOutExpo
         _ease: function(time, from, dist, duration) {

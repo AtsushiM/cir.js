@@ -5,16 +5,26 @@ describe('FPSは', function() {
         dammy,
         criterion = 10;
 
-    function setFPS() {
-    }
-
     beforeEach(function() {
         // init
+        fps = new c.FPS({
+            single: true,
+            enterframe: function() {
+            }
+        });
     });
     afterEach(function() {
         // clear
-        fps.stop();
-        fps = null;
+        if (fps.stop) {
+            fps.stop();
+            fps = null;
+        }
+    });
+
+    it('dispose()でインスタンスを解放する', function() {
+        fps.dispose();
+        expect(fps).toEqual({});
+        waits(10);
     });
 
     it('singleオプションでsingletonになる', function() {

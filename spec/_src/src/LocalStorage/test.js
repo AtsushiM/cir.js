@@ -17,6 +17,11 @@ describe('LocalStorageは', function() {
         LS.clear();
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        storage.dispose();
+        expect(storage).toEqual({});
+    });
+
     it('namespaceオプションでlocalStorage内を区切って管理する', function() {
         expect(0).toEqual(0);
     });

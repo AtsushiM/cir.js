@@ -11,6 +11,11 @@ describe('DragFlickは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        dragflick.dispose();
+        expect(dragflick).toEqual({});
+    });
+
     it('amount({element, callback})でelementがフリックされた際、callbackに移動量を{x,y}の形式で渡す', function() {
         dragflick.amount({
             element: document.body,

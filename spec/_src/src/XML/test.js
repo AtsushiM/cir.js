@@ -14,6 +14,11 @@ describe('XMLは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        xml.dispose();
+        expect(xml).toEqual({});
+    });
+
     it('getData()でXMLのテキストデータを取得する', function() {
         expect(xml.getData()).toEqual(data);
     });

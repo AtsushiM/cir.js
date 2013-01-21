@@ -1,4 +1,4 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Base/test.js" */
 var Base = Global.Base = klass({
     properties: {
         dispose: function() {

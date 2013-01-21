@@ -32,7 +32,7 @@ Global.FPS = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.dispose();
+            this.__proto__.__proto__.dispose.call(this, []);
         },
         getCriterion: function() {
             return this.criterion;

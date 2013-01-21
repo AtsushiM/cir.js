@@ -19,6 +19,11 @@ describe('FontImgは', function() {
         return '<p class="font_' + args.type + '_' + i + '">&nbsp;</p>';
     }
 
+    it('dispose()でインスタンスを解放する', function() {
+        numimg.dispose();
+        expect(numimg).toEqual({});
+    });
+
     it('make(x)で数値xのimgタグを返す', function() {
         // 0 ~ 9
         for (var i = 0, len = 10; i < len; i++) {

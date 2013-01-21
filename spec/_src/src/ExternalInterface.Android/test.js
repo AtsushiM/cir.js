@@ -28,6 +28,11 @@ describe('ExternalInterface.Androidは', function() {
         delete c.EXTERNAL_ANDROID;
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        external.dispose();
+        expect(external).toEqual({});
+    });
+
     it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {
         var args = {
                 id: 0,

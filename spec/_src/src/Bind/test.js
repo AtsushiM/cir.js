@@ -20,6 +20,11 @@ describe('Bindは', function() {
     afterEach(function() {
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        bind.dispose();
+        expect(bind).toEqual({});
+    });
+
     it('初期化時に{element: element, events: {event: function}}に合わせてイベントを追加する', function() {
         document.body.click();
         expect(eventHandeler.clicktest).toBeTruthy();

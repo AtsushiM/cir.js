@@ -11,6 +11,11 @@ describe('Facebookは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        facebook.dispose();
+        expect(facebook).toEqual({});
+    });
+
     it('getShareURL(options)でfacebook用のShareURLを作成する', function() {
         var url = facebook.getShareURL({
                 app_id: 168589393194273,

@@ -28,6 +28,28 @@ describe('ImgLoadは', function() {
         loadend = false;
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        imgload = new c.ImgLoad({
+            srcs: [
+                // img path
+                '/spec/common/r.png',
+                '/spec/common/g.png',
+                '/spec/common/b.png'
+            ],
+            onprogress: function(prog) {
+                progress = prog;
+            },
+            onload: function() {
+                loadend = true;
+            }
+        });
+        waits(100);
+        runs(function() {
+            imgload.dispose();
+            expect(imgload).toEqual({});
+        });
+    });
+
     it('start()で画像の先読みを開始する', function() {
         runs(function() {
             imgload.start();

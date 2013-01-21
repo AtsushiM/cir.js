@@ -11,6 +11,11 @@ describe('Twitterは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        twitter.dispose();
+        expect(twitter).toEqual({});
+    });
+
     it('getShareURL(options)でTwitter用のShareURLを作成する', function() {
         var url = twitter.getShareURL({
                 redirect_uri: 'http://atms.sakura.ne.jp/wallsearch',

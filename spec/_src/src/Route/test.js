@@ -25,6 +25,11 @@ describe('Routeは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        route.dispose();
+        expect(route).toEqual({});
+    });
+
     it('targetオプションに対して、actionオプションのキー名で正規表現を行い、当てはまったものを実行する', function() {
         var count = 0;
         route = new c.Route({

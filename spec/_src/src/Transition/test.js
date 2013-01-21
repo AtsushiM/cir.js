@@ -15,6 +15,18 @@ describe('Transitionは', function() {
         c.element.remove(div);
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        transition = new c.Transition(div, {
+            opacity: '0'
+        }, {
+            onComplete: function() {
+                count = 1;
+            }
+        });
+        transition.dispose();
+        expect(transition).toEqual({});
+    });
+
     it('CSS Trasitionでアニメーションする', function() {
         var count = 0;
 

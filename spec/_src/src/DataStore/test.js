@@ -10,6 +10,12 @@ describe('DataStoreは', function() {
         store.reset();
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        store.dispose();
+        expect(store).toEqual({});
+        store = new c.DataStore();
+    });
+
     it('singleオプションでsingletonになる', function() {
         var store1 = new c.DataStore({
                 single: true

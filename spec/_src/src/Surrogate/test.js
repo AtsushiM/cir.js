@@ -21,6 +21,16 @@ describe('Surrogateは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        surrogate = new c.Surrogate({
+            delay: 50,
+            callback: function() {
+            }
+        });
+        surrogate.dispose();
+        expect(surrogate).toEqual({});
+    });
+
     it('flush()で引数callback()を実行する', function() {
         spyOn(dammy, 'callback').andCallThrough();
         before();

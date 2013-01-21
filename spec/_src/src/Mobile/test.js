@@ -11,6 +11,11 @@ describe('Mobileは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        mb.dispose();
+        expect(mb).toEqual({});
+    });
+
     it('getZoom()で画面の拡大率を取得する', function() {
         expect(mb.getZoom()).toBeGreaterThan(0);
     });

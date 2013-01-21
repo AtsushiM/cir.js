@@ -14,6 +14,19 @@ describe('Animationは', function() {
         c.element.remove(div);
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        animation = new c.Animation(div, {
+            opacity: '0'
+        }, {
+            onComplete: function() {
+                count = 1;
+            }
+        });
+
+        animation.dispose();
+        expect(animation).toEqual({});
+    });
+
     it('CSS Animationでアニメーションする', function() {
         var count = 0;
 

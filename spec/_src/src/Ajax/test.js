@@ -10,6 +10,11 @@ describe('Ajaxは', function() {
         // clear
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        ajax.dispose();
+        expect(ajax).toEqual({});
+    });
+
     it('インスタンス生成時にrequest()に渡す形式の引数を指定した場合、request()を呼び出す', function() {
         var data = '',
             ajax = new C.Ajax({
