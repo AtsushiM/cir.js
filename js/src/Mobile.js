@@ -2,7 +2,7 @@
 Global.Mobile = klass({
     extend: Base,
     init: function() {
-        this._dispose = [];
+        this._super();
     },
     properties: {
         getZoom: function() {
@@ -41,10 +41,8 @@ Global.Mobile = klass({
             off(doc, ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            on(win, ev.load, hideAddressHandler, false);
-            on(win, ev_orientationchange, hideAddressHandler, false);
-            this._dispose.push([win, ev.load, hideAddressHandler]);
-            this._dispose.push([win, ev_orientationchange, hideAddressHandler]);
+            this.ondispose(win, ev.load, hideAddressHandler, false);
+            this.ondispose(win, ev_orientationchange, hideAddressHandler, false);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -92,23 +90,18 @@ Global.Mobile = klass({
             ret_remove = function() {
                 remove(change);
             };
-            mine._dispose.push(ret_remove);
 
             return ret_remove;
 
-            function add(func) {
-                set(on, func);
+            function add(handler) {
+                mine.ondispose(win, ev.load, handler);
+                mine.ondispose(win, ev_orientationchange, handler);
+                mine.ondispose(win, ev.resize, handler);
             }
-            function remove(func) {
-                set(off, func);
-            }
-            function set(setfunc, handler) {
-                setfunc(win, ev.load, handler);
-                setfunc(win, ev_orientationchange, handler);
-                setfunc(win, ev.resize, handler);
-                mine._dispose.push([win, ev.load, handler]);
-                mine._dispose.push([win, ev_orientationchange, handler]);
-                mine._dispose.push([win, ev.resize, handler]);
+            function remove(handler) {
+                off(win, ev.load, handler);
+                off(win, ev_orientationchange, handler);
+                off(win, ev.resize, handler);
             }
             function onechange() {
                 change();

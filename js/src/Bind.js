@@ -8,7 +8,7 @@ Global.Bind = klass({
     properties: {
         dispose: function() {
             this.remove();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         getHandler: function() {
             return this.handler;

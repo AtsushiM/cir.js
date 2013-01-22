@@ -2,7 +2,7 @@
 Global.ScriptLoad = klass({
     extend: Base,
     init: function() {
-        this._dispose = [];
+        this._super();
         this.elements = [];
     },
     properties: {
@@ -43,8 +43,7 @@ Global.ScriptLoad = klass({
             this.elements.push(script);
 
             if (vars.callback) {
-                on(script, ev.load, vars.callback);
-                this._dispose.push([script, ev.load, vars.callback]);
+                this.ondispose(script, ev.load, vars.callback);
             }
         }
     }

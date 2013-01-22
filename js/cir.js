@@ -416,6 +416,9 @@ Global.Event = ev;
 ev = Global.event = new ev();
 /* Test: "../../spec/_src/src/Base/test.js" */
 var Base = Global.Base = klass({
+    init: function() {
+        this._dispose = [];
+    },
     properties: {
         dispose: function() {
             var i;
@@ -433,6 +436,14 @@ var Base = Global.Base = klass({
             }
 
             this.__proto__ = null;
+            return null;
+        },
+        ondispose: function(element, e, handler) {
+            on(element, e, handler);
+            this._dispose.push([element, e, handler]);
+        },
+        _orgdis: function() {
+            this.__proto__.__proto__.dispose.call(this);
         }
     }
 });
@@ -1108,7 +1119,7 @@ Global.Audio = function(config) {
 Global.Sound = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         var mine = this,
             autoplay = config.autoplay,
@@ -1134,8 +1145,7 @@ Global.Sound = klass({
                 mine.play();
             };
 
-            on(audio, e_canplay, autoplay);
-            this._dispose.push([audio, e_canplay, autoplay]);
+            this.ondispose(audio, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
@@ -1143,17 +1153,14 @@ Global.Sound = klass({
                 mine.play();
             };
 
-            on(audio, e_ended, loop);
-            this._dispose.push([audio, e_ended, loop]);
+            this.ondispose(audio, e_ended, loop);
         }
 
         if (config.oncanplay) {
-            on(audio, e_canplay, config.oncanplay);
-            this._dispose.push([audio, e_canplay, config.oncanplay]);
+            this.ondispose(audio, e_canplay, config.oncanplay);
         }
         if (config.onended) {
-            on(audio, e_ended, config.onended);
-            this._dispose.push([audio, e_ended, config.onended]);
+            this.ondispose(audio, e_ended, config.onended);
         }
 
         append(doc.body, audio);
@@ -1289,7 +1296,7 @@ Global.Bind = klass({
     properties: {
         dispose: function() {
             this.remove();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         getHandler: function() {
             return this.handler;
@@ -1478,7 +1485,7 @@ Global.Deferred = klass({
 Global.DragFlick = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         if (config) {
             this.bind(config);
@@ -1496,10 +1503,8 @@ Global.DragFlick = klass({
                 startY,
                 dragflg = false;
 
-            on(vars.element, ev.switchdown, start);
-            on(win, ev.switchup, end);
-            this._dispose.push([vars.element, ev.switchdown, start]);
-            this._dispose.push([win, ev.switchup, end]);
+            this.ondispose(vars.element, ev.switchdown, start);
+            this.ondispose(win, ev.switchup, end);
 
             function start(e) {
                 var changed = mine._t(e);
@@ -1628,8 +1633,7 @@ Global.DragFlick = klass({
                         var changed = mine._t(e);
                         callback(changed);
                     };
-                on(element, ev, handler);
-                mine._dispose.push([element, ev, handler]);
+                mine.ondispose(element, ev, handler);
             }
         }
     }
@@ -1696,7 +1700,7 @@ Global.ExternalInterface.IOS = klass({
             for (i in this.ios) {
                 this.removeCallback(i);
             }
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         call: function(conf) {
             this.setHash(conf);
@@ -1776,7 +1780,7 @@ Global.FPS = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         getCriterion: function() {
             return this.criterion;
@@ -1816,7 +1820,7 @@ Global.FPS = klass({
 Global.ImgLoad = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
@@ -1858,8 +1862,7 @@ Global.ImgLoad = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                on(img, ev.load, countup);
-                this._dispose.push([img, ev.load, countup]);
+                this.ondispose(img, ev.load, countup);
 
                 mine.loadedsrcs.push(img);
             }
@@ -1877,7 +1880,7 @@ Global.ImgLoad = klass({
 Global.WindowLoad = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         if (config && config.onload) {
             this.onload(config.onload);
@@ -1885,8 +1888,7 @@ Global.WindowLoad = klass({
     },
     properties: {
         onload: function(func) {
-            on(win, ev.load, func);
-            this._dispose.push(win, ev.load, func);
+            this.ondispose(win, ev.load, func);
         }
     }
 });
@@ -1966,7 +1968,7 @@ Global.LocalStorage = klass({
 Global.Mobile = klass({
     extend: Base,
     init: function() {
-        this._dispose = [];
+        this._super();
     },
     properties: {
         getZoom: function() {
@@ -2005,10 +2007,8 @@ Global.Mobile = klass({
             off(doc, ev.touchmove, preventDefault);
         },
         hideAddress: function() {
-            on(win, ev.load, hideAddressHandler, false);
-            on(win, ev_orientationchange, hideAddressHandler, false);
-            this._dispose.push([win, ev.load, hideAddressHandler]);
-            this._dispose.push([win, ev_orientationchange, hideAddressHandler]);
+            this.ondispose(win, ev.load, hideAddressHandler, false);
+            this.ondispose(win, ev_orientationchange, hideAddressHandler, false);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -2056,23 +2056,18 @@ Global.Mobile = klass({
             ret_remove = function() {
                 remove(change);
             };
-            mine._dispose.push(ret_remove);
 
             return ret_remove;
 
-            function add(func) {
-                set(on, func);
+            function add(handler) {
+                mine.ondispose(win, ev.load, handler);
+                mine.ondispose(win, ev_orientationchange, handler);
+                mine.ondispose(win, ev.resize, handler);
             }
-            function remove(func) {
-                set(off, func);
-            }
-            function set(setfunc, handler) {
-                setfunc(win, ev.load, handler);
-                setfunc(win, ev_orientationchange, handler);
-                setfunc(win, ev.resize, handler);
-                mine._dispose.push([win, ev.load, handler]);
-                mine._dispose.push([win, ev_orientationchange, handler]);
-                mine._dispose.push([win, ev.resize, handler]);
+            function remove(handler) {
+                off(win, ev.load, handler);
+                off(win, ev_orientationchange, handler);
+                off(win, ev.resize, handler);
             }
             function onechange() {
                 change();
@@ -2300,7 +2295,7 @@ Global.Route = klass({
 Global.ScriptLoad = klass({
     extend: Base,
     init: function() {
-        this._dispose = [];
+        this._super();
         this.elements = [];
     },
     properties: {
@@ -2341,8 +2336,7 @@ Global.ScriptLoad = klass({
             this.elements.push(script);
 
             if (vars.callback) {
-                on(script, ev.load, vars.callback);
-                this._dispose.push([script, ev.load, vars.callback]);
+                this.ondispose(script, ev.load, vars.callback);
             }
         }
     }
@@ -2506,7 +2500,7 @@ Global.Surrogate = klass({
     properties: {
         dispose: function() {
             this.clear();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         request: function(arg) {
             this.args = arg;
@@ -2536,7 +2530,7 @@ Global.Throttle = klass({
     properties: {
         dispose: function() {
             this.unlock();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         request: function(vars) {
             var mine = this;
@@ -2792,7 +2786,7 @@ Mine = Global.Transition = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         start: function() {
             var mine = this;
@@ -2887,7 +2881,7 @@ var Mine = Global.Tweener = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         // easeOutExpo
         _ease: function(time, from, dist, duration) {

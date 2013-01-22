@@ -2,7 +2,7 @@
 Global.ImgLoad = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         this.srcs = config.srcs,
         this.srccount = this.srcs.length,
@@ -44,8 +44,7 @@ Global.ImgLoad = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                on(img, ev.load, countup);
-                this._dispose.push([img, ev.load, countup]);
+                this.ondispose(img, ev.load, countup);
 
                 mine.loadedsrcs.push(img);
             }

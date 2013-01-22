@@ -77,7 +77,7 @@ Mine = Global.Transition = klass({
     properties: {
         dispose: function() {
             this.stop();
-            this.__proto__.__proto__.dispose.call(this);
+            this._orgdis();
         },
         start: function() {
             var mine = this;

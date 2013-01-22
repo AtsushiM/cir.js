@@ -2,7 +2,7 @@
 Global.WindowLoad = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         if (config && config.onload) {
             this.onload(config.onload);
@@ -10,8 +10,7 @@ Global.WindowLoad = klass({
     },
     properties: {
         onload: function(func) {
-            on(win, ev.load, func);
-            this._dispose.push(win, ev.load, func);
+            this.ondispose(win, ev.load, func);
         }
     }
 });

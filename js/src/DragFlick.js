@@ -2,7 +2,7 @@
 Global.DragFlick = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         if (config) {
             this.bind(config);
@@ -20,10 +20,8 @@ Global.DragFlick = klass({
                 startY,
                 dragflg = false;
 
-            on(vars.element, ev.switchdown, start);
-            on(win, ev.switchup, end);
-            this._dispose.push([vars.element, ev.switchdown, start]);
-            this._dispose.push([win, ev.switchup, end]);
+            this.ondispose(vars.element, ev.switchdown, start);
+            this.ondispose(win, ev.switchup, end);
 
             function start(e) {
                 var changed = mine._t(e);
@@ -152,8 +150,7 @@ Global.DragFlick = klass({
                         var changed = mine._t(e);
                         callback(changed);
                     };
-                on(element, ev, handler);
-                mine._dispose.push([element, ev, handler]);
+                mine.ondispose(element, ev, handler);
             }
         }
     }

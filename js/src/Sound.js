@@ -2,7 +2,7 @@
 Global.Sound = klass({
     extend: Base,
     init: function(config) {
-        this._dispose = [];
+        this._super();
 
         var mine = this,
             autoplay = config.autoplay,
@@ -28,8 +28,7 @@ Global.Sound = klass({
                 mine.play();
             };
 
-            on(audio, e_canplay, autoplay);
-            this._dispose.push([audio, e_canplay, autoplay]);
+            this.ondispose(audio, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
@@ -37,17 +36,14 @@ Global.Sound = klass({
                 mine.play();
             };
 
-            on(audio, e_ended, loop);
-            this._dispose.push([audio, e_ended, loop]);
+            this.ondispose(audio, e_ended, loop);
         }
 
         if (config.oncanplay) {
-            on(audio, e_canplay, config.oncanplay);
-            this._dispose.push([audio, e_canplay, config.oncanplay]);
+            this.ondispose(audio, e_canplay, config.oncanplay);
         }
         if (config.onended) {
-            on(audio, e_ended, config.onended);
-            this._dispose.push([audio, e_ended, config.onended]);
+            this.ondispose(audio, e_ended, config.onended);
         }
 
         append(doc.body, audio);

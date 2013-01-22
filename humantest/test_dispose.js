@@ -1,20 +1,13 @@
-(function() {
-    var obs = [],
-        i = 0,
-        len = 1000;
+var observer = new C.Observer(),
+    i = 0,
+    len = 10000;
 
-    for (; i < len; i++) {
-        obs[i] = new C.Observer();
-        obs[i].on('test', function() {
-        });
-    }
+for (; i < len; i++) {
+    observer.on('test' + i, function() {
+        console.log(i);
+    });
+}
 
-    setTimeout(function() {
-        console.log(obs[0]);
-        for (i = 0; i < len; i++) {
-            /* obs[i].dispose(); */
-        }
-
-        /* console.log(obs[0]); */
-    }, 3000);
-}());
+C.$('input').on(C.event.click, function() {
+    observer.dispose();
+});
