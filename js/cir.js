@@ -784,7 +784,7 @@ Global.$ = function(query, _parent) {
     instance = new base();
 
     instance.length = len;
-    instance._selector = query;
+    /* instance._selector = query; */
     instance._parent = _parent;
 
     for (; i < len; i++) {

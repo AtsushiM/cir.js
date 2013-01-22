@@ -14,7 +14,8 @@ $(COMBINE) : $(SRC)
 	cat $^ > $@
 
 	growlnotify -t 'auto-make' -m 'make start.'
-	((java -jar /Applications/gcc/compiler.jar --js $(COMBINE) --js_output_file $(COMPRESS)) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
+	# ((java -jar /Applications/gcc/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js $(COMBINE) --js_output_file $(COMPRESS)) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
+	((java -jar /Applications/gcc/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS  --js $(COMBINE) --js_output_file $(COMPRESS)) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
 #	rm -f $(COMBINE)
 
 .PHONY: clean
