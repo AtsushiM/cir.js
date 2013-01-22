@@ -1,13 +1,39 @@
-var observer = new C.Observer(),
+var $ = C.$,
+    $test = $('#test'),
+    flg = false,
+    binds = [],
     i = 0,
     len = 10000;
 
-for (; i < len; i++) {
-    observer.on('test' + i, function() {
-        console.log(i);
-    });
-}
+$('#start').on(C.event.click, function() {
+    if (!flg) {
+        for (i = 0; i < len; i++) {
+            binds[i] = new C.Bind({
+                element: $test[0],
+                events: {
+                    click: function() {
+                        console.log('click');
+                    },
+                    mouseover: function() {
+                        console.log('over');
+                    },
+                    mouseout: function() {
+                        console.log('out');
+                    }
+                }
+            });
+        }
 
-C.$('input').on(C.event.click, function() {
-    observer.dispose();
+        flg = true;
+    }
+});
+
+$('#dispose').on(C.event.click, function() {
+    if (flg) {
+        for (i = 0; i < len; i++) {
+            binds[i].dispose();
+        }
+
+        flg = false;
+    }
 });
