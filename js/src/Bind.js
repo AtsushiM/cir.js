@@ -1,33 +1,33 @@
 /* Test: "../../spec/_src/src/Bind/test.js" */
-Global.Bind = klass({
-    extend: Base,
-    init: function(config) {
+Global['Bind'] = klass({
+    'extend': Base,
+    'init': function(config) {
         this.handler = config;
-        this.add();
+        this['add']();
     },
-    properties: {
-        dispose: function() {
-            this.remove();
+    'properties': {
+        'dispose': function() {
+            this['remove']();
             this._orgdis();
         },
-        getHandler: function() {
+        'getHandler': function() {
             return this.handler;
         },
-        add: function() {
+        'add': function() {
             this._e(true);
         },
-        remove: function() {
+        'remove': function() {
             this._e(false);
         },
         _e: function(isBind) {
             var onoff = isBind ? on : off,
                 i;
 
-            for (i in this.handler.events) {
+            for (i in this.handler['events']) {
                 onoff(
-                    this.handler.element,
+                    this.handler['element'],
                     i,
-                    this.handler.events[i]
+                    this.handler['events'][i]
                 );
             }
         }

@@ -37,24 +37,24 @@ for (; i < len; i++) {
     }
 }
 
-Mine = Global.Transition = klass({
-    extend: Base,
-    init: function(element, property, option) {
+Mine = Global['Transition'] = klass({
+    'extend': Base,
+    'init': function(element, property, option) {
         if (!support) {
             return false;
         }
 
         option = option || {};
-        option.onComplete = option.onComplete || nullFunction;
+        option['onComplete'] = option['onComplete'] || nullFunction;
 
-        Mine.id++;
-        this.id = 'cirtrans' + Mine.id;
+        Mine['id']++;
+        this.id = 'cirtrans' + Mine['id'];
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option.duration || Mine.Duration,
-            ease = option.ease || 'ease';
+            duration = option['duration'] || Mine['Duration'],
+            ease = option['ease'] || 'ease';
 
         if (!isArray(ease)) {
             ease = [ease];
@@ -70,22 +70,22 @@ Mine = Global.Transition = klass({
         this.property = property;
         this.option = option;
 
-        if (!option.manual) {
-            this.start();
+        if (!option['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        dispose: function() {
-            this.stop();
+    'properties': {
+        'dispose': function() {
+            this['stop']();
             this._orgdis();
         },
-        start: function() {
+        'start': function() {
             var mine = this;
 
             mine._endfunc = function(e) {
-                mine.stop();
+                mine['stop']();
                 setTimeout(function() {
-                    mine.option.onComplete(e);
+                    mine.option['onComplete'](e);
                 }, 1);
             };
 
@@ -115,9 +115,9 @@ Mine = Global.Transition = klass({
         }
     }
 });
-Mine.id = 0;
-Mine.support = support;
-Mine.Duration = 500;
+Mine['id'] = 0;
+Mine['support'] = support;
+Mine['Duration'] = 500;
 
 function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,

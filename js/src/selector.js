@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/selector/test.js" */
-Global.$ = function(query, _parent) {
+Global['$'] = function(query, _parent) {
     'use strict';
 
     var $elements,
@@ -20,7 +20,7 @@ Global.$ = function(query, _parent) {
     len = $elements.length;
 
     base = function() {};
-    base.prototype = Global.$.methods;
+    base.prototype = Global['$'].methods;
     instance = new base();
 
     instance.length = len;

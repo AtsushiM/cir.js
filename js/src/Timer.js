@@ -1,43 +1,43 @@
 /* Test: "../../spec/_src/src/Timer/test.js" */
-Global.Timer = function(config) {
+Global['Timer'] = function(config) {
     'use strict';
 
-    var limit = config.limit,
+    var limit = config['limit'],
         limitx1000 = limit * 1000,
-        interval = config.interval * 1000,
-        onupdate = config.onupdate,
-        ontimeup = config.ontimeup,
-        digit = template2digit(config.template),
+        interval = config['interval'] * 1000,
+        onupdate = config['onupdate'],
+        ontimeup = config['ontimeup'],
+        digit = template2digit(config['template']),
         starttime = 0,
         nowtime = 0,
         endtime = limitx1000,
         preformedtime = getPreformedNum(limit),
         loopid,
         instance = {
-            getLimit: function() {
+            'getLimit': function() {
                 return limit;
             },
-            getTime: function() {
+            'getTime': function() {
                 return preformedtime;
             },
-            getProgress: function() {
+            'getProgress': function() {
                 var diff = endtime - nowtime,
                     progress = 1 - diff / limitx1000;
 
                 return progress;
             },
-            setUpdate: function(func) {
+            'setUpdate': function(func) {
                 onupdate = func;
             },
-            setTimeup: function(func) {
+            'setTimeup': function(func) {
                 ontimeup = func;
             },
-            countDown: function(vars) {
+            'countDown': function(vars) {
                 nowtime = starttime = getTime();
                 endtime = starttime + limitx1000;
                 _loop();
             },
-            stop: function() {
+            'stop': function() {
                 clearInterval(loopid);
             }
         };
@@ -59,7 +59,7 @@ Global.Timer = function(config) {
         onupdate(preformedtime);
 
         if (nowtime > endtime) {
-            instance.stop();
+            instance['stop']();
             ontimeup();
             return true;
         }

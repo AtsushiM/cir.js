@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/Base/test.js" */
-var Base = Global.Base = klass({
-    init: function() {
+var Base = Global['Base'] = klass({
+    'init': function() {
         this._dispose = [];
     },
-    properties: {
-        dispose: function() {
+    'properties': {
+        'dispose': function() {
             var i;
 
             if (this._dispose) {
@@ -27,7 +27,7 @@ var Base = Global.Base = klass({
             this._dispose.push([element, e, handler]);
         },
         _orgdis: function() {
-            this.__proto__.__proto__.dispose.call(this);
+            this.__proto__.__proto__['dispose'].call(this);
         }
     }
 });

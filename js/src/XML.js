@@ -1,26 +1,26 @@
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global.XML = klass({
-    extend: Base,
-    init: function(config) {
+Global['XML'] = klass({
+    'extend': Base,
+    'init': function(config) {
         this.element = create('div');
         this.data = {};
 
-        if (config && config.data) {
-            this.setData(config.data);
+        if (config && config['data']) {
+            this['setData'](config['data']);
         }
     },
-    properties: {
-        getData: function() {
+    'properties': {
+        'getData': function() {
             return this.data;
         },
-        setData: function(d) {
+        'setData': function(d) {
             this.data =
             this.element.innerHTML = d;
         },
-        $: function(selector) {
+        '$': function(selector) {
             return $child(selector, this.element);
         },
-        $$: function(selector) {
+        '$$': function(selector) {
             return $$child(selector, this.element);
         }
     }

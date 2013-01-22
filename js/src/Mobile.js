@@ -1,47 +1,47 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global.Mobile = klass({
-    extend: Base,
-    init: function() {
-        this._super();
+Global['Mobile'] = klass({
+    'extend': Base,
+    'init': function() {
+        this['_super']();
     },
-    properties: {
-        getZoom: function() {
+    'properties': {
+        'getZoom': function() {
             return doc.body.clientWidth / win.innerWidth;
         },
-        isAndroid: function(ua) {
+        'isAndroid': function(ua) {
             return checkUserAgent(/Android/i, ua);
         },
-        isIOS: function(ua) {
+        'isIOS': function(ua) {
             return checkUserAgent(/iPhone|iPad|iPod/i, ua);
         },
-        isWindows: function(ua) {
+        'isWindows': function(ua) {
             return checkUserAgent(/IEMobile/i, ua);
         },
-        isFBAPP: function(ua) {
+        'isFBAPP': function(ua) {
             return checkUserAgent(/FBAN/, ua);
         },
-        isMobile: function() {
+        'isMobile': function() {
             return (
-                this.isAndroid() ||
-                this.isIOS() ||
-                this.isWindows() ||
-                this.isFBAPP()
+                this['isAndroid']() ||
+                this['isIOS']() ||
+                this['isWindows']() ||
+                this['isFBAPP']()
             );
         },
-        killScroll: function(isNoTop) {
+        'killScroll': function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, ev.touchmove, preventDefault);
+            on(doc, ev['touchmove'], preventDefault);
         },
-        revivalScroll: function(isNoTop) {
+        'revivalScroll': function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, ev.touchmove, preventDefault);
+            off(doc, ev['touchmove'], preventDefault);
         },
-        hideAddress: function() {
-            this.ondispose(win, ev.load, hideAddressHandler, false);
+        'hideAddress': function() {
+            this.ondispose(win, ev['load'], hideAddressHandler, false);
             this.ondispose(win, ev_orientationchange, hideAddressHandler, false);
 
             function doScroll() {
@@ -53,31 +53,31 @@ Global.Mobile = klass({
                 setTimeout(doScroll, 100);
             }
         },
-        getOrientation: function() {
+        'getOrientation': function() {
             if (
                 Math.abs(win.orientation) !== 90 &&
                 win.innerWidth < win.innerHeight
             ) {
                 return {
-                    portrait: true,
-                    landscape: false
+                    'portrait': true,
+                    'landscape': false
                 };
             }
 
             return {
-                portrait: false,
-                landscape: true
+                'portrait': false,
+                'landscape': true
             };
         },
-        bindOrientation: function(vars) {
+        'bindOrientation': function(vars) {
             var mine = this,
                 ret_remove;
 
-            if (vars.immediately) {
+            if (vars['immediately']) {
                 change();
             }
 
-            if (vars.one) {
+            if (vars['one']) {
                 add(onechange);
 
                 return function() {
@@ -94,14 +94,14 @@ Global.Mobile = klass({
             return ret_remove;
 
             function add(handler) {
-                mine.ondispose(win, ev.load, handler);
+                mine.ondispose(win, ev['load'], handler);
                 mine.ondispose(win, ev_orientationchange, handler);
-                mine.ondispose(win, ev.resize, handler);
+                mine.ondispose(win, ev['resize'], handler);
             }
             function remove(handler) {
-                off(win, ev.load, handler);
+                off(win, ev['load'], handler);
                 off(win, ev_orientationchange, handler);
-                off(win, ev.resize, handler);
+                off(win, ev['resize'], handler);
             }
             function onechange() {
                 change();
@@ -109,12 +109,12 @@ Global.Mobile = klass({
             }
             function change() {
                 if (
-                    mine.getOrientation().portrait
+                    mine['getOrientation']()['portrait']
                 ) {
-                    vars.portrait();
+                    vars['portrait']();
                     return true;
                 }
-                vars.landscape();
+                vars['landscape']();
             }
         }
     }

@@ -1,8 +1,8 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 (function() {
-var Mine = Global.Tweener = klass({
-    extend: Base,
-    init: function(target, property, option) {
+var Mine = Global['Tweener'] = klass({
+    'extend': Base,
+    'init': function(target, property, option) {
         var name,
             prop;
 
@@ -13,26 +13,26 @@ var Mine = Global.Tweener = klass({
 
         for (name in property) {
             prop = property[name];
-            prop.name = name;
+            prop['name'] = name;
 
-            prop.distance = prop.to - prop.from;
-            prop.prefix = prop.prefix || '';
-            prop.suffix = prop.suffix || 'px';
+            prop['distance'] = prop['to'] - prop['from'];
+            prop['prefix'] = prop['prefix'] || '';
+            prop['suffix'] = prop['suffix'] || 'px';
 
             this.property.push(prop);
         }
 
-        this.duration = option.duration || Mine.Duration;
-        this.ease = option.ease || this._ease;
-        this.onComplete = option.onComplete;
+        this.duration = option['duration'] || Mine['Duration'];
+        this.ease = option['ease'] || this._ease;
+        this.onComplete = option['onComplete'];
 
-        if (!option.manual) {
-            this.start();
+        if (!option['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        dispose: function() {
-            this.stop();
+    'properties': {
+        'dispose': function() {
+            this['stop']();
             this._orgdis();
         },
         // easeOutExpo
@@ -72,7 +72,7 @@ var Mine = Global.Tweener = klass({
         }()),
         loop: function() {
             var mine = this,
-                items = Mine.Items,
+                items = Mine['Items'],
                 item,
                 now = Date.now(),
                 time,
@@ -92,8 +92,8 @@ var Mine = Global.Tweener = klass({
 
                         Mine._setProp(item.target, prop, item.ease(
                             time,
-                            prop.from,
-                            prop.distance,
+                            prop['from'],
+                            prop['distance'],
                             item.duration
                         ));
                     }
@@ -102,7 +102,7 @@ var Mine = Global.Tweener = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Mine._setProp(item.target, prop, prop.to);
+                        Mine._setProp(item.target, prop, prop['to']);
                     }
                     if (item.onComplete) {
                         item.onComplete();
@@ -119,14 +119,14 @@ var Mine = Global.Tweener = klass({
                 return true;
             }
 
-            this.stop();
+            this['stop']();
         },
-        start: function() {
+        'start': function() {
             var mine = this;
 
             mine.begin = Date.now();
 
-            Mine.Items.push(mine);
+            Mine['Items'].push(mine);
             if (!Mine.timerId) {
                 Mine.timerId = 1;
                 mine._requestAnimationFrame(function() {
@@ -134,18 +134,18 @@ var Mine = Global.Tweener = klass({
                 });
             }
         },
-        stop: function() {
-            Mine.Items = [];
+        'stop': function() {
+            Mine['Items'] = [];
             clearInterval(Mine.timerId);
             Mine.timerId = null;
         }
     }
 });
 Mine._setProp = function(target, prop, point) {
-    target[prop.name] = prop.prefix + point + prop.suffix;
+    target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
 /* Mine.timerId = null; */
-Mine.Items = [];
-Mine.FPS = 30;
-Mine.Duration = 500;
+Mine['Items'] = [];
+Mine['FPS'] = 30;
+Mine['Duration'] = 500;
 }());

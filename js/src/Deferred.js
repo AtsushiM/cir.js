@@ -1,16 +1,16 @@
 /* Test: "../../spec/_src/src/Deferred/test.js" */
-Global.Deferred = klass({
-    extend: Base,
-    init: function() {
+Global['Deferred'] = klass({
+    'extend': Base,
+    'init': function() {
         this.queue = [];
         this.data = null;
     },
-    properties: {
-        isResolve: function() {
+    'properties': {
+        'isResolve': function() {
             return !this.queue;
         },
-        resolve: function(data) {
-            if (this.isResolve()) {
+        'resolve': function(data) {
+            if (this['isResolve']()) {
                 return this;
             }
 
@@ -26,7 +26,7 @@ Global.Deferred = klass({
 
             return this;
         },
-        done: function(func) {
+        'done': function(func) {
             this.queue ? this.queue.push(func) : func(this.data);
 
             return this;

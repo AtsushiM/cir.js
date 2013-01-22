@@ -5,12 +5,12 @@
 var xhr,
     isLoaded = false;
 
-Global.ServerMeta = klass({
-    extend : Base,
-    init: function(config) {
+Global['ServerMeta'] = klass({
+    'extend' : Base,
+    'init': function(config) {
         config = config || {};
 
-        var callback = config.callback || nullFunction;
+        var callback = config['callback'] || nullFunction;
 
         if (!xhr) {
             xhr = getHeader(function() {
@@ -22,32 +22,32 @@ Global.ServerMeta = klass({
             callback(xhr);
         }
     },
-    properties: {
-        date: function(callback) {
+    'properties': {
+        'date': function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
                 callback(time);
             });
         },
-        connection: function() {
+        'connection': function() {
             return getRes('Connection');
         },
-        contentLength: function() {
+        'contentLength': function() {
             return getRes('Content-Length');
         },
-        lastModified: function() {
+        'lastModified': function() {
             return getRes('Last-Modified');
         },
-        server: function() {
+        'server': function() {
             return getRes('Server');
         },
-        contentType: function() {
+        'contentType': function() {
             return getRes('Content-Type');
         },
-        acceptRanges: function() {
+        'acceptRanges': function() {
             return getRes('Accept-Ranges');
         },
-        keepAlive: function() {
+        'keepAlive': function() {
             return getRes('Keep-Alive');
         }
     }

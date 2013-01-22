@@ -1,19 +1,19 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-Global.Twitter = klass({
-    extend: Base,
-    properties: {
+Global['Twitter'] = klass({
+    'extend': Base,
+    'properties': {
         _b: 'https://twitter.com/intent/tweet?',
-        getShareURL: function(vars) {
-            var caption = vars.caption || '',
-                name = vars.name,
-                hash = vars.hash,
+        'getShareURL': function(vars) {
+            var caption = vars['caption'] || '',
+                name = vars['name'],
+                hash = vars['hash'],
                 url = this._b;
 
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
             url += makeQueryString({
-                'url': vars.redirect_uri,
+                'url': vars['redirect_uri'],
                 'text': caption + name + hash
             });
 

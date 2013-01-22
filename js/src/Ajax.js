@@ -1,35 +1,35 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global.Ajax = klass({
-    extend: Base,
-    init: function(config) {
+Global['Ajax'] = klass({
+    'extend': Base,
+    'init': function(config) {
         if (config) {
-            this.request(config);
+            this['request'](config);
         }
     },
-    properties: {
-        request: function(vars) {
+    'properties': {
+        'request': function(vars) {
             if (vars.dataType === 'json') {
                 delete vars.dataType;
 
                 return this.json(vars);
             }
 
-            var url = vars.url,
-                callback = vars.callback || nullFunction,
-                error = vars.error || nullFunction,
-                type = vars.type || 'GET',
+            var url = vars['url'],
+                callback = vars['callback'] || nullFunction,
+                error = vars['error'] || nullFunction,
+                type = vars['type'] || 'GET',
                 query = '',
                 xhr;
 
-            if (!vars.cash) {
-                if (!vars.query) {
-                    vars.query = {};
+            if (!vars['cash']) {
+                if (!vars['query']) {
+                    vars['query'] = {};
                 }
 
-                vars.query['cirajaxcash' + Date.now()] = '0';
+                vars['query']['cirajaxcash' + Date.now()] = '0';
             }
-            if (vars.query) {
-                query = vars.query;
+            if (vars['query']) {
+                query = vars['query'];
 
                 if (isObject(query)) {
                     query = makeQueryString(query);
@@ -72,25 +72,25 @@ Global.Ajax = klass({
             }
             xhr.send(query);
         },
-        abort: function() {
+        'abort': function() {
             if (this.xhr) {
                 this.xhr.abort();
             }
         },
-        json: function(vars) {
-            var callback = vars.callback,
-                error = vars.error;
+        'json': function(vars) {
+            var callback = vars['callback'],
+                error = vars['error'];
 
-            vars.callback = function(data) {
+            vars['callback'] = function(data) {
                 callback(JSON.parse(data));
             };
-            vars.error = function(data) {
+            vars['error'] = function(data) {
                 if (error) {
                     error(data);
                 }
             };
 
-            this.request(vars);
+            this['request'](vars);
         }
     }
 });

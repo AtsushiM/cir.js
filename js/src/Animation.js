@@ -39,24 +39,24 @@ for (; i < len; i++) {
     }
 }
 
-Mine = Global.Animation = klass({
-    extend: Base,
-    init: function(element, property, option) {
+Mine = Global['Animation'] = klass({
+    'extend': Base,
+    'init': function(element, property, option) {
         if (!support) {
             return false;
         }
 
         option = option || {};
 
-        this.onComplete = option.onComplete || nullFunction;
+        this.onComplete = option['onComplete'] || nullFunction;
 
         this.element = element;
 
-        Mine.id++;
-        this.id = 'ciranim' + Mine.id;
+        Mine['id']++;
+        this['id'] = 'ciranim' + Mine['id'];
 
-        var duration = option.duration || Mine.Duration,
-            ease = option.ease || 'ease';
+        var duration = option['duration'] || Mine['Duration'],
+            ease = option['ease'] || 'ease';
 
         // property
         var i,
@@ -87,16 +87,16 @@ Mine = Global.Animation = klass({
 
         addCSSRule(this.id, css_prefix, duration, ease);
 
-        if (!option.manual) {
-            this.start();
+        if (!option['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        _off: function() {
+    'properties': {
+        '_off': function() {
             off(this.element, event_key + 'End', this.end);
             off(this.element, 'animationend', this.end);
         },
-        start: function() {
+        'start': function() {
             var mine = this;
 
             mine.end = endaction;
@@ -110,7 +110,7 @@ Mine = Global.Animation = klass({
                     len = rule.length,
                     name;
 
-                mine._off();
+                mine['_off']();
 
 
                 if (prefix === 'webkit') {
@@ -129,19 +129,19 @@ Mine = Global.Animation = klass({
                 mine.onComplete(e);
             }
         },
-        stop: function() {
+        'stop': function() {
             var stopobj = {};
 
             stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
             css(this.element, stopobj);
-            this._off();
+            this['_off']();
         }
     }
 });
-Mine.id = 0;
-Mine.Duration = 500;
-Mine.support = support;
+Mine['id'] = 0;
+Mine['Duration'] = 500;
+Mine['support'] = support;
 
 function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,

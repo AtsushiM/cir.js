@@ -111,25 +111,25 @@ function checkUserAgent(pattern, ua) {
     return ua.match(pattern) ? true : false;
 }
 
-Global.utility = {
-    win: win,
-    doc: doc,
-    pageTop: pageTop,
-    override: override,
-    replaceAll: replaceAll,
-    windowOpen: windowOpen,
-    typeCast: typeCast,
-    makeQueryString: makeQueryString,
-    parseQueryString: parseQueryString,
-    is: is,
-    isObject: isObject,
-    isNumber: isNumber,
-    isString: isString,
-    isFunction: isFunction,
-    isBoolean: isBoolean,
-    isArray: isArray,
-    isTouchDevice: isTouchDevice,
-    nullFunction: nullFunction,
-    preventDefault: preventDefault,
-    checkUserAgent: checkUserAgent
+Global['utility'] = {
+    'win': win,
+    'doc': doc,
+    'pageTop': pageTop,
+    'override': override,
+    'replaceAll': replaceAll,
+    'windowOpen': windowOpen,
+    'typeCast': typeCast,
+    'makeQueryString': makeQueryString,
+    'parseQueryString': parseQueryString,
+    'is': is,
+    'isObject': isObject,
+    'isNumber': isNumber,
+    'isString': isString,
+    'isFunction': isFunction,
+    'isBoolean': isBoolean,
+    'isArray': isArray,
+    'isTouchDevice': isTouchDevice,
+    'nullFunction': nullFunction,
+    'preventDefault': preventDefault,
+    'checkUserAgent': checkUserAgent
 };

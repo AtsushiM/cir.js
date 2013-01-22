@@ -24,6 +24,7 @@ describe('Audioは', function() {
     });
 
     it('Audio要素を返す', function() {
+        console.dir(audio);
         expect(audio.nodeName).toEqual('AUDIO');
         expect(audio.preload).toEqual('auto');
         expect(audio.autoplay).toBeTruthy();

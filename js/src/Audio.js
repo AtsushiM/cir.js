@@ -1,11 +1,11 @@
 /* Test: "../../spec/_src/src/Audio/test.js" */
-Global.Audio = function(config) {
-    if (!win.HTMLAudioElement) {
+Global['Audio'] = function(config) {
+    if (!win['HTMLAudioElement']) {
         return false;
     }
 
     var audio = new Audio(''),
-        suffix = config.suffix || [
+        suffix = config['suffix'] || [
             ['mp3', 'mpeg'],
             ['wav', 'wav'],
             ['ogg', 'ogg'],
@@ -25,11 +25,11 @@ Global.Audio = function(config) {
         return false;
     }
 
-    audio.controls = config.controls ? true : false;
-    audio.preload = config.preload || 'auto';
-    audio.autoplay = config.autoplay ? true : false;
-    audio.loop = config.loop ? true : false;
-    audio.src = config.dir + config.name + '.' + support[0];
+    audio['controls'] = config['controls'] ? true : false;
+    audio['preload'] = config['preload'] || 'auto';
+    audio['autoplay'] = config['autoplay'] ? true : false;
+    audio['loop'] = config['loop'] ? true : false;
+    audio.src = config['dir'] + config['name'] + '.' + support[0];
 
     return audio;
 };

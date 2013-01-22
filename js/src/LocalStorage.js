@@ -1,27 +1,27 @@
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
-Global.LocalStorage = klass({
-    extend: Base,
-    init: function(config) {
+Global['LocalStorage'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && Global.LocalStorage.instance) {
-            return Global.LocalStorage.instance;
+        if (config['single'] && Global['LocalStorage'].instance) {
+            return Global['LocalStorage'].instance;
         }
 
-        this._n = config.namespace ? config.namespace + '-' : '';
+        this._n = config['namespace'] ? config['namespace'] + '-' : '';
 
-        if (config.single) {
-            Global.LocalStorage.instance = this;
+        if (config['single']) {
+            Global['LocalStorage'].instance = this;
         }
     },
-    properties: {
+    'properties': {
         _s: win.localStorage,
-        set: function(key, val) {
+        'set': function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
             return true;
         },
-        get: function(key) {
+        'get': function(key) {
             var mine = this,
                 ret = {},
                 i;
@@ -44,7 +44,7 @@ Global.LocalStorage = klass({
 
             return ret;
         },
-        remove: function(key) {
+        'remove': function(key) {
             key = this._n + key;
 
             if (!this._s.getItem(key)) {
@@ -55,7 +55,7 @@ Global.LocalStorage = klass({
 
             return true;
         },
-        reset: function() {
+        'reset': function() {
             if (!this._n) {
                 this._s.clear();
 

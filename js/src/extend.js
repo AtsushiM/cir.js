@@ -1,9 +1,9 @@
 /* Test: "../../spec/_src/src/extend/test.js" */
-Global.extend = function(child, _super) {
+Global['extend'] = function(child, _super) {
     'use strict';
 
     function ctor() {
-        this.init = child;
+        this['init'] = child;
     }
 
     ctor.prototype = _super.prototype;
@@ -11,8 +11,8 @@ Global.extend = function(child, _super) {
 
     var cpt = child.prototype;
 
-    cpt._superclass = _super;
-    cpt._super = function() {
+    cpt['_superclass'] = _super;
+    cpt['_super'] = function() {
         var prev = this._prevctor;
 
         if (prev) {

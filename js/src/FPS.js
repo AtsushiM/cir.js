@@ -1,55 +1,55 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
-Global.FPS = klass({
-    extend: Base,
-    init: function(config) {
+Global['FPS'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
-        if (!config.criterion) {
-            config.criterion = 20;
+        if (!config['criterion']) {
+            config['criterion'] = 20;
         }
 
         // singleton
-        if (config.single && Global.FPS.instance) {
-            return Global.FPS.instance;
+        if (config['single'] && Global['FPS'].instance) {
+            return Global['FPS'].instance;
         }
 
-        this.criterion = config.criterion,
+        this.criterion = config['criterion'],
         this.surver = this.criterion,
-        this.enterframe = config.enterframe,
+        this.enterframe = config['enterframe'],
         this.msecFrame = this._getFrame(this.criterion),
         this.prevtime =
         this.nowtime =
         this.loopid = 0;
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
 
-        if (config.single) {
-            Global.FPS.instance = this;
+        if (config['single']) {
+            Global['FPS'].instance = this;
         }
     },
-    properties: {
-        dispose: function() {
-            this.stop();
+    'properties': {
+        'dispose': function() {
+            this['stop']();
             this._orgdis();
         },
-        getCriterion: function() {
+        'getCriterion': function() {
             return this.criterion;
         },
-        getSurver: function() {
+        'getSurver': function() {
             return this.surver;
         },
-        getFrameTime: function() {
+        'getFrameTime': function() {
             return this.msecFrame;
         },
-        enter: function() {
+        'enter': function() {
             this.enterframe({
-                criterion: this.criterion,
-                surver: this.surver
+                'criterion': this.criterion,
+                'surver': this.surver
             });
         },
-        start: function() {
+        'start': function() {
             this.prevtime = Date.now();
             this.loopid = setInterval(this._loop, this.msecFrame, this);
         },
@@ -58,12 +58,12 @@ Global.FPS = klass({
             mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
             mine.prevtime = mine.nowtime;
 
-            mine.enter();
+            mine['enter']();
         },
         _getFrame: function(time) {
             return Math.round(1000 / time);
         },
-        stop: function() {
+        'stop': function() {
             clearInterval(this.loopid);
         }
     }

@@ -1,22 +1,22 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global.Observer = klass({
-    extend: Base,
-    init: function(config) {
-        config = config || {single: false};
+Global['Observer'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        config = config || {};
 
         // singleton
-        if (config.single && Global.Observer.instance) {
-            return Global.Observer.instance;
+        if (config['single'] && Global['Observer'].instance) {
+            return Global['Observer'].instance;
         }
 
         this.observed = {};
 
-        if (config.single) {
-            Global.Observer.instance = this;
+        if (config['single']) {
+            Global['Observer'].instance = this;
         }
     },
-    properties: {
-        on: function(key, func) {
+    'properties': {
+        'on': function(key, func) {
             var observed = this.observed;
 
             if (!observed[key]) {
@@ -25,16 +25,16 @@ Global.Observer = klass({
 
             observed[key].push(func);
         },
-        one: function(key, func) {
+        'one': function(key, func) {
             var mine = this,
                 wrapfunc = function(vars) {
                     func(vars);
-                    mine.off(key, wrapfunc);
+                    mine['off'](key, wrapfunc);
                 };
 
-            mine.on(key, wrapfunc);
+            mine['on'](key, wrapfunc);
         },
-        off: function(key, func) {
+        'off': function(key, func) {
             var observed = this.observed;
 
             if (!func) {
@@ -65,7 +65,7 @@ Global.Observer = klass({
 
             return false;
         },
-        fire: function(key, vars) {
+        'fire': function(key, vars) {
             var target = this.observed[key],
                 func,
                 i;

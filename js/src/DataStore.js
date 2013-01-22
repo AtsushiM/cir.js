@@ -1,25 +1,25 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-Global.DataStore = klass({
-    extend: Base,
-    init: function(config) {
+Global['DataStore'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && Global.DataStore.instance) {
-            return Global.DataStore.instance;
+        if (config['single'] && Global['DataStore'].instance) {
+            return Global['DataStore'].instance;
         }
 
         this.data = {};
 
-        if (config.single) {
-            Global.DataStore.instance = this;
+        if (config['single']) {
+            Global['DataStore'].instance = this;
         }
     },
-    properties: {
-        set: function(key, val) {
+    'properties': {
+        'set': function(key, val) {
             this.data[key] = val;
         },
-        get: function(key) {
+        'get': function(key) {
             var ret = {},
                 i;
 
@@ -33,14 +33,14 @@ Global.DataStore = klass({
 
             return ret;
         },
-        remove: function(key) {
+        'remove': function(key) {
             if (!this.data[key]) {
                 return false;
             }
 
             delete this.data[key];
         },
-        reset: function() {
+        'reset': function() {
             this.data = {};
         }
     }

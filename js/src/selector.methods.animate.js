@@ -2,32 +2,32 @@
 (function() {
 'use strict';
 
-var methods = Global.$.methods,
-    Animation = Global.Animation || {},
-    csssupport = Animation.support,
+var methods = Global['$'].methods,
+    Animation = Global['Animation'] || {},
+    csssupport = Animation['support'],
     EASE = {};
 
-if (csssupport && Global.cssease) {
-    EASE = Global.cssease;
+if (csssupport && Global['cssease']) {
+    EASE = Global['cssease'];
 }
-else if (Global.ease) {
-    EASE = Global.ease;
+else if (Global['ease']) {
+    EASE = Global['ease'];
 }
 
-methods.animate = function() {
+methods['animate'] = function() {
     if (!this._animate) {
         this._animate = [];
     }
 
     return methods._forexe(this, animate, arguments);
 }
-methods.stop = function() {
+methods['stop'] = function() {
     if (this._animate) {
         var i = 0,
             len = this._animate.length;
 
         for (; i < len; i++) {
-            this._animate[i].stop();
+            this._animate[i]['stop']();
         }
 
         this._animate = null;
@@ -55,9 +55,9 @@ function animate(element, params, duration, ease, callback) {
     }
 
     option = {
-        duration: duration,
-        ease: ease,
-        onComplete: callback
+        'duration': duration,
+        'ease': ease,
+        'onComplete': callback
     };
 
     if (csssupport) {
@@ -68,7 +68,7 @@ function animate(element, params, duration, ease, callback) {
         );
     }
     else {
-        anime = new Global.Tweener(
+        anime = new Global['Tweener'](
             element.style,
             convertTweenerParam(element, params),
             option
@@ -97,10 +97,10 @@ function convertTweenerParam(element, params) {
         }
 
         retobj[name] = {
-            from: from,
-            to: tosplit[2] * 1 || 0,
-            prefix: tosplit[1],
-            suffix: tosplit[3]
+            'from': from,
+            'to': tosplit[2] * 1 || 0,
+            'prefix': tosplit[1],
+            'suffix': tosplit[3]
         };
     }
 

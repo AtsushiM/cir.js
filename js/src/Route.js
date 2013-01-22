@@ -1,29 +1,29 @@
 /* Test: "../../spec/_src/src/Route/test.js" */
-Global.Route = klass({
-    extend: Base,
-    init: function(config) {
+Global['Route'] = klass({
+    'extend': Base,
+    'init': function(config) {
         // singleton
-        if (config.single && Global.Route.instance) {
-            return Global.Route.instance;
+        if (config['single'] && Global['Route'].instance) {
+            return Global['Route'].instance;
         }
 
-        this.target = config.target || '';
-        this.noregex = config.noregex;
-        this.action = config.action;
+        this.target = config['target'] || '';
+        this.noregex = config['noregex'];
+        this.action = config['action'];
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
 
-        if (config.single) {
-            Global.Route.instance = this;
+        if (config['single']) {
+            Global['Route'].instance = this;
         }
     },
-    properties: {
-        start: function() {
-            this.fire(this.target);
+    'properties': {
+        'start': function() {
+            this['fire'](this.target);
         },
-        fire: function(action) {
+        'fire': function(action) {
             var i;
 
             if (this.noregex && this.action[action]) {

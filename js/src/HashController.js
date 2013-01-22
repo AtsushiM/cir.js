@@ -1,8 +1,8 @@
 /* Test: "../../spec/_src/src/HashController/test.js" */
-Global.HashController = klass({
-    extend: Base,
-    properties: {
-        typeCast: function(str) {
+Global['HashController'] = klass({
+    'extend': Base,
+    'properties': {
+        'typeCast': function(str) {
             var caststr = typeCast(str),
                 matchstr;
 
@@ -16,9 +16,9 @@ Global.HashController = klass({
 
             return caststr;
         },
-        makeHash: function(conf) {
-            var hash = '#' + conf.mode,
-                vars = conf.vars,
+        'makeHash': function(conf) {
+            var hash = '#' + conf['mode'],
+                vars = conf['vars'],
                 sign = '?',
                 i;
 
@@ -32,11 +32,11 @@ Global.HashController = klass({
 
             return encodeURI(hash);
         },
-        setHash: function(vars) {
-            location.hash = this.makeHash(vars);
+        'setHash': function(vars) {
+            location.hash = this['makeHash'](vars);
             return true;
         },
-        parseHash: function(hashvars) {
+        'parseHash': function(hashvars) {
             var hash,
                 mode,
                 varsHash,
@@ -63,18 +63,18 @@ Global.HashController = klass({
                 for (i = varsHash.length; i--;) {
                     if (varsHash[i]) {
                         splitVar = varsHash[i].split('=');
-                        vars[splitVar[0]] = this.typeCast(splitVar[1]);
+                        vars[splitVar[0]] = this['typeCast'](splitVar[1]);
                     }
                 }
             }
 
             return {
-                mode: mode,
-                vars: vars
+                'mode': mode,
+                'vars': vars
             };
         },
-        getHash: function() {
-            return this.parseHash(location.hash);
+        'getHash': function() {
+            return this['parseHash'](location.hash);
         }
     }
 });

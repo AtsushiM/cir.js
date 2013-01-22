@@ -5,36 +5,36 @@ var isTouch = isTouchDevice(),
     ev_orientationchange = 'orientationchange';
 
 ev = klass({
-    init: function(config) {
+    'init': function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && Global.Event.instance) {
-            return Global.Event.instance;
+        if (config['single'] && Global['Event'].instance) {
+            return Global['Event'].instance;
         }
 
-        if (config.single) {
-            Global.Event.instance = this;
+        if (config['single']) {
+            Global['Event'].instance = this;
         }
     },
-    properties: {
-        switchclick: isTouch ? 'touchstart' : 'click',
-        switchdown: isTouch ? 'touchstart' : 'mousedown',
-        switchmove: isTouch ? 'touchmove' : 'mousemove',
-        switchup: isTouch ? 'touchend' : 'mouseup',
-        load: 'load',
-        change: 'change',
+    'properties': {
+        'switchclick': isTouch ? 'touchstart' : 'click',
+        'switchdown': isTouch ? 'touchstart' : 'mousedown',
+        'switchmove': isTouch ? 'touchmove' : 'mousemove',
+        'switchup': isTouch ? 'touchend' : 'mouseup',
+        'load': 'load',
+        'change': 'change',
         /* hashchange: 'hashchange', */
-        click: 'click',
-        mousedown: 'mousedown',
-        mousemove: 'mousemove',
-        mouseup: 'mouseup',
-        touchstart: 'touchstart',
-        touchmove: 'touchmove',
-        touchend: 'touchend',
+        'click': 'click',
+        'mousedown': 'mousedown',
+        'mousemove': 'mousemove',
+        'mouseup': 'mouseup',
+        'touchstart': 'touchstart',
+        'touchmove': 'touchmove',
+        'touchend': 'touchend',
         /* orientationchange: 'orientationchange', */
-        resize: 'resize'
+        'resize': 'resize'
     }
 });
-Global.Event = ev;
-ev = Global.event = new ev();
+Global['Event'] = ev;
+ev = Global['event'] = new ev();

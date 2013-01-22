@@ -1,26 +1,26 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-Global.PreRender = klass({
-    extend: Base,
-    init: function(config) {
+Global['PreRender'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
-        if (!config.loopblur) {
-            config.loopblur = 20;
+        if (!config['loopblur']) {
+            config['loopblur'] = 20;
         }
 
-        this.elements = config.elements || [];
-        this.guesslimit = config.guesslimit || 30;
-        this.onrendered = config.onrendered || nullFunction;
-        this.looptime = config.looptime || 100;
-        this.loopblur = this.looptime + config.loopblur;
-        this.loopid = this.prevtime = null;
+        this.elements = config['elements'] || [];
+        this.guesslimit = config['guesslimit'] || 30;
+        this.onrendered = config['onrendered'] || nullFunction;
+        this.looptime = config['looptime'] || 100;
+        this.loopblur = this.looptime + config['loopblur'];
+        /* this.loopid = this.prevtime = null; */
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        start: function() {
+    'properties': {
+        'start': function() {
             var i;
 
             for (i = this.elements.length; i--;) {

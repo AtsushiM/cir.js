@@ -1,8 +1,7 @@
 // Cool is Right.
-var C = {};
 (function(win, doc) {
 'use strict';
-var Global = C;
+var Global = win['C'] = {};
 /* Test: "../../spec/_src/src/utility/test.js" */
 if (!Date.now) {
     Date.now = function now() {
@@ -116,27 +115,27 @@ function checkUserAgent(pattern, ua) {
     return ua.match(pattern) ? true : false;
 }
 
-Global.utility = {
-    win: win,
-    doc: doc,
-    pageTop: pageTop,
-    override: override,
-    replaceAll: replaceAll,
-    windowOpen: windowOpen,
-    typeCast: typeCast,
-    makeQueryString: makeQueryString,
-    parseQueryString: parseQueryString,
-    is: is,
-    isObject: isObject,
-    isNumber: isNumber,
-    isString: isString,
-    isFunction: isFunction,
-    isBoolean: isBoolean,
-    isArray: isArray,
-    isTouchDevice: isTouchDevice,
-    nullFunction: nullFunction,
-    preventDefault: preventDefault,
-    checkUserAgent: checkUserAgent
+Global['utility'] = {
+    'win': win,
+    'doc': doc,
+    'pageTop': pageTop,
+    'override': override,
+    'replaceAll': replaceAll,
+    'windowOpen': windowOpen,
+    'typeCast': typeCast,
+    'makeQueryString': makeQueryString,
+    'parseQueryString': parseQueryString,
+    'is': is,
+    'isObject': isObject,
+    'isNumber': isNumber,
+    'isString': isString,
+    'isFunction': isFunction,
+    'isBoolean': isBoolean,
+    'isArray': isArray,
+    'isTouchDevice': isTouchDevice,
+    'nullFunction': nullFunction,
+    'preventDefault': preventDefault,
+    'checkUserAgent': checkUserAgent
 };
 /* Test: "../../spec/_src/src/element/test.js" */
 function $(selector) {
@@ -306,41 +305,41 @@ function html(element, text) {
     element.innerHTML = text;
 }
 
-Global.element = {
-    $: $,
-    $$: $$,
-    $child: $child,
-    $$child: $$child,
-    $id: $id,
-    on: on,
-    off: off,
-    create: create,
-    show: show,
-    hide: hide,
-    opacity: opacity,
-    hasClass: hasClass,
-    addClass: addClass,
-    removeClass: removeClass,
-    toggleClass: toggleClass,
-    css: css,
-    computedStyle: computedStyle,
-    append: append,
-    parent: parent,
-    remove: remove,
-    attr: attr,
-    removeAttr: removeAttr,
-    html: html
+Global['element'] = {
+    '$': $,
+    '$$': $$,
+    '$child': $child,
+    '$$child': $$child,
+    '$id': $id,
+    'on': on,
+    'off': off,
+    'create': create,
+    'show': show,
+    'hide': hide,
+    'opacity': opacity,
+    'hasClass': hasClass,
+    'addClass': addClass,
+    'removeClass': removeClass,
+    'toggleClass': toggleClass,
+    'css': css,
+    'computedStyle': computedStyle,
+    'append': append,
+    'parent': parent,
+    'remove': remove,
+    'attr': attr,
+    'removeAttr': removeAttr,
+    'html': html
 };
 /* Test: "../../spec/_src/src/klass/test.js" */
-var klass = Global.klass = function(config) {
+var klass = Global['klass'] = function(config) {
     'use strict';
 
-    var init = config.init || function() {},
-        properties = config.properties,
-        extend = config.extend;
+    var init = config['init'] || function() {},
+        properties = config['properties'],
+        extend = config['extend'];
 
     if (extend) {
-        Global.extend(init, extend);
+        Global['extend'](init, extend);
     }
 
     override(init.prototype, properties);
@@ -348,11 +347,11 @@ var klass = Global.klass = function(config) {
     return init;
 };
 /* Test: "../../spec/_src/src/extend/test.js" */
-Global.extend = function(child, _super) {
+Global['extend'] = function(child, _super) {
     'use strict';
 
     function ctor() {
-        this.init = child;
+        this['init'] = child;
     }
 
     ctor.prototype = _super.prototype;
@@ -360,8 +359,8 @@ Global.extend = function(child, _super) {
 
     var cpt = child.prototype;
 
-    cpt._superclass = _super;
-    cpt._super = function() {
+    cpt['_superclass'] = _super;
+    cpt['_super'] = function() {
         var prev = this._prevctor;
 
         if (prev) {
@@ -381,46 +380,46 @@ var isTouch = isTouchDevice(),
     ev_orientationchange = 'orientationchange';
 
 ev = klass({
-    init: function(config) {
+    'init': function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && Global.Event.instance) {
-            return Global.Event.instance;
+        if (config['single'] && Global['Event'].instance) {
+            return Global['Event'].instance;
         }
 
-        if (config.single) {
-            Global.Event.instance = this;
+        if (config['single']) {
+            Global['Event'].instance = this;
         }
     },
-    properties: {
-        switchclick: isTouch ? 'touchstart' : 'click',
-        switchdown: isTouch ? 'touchstart' : 'mousedown',
-        switchmove: isTouch ? 'touchmove' : 'mousemove',
-        switchup: isTouch ? 'touchend' : 'mouseup',
-        load: 'load',
-        change: 'change',
+    'properties': {
+        'switchclick': isTouch ? 'touchstart' : 'click',
+        'switchdown': isTouch ? 'touchstart' : 'mousedown',
+        'switchmove': isTouch ? 'touchmove' : 'mousemove',
+        'switchup': isTouch ? 'touchend' : 'mouseup',
+        'load': 'load',
+        'change': 'change',
         /* hashchange: 'hashchange', */
-        click: 'click',
-        mousedown: 'mousedown',
-        mousemove: 'mousemove',
-        mouseup: 'mouseup',
-        touchstart: 'touchstart',
-        touchmove: 'touchmove',
-        touchend: 'touchend',
+        'click': 'click',
+        'mousedown': 'mousedown',
+        'mousemove': 'mousemove',
+        'mouseup': 'mouseup',
+        'touchstart': 'touchstart',
+        'touchmove': 'touchmove',
+        'touchend': 'touchend',
         /* orientationchange: 'orientationchange', */
-        resize: 'resize'
+        'resize': 'resize'
     }
 });
-Global.Event = ev;
-ev = Global.event = new ev();
+Global['Event'] = ev;
+ev = Global['event'] = new ev();
 /* Test: "../../spec/_src/src/Base/test.js" */
-var Base = Global.Base = klass({
-    init: function() {
+var Base = Global['Base'] = klass({
+    'init': function() {
         this._dispose = [];
     },
-    properties: {
-        dispose: function() {
+    'properties': {
+        'dispose': function() {
             var i;
 
             if (this._dispose) {
@@ -443,158 +442,150 @@ var Base = Global.Base = klass({
             this._dispose.push([element, e, handler]);
         },
         _orgdis: function() {
-            this.__proto__.__proto__.dispose.call(this);
+            this.__proto__.__proto__['dispose'].call(this);
         }
     }
 });
 /* Test: "../../spec/_src/src/ease/test.js" */
-Global.ease = {
-    linear: function(time, from, dist, duration) {
+var easebackrate = 1.70158;
+Global['ease'] = {
+    'linear': function(time, from, dist, duration) {
         return dist * time / duration + from;
     },
-    inCubic: function(time, from, dist, duration) {
+    'inCubic': function(time, from, dist, duration) {
         return dist * Math.pow(time / duration, 3) + from;
     },
-    outCubic: function(time, from, dist, duration) {
+    'outCubic': function(time, from, dist, duration) {
         return dist * (Math.pow(time / duration - 1, 3) + 1) + from;
     },
-    inOutCubic: function(time, from, dist, duration) {
+    'inOutCubic': function(time, from, dist, duration) {
         if ((time /= duration / 2) < 1) {
             return dist / 2 * Math.pow(time, 3) + from;
         }
         return dist / 2 * (Math.pow(time - 2, 3) + 2) + from;
     },
-    inQuart: function(time, from, dist, duration) {
+    'inQuart': function(time, from, dist, duration) {
         return dist * Math.pow(time / duration, 4) + from;
     },
-    outQuart: function(time, from, dist, duration) {
+    'outQuart': function(time, from, dist, duration) {
         return -dist * (Math.pow(time / duration - 1, 4) - 1) + from;
     },
-    inOutQuart: function(time, from, dist, duration) {
+    'inOutQuart': function(time, from, dist, duration) {
         if ((time /= duration / 2) < 1) {
             return dist / 2 * Math.pow(time, 4) + from;
         }
         return -dist / 2 * (Math.pow(time - 2, 4) - 2) + from;
     },
-    inQuint: function(time, from, dist, duration) {
+    'inQuint': function(time, from, dist, duration) {
         return dist * Math.pow(time / duration, 5) + from;
     },
-    outQuint: function(time, from, dist, duration) {
+    'outQuint': function(time, from, dist, duration) {
         return dist * (Math.pow(time / duration - 1, 5) + 1) + from;
     },
-    inOutQuint: function(time, from, dist, duration) {
+    'inOutQuint': function(time, from, dist, duration) {
         if ((time /= duration / 2) < 1) {
             return dist / 2 * Math.pow(time, 5) + from;
         }
         return dist / 2 * (Math.pow(time - 2, 5) + 2) + from;
     },
-    inSine: function(time, from, dist, duration) {
+    'inSine': function(time, from, dist, duration) {
         return dist *
             (1 - Math.cos(time / duration * (Math.PI / 2))) + from;
     },
-    outSine: function(time, from, dist, duration) {
+    'outSine': function(time, from, dist, duration) {
         return dist * Math.sin(time / duration * (Math.PI / 2)) + from;
     },
-    inOutSine: function(time, from, dist, duration) {
+    'inOutSine': function(time, from, dist, duration) {
         return dist / 2 * (1 - Math.cos(Math.PI * time / duration)) + from;
     },
-    inExpo: function(time, from, dist, duration) {
+    'inExpo': function(time, from, dist, duration) {
         return dist * Math.pow(2, 10 * (time / duration - 1)) + from;
     },
-    outExpo: function(time, from, dist, duration) {
+    'outExpo': function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
-    inOutExpo: function(time, from, dist, duration) {
+    'inOutExpo': function(time, from, dist, duration) {
         if ((time /= duration / 2) < 1) {
             return dist / 2 * Math.pow(2, 10 * (time - 1)) + from;
         }
         return dist / 2 * (-Math.pow(2, -10 * --time) + 2) + from;
     },
-    inCirc: function(time, from, dist, duration) {
+    'inCirc': function(time, from, dist, duration) {
         return dist * (1 - Math.sqrt(1 - (time /= duration) * time)) + from;
     },
-    outCirc: function(time, from, dist, duration) {
+    'outCirc': function(time, from, dist, duration) {
         return dist *
             Math.sqrt(1 - (time = time / duration - 1) * time) + from;
     },
-    inOutCirc: function(time, from, dist, duration) {
+    'inOutCirc': function(time, from, dist, duration) {
         if ((time /= duration / 2) < 1) {
             return dist / 2 * (1 - Math.sqrt(1 - time * time)) + from;
         }
         return dist / 2 * (Math.sqrt(1 - (time -= 2) * time) + 1) + from;
     },
-    inQuad: function(time, from, dist, duration) {
+    'inQuad': function(time, from, dist, duration) {
         return dist * (time /= duration) * time + from;
     },
-    outQuad: function(time, from, dist, duration) {
+    'outQuad': function(time, from, dist, duration) {
         return -dist * (time /= duration) * (time - 2) + from;
     },
-    inOutQuad: function(time, from, dist, duration) {
+    'inOutQuad': function(time, from, dist, duration) {
         if ((time /= duration / 2) < 1) {
             return dist / 2 * time * time + from;
         }
         return -dist / 2 * ((--time) * (time - 2) - 1) + from;
     },
-    inBack: function(time, from, dist, duration, s) {
-        /* if (s == undefined) { */
-            s = 1.70158;
-        /* } */
+    'inBack': function(time, from, dist, duration) {
         return dist * (time /= duration) * time * ((s + 1) * time - s) + from;
     },
-    outBack: function(time, from, dist, duration, s) {
-        /* if (s == undefined) { */
-            s = 1.70158;
-        /* } */
+    'outBack': function(time, from, dist, duration) {
         return dist * ((time = time / duration - 1) * time *
-                ((s + 1) * time + s) + 1) + from;
+                ((easebackrate + 1) * time + easebackrate) + 1) + from;
     },
-    inOutBack: function(time, from, dist, duration, s) {
-        /* if (s == undefined) { */
-            s = 1.70158;
-        /* } */
+    'inOutBack': function(time, from, dist, duration) {
         if ((time /= duration / 2) < 1) {
             return dist / 2 * (time * time *
-                    (((s *= (1.525)) + 1) * time - s)) + from;
+                    (((easebackrate *= (1.525)) + 1) * time - easebackrate)) + from;
         }
         return dist / 2 * ((time -= 2) * time *
-                (((s *= (1.525)) + 1) * time + s) + 2) + from;
+                (((easebackrate *= (1.525)) + 1) * time + easebackrate) + 2) + from;
     }
 };
 /* Test: "../../spec/_src/src/cssease/test.js" */
-Global.cssease = {
-    linear: 'linear',
+Global['cssease'] = {
+    'linear': 'linear',
 
-    inCubic: 'cubic-bezier(0.550, 0.055, 0.675, 0.190)',
-    outCubic: 'cubic-bezier(0.215, 0.610, 0.355, 1.000)',
-    inOutCubic: 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
+    'inCubic': 'cubic-bezier(0.550, 0.055, 0.675, 0.190)',
+    'outCubic': 'cubic-bezier(0.215, 0.610, 0.355, 1.000)',
+    'inOutCubic': 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
 
-    inQuart: 'cubic-bezier(0.895, 0.030, 0.685, 0.220)',
-    outQuart: 'cubic-bezier(0.165, 0.840, 0.440, 1.000)',
-    inOutQuart: 'cubic-bezier(0.770, 0.000, 0.175, 1.000)',
+    'inQuart': 'cubic-bezier(0.895, 0.030, 0.685, 0.220)',
+    'outQuart': 'cubic-bezier(0.165, 0.840, 0.440, 1.000)',
+    'inOutQuart': 'cubic-bezier(0.770, 0.000, 0.175, 1.000)',
 
-    inQuint: 'cubic-bezier(0.755, 0.050, 0.855, 0.060)',
-    outQuint: 'cubic-bezier(0.230, 1.000, 0.320, 1.000)',
-    inOutQuint: 'cubic-bezier(0.860, 0.000, 0.070, 1.000)',
+    'inQuint': 'cubic-bezier(0.755, 0.050, 0.855, 0.060)',
+    'outQuint': 'cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+    'inOutQuint': 'cubic-bezier(0.860, 0.000, 0.070, 1.000)',
 
-    inSine: 'cubic-bezier(0.470, 0.000, 0.745, 0.715)',
-    outSine: 'cubic-bezier(0.390, 0.575, 0.565, 1.000)',
-    inOutSine: 'cubic-bezier(0.445, 0.050, 0.550, 0.950)',
+    'inSine': 'cubic-bezier(0.470, 0.000, 0.745, 0.715)',
+    'outSine': 'cubic-bezier(0.390, 0.575, 0.565, 1.000)',
+    'inOutSine': 'cubic-bezier(0.445, 0.050, 0.550, 0.950)',
 
-    inExpo: 'cubic-bezier(0.950, 0.050, 0.795, 0.035)',
-    outExpo: 'cubic-bezier(0.190, 1.000, 0.220, 1.000)',
-    inOutExpo: 'cubic-bezier(1.000, 0.000, 0.000, 1.000)',
+    'inExpo': 'cubic-bezier(0.950, 0.050, 0.795, 0.035)',
+    'outExpo': 'cubic-bezier(0.190, 1.000, 0.220, 1.000)',
+    'inOutExpo': 'cubic-bezier(1.000, 0.000, 0.000, 1.000)',
 
-    inCirc: 'cubic-bezier(0.600, 0.040, 0.980, 0.335)',
-    outCirc: 'cubic-bezier(0.075, 0.820, 0.165, 1.000)',
-    inOutCirc: 'cubic-bezier(0.785, 0.135, 0.150, 0.860)',
+    'inCirc': 'cubic-bezier(0.600, 0.040, 0.980, 0.335)',
+    'outCirc': 'cubic-bezier(0.075, 0.820, 0.165, 1.000)',
+    'inOutCirc': 'cubic-bezier(0.785, 0.135, 0.150, 0.860)',
 
-    inQuad: 'cubic-bezier(0.550, 0.085, 0.680, 0.530)',
-    outQuad: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    inOutQuad: 'cubic-bezier(0.455, 0.030, 0.515, 0.955)',
+    'inQuad': 'cubic-bezier(0.550, 0.085, 0.680, 0.530)',
+    'outQuad': 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    'inOutQuad': 'cubic-bezier(0.455, 0.030, 0.515, 0.955)',
 
-    inBack: ['cubic-bezier(0.600, 0, 0.735, 0.045)', 'cubic-bezier(0.600, -0.280, 0.735, 0.045)'],
-    outBack: ['cubic-bezier(0.175, 0.885, 0.320, 1)', 'cubic-bezier(0.175, 0.885, 0.320, 1.275)'],
-    inOutBack: ['cubic-bezier(0.680, 0, 0.265, 1)', 'cubic-bezier(0.680, -0.550, 0.265, 1.550)']
+    'inBack': ['cubic-bezier(0.600, 0, 0.735, 0.045)', 'cubic-bezier(0.600, -0.280, 0.735, 0.045)'],
+    'outBack': ['cubic-bezier(0.175, 0.885, 0.320, 1)', 'cubic-bezier(0.175, 0.885, 0.320, 1.275)'],
+    'inOutBack': ['cubic-bezier(0.680, 0, 0.265, 1)', 'cubic-bezier(0.680, -0.550, 0.265, 1.550)']
 };
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
@@ -637,24 +628,24 @@ for (; i < len; i++) {
     }
 }
 
-Mine = Global.Animation = klass({
-    extend: Base,
-    init: function(element, property, option) {
+Mine = Global['Animation'] = klass({
+    'extend': Base,
+    'init': function(element, property, option) {
         if (!support) {
             return false;
         }
 
         option = option || {};
 
-        this.onComplete = option.onComplete || nullFunction;
+        this.onComplete = option['onComplete'] || nullFunction;
 
         this.element = element;
 
-        Mine.id++;
-        this.id = 'ciranim' + Mine.id;
+        Mine['id']++;
+        this['id'] = 'ciranim' + Mine['id'];
 
-        var duration = option.duration || Mine.Duration,
-            ease = option.ease || 'ease';
+        var duration = option['duration'] || Mine['Duration'],
+            ease = option['ease'] || 'ease';
 
         // property
         var i,
@@ -685,16 +676,16 @@ Mine = Global.Animation = klass({
 
         addCSSRule(this.id, css_prefix, duration, ease);
 
-        if (!option.manual) {
-            this.start();
+        if (!option['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        _off: function() {
+    'properties': {
+        '_off': function() {
             off(this.element, event_key + 'End', this.end);
             off(this.element, 'animationend', this.end);
         },
-        start: function() {
+        'start': function() {
             var mine = this;
 
             mine.end = endaction;
@@ -708,7 +699,7 @@ Mine = Global.Animation = klass({
                     len = rule.length,
                     name;
 
-                mine._off();
+                mine['_off']();
 
 
                 if (prefix === 'webkit') {
@@ -727,19 +718,19 @@ Mine = Global.Animation = klass({
                 mine.onComplete(e);
             }
         },
-        stop: function() {
+        'stop': function() {
             var stopobj = {};
 
             stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
             css(this.element, stopobj);
-            this._off();
+            this['_off']();
         }
     }
 });
-Mine.id = 0;
-Mine.Duration = 500;
-Mine.support = support;
+Mine['id'] = 0;
+Mine['Duration'] = 500;
+Mine['support'] = support;
 
 function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
@@ -759,7 +750,7 @@ function addCSSRule(id, css_prefix, duration, eases) {
 }
 }());
 /* Test: "../../spec/_src/src/selector/test.js" */
-Global.$ = function(query, _parent) {
+Global['$'] = function(query, _parent) {
     'use strict';
 
     var $elements,
@@ -780,7 +771,7 @@ Global.$ = function(query, _parent) {
     len = $elements.length;
 
     base = function() {};
-    base.prototype = Global.$.methods;
+    base.prototype = Global['$'].methods;
     instance = new base();
 
     instance.length = len;
@@ -795,7 +786,7 @@ Global.$ = function(query, _parent) {
 };
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
-var el= Global.element;
+var el= Global['element'];
 
 function forExe(_this, func, arg) {
     var i = 0,
@@ -825,62 +816,62 @@ function makeAry(arg) {
     return ary;
 }
 
-Global.$.methods = {
+Global['$'].methods = {
     _forexe: forExe,
     _exe: exe,
     _argary: makeAry,
-    querySelectorAll: function(query) {
+    'querySelectorAll': function(query) {
         return this[0].querySelectorAll(query);
     },
-    find: function(query) {
-        return Global.$(query, this._parent);
+    'find': function(query) {
+        return Global['$'](query, this._parent);
     },
-    parent: function() {
-        return Global.$(parent(this[0]));
+    'parent': function() {
+        return Global['$'](parent(this[0]));
     },
-    on: function() {
+    'on': function() {
         return forExe(this, on, arguments);
     },
-    off: function() {
+    'off': function() {
         return forExe(this, off, arguments);
     },
-    show: function() {
+    'show': function() {
         return forExe(this, show);
     },
-    hide: function() {
+    'hide': function() {
         return forExe(this, hide);
     },
-    opacity: function() {
+    'opacity': function() {
         return forExe(this, opacity, arguments);
     },
-    hasClass: function() {
+    'hasClass': function() {
         return exe(this, hasClass, arguments);
     },
-    addClass: function() {
+    'addClass': function() {
         return forExe(this, addClass, arguments);
     },
-    removeClass: function() {
+    'removeClass': function() {
         return forExe(this, removeClass, arguments);
     },
-    toggleClass: function() {
+    'toggleClass': function() {
         return forExe(this, toggleClass, arguments);
     },
-    css: function() {
+    'css': function() {
         return forExe(this, css, arguments);
     },
-    html: function() {
+    'html': function() {
         return exe(this, html, arguments);
     },
-    attr: function() {
+    'attr': function() {
         return exe(this, attr, arguments);
     },
-    removeAttr: function() {
+    'removeAttr': function() {
         return forExe(this, removeAttr, arguments);
     },
-    append: function() {
+    'append': function() {
         return forExe(this, append, arguments);
     },
-    remove: function() {
+    'remove': function() {
         return forExe(this, remove, arguments);
     }
 };
@@ -889,32 +880,32 @@ Global.$.methods = {
 (function() {
 'use strict';
 
-var methods = Global.$.methods,
-    Animation = Global.Animation || {},
-    csssupport = Animation.support,
+var methods = Global['$'].methods,
+    Animation = Global['Animation'] || {},
+    csssupport = Animation['support'],
     EASE = {};
 
-if (csssupport && Global.cssease) {
-    EASE = Global.cssease;
+if (csssupport && Global['cssease']) {
+    EASE = Global['cssease'];
 }
-else if (Global.ease) {
-    EASE = Global.ease;
+else if (Global['ease']) {
+    EASE = Global['ease'];
 }
 
-methods.animate = function() {
+methods['animate'] = function() {
     if (!this._animate) {
         this._animate = [];
     }
 
     return methods._forexe(this, animate, arguments);
 }
-methods.stop = function() {
+methods['stop'] = function() {
     if (this._animate) {
         var i = 0,
             len = this._animate.length;
 
         for (; i < len; i++) {
-            this._animate[i].stop();
+            this._animate[i]['stop']();
         }
 
         this._animate = null;
@@ -942,9 +933,9 @@ function animate(element, params, duration, ease, callback) {
     }
 
     option = {
-        duration: duration,
-        ease: ease,
-        onComplete: callback
+        'duration': duration,
+        'ease': ease,
+        'onComplete': callback
     };
 
     if (csssupport) {
@@ -955,7 +946,7 @@ function animate(element, params, duration, ease, callback) {
         );
     }
     else {
-        anime = new Global.Tweener(
+        anime = new Global['Tweener'](
             element.style,
             convertTweenerParam(element, params),
             option
@@ -984,10 +975,10 @@ function convertTweenerParam(element, params) {
         }
 
         retobj[name] = {
-            from: from,
-            to: tosplit[2] * 1 || 0,
-            prefix: tosplit[1],
-            suffix: tosplit[3]
+            'from': from,
+            'to': tosplit[2] * 1 || 0,
+            'prefix': tosplit[1],
+            'suffix': tosplit[3]
         };
     }
 
@@ -1001,10 +992,10 @@ function splitSuffix(value) {
 }
 }());
 /* Test: "../../spec/_src/src/HashController/test.js" */
-Global.HashController = klass({
-    extend: Base,
-    properties: {
-        typeCast: function(str) {
+Global['HashController'] = klass({
+    'extend': Base,
+    'properties': {
+        'typeCast': function(str) {
             var caststr = typeCast(str),
                 matchstr;
 
@@ -1018,9 +1009,9 @@ Global.HashController = klass({
 
             return caststr;
         },
-        makeHash: function(conf) {
-            var hash = '#' + conf.mode,
-                vars = conf.vars,
+        'makeHash': function(conf) {
+            var hash = '#' + conf['mode'],
+                vars = conf['vars'],
                 sign = '?',
                 i;
 
@@ -1034,11 +1025,11 @@ Global.HashController = klass({
 
             return encodeURI(hash);
         },
-        setHash: function(vars) {
-            location.hash = this.makeHash(vars);
+        'setHash': function(vars) {
+            location.hash = this['makeHash'](vars);
             return true;
         },
-        parseHash: function(hashvars) {
+        'parseHash': function(hashvars) {
             var hash,
                 mode,
                 varsHash,
@@ -1065,29 +1056,29 @@ Global.HashController = klass({
                 for (i = varsHash.length; i--;) {
                     if (varsHash[i]) {
                         splitVar = varsHash[i].split('=');
-                        vars[splitVar[0]] = this.typeCast(splitVar[1]);
+                        vars[splitVar[0]] = this['typeCast'](splitVar[1]);
                     }
                 }
             }
 
             return {
-                mode: mode,
-                vars: vars
+                'mode': mode,
+                'vars': vars
             };
         },
-        getHash: function() {
-            return this.parseHash(location.hash);
+        'getHash': function() {
+            return this['parseHash'](location.hash);
         }
     }
 });
 /* Test: "../../spec/_src/src/Audio/test.js" */
-Global.Audio = function(config) {
-    if (!win.HTMLAudioElement) {
+Global['Audio'] = function(config) {
+    if (!win['HTMLAudioElement']) {
         return false;
     }
 
     var audio = new Audio(''),
-        suffix = config.suffix || [
+        suffix = config['suffix'] || [
             ['mp3', 'mpeg'],
             ['wav', 'wav'],
             ['ogg', 'ogg'],
@@ -1107,33 +1098,33 @@ Global.Audio = function(config) {
         return false;
     }
 
-    audio.controls = config.controls ? true : false;
-    audio.preload = config.preload || 'auto';
-    audio.autoplay = config.autoplay ? true : false;
-    audio.loop = config.loop ? true : false;
-    audio.src = config.dir + config.name + '.' + support[0];
+    audio['controls'] = config['controls'] ? true : false;
+    audio['preload'] = config['preload'] || 'auto';
+    audio['autoplay'] = config['autoplay'] ? true : false;
+    audio['loop'] = config['loop'] ? true : false;
+    audio.src = config['dir'] + config['name'] + '.' + support[0];
 
     return audio;
 };
 /* Test: "../../spec/_src/src/Sound/test.js" */
-Global.Sound = klass({
-    extend: Base,
-    init: function(config) {
-        this._super();
+Global['Sound'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
 
         var mine = this,
-            autoplay = config.autoplay,
-            loop = config.loop,
+            autoplay = config['autoplay'],
+            loop = config['loop'],
             audio,
             e_canplay = 'canplay',
             e_ended = 'ended';
 
-        config.preload = 'auto';
-        config.controls =
-        config.autoplay =
-        config.loop = false;
+        config['preload'] = 'auto';
+        config['controls'] =
+        config['autoplay'] =
+        config['loop'] = false;
 
-        audio = new Global.Audio(config);
+        audio = new Global['Audio'](config);
         mine._audio = audio;
 
         if (!audio) {
@@ -1142,86 +1133,86 @@ Global.Sound = klass({
 
         if (autoplay) {
             autoplay = function() {
-                mine.play();
+                mine['play']();
             };
 
             this.ondispose(audio, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
-                mine.stop();
-                mine.play();
+                mine['stop']();
+                mine['play']();
             };
 
             this.ondispose(audio, e_ended, loop);
         }
 
-        if (config.oncanplay) {
-            this.ondispose(audio, e_canplay, config.oncanplay);
+        if (config['oncanplay']) {
+            this.ondispose(audio, e_canplay, config['oncanplay']);
         }
-        if (config.onended) {
-            this.ondispose(audio, e_ended, config.onended);
+        if (config['onended']) {
+            this.ondispose(audio, e_ended, config['onended']);
         }
 
         append(doc.body, audio);
     },
-    properties: {
-        getAudio: function() {
+    'properties': {
+        'getAudio': function() {
             return this._audio;
         },
-        getCurrent: function() {
+        'getCurrent': function() {
             return this._audio.currentTime;
         },
-        getDuration: function() {
+        'getDuration': function() {
             return this._audio.duration;
         },
-        setCurrent: function(num) {
+        'setCurrent': function(num) {
             this._audio.currentTime = num;
         },
-        play: function() {
+        'play': function() {
             this._audio.play();
         },
-        pause: function() {
+        'pause': function() {
             this._audio.pause();
         },
-        stop: function() {
-            this.pause();
-            this.setCurrent(0);
+        'stop': function() {
+            this['pause']();
+            this['setCurrent'](0);
         }
     }
 });
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global.Ajax = klass({
-    extend: Base,
-    init: function(config) {
+Global['Ajax'] = klass({
+    'extend': Base,
+    'init': function(config) {
         if (config) {
-            this.request(config);
+            this['request'](config);
         }
     },
-    properties: {
-        request: function(vars) {
+    'properties': {
+        'request': function(vars) {
             if (vars.dataType === 'json') {
                 delete vars.dataType;
 
                 return this.json(vars);
             }
 
-            var url = vars.url,
-                callback = vars.callback || nullFunction,
-                error = vars.error || nullFunction,
-                type = vars.type || 'GET',
+            var url = vars['url'],
+                callback = vars['callback'] || nullFunction,
+                error = vars['error'] || nullFunction,
+                type = vars['type'] || 'GET',
                 query = '',
                 xhr;
 
-            if (!vars.cash) {
-                if (!vars.query) {
-                    vars.query = {};
+            if (!vars['cash']) {
+                if (!vars['query']) {
+                    vars['query'] = {};
                 }
 
-                vars.query['cirajaxcash' + Date.now()] = '0';
+                vars['query']['cirajaxcash' + Date.now()] = '0';
             }
-            if (vars.query) {
-                query = vars.query;
+            if (vars['query']) {
+                query = vars['query'];
 
                 if (isObject(query)) {
                     query = makeQueryString(query);
@@ -1264,97 +1255,97 @@ Global.Ajax = klass({
             }
             xhr.send(query);
         },
-        abort: function() {
+        'abort': function() {
             if (this.xhr) {
                 this.xhr.abort();
             }
         },
-        json: function(vars) {
-            var callback = vars.callback,
-                error = vars.error;
+        'json': function(vars) {
+            var callback = vars['callback'],
+                error = vars['error'];
 
-            vars.callback = function(data) {
+            vars['callback'] = function(data) {
                 callback(JSON.parse(data));
             };
-            vars.error = function(data) {
+            vars['error'] = function(data) {
                 if (error) {
                     error(data);
                 }
             };
 
-            this.request(vars);
+            this['request'](vars);
         }
     }
 });
 /* Test: "../../spec/_src/src/Bind/test.js" */
-Global.Bind = klass({
-    extend: Base,
-    init: function(config) {
+Global['Bind'] = klass({
+    'extend': Base,
+    'init': function(config) {
         this.handler = config;
-        this.add();
+        this['add']();
     },
-    properties: {
-        dispose: function() {
-            this.remove();
+    'properties': {
+        'dispose': function() {
+            this['remove']();
             this._orgdis();
         },
-        getHandler: function() {
+        'getHandler': function() {
             return this.handler;
         },
-        add: function() {
+        'add': function() {
             this._e(true);
         },
-        remove: function() {
+        'remove': function() {
             this._e(false);
         },
         _e: function(isBind) {
             var onoff = isBind ? on : off,
                 i;
 
-            for (i in this.handler.events) {
+            for (i in this.handler['events']) {
                 onoff(
-                    this.handler.element,
+                    this.handler['element'],
                     i,
-                    this.handler.events[i]
+                    this.handler['events'][i]
                 );
             }
         }
     }
 });
 /* Test: "../../spec/_src/src/Brush/test.js" */
-Global.Brush = klass({
-    extend: Base,
-    init: function(config) {
-        this.canvas = config.canvas;
+Global['Brush'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this.canvas = config['canvas'];
         this.ctx = this.canvas.getContext('2d');
 
-        this.setSize(config);
+        this['setSize'](config);
     },
-    properties: {
-        setSize: function(vars) {
-            if (vars.width) {
-                this.canvas.width = vars.width;
+    'properties': {
+        'setSize': function(vars) {
+            if (vars['width']) {
+                this.canvas.width = vars['width'];
             }
-            if (vars.height) {
-                this.canvas.height = vars.height;
+            if (vars['height']) {
+                this.canvas.height = vars['height'];
             }
         },
-        pigment: function(vars) {
+        'pigment': function(vars) {
             var canv = create('canvas'),
                 img = create('img');
 
             img.onload = function() {
-                canv.width = vars.width;
-                canv.height = vars.height;
+                canv.width = vars['width'];
+                canv.height = vars['height'];
                 canv.getContext('2d').drawImage(img, 0, 0);
 
                 vars.onload(canv, img);
             };
-            img.src = vars.src;
+            img.src = vars['src'];
 
-            return {image: canv, x: vars.x || 0, y: vars.y || 0};
+            return {'image': canv, 'x': vars.x || 0, 'y': vars.y || 0};
         },
-        pigments: function(vars, callback) {
+        'pigments': function(vars, callback) {
             var mine = this,
                 i,
                 count = 0,
@@ -1367,7 +1358,7 @@ Global.Brush = klass({
             }
 
             function pigment(pig) {
-                var pigload = pig.onload || nullFunction;
+                var pigload = pig['onload'] || nullFunction;
 
                 pig.onload = function(canvas, img) {
                     pigload(canvas, img);
@@ -1378,7 +1369,7 @@ Global.Brush = klass({
                     }
                 };
 
-                ret[i] = mine.pigment(pig);
+                ret[i] = mine['pigment'](pig);
                 count++;
             }
             function onload() {
@@ -1387,40 +1378,40 @@ Global.Brush = klass({
 
             return ret;
         },
-        draw: function(layer) {
+        'draw': function(layer) {
             var i = 0, len = layer.length, item;
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
             for (; i < len; i++) {
                 item = layer[i];
-                this.ctx.drawImage(item.image, item.x, item.y);
+                this.ctx.drawImage(item['image'], item['x'], item['y']);
             }
         }
     }
 });
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-Global.DataStore = klass({
-    extend: Base,
-    init: function(config) {
+Global['DataStore'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && Global.DataStore.instance) {
-            return Global.DataStore.instance;
+        if (config['single'] && Global['DataStore'].instance) {
+            return Global['DataStore'].instance;
         }
 
         this.data = {};
 
-        if (config.single) {
-            Global.DataStore.instance = this;
+        if (config['single']) {
+            Global['DataStore'].instance = this;
         }
     },
-    properties: {
-        set: function(key, val) {
+    'properties': {
+        'set': function(key, val) {
             this.data[key] = val;
         },
-        get: function(key) {
+        'get': function(key) {
             var ret = {},
                 i;
 
@@ -1434,31 +1425,31 @@ Global.DataStore = klass({
 
             return ret;
         },
-        remove: function(key) {
+        'remove': function(key) {
             if (!this.data[key]) {
                 return false;
             }
 
             delete this.data[key];
         },
-        reset: function() {
+        'reset': function() {
             this.data = {};
         }
     }
 });
 /* Test: "../../spec/_src/src/Deferred/test.js" */
-Global.Deferred = klass({
-    extend: Base,
-    init: function() {
+Global['Deferred'] = klass({
+    'extend': Base,
+    'init': function() {
         this.queue = [];
         this.data = null;
     },
-    properties: {
-        isResolve: function() {
+    'properties': {
+        'isResolve': function() {
             return !this.queue;
         },
-        resolve: function(data) {
-            if (this.isResolve()) {
+        'resolve': function(data) {
+            if (this['isResolve']()) {
                 return this;
             }
 
@@ -1474,7 +1465,7 @@ Global.Deferred = klass({
 
             return this;
         },
-        done: function(func) {
+        'done': function(func) {
             this.queue ? this.queue.push(func) : func(this.data);
 
             return this;
@@ -1482,29 +1473,29 @@ Global.Deferred = klass({
     }
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-Global.DragFlick = klass({
-    extend: Base,
-    init: function(config) {
-        this._super();
+Global['DragFlick'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
 
         if (config) {
-            this.bind(config);
+            this['bind'](config);
         }
     },
-    properties: {
+    'properties': {
         _t: function(e) {
             var changed = e.changedTouches ? e.changedTouches[0] : e;
 
             return changed;
         },
-        amount: function(vars) {
+        'amount': function(vars) {
             var mine = this,
                 startX,
                 startY,
                 dragflg = false;
 
-            this.ondispose(vars.element, ev.switchdown, start);
-            this.ondispose(win, ev.switchup, end);
+            this.ondispose(vars.element, ev['switchdown'], start);
+            this.ondispose(win, ev['switchup'], end);
 
             function start(e) {
                 var changed = mine._t(e);
@@ -1520,107 +1511,107 @@ Global.DragFlick = klass({
                 if (dragflg) {
                     var changed = mine._t(e),
                         amount = {
-                            x: changed.pageX - startX,
-                            y: changed.pageY - startY
+                            'x': changed.pageX - startX,
+                            'y': changed.pageY - startY
                         };
 
-                    vars.callback(amount);
+                    vars['callback'](amount);
 
                     dragflg = false;
                 }
             }
         },
-        direction: function(vars) {
-            this.amount({
-                element: vars.element,
-                callback: function(amount) {
-                    var boundary = vars.boundary || 0,
+        'direction': function(vars) {
+            this['amount']({
+                'element': vars['element'],
+                'callback': function(amount) {
+                    var boundary = vars['boundary'] || 0,
                         direction = {
-                            change: false,
-                            top: false,
-                            right: false,
-                            bottom: false,
-                            left: false,
-                            amount: amount
+                            'change': false,
+                            'top': false,
+                            'right': false,
+                            'bottom': false,
+                            'left': false,
+                            'amount': amount
                         };
 
-                    if (Math.abs(amount.x) > boundary) {
-                        if (amount.x > 0) {
-                            direction.right = true;
+                    if (Math.abs(amount['x']) > boundary) {
+                        if (amount['x'] > 0) {
+                            direction['right'] = true;
                         }
-                        else if (amount.x < 0) {
-                            direction.left = true;
+                        else if (amount['x'] < 0) {
+                            direction['left'] = true;
                         }
 
-                        direction.change = true;
+                        direction['change'] = true;
                     }
 
-                    if (Math.abs(amount.y) > boundary) {
-                        if (amount.y > 0) {
-                            direction.bottom = true;
+                    if (Math.abs(amount['y']) > boundary) {
+                        if (amount['y'] > 0) {
+                            direction['bottom'] = true;
                         }
-                        else if (amount.y < 0) {
-                            direction.top = true;
+                        else if (amount['y'] < 0) {
+                            direction['top'] = true;
                         }
 
-                        direction.change = true;
+                        direction['change'] = true;
                     }
 
-                    vars.callback(direction);
+                    vars['callback'](direction);
                 }
             });
         },
-        bind: function(vars) {
+        'bind': function(vars) {
             var mine = this,
-                element = vars.element,
-                el = Global.element,
-                start = vars.start || nullFunction,
-                move = vars.move || nullFunction,
-                end = vars.end || nullFunction,
+                element = vars['element'],
+                el = Global['element'],
+                start = vars['start'] || nullFunction,
+                move = vars['move'] || nullFunction,
+                end = vars['end'] || nullFunction,
                 flg = false,
                 startX = 0,
                 startY = 0;
 
-            if (vars.direction) {
-                mine.direction({
-                    element: element,
-                    boundary: vars.boundary,
-                    callback: vars.direction
+            if (vars['direction']) {
+                mine['direction']({
+                    'element': element,
+                    'boundary': vars['boundary'],
+                    'callback': vars['direction']
                 });
             }
 
-            eventProxy(element, ev.switchdown, function(_e) {
+            eventProxy(element, ev['switchdown'], function(_e) {
                 flg = true;
 
                 startX = _e.pageX;
                 startY = _e.pageY;
 
                 start({
-                    e: _e,
-                    move: {
-                        x: startX,
-                        y: startY
+                    'e': _e,
+                    'move': {
+                        'x': startX,
+                        'y': startY
                     }
                 });
             });
-            eventProxy(doc, ev.switchmove, function(_e) {
+            eventProxy(doc, ev['switchmove'], function(_e) {
                 if (flg) {
                     move({
-                        e: _e,
-                        move: {
-                            x: _e.pageX - startX,
-                            y: _e.pageY - startY
+                        'e': _e,
+                        'move': {
+                            'x': _e.pageX - startX,
+                            'y': _e.pageY - startY
                         }
                     });
                 }
             });
-            eventProxy(doc, ev.switchup, function(_e) {
+            eventProxy(doc, ev['switchup'], function(_e) {
                 if (flg) {
                     end({
-                        e: _e,
-                        move: {
-                            x: _e.pageX - startX,
-                            y: _e.pageY - startY
+                        'e': _e,
+                        'move': {
+                            'x': _e.pageX - startX,
+                            'y': _e.pageY - startY
                         }
                     });
 
@@ -1639,107 +1630,107 @@ Global.DragFlick = klass({
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
-Global.ExternalInterface = function(config) {
+Global['ExternalInterface'] = function(config) {
     config = config || {};
 
-    var Mine = Global.ExternalInterface,
+    var Mine = Global['ExternalInterface'],
         external;
 
-    if (config.single && Mine.instance) {
+    if (config['single'] && Mine.instance) {
         return Mine.instance;
     }
 
-    if (config.android) {
-        external = new Mine.Android(config);
+    if (config['android']) {
+        external = new Mine['Android'](config);
     }
     else {
-        external = new Mine.IOS(config);
+        external = new Mine['IOS'](config);
     }
 
-    if (config.single) {
+    if (config['single']) {
         Mine.instance = external;
     }
 
     return external;
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-Global.ExternalInterface.Android = klass({
-    extend: Global.HashController,
-    init: function(config) {
+Global['ExternalInterface']['Android'] = klass({
+    'extend': Global['HashController'],
+    'init': function(config) {
         config = config || {};
 
-        this.android = config.android;
-        this.externalObj = config.externalObj;
+        this.android = config['android'];
+        this.externalObj = config['externalObj'];
     },
-    properties: {
-        call: function(conf) {
-            this.android[conf.mode](this.makeHash(conf));
+    'properties': {
+        'call': function(conf) {
+            this.android[conf['mode']](this['makeHash'](conf));
         },
-        addCallback: function(name, func) {
+        'addCallback': function(name, func) {
             var mine = this;
             mine.externalObj[name] = function(vars) {
-                var objs = mine.parseHash(vars);
-                return func(objs.vars);
+                var objs = mine['parseHash'](vars);
+                return func(objs['vars']);
             };
         },
-        removeCallback: function(name) {
+        'removeCallback': function(name) {
             delete this.externalObj[name];
         }
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-Global.ExternalInterface.IOS = klass({
-    extend: Global.HashController,
-    init: function(config) {
+Global['ExternalInterface']['IOS'] = klass({
+    'extend': Global['HashController'],
+    'init': function(config) {
         this.ios = {};
     },
-    properties: {
-        dispose: function() {
+    'properties': {
+        'dispose': function() {
             var i;
 
             for (i in this.ios) {
-                this.removeCallback(i);
+                this['removeCallback'](i);
             }
             this._orgdis();
         },
-        call: function(conf) {
-            this.setHash(conf);
+        'call': function(conf) {
+            this['setHash'](conf);
         },
-        addCallback: function(name, func) {
+        'addCallback': function(name, func) {
             var mine = this;
             mine.ios[name] = function(e) {
-                var hash = mine.getHash();
+                var hash = mine['getHash']();
 
-                if (hash.mode === name) {
-                    func(hash.vars);
+                if (hash['mode'] === name) {
+                    func(hash['vars']);
                     return true;
                 }
                 return false;
             };
             on(win, ev_hashchange, mine.ios[name]);
         },
-        removeCallback: function(name) {
+        'removeCallback': function(name) {
             off(win, ev_hashchange, this.ios[name]);
             delete this.ios[name];
         }
     }
 });
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-Global.Facebook = klass({
-    extend: Base,
-    properties: {
+Global['Facebook'] = klass({
+    'extend': Base,
+    'properties': {
         _b: 'https://www.facebook.com/dialog/feed?',
-        getShareURL: function(vars) {
+        'getShareURL': function(vars) {
             var url = this._b +
-                    'app_id=' + vars.app_id + '&' +
-                    'redirect_uri=' + vars.redirect_uri;
+                    'app_id=' + vars['app_id'] + '&' +
+                    'redirect_uri=' + vars['redirect_uri'];
 
             url += makeQueryString({
-                'link': vars.link,
-                'picture': vars.picture,
-                'name': vars.name,
-                'caption': vars.caption,
-                'description': vars.description
+                'link': vars['link'],
+                'picture': vars['picture'],
+                'name': vars['name'],
+                'caption': vars['caption'],
+                'description': vars['description']
             });
 
             return url;
@@ -1747,57 +1738,57 @@ Global.Facebook = klass({
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
-Global.FPS = klass({
-    extend: Base,
-    init: function(config) {
+Global['FPS'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
-        if (!config.criterion) {
-            config.criterion = 20;
+        if (!config['criterion']) {
+            config['criterion'] = 20;
         }
 
         // singleton
-        if (config.single && Global.FPS.instance) {
-            return Global.FPS.instance;
+        if (config['single'] && Global['FPS'].instance) {
+            return Global['FPS'].instance;
         }
 
-        this.criterion = config.criterion,
+        this.criterion = config['criterion'],
         this.surver = this.criterion,
-        this.enterframe = config.enterframe,
+        this.enterframe = config['enterframe'],
         this.msecFrame = this._getFrame(this.criterion),
         this.prevtime =
         this.nowtime =
         this.loopid = 0;
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
 
-        if (config.single) {
-            Global.FPS.instance = this;
+        if (config['single']) {
+            Global['FPS'].instance = this;
         }
     },
-    properties: {
-        dispose: function() {
-            this.stop();
+    'properties': {
+        'dispose': function() {
+            this['stop']();
             this._orgdis();
         },
-        getCriterion: function() {
+        'getCriterion': function() {
             return this.criterion;
         },
-        getSurver: function() {
+        'getSurver': function() {
             return this.surver;
         },
-        getFrameTime: function() {
+        'getFrameTime': function() {
             return this.msecFrame;
         },
-        enter: function() {
+        'enter': function() {
             this.enterframe({
-                criterion: this.criterion,
-                surver: this.surver
+                'criterion': this.criterion,
+                'surver': this.surver
             });
         },
-        start: function() {
+        'start': function() {
             this.prevtime = Date.now();
             this.loopid = setInterval(this._loop, this.msecFrame, this);
         },
@@ -1806,36 +1797,36 @@ Global.FPS = klass({
             mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
             mine.prevtime = mine.nowtime;
 
-            mine.enter();
+            mine['enter']();
         },
         _getFrame: function(time) {
             return Math.round(1000 / time);
         },
-        stop: function() {
+        'stop': function() {
             clearInterval(this.loopid);
         }
     }
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-Global.ImgLoad = klass({
-    extend: Base,
-    init: function(config) {
-        this._super();
+Global['ImgLoad'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
 
-        this.srcs = config.srcs,
+        this.srcs = config['srcs'],
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
-        this.onload = config.onload || nullFunction,
-        this.onprogress = config.onprogress || nullFunction,
+        this.onload = config['onload'] || nullFunction,
+        this.onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
         this.progress = 0;
         this.started = false;
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
     },
-    properties: {
+    'properties': {
         _c: function() {
             this.loadcount++;
 
@@ -1846,7 +1837,7 @@ Global.ImgLoad = klass({
                 this.onload(this.loadedsrcs);
             }
         },
-        start: function() {
+        'start': function() {
             if (this.started) {
                 return false;
             }
@@ -1862,7 +1853,7 @@ Global.ImgLoad = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                this.ondispose(img, ev.load, countup);
+                this.ondispose(img, ev['load'], countup);
 
                 mine.loadedsrcs.push(img);
             }
@@ -1871,51 +1862,51 @@ Global.ImgLoad = klass({
                 mine._c();
             }
         },
-        getProgress: function() {
+        'getProgress': function() {
             return this.progress;
         }
     }
 });
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
-Global.WindowLoad = klass({
-    extend: Base,
-    init: function(config) {
-        this._super();
+Global['WindowLoad'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
 
-        if (config && config.onload) {
-            this.onload(config.onload);
+        if (config && config['onload']) {
+            this.onload(config['onload']);
         }
     },
-    properties: {
+    'properties': {
         onload: function(func) {
-            this.ondispose(win, ev.load, func);
+            this.ondispose(win, ev['load'], func);
         }
     }
 });
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
-Global.LocalStorage = klass({
-    extend: Base,
-    init: function(config) {
+Global['LocalStorage'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && Global.LocalStorage.instance) {
-            return Global.LocalStorage.instance;
+        if (config['single'] && Global['LocalStorage'].instance) {
+            return Global['LocalStorage'].instance;
         }
 
-        this._n = config.namespace ? config.namespace + '-' : '';
+        this._n = config['namespace'] ? config['namespace'] + '-' : '';
 
-        if (config.single) {
-            Global.LocalStorage.instance = this;
+        if (config['single']) {
+            Global['LocalStorage'].instance = this;
         }
     },
-    properties: {
+    'properties': {
         _s: win.localStorage,
-        set: function(key, val) {
+        'set': function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
             return true;
         },
-        get: function(key) {
+        'get': function(key) {
             var mine = this,
                 ret = {},
                 i;
@@ -1938,7 +1929,7 @@ Global.LocalStorage = klass({
 
             return ret;
         },
-        remove: function(key) {
+        'remove': function(key) {
             key = this._n + key;
 
             if (!this._s.getItem(key)) {
@@ -1949,7 +1940,7 @@ Global.LocalStorage = klass({
 
             return true;
         },
-        reset: function() {
+        'reset': function() {
             if (!this._n) {
                 this._s.clear();
 
@@ -1965,49 +1956,49 @@ Global.LocalStorage = klass({
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global.Mobile = klass({
-    extend: Base,
-    init: function() {
-        this._super();
+Global['Mobile'] = klass({
+    'extend': Base,
+    'init': function() {
+        this['_super']();
     },
-    properties: {
-        getZoom: function() {
+    'properties': {
+        'getZoom': function() {
             return doc.body.clientWidth / win.innerWidth;
         },
-        isAndroid: function(ua) {
+        'isAndroid': function(ua) {
             return checkUserAgent(/Android/i, ua);
         },
-        isIOS: function(ua) {
+        'isIOS': function(ua) {
             return checkUserAgent(/iPhone|iPad|iPod/i, ua);
         },
-        isWindows: function(ua) {
+        'isWindows': function(ua) {
             return checkUserAgent(/IEMobile/i, ua);
         },
-        isFBAPP: function(ua) {
+        'isFBAPP': function(ua) {
             return checkUserAgent(/FBAN/, ua);
         },
-        isMobile: function() {
+        'isMobile': function() {
             return (
-                this.isAndroid() ||
-                this.isIOS() ||
-                this.isWindows() ||
-                this.isFBAPP()
+                this['isAndroid']() ||
+                this['isIOS']() ||
+                this['isWindows']() ||
+                this['isFBAPP']()
             );
         },
-        killScroll: function(isNoTop) {
+        'killScroll': function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, ev.touchmove, preventDefault);
+            on(doc, ev['touchmove'], preventDefault);
         },
-        revivalScroll: function(isNoTop) {
+        'revivalScroll': function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, ev.touchmove, preventDefault);
+            off(doc, ev['touchmove'], preventDefault);
         },
-        hideAddress: function() {
-            this.ondispose(win, ev.load, hideAddressHandler, false);
+        'hideAddress': function() {
+            this.ondispose(win, ev['load'], hideAddressHandler, false);
             this.ondispose(win, ev_orientationchange, hideAddressHandler, false);
 
             function doScroll() {
@@ -2019,31 +2010,31 @@ Global.Mobile = klass({
                 setTimeout(doScroll, 100);
             }
         },
-        getOrientation: function() {
+        'getOrientation': function() {
             if (
                 Math.abs(win.orientation) !== 90 &&
                 win.innerWidth < win.innerHeight
             ) {
                 return {
-                    portrait: true,
-                    landscape: false
+                    'portrait': true,
+                    'landscape': false
                 };
             }
 
             return {
-                portrait: false,
-                landscape: true
+                'portrait': false,
+                'landscape': true
             };
         },
-        bindOrientation: function(vars) {
+        'bindOrientation': function(vars) {
             var mine = this,
                 ret_remove;
 
-            if (vars.immediately) {
+            if (vars['immediately']) {
                 change();
             }
 
-            if (vars.one) {
+            if (vars['one']) {
                 add(onechange);
 
                 return function() {
@@ -2060,14 +2051,14 @@ Global.Mobile = klass({
             return ret_remove;
 
             function add(handler) {
-                mine.ondispose(win, ev.load, handler);
+                mine.ondispose(win, ev['load'], handler);
                 mine.ondispose(win, ev_orientationchange, handler);
-                mine.ondispose(win, ev.resize, handler);
+                mine.ondispose(win, ev['resize'], handler);
             }
             function remove(handler) {
-                off(win, ev.load, handler);
+                off(win, ev['load'], handler);
                 off(win, ev_orientationchange, handler);
-                off(win, ev.resize, handler);
+                off(win, ev['resize'], handler);
             }
             function onechange() {
                 change();
@@ -2075,27 +2066,27 @@ Global.Mobile = klass({
             }
             function change() {
                 if (
-                    mine.getOrientation().portrait
+                    mine['getOrientation']()['portrait']
                 ) {
-                    vars.portrait();
+                    vars['portrait']();
                     return true;
                 }
-                vars.landscape();
+                vars['landscape']();
             }
         }
     }
 });
 /* Test: "../../spec/_src/src/FontImg/test.js" */
-Global.FontImg = klass({
-    extend: Base,
-    init: function(config) {
+Global['FontImg'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {type: ''};
 
-        this.type = config.type ? config.type + '_' : '';
-        this.tag = config.tag || 'span';
+        this.type = config['type'] ? config['type'] + '_' : '';
+        this.tag = config['tag'] || 'span';
     },
-    properties: {
-        make: function(x) {
+    'properties': {
+        'make': function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',
                 i;
@@ -2111,24 +2102,24 @@ Global.FontImg = klass({
     }
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global.Observer = klass({
-    extend: Base,
-    init: function(config) {
-        config = config || {single: false};
+Global['Observer'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        config = config || {};
 
         // singleton
-        if (config.single && Global.Observer.instance) {
-            return Global.Observer.instance;
+        if (config['single'] && Global['Observer'].instance) {
+            return Global['Observer'].instance;
         }
 
         this.observed = {};
 
-        if (config.single) {
-            Global.Observer.instance = this;
+        if (config['single']) {
+            Global['Observer'].instance = this;
         }
     },
-    properties: {
-        on: function(key, func) {
+    'properties': {
+        'on': function(key, func) {
             var observed = this.observed;
 
             if (!observed[key]) {
@@ -2137,16 +2128,16 @@ Global.Observer = klass({
 
             observed[key].push(func);
         },
-        one: function(key, func) {
+        'one': function(key, func) {
             var mine = this,
                 wrapfunc = function(vars) {
                     func(vars);
-                    mine.off(key, wrapfunc);
+                    mine['off'](key, wrapfunc);
                 };
 
-            mine.on(key, wrapfunc);
+            mine['on'](key, wrapfunc);
         },
-        off: function(key, func) {
+        'off': function(key, func) {
             var observed = this.observed;
 
             if (!func) {
@@ -2177,7 +2168,7 @@ Global.Observer = klass({
 
             return false;
         },
-        fire: function(key, vars) {
+        'fire': function(key, vars) {
             var target = this.observed[key],
                 func,
                 i;
@@ -2198,28 +2189,28 @@ Global.Observer = klass({
     }
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-Global.PreRender = klass({
-    extend: Base,
-    init: function(config) {
+Global['PreRender'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
-        if (!config.loopblur) {
-            config.loopblur = 20;
+        if (!config['loopblur']) {
+            config['loopblur'] = 20;
         }
 
-        this.elements = config.elements || [];
-        this.guesslimit = config.guesslimit || 30;
-        this.onrendered = config.onrendered || nullFunction;
-        this.looptime = config.looptime || 100;
-        this.loopblur = this.looptime + config.loopblur;
-        this.loopid = this.prevtime = null;
+        this.elements = config['elements'] || [];
+        this.guesslimit = config['guesslimit'] || 30;
+        this.onrendered = config['onrendered'] || nullFunction;
+        this.looptime = config['looptime'] || 100;
+        this.loopblur = this.looptime + config['loopblur'];
+        /* this.loopid = this.prevtime = null; */
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        start: function() {
+    'properties': {
+        'start': function() {
             var i;
 
             for (i = this.elements.length; i--;) {
@@ -2252,31 +2243,31 @@ Global.PreRender = klass({
     }
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
-Global.Route = klass({
-    extend: Base,
-    init: function(config) {
+Global['Route'] = klass({
+    'extend': Base,
+    'init': function(config) {
         // singleton
-        if (config.single && Global.Route.instance) {
-            return Global.Route.instance;
+        if (config['single'] && Global['Route'].instance) {
+            return Global['Route'].instance;
         }
 
-        this.target = config.target || '';
-        this.noregex = config.noregex;
-        this.action = config.action;
+        this.target = config['target'] || '';
+        this.noregex = config['noregex'];
+        this.action = config['action'];
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
 
-        if (config.single) {
-            Global.Route.instance = this;
+        if (config['single']) {
+            Global['Route'].instance = this;
         }
     },
-    properties: {
-        start: function() {
-            this.fire(this.target);
+    'properties': {
+        'start': function() {
+            this['fire'](this.target);
         },
-        fire: function(action) {
+        'fire': function(action) {
             var i;
 
             if (this.noregex && this.action[action]) {
@@ -2292,14 +2283,14 @@ Global.Route = klass({
     }
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-Global.ScriptLoad = klass({
-    extend: Base,
-    init: function() {
-        this._super();
+Global['ScriptLoad'] = klass({
+    'extend': Base,
+    'init': function() {
+        this['_super']();
         this.elements = [];
     },
-    properties: {
-        requests: function(varary, callback) {
+    'properties': {
+        'requests': function(varary, callback) {
             var mine = this,
                 i = 0,
                 len = varary.length;
@@ -2309,15 +2300,15 @@ Global.ScriptLoad = klass({
             }
 
             function request(i) {
-                var callback = varary[i].callback,
+                var callback = varary[i]['callback'],
                     check = function(e) {
                         callback(e);
                         countdown();
                     };
 
-                varary[i].callback = check;
+                varary[i]['callback'] = check;
 
-                mine.request(varary[i]);
+                mine['request'](varary[i]);
             }
             function countdown() {
                 i--;
@@ -2327,16 +2318,16 @@ Global.ScriptLoad = klass({
                 }
             }
         },
-        request: function(vars) {
+        'request': function(vars) {
             var script = create('script');
 
             /* script.type = 'text/javascript'; */
-            script.src = vars.src;
+            script.src = vars['src'];
             append(doc.body, script);
             this.elements.push(script);
 
-            if (vars.callback) {
-                this.ondispose(script, ev.load, vars.callback);
+            if (vars['callback']) {
+                this.ondispose(script, ev['load'], vars['callback']);
             }
         }
     }
@@ -2348,12 +2339,12 @@ Global.ScriptLoad = klass({
 var xhr,
     isLoaded = false;
 
-Global.ServerMeta = klass({
-    extend : Base,
-    init: function(config) {
+Global['ServerMeta'] = klass({
+    'extend' : Base,
+    'init': function(config) {
         config = config || {};
 
-        var callback = config.callback || nullFunction;
+        var callback = config['callback'] || nullFunction;
 
         if (!xhr) {
             xhr = getHeader(function() {
@@ -2365,32 +2356,32 @@ Global.ServerMeta = klass({
             callback(xhr);
         }
     },
-    properties: {
-        date: function(callback) {
+    'properties': {
+        'date': function(callback) {
             return getHeader(function(xhr) {
                 var time = new Date(xhr.getResponseHeader('Date'));
                 callback(time);
             });
         },
-        connection: function() {
+        'connection': function() {
             return getRes('Connection');
         },
-        contentLength: function() {
+        'contentLength': function() {
             return getRes('Content-Length');
         },
-        lastModified: function() {
+        'lastModified': function() {
             return getRes('Last-Modified');
         },
-        server: function() {
+        'server': function() {
             return getRes('Server');
         },
-        contentType: function() {
+        'contentType': function() {
             return getRes('Content-Type');
         },
-        acceptRanges: function() {
+        'acceptRanges': function() {
             return getRes('Accept-Ranges');
         },
-        keepAlive: function() {
+        'keepAlive': function() {
             return getRes('Keep-Alive');
         }
     }
@@ -2417,29 +2408,29 @@ function getHeader(callback) {
 }
 }());
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
-Global.SessionStorage = klass({
-    extend: Base,
-    init: function(config) {
+Global['SessionStorage'] = klass({
+    'extend': Base,
+    'init': function(config) {
         config = config || {};
 
         // singleton
-        if (config.single && Global.SessionStorage.instance) {
-            return Global.SessionStorage.instance;
+        if (config['single'] && Global['SessionStorage'].instance) {
+            return Global['SessionStorage'].instance;
         }
 
-        this._n = config.namespace ? config.namespace + '-' : '';
+        this._n = config['namespace'] ? config['namespace'] + '-' : '';
 
-        if (config.single) {
-            Global.SessionStorage.instance = this;
+        if (config['single']) {
+            Global['SessionStorage'].instance = this;
         }
     },
-    properties: {
+    'properties': {
         _s: win.sessionStorage,
-        set: function(key, val) {
+        'set': function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
             return true;
         },
-        get: function(key) {
+        'get': function(key) {
             var mine = this,
                 ret = {},
                 i;
@@ -2462,7 +2453,7 @@ Global.SessionStorage = klass({
 
             return ret;
         },
-        remove: function(key) {
+        'remove': function(key) {
             key = this._n + key;
 
             if (!this._s.getItem(key)) {
@@ -2473,7 +2464,7 @@ Global.SessionStorage = klass({
 
             return true;
         },
-        reset: function() {
+        'reset': function() {
             if (!this._n) {
                 this._s.clear();
 
@@ -2489,50 +2480,50 @@ Global.SessionStorage = klass({
     }
 });
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-Global.Surrogate = klass({
-    extend: Base,
-    init: function(config) {
-        this.delay = config.delay;
-        this.callback = config.callback;
+Global['Surrogate'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this.delay = config['delay'];
+        this.callback = config['callback'];
         // this.args = null;
         // this.waitid = null;
     },
-    properties: {
-        dispose: function() {
-            this.clear();
+    'properties': {
+        'dispose': function() {
+            this['clear']();
             this._orgdis();
         },
-        request: function(arg) {
+        'request': function(arg) {
             this.args = arg;
-            this.clear();
-            this.waitid = setTimeout(this.flush, this.delay, this);
+            this['clear']();
+            this.waitid = setTimeout(this['flush'], this.delay, this);
         },
-        flush: function(mine) {
+        'flush': function(mine) {
             mine = mine || this;
 
             mine.callback(mine.args);
         },
-        clear: function() {
+        'clear': function() {
             clearInterval(this.waitid);
         }
     }
 });
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-Global.Throttle = klass({
-    extend: Base,
-    init: function(config) {
-        this.waittime = config.waittime;
-        this.callback = config.callback;
+Global['Throttle'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this.waittime = config['waittime'];
+        this.callback = config['callback'];
         // this.locked = false;
         // this.waitid = null;
         // this.waitarg = null;
     },
-    properties: {
-        dispose: function() {
-            this.unlock();
+    'properties': {
+        'dispose': function() {
+            this['unlock']();
             this._orgdis();
         },
-        request: function(vars) {
+        'request': function(vars) {
             var mine = this;
 
             if (mine.locked) {
@@ -2541,20 +2532,20 @@ Global.Throttle = klass({
             }
 
             mine.callback(vars);
-            mine.lock();
+            mine['lock']();
             mine.waitid = setTimeout(function() {
                 if (mine.waitarg) {
                     mine.callback(mine.waitarg);
                     mine.waitarg = null;
                 }
 
-                mine.unlock();
+                mine['unlock']();
             }, mine.waittime, mine);
         },
-        lock: function() {
+        'lock': function() {
             this.locked = true;
         },
-        unlock: function(mine) {
+        'unlock': function(mine) {
             mine = mine || this;
 
             mine.locked = false;
@@ -2563,45 +2554,45 @@ Global.Throttle = klass({
     }
 });
 /* Test: "../../spec/_src/src/Timer/test.js" */
-Global.Timer = function(config) {
+Global['Timer'] = function(config) {
     'use strict';
 
-    var limit = config.limit,
+    var limit = config['limit'],
         limitx1000 = limit * 1000,
-        interval = config.interval * 1000,
-        onupdate = config.onupdate,
-        ontimeup = config.ontimeup,
-        digit = template2digit(config.template),
+        interval = config['interval'] * 1000,
+        onupdate = config['onupdate'],
+        ontimeup = config['ontimeup'],
+        digit = template2digit(config['template']),
         starttime = 0,
         nowtime = 0,
         endtime = limitx1000,
         preformedtime = getPreformedNum(limit),
         loopid,
         instance = {
-            getLimit: function() {
+            'getLimit': function() {
                 return limit;
             },
-            getTime: function() {
+            'getTime': function() {
                 return preformedtime;
             },
-            getProgress: function() {
+            'getProgress': function() {
                 var diff = endtime - nowtime,
                     progress = 1 - diff / limitx1000;
 
                 return progress;
             },
-            setUpdate: function(func) {
+            'setUpdate': function(func) {
                 onupdate = func;
             },
-            setTimeup: function(func) {
+            'setTimeup': function(func) {
                 ontimeup = func;
             },
-            countDown: function(vars) {
+            'countDown': function(vars) {
                 nowtime = starttime = getTime();
                 endtime = starttime + limitx1000;
                 _loop();
             },
-            stop: function() {
+            'stop': function() {
                 clearInterval(loopid);
             }
         };
@@ -2623,7 +2614,7 @@ Global.Timer = function(config) {
         onupdate(preformedtime);
 
         if (nowtime > endtime) {
-            instance.stop();
+            instance['stop']();
             ontimeup();
             return true;
         }
@@ -2746,24 +2737,24 @@ for (; i < len; i++) {
     }
 }
 
-Mine = Global.Transition = klass({
-    extend: Base,
-    init: function(element, property, option) {
+Mine = Global['Transition'] = klass({
+    'extend': Base,
+    'init': function(element, property, option) {
         if (!support) {
             return false;
         }
 
         option = option || {};
-        option.onComplete = option.onComplete || nullFunction;
+        option['onComplete'] = option['onComplete'] || nullFunction;
 
-        Mine.id++;
-        this.id = 'cirtrans' + Mine.id;
+        Mine['id']++;
+        this.id = 'cirtrans' + Mine['id'];
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option.duration || Mine.Duration,
-            ease = option.ease || 'ease';
+            duration = option['duration'] || Mine['Duration'],
+            ease = option['ease'] || 'ease';
 
         if (!isArray(ease)) {
             ease = [ease];
@@ -2779,22 +2770,22 @@ Mine = Global.Transition = klass({
         this.property = property;
         this.option = option;
 
-        if (!option.manual) {
-            this.start();
+        if (!option['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        dispose: function() {
-            this.stop();
+    'properties': {
+        'dispose': function() {
+            this['stop']();
             this._orgdis();
         },
-        start: function() {
+        'start': function() {
             var mine = this;
 
             mine._endfunc = function(e) {
-                mine.stop();
+                mine['stop']();
                 setTimeout(function() {
-                    mine.option.onComplete(e);
+                    mine.option['onComplete'](e);
                 }, 1);
             };
 
@@ -2824,9 +2815,9 @@ Mine = Global.Transition = klass({
         }
     }
 });
-Mine.id = 0;
-Mine.support = support;
-Mine.Duration = 500;
+Mine['id'] = 0;
+Mine['support'] = support;
+Mine['Duration'] = 500;
 
 function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
@@ -2848,9 +2839,9 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 (function() {
-var Mine = Global.Tweener = klass({
-    extend: Base,
-    init: function(target, property, option) {
+var Mine = Global['Tweener'] = klass({
+    'extend': Base,
+    'init': function(target, property, option) {
         var name,
             prop;
 
@@ -2861,26 +2852,26 @@ var Mine = Global.Tweener = klass({
 
         for (name in property) {
             prop = property[name];
-            prop.name = name;
+            prop['name'] = name;
 
-            prop.distance = prop.to - prop.from;
-            prop.prefix = prop.prefix || '';
-            prop.suffix = prop.suffix || 'px';
+            prop['distance'] = prop['to'] - prop['from'];
+            prop['prefix'] = prop['prefix'] || '';
+            prop['suffix'] = prop['suffix'] || 'px';
 
             this.property.push(prop);
         }
 
-        this.duration = option.duration || Mine.Duration;
-        this.ease = option.ease || this._ease;
-        this.onComplete = option.onComplete;
+        this.duration = option['duration'] || Mine['Duration'];
+        this.ease = option['ease'] || this._ease;
+        this.onComplete = option['onComplete'];
 
-        if (!option.manual) {
-            this.start();
+        if (!option['manual']) {
+            this['start']();
         }
     },
-    properties: {
-        dispose: function() {
-            this.stop();
+    'properties': {
+        'dispose': function() {
+            this['stop']();
             this._orgdis();
         },
         // easeOutExpo
@@ -2920,7 +2911,7 @@ var Mine = Global.Tweener = klass({
         }()),
         loop: function() {
             var mine = this,
-                items = Mine.Items,
+                items = Mine['Items'],
                 item,
                 now = Date.now(),
                 time,
@@ -2940,8 +2931,8 @@ var Mine = Global.Tweener = klass({
 
                         Mine._setProp(item.target, prop, item.ease(
                             time,
-                            prop.from,
-                            prop.distance,
+                            prop['from'],
+                            prop['distance'],
                             item.duration
                         ));
                     }
@@ -2950,7 +2941,7 @@ var Mine = Global.Tweener = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Mine._setProp(item.target, prop, prop.to);
+                        Mine._setProp(item.target, prop, prop['to']);
                     }
                     if (item.onComplete) {
                         item.onComplete();
@@ -2967,14 +2958,14 @@ var Mine = Global.Tweener = klass({
                 return true;
             }
 
-            this.stop();
+            this['stop']();
         },
-        start: function() {
+        'start': function() {
             var mine = this;
 
             mine.begin = Date.now();
 
-            Mine.Items.push(mine);
+            Mine['Items'].push(mine);
             if (!Mine.timerId) {
                 Mine.timerId = 1;
                 mine._requestAnimationFrame(function() {
@@ -2982,37 +2973,37 @@ var Mine = Global.Tweener = klass({
                 });
             }
         },
-        stop: function() {
-            Mine.Items = [];
+        'stop': function() {
+            Mine['Items'] = [];
             clearInterval(Mine.timerId);
             Mine.timerId = null;
         }
     }
 });
 Mine._setProp = function(target, prop, point) {
-    target[prop.name] = prop.prefix + point + prop.suffix;
+    target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
 /* Mine.timerId = null; */
-Mine.Items = [];
-Mine.FPS = 30;
-Mine.Duration = 500;
+Mine['Items'] = [];
+Mine['FPS'] = 30;
+Mine['Duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-Global.Twitter = klass({
-    extend: Base,
-    properties: {
+Global['Twitter'] = klass({
+    'extend': Base,
+    'properties': {
         _b: 'https://twitter.com/intent/tweet?',
-        getShareURL: function(vars) {
-            var caption = vars.caption || '',
-                name = vars.name,
-                hash = vars.hash,
+        'getShareURL': function(vars) {
+            var caption = vars['caption'] || '',
+                name = vars['name'],
+                hash = vars['hash'],
                 url = this._b;
 
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
 
             url += makeQueryString({
-                'url': vars.redirect_uri,
+                'url': vars['redirect_uri'],
                 'text': caption + name + hash
             });
 
@@ -3021,28 +3012,28 @@ Global.Twitter = klass({
     }
 });
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global.XML = klass({
-    extend: Base,
-    init: function(config) {
+Global['XML'] = klass({
+    'extend': Base,
+    'init': function(config) {
         this.element = create('div');
         this.data = {};
 
-        if (config && config.data) {
-            this.setData(config.data);
+        if (config && config['data']) {
+            this['setData'](config['data']);
         }
     },
-    properties: {
-        getData: function() {
+    'properties': {
+        'getData': function() {
             return this.data;
         },
-        setData: function(d) {
+        'setData': function(d) {
             this.data =
             this.element.innerHTML = d;
         },
-        $: function(selector) {
+        '$': function(selector) {
             return $child(selector, this.element);
         },
-        $$: function(selector) {
+        '$$': function(selector) {
             return $$child(selector, this.element);
         }
     }

@@ -1,23 +1,23 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-Global.ImgLoad = klass({
-    extend: Base,
-    init: function(config) {
-        this._super();
+Global['ImgLoad'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
 
-        this.srcs = config.srcs,
+        this.srcs = config['srcs'],
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
-        this.onload = config.onload || nullFunction,
-        this.onprogress = config.onprogress || nullFunction,
+        this.onload = config['onload'] || nullFunction,
+        this.onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
         this.progress = 0;
         this.started = false;
 
-        if (!config.manual) {
-            this.start();
+        if (!config['manual']) {
+            this['start']();
         }
     },
-    properties: {
+    'properties': {
         _c: function() {
             this.loadcount++;
 
@@ -28,7 +28,7 @@ Global.ImgLoad = klass({
                 this.onload(this.loadedsrcs);
             }
         },
-        start: function() {
+        'start': function() {
             if (this.started) {
                 return false;
             }
@@ -44,7 +44,7 @@ Global.ImgLoad = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                this.ondispose(img, ev.load, countup);
+                this.ondispose(img, ev['load'], countup);
 
                 mine.loadedsrcs.push(img);
             }
@@ -53,7 +53,7 @@ Global.ImgLoad = klass({
                 mine._c();
             }
         },
-        getProgress: function() {
+        'getProgress': function() {
             return this.progress;
         }
     }

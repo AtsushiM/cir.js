@@ -8,15 +8,17 @@ SRC = namespace_start.js utility.js element.js klass.js extend.js Event.js Base.
 # SRC = namespace_start.js utility.js element.js klass.js extend.js selector.js selector.methods.js selector.methods.animate.js Tweener.js Event.js Mobile.js Observer.js namespace_end.js
 
 COMBINE = ../cir.js
-COMPRESS = ../cir.min.js
+COMPRESS = ../cir.compress.js
+FINAL = ../cir.min.js
 
 $(COMBINE) : $(SRC)
 	cat $^ > $@
 
 	growlnotify -t 'auto-make' -m 'make start.'
-	# ((java -jar /Applications/gcc/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js $(COMBINE) --js_output_file $(COMPRESS)) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
-	((java -jar /Applications/gcc/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS  --js $(COMBINE) --js_output_file $(COMPRESS)) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
+	((java -jar /Applications/gcc/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js $(COMBINE) --js_output_file $(COMPRESS)) && cat clouser_start.js $(COMPRESS) clouser_end.js | tr -d '\r' | tr -d '\n' > $(FINAL) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
+#	((java -jar /Applications/gcc/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS  --js $(COMBINE) --js_output_file $(FINAL)) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
 #	rm -f $(COMBINE)
+	rm -f $(COMPRESS)
 
 .PHONY: clean
 clean :

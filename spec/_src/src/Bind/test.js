@@ -18,6 +18,9 @@ describe('Bindは', function() {
         bind = new c.Bind(eventHandeler);
     });
     afterEach(function() {
+        if (bind.remove) {
+            bind.remove();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {
@@ -34,27 +37,28 @@ describe('Bindは', function() {
         expect(bind.getHandler()).toEqual(eventHandeler);
     });
 
-    it('remove()でelementからeventsを排除する', function() {
-        spyOn(bind, '_e').andCallThrough();
-        bind.remove();
-        expect(bind._e).toHaveBeenCalledWith(false);
-    });
-
     it('add()でelementにeventsを追加する', function() {
-        spyOn(bind, '_e').andCallThrough();
         bind.add();
-        expect(bind._e).toHaveBeenCalledWith(true);
+        document.body.click();
+        expect(eventHandeler.clicktest).toBeTruthy();
     });
 
-    it('_e(eventHandeler, bool)でelementにeventを設定する', function() {
-        spyOn(eventHandeler.events, 'click').andCallThrough();
-        bind._e(false);
+    it('remove()でelementからeventsを排除する', function() {
+        bind.add();
+        bind.remove();
         document.body.click();
-        expect(eventHandeler.events.click).not.toHaveBeenCalled();
-        bind._e(true);
-        document.body.click();
-        expect(eventHandeler.events.click).toHaveBeenCalled();
+        expect(eventHandeler.clicktest).not.toBeTruthy();
     });
+
+//     it('_e(eventHandeler, bool)でelementにeventを設定する', function() {
+//         spyOn(eventHandeler.events, 'click').andCallThrough();
+//         bind._e(false);
+//         document.body.click();
+//         expect(eventHandeler.events.click).not.toHaveBeenCalled();
+//         bind._e(true);
+//         document.body.click();
+//         expect(eventHandeler.events.click).toHaveBeenCalled();
+//     });
 });
 /*
 describe('XXXは', function() {
