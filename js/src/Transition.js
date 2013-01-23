@@ -94,7 +94,7 @@ Mine = Global['Transition'] = klass({
             addClass(mine.element, mine.id);
             css(mine.element, mine.property);
         },
-        stop: function() {
+        'stop': function() {
             var rule = sheet.cssRules,
                 len = rule.length,
                 name;

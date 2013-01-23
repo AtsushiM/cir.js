@@ -428,7 +428,7 @@ Base = Global['Base'] = klass({
         this._dispose = {};
     },
     'properties': {
-        id: 0,
+        _disid: 0,
         'dispose': function() {
             var i;
 
@@ -449,10 +449,10 @@ Base = Global['Base'] = klass({
         },
         ondispose: function(element, e, handler) {
             on(element, e, handler);
-            this.id++;
-            this._dispose[this.id] = [element, e, handler];
+            this._disid++;
+            this._dispose[this._disid] = [element, e, handler];
 
-            return this.id;
+            return this._disid;
         },
         offdispose: function(id) {
             var arg = this._dispose[id];
@@ -864,7 +864,7 @@ Mine = Global['Transition'] = klass({
             addClass(mine.element, mine.id);
             css(mine.element, mine.property);
         },
-        stop: function() {
+        'stop': function() {
             var rule = sheet.cssRules,
                 len = rule.length,
                 name;
@@ -2418,16 +2418,25 @@ Global['Mobile'] = klass({
             );
         },
         'killScroll': function(isNoTop) {
+            if (this.killscrollid) {
+                return FALSE;
+            }
+
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, ev['touchmove'], eventPrevent);
+            this.killscrollid = this.ondispose(doc, ev['touchmove'], eventPrevent);
         },
         'revivalScroll': function(isNoTop) {
+            if (!this.killscrollid) {
+                return FALSE;
+            }
+
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, ev['touchmove'], eventPrevent);
+            this.offdispose(this.killscrollid);
+            delete this.killscrollid;
         },
         'hideAddress': function() {
             this.ondispose(win, ev['load'], hideAddressHandler, FALSE);

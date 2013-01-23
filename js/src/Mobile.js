@@ -29,16 +29,25 @@ Global['Mobile'] = klass({
             );
         },
         'killScroll': function(isNoTop) {
+            if (this.killscrollid) {
+                return FALSE;
+            }
+
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, ev['touchmove'], eventPrevent);
+            this.killscrollid = this.ondispose(doc, ev['touchmove'], eventPrevent);
         },
         'revivalScroll': function(isNoTop) {
+            if (!this.killscrollid) {
+                return FALSE;
+            }
+
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, ev['touchmove'], eventPrevent);
+            this.offdispose(this.killscrollid);
+            delete this.killscrollid;
         },
         'hideAddress': function() {
             this.ondispose(win, ev['load'], hideAddressHandler, FALSE);

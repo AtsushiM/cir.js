@@ -24,7 +24,7 @@ describe('ScriptLoadは', function() {
         var callbackarg = 0,
             arg = {
                 src: '/spec/common/test.js',
-                callback: function() {
+                callback: function(e) {
                     callbackarg = 1;
                 }
             };
@@ -48,7 +48,8 @@ describe('ScriptLoadは', function() {
                 },
                 {
                     src: '/spec/common/test3.js',
-                    callback: function() {}
+                    callback: function(e) {
+                    }
                 }
             ],
             ret = false;

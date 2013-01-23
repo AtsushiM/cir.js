@@ -4,7 +4,7 @@ Base = Global['Base'] = klass({
         this._dispose = {};
     },
     'properties': {
-        id: 0,
+        _disid: 0,
         'dispose': function() {
             var i;
 
@@ -25,10 +25,10 @@ Base = Global['Base'] = klass({
         },
         ondispose: function(element, e, handler) {
             on(element, e, handler);
-            this.id++;
-            this._dispose[this.id] = [element, e, handler];
+            this._disid++;
+            this._dispose[this._disid] = [element, e, handler];
 
-            return this.id;
+            return this._disid;
         },
         offdispose: function(id) {
             var arg = this._dispose[id];
