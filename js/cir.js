@@ -700,9 +700,13 @@ Mine = Global['Animation'] = klass({
         }
     },
     'properties': {
-        '_off': function() {
+        _off: function() {
             off(this.element, event_key + 'End', this.end);
             off(this.element, 'animationend', this.end);
+        },
+        'dispose': function() {
+            this.stop();
+            this._orgdis();
         },
         'start': function() {
             var mine = this;
@@ -718,7 +722,7 @@ Mine = Global['Animation'] = klass({
                     len = rule.length,
                     name;
 
-                mine['_off']();
+                mine._off();
 
 
                 if (prefix === 'webkit') {
@@ -743,7 +747,7 @@ Mine = Global['Animation'] = klass({
             stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
             css(this.element, stopobj);
-            this['_off']();
+            this._off();
         }
     }
 });
