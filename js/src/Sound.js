@@ -28,7 +28,7 @@ Global['Sound'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(audio, e_canplay, autoplay);
+            this['contract'](audio, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
@@ -36,14 +36,14 @@ Global['Sound'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(audio, e_ended, loop);
+            this['contract'](audio, e_ended, loop);
         }
 
         if (config['oncanplay']) {
-            this.ondispose(audio, e_canplay, config['oncanplay']);
+            this['contract'](audio, e_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this.ondispose(audio, e_ended, config['onended']);
+            this['contract'](audio, e_ended, config['onended']);
         }
 
         append(_parent, audio);

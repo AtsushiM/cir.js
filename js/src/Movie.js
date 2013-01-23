@@ -28,7 +28,7 @@ Global['Movie'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(video, e_canplay, autoplay);
+            this['contract'](video, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
@@ -36,14 +36,14 @@ Global['Movie'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(video, e_ended, loop);
+            this['contract'](video, e_ended, loop);
         }
 
         if (config['oncanplay']) {
-            this.ondispose(video, e_canplay, config['oncanplay']);
+            this['contract'](video, e_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this.ondispose(video, e_ended, config['onended']);
+            this['contract'](video, e_ended, config['onended']);
         }
 
         append(_parent, video);

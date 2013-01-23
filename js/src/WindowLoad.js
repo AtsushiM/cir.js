@@ -13,11 +13,11 @@ Global['WindowLoad'] = klass({
             var mine = this,
                 disposeid,
                 loaded = function() {
-                    mine.offdispose(disposeid);
+                    mine['uncontract'](disposeid);
                     func();
                 };
 
-            disposeid = this.ondispose(win, ev['load'], loaded);
+            disposeid = this['contract'](win, ev['load'], loaded);
         }
     }
 });

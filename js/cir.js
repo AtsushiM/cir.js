@@ -433,9 +433,7 @@ Base = Global['Base'] = klass({
             var i;
 
             if (this._dispose) {
-                i = this._dispose.lenght;
-
-                for (; i--;) {
+                for (i in this._dispose) {
                     off.apply(NULL, this._dispose[i]);
                 }
             }
@@ -447,14 +445,14 @@ Base = Global['Base'] = klass({
             this.__proto__ = NULL;
             return NULL;
         },
-        ondispose: function(element, e, handler) {
+        'contract': function(element, e, handler) {
             on(element, e, handler);
             this._disid++;
             this._dispose[this._disid] = [element, e, handler];
 
             return this._disid;
         },
-        offdispose: function(id) {
+        'uncontract': function(id) {
             var arg = this._dispose[id];
 
             delete this._dispose[id];
@@ -1449,7 +1447,7 @@ Global['Sound'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(audio, e_canplay, autoplay);
+            this['contract'](audio, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
@@ -1457,14 +1455,14 @@ Global['Sound'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(audio, e_ended, loop);
+            this['contract'](audio, e_ended, loop);
         }
 
         if (config['oncanplay']) {
-            this.ondispose(audio, e_canplay, config['oncanplay']);
+            this['contract'](audio, e_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this.ondispose(audio, e_ended, config['onended']);
+            this['contract'](audio, e_ended, config['onended']);
         }
 
         append(_parent, audio);
@@ -1558,7 +1556,7 @@ Global['Movie'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(video, e_canplay, autoplay);
+            this['contract'](video, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
@@ -1566,14 +1564,14 @@ Global['Movie'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(video, e_ended, loop);
+            this['contract'](video, e_ended, loop);
         }
 
         if (config['oncanplay']) {
-            this.ondispose(video, e_canplay, config['oncanplay']);
+            this['contract'](video, e_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this.ondispose(video, e_ended, config['onended']);
+            this['contract'](video, e_ended, config['onended']);
         }
 
         append(_parent, video);
@@ -1916,8 +1914,8 @@ Global['DragFlick'] = klass({
                 startY,
                 dragflg = FALSE;
 
-            this.ondispose(vars.element, ev['switchdown'], start);
-            this.ondispose(win, ev['switchup'], end);
+            this['contract'](vars.element, ev['switchdown'], start);
+            this['contract'](win, ev['switchup'], end);
 
             function start(e) {
                 var changed = mine._t(e);
@@ -2046,7 +2044,7 @@ Global['DragFlick'] = klass({
                         var changed = mine._t(e);
                         callback(changed);
                     };
-                mine.ondispose(element, ev, handler);
+                mine['contract'](element, ev, handler);
             }
         }
     }
@@ -2260,7 +2258,7 @@ Global['ImgLoad'] = klass({
                 var i = this.disposeid.length;
 
                 for (; i--;) {
-                    this.offdispose(this.disposeid[i]);
+                    this['uncontract'](this.disposeid[i]);
                 }
                 this.disposeid = [];
 
@@ -2283,7 +2281,7 @@ Global['ImgLoad'] = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                mine.disposeid.push(mine.ondispose(img, ev['load'], countup));
+                mine.disposeid.push(mine['contract'](img, ev['load'], countup));
                 mine.loadedsrcs.push(img);
             }
 
@@ -2311,11 +2309,11 @@ Global['WindowLoad'] = klass({
             var mine = this,
                 disposeid,
                 loaded = function() {
-                    mine.offdispose(disposeid);
+                    mine['uncontract'](disposeid);
                     func();
                 };
 
-            disposeid = this.ondispose(win, ev['load'], loaded);
+            disposeid = this['contract'](win, ev['load'], loaded);
         }
     }
 });
@@ -2429,7 +2427,7 @@ Global['Mobile'] = klass({
             if (!isNoTop) {
                 pageTop();
             }
-            this.killscrollid = this.ondispose(doc, ev['touchmove'], eventPrevent);
+            this.killscrollid = this['contract'](doc, ev['touchmove'], eventPrevent);
         },
         'revivalScroll': function(isNoTop) {
             if (!this.killscrollid) {
@@ -2439,12 +2437,12 @@ Global['Mobile'] = klass({
             if (!isNoTop) {
                 pageTop();
             }
-            this.offdispose(this.killscrollid);
+            this['uncontract'](this.killscrollid);
             delete this.killscrollid;
         },
         'hideAddress': function() {
-            this.ondispose(win, ev['load'], hideAddressHandler, FALSE);
-            this.ondispose(win, ev_orientationchange, hideAddressHandler, FALSE);
+            this['contract'](win, ev['load'], hideAddressHandler, FALSE);
+            this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -2495,15 +2493,15 @@ Global['Mobile'] = klass({
             };
 
             function add(handler) {
-                disposeid.push(mine.ondispose(win, ev['load'], handler));
-                disposeid.push(mine.ondispose(win, ev_orientationchange, handler));
-                disposeid.push(mine.ondispose(win, ev['resize'], handler));
+                disposeid.push(mine['contract'](win, ev['load'], handler));
+                disposeid.push(mine['contract'](win, ev_orientationchange, handler));
+                disposeid.push(mine['contract'](win, ev['resize'], handler));
             }
             function remove(handler) {
                 var i = disposeid.length;
 
                 for (; i--;) {
-                    mine.offdispose(disposeid[i]);
+                    mine['uncontract'](disposeid[i]);
                 }
 
                 disposeid = [];
@@ -2779,9 +2777,9 @@ Global['ScriptLoad'] = klass({
             mine.elements.push(script);
 
             if (vars['callback']) {
-                disposeid = mine.ondispose(script, ev['load'], function() {
-                    mine.offdispose(disposeid);
-                    vars['callback']();
+                disposeid = mine['contract'](script, ev['load'], function() {
+                    mine['uncontract'](disposeid);
+                    vars['callback'].apply(this, arguments);
                 });
             }
         }

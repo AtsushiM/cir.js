@@ -36,7 +36,7 @@ Global['Mobile'] = klass({
             if (!isNoTop) {
                 pageTop();
             }
-            this.killscrollid = this.ondispose(doc, ev['touchmove'], eventPrevent);
+            this.killscrollid = this['contract'](doc, ev['touchmove'], eventPrevent);
         },
         'revivalScroll': function(isNoTop) {
             if (!this.killscrollid) {
@@ -46,12 +46,12 @@ Global['Mobile'] = klass({
             if (!isNoTop) {
                 pageTop();
             }
-            this.offdispose(this.killscrollid);
+            this['uncontract'](this.killscrollid);
             delete this.killscrollid;
         },
         'hideAddress': function() {
-            this.ondispose(win, ev['load'], hideAddressHandler, FALSE);
-            this.ondispose(win, ev_orientationchange, hideAddressHandler, FALSE);
+            this['contract'](win, ev['load'], hideAddressHandler, FALSE);
+            this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -102,15 +102,15 @@ Global['Mobile'] = klass({
             };
 
             function add(handler) {
-                disposeid.push(mine.ondispose(win, ev['load'], handler));
-                disposeid.push(mine.ondispose(win, ev_orientationchange, handler));
-                disposeid.push(mine.ondispose(win, ev['resize'], handler));
+                disposeid.push(mine['contract'](win, ev['load'], handler));
+                disposeid.push(mine['contract'](win, ev_orientationchange, handler));
+                disposeid.push(mine['contract'](win, ev['resize'], handler));
             }
             function remove(handler) {
                 var i = disposeid.length;
 
                 for (; i--;) {
-                    mine.offdispose(disposeid[i]);
+                    mine['uncontract'](disposeid[i]);
                 }
 
                 disposeid = [];

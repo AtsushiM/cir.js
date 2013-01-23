@@ -20,8 +20,8 @@ Global['DragFlick'] = klass({
                 startY,
                 dragflg = FALSE;
 
-            this.ondispose(vars.element, ev['switchdown'], start);
-            this.ondispose(win, ev['switchup'], end);
+            this['contract'](vars.element, ev['switchdown'], start);
+            this['contract'](win, ev['switchup'], end);
 
             function start(e) {
                 var changed = mine._t(e);
@@ -150,7 +150,7 @@ Global['DragFlick'] = klass({
                         var changed = mine._t(e);
                         callback(changed);
                     };
-                mine.ondispose(element, ev, handler);
+                mine['contract'](element, ev, handler);
             }
         }
     }

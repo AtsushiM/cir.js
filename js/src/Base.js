@@ -9,9 +9,7 @@ Base = Global['Base'] = klass({
             var i;
 
             if (this._dispose) {
-                i = this._dispose.lenght;
-
-                for (; i--;) {
+                for (i in this._dispose) {
                     off.apply(NULL, this._dispose[i]);
                 }
             }
@@ -23,14 +21,14 @@ Base = Global['Base'] = klass({
             this.__proto__ = NULL;
             return NULL;
         },
-        ondispose: function(element, e, handler) {
+        'contract': function(element, e, handler) {
             on(element, e, handler);
             this._disid++;
             this._dispose[this._disid] = [element, e, handler];
 
             return this._disid;
         },
-        offdispose: function(id) {
+        'uncontract': function(id) {
             var arg = this._dispose[id];
 
             delete this._dispose[id];

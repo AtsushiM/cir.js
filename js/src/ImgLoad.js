@@ -29,7 +29,7 @@ Global['ImgLoad'] = klass({
                 var i = this.disposeid.length;
 
                 for (; i--;) {
-                    this.offdispose(this.disposeid[i]);
+                    this['uncontract'](this.disposeid[i]);
                 }
                 this.disposeid = [];
 
@@ -52,7 +52,7 @@ Global['ImgLoad'] = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                mine.disposeid.push(mine.ondispose(img, ev['load'], countup));
+                mine.disposeid.push(mine['contract'](img, ev['load'], countup));
                 mine.loadedsrcs.push(img);
             }
 

@@ -45,9 +45,9 @@ Global['ScriptLoad'] = klass({
             mine.elements.push(script);
 
             if (vars['callback']) {
-                disposeid = mine.ondispose(script, ev['load'], function() {
-                    mine.offdispose(disposeid);
-                    vars['callback']();
+                disposeid = mine['contract'](script, ev['load'], function() {
+                    mine['uncontract'](disposeid);
+                    vars['callback'].apply(this, arguments);
                 });
             }
         }
