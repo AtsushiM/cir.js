@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
 Global['ExternalInterface']['IOS'] = klass({
-    'extend': Global['HashController'],
+    'extend': Global['HashQuery'],
     'init': function(config) {
         this.ios = {};
     },

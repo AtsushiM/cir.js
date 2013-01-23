@@ -1,5 +1,5 @@
-/* Test: "../../spec/_src/src/HashController/test.js" */
-Global['HashController'] = klass({
+/* Test: "../../spec/_src/src/HashQuery/test.js" */
+Global['HashQuery'] = klass({
     'extend': Base,
     'properties': {
         'typeCast': function(str) {

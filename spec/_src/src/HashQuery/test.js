@@ -1,11 +1,11 @@
-/* Class: "../../../../js/src/HashController.js" */
-describe('HashControllerは', function() {
+/* Class: "../../../../js/src/HashQuery.js" */
+describe('HashQueryは', function() {
     var c = window.C ? C : Global,
-        controller,
+        hashquery,
         orgHash = location.hash;
 
     beforeEach(function() {
-        controller = new c.HashController();
+        hashquery = new c.HashQuery();
         location.hash = orgHash;
     });
     afterEach(function() {
@@ -13,8 +13,8 @@ describe('HashControllerは', function() {
     });
 
     it('dispose()でインスタンスを解放する', function() {
-        controller.dispose();
-        expect(controller).toEqual({});
+        hashquery.dispose();
+        expect(hashquery).toEqual({});
     });
 
     it('makeHash({mode: string, contents: {key: val}})でデータをlocation.hash用に変換した文字列を返す', function() {
@@ -28,7 +28,7 @@ describe('HashControllerは', function() {
                 }
             };
 
-        var hash = controller.makeHash({
+        var hash = hashquery.makeHash({
                 mode: 'test',
                 vars: argvars
             }).split('?'),
@@ -58,9 +58,9 @@ describe('HashControllerは', function() {
                 },
                 once: true
             },
-            maketext = controller.makeHash(argvars);
+            maketext = hashquery.makeHash(argvars);
 
-        controller.setHash(argvars);
+        hashquery.setHash(argvars);
         var sethash = location.hash;
 
         expect(maketext).toEqual(sethash);
@@ -74,8 +74,8 @@ describe('HashControllerは', function() {
                 mode: 'test'
             };
 
-        var hash = controller.makeHash(config);
-        expect(controller.parseHash(hash)).toEqual({
+        var hash = hashquery.makeHash(config);
+        expect(hashquery.parseHash(hash)).toEqual({
             mode: 'test' //,
             // vars: {
             //     fire: 0
@@ -84,8 +84,8 @@ describe('HashControllerは', function() {
 
         config.vars = vars;
 
-        hash = controller.makeHash(config);
-        expect(controller.parseHash(hash)).toEqual({
+        hash = hashquery.makeHash(config);
+        expect(hashquery.parseHash(hash)).toEqual({
             mode: 'test',
             vars: {
                 test1: true //,
@@ -101,8 +101,8 @@ describe('HashControllerは', function() {
         };
         config.vars = vars;
 
-        hash = controller.makeHash(config);
-        expect(controller.parseHash(hash)).toEqual({
+        hash = hashquery.makeHash(config);
+        expect(hashquery.parseHash(hash)).toEqual({
             mode: 'test',
             vars: {
                 test1: true,
@@ -125,8 +125,8 @@ describe('HashControllerは', function() {
                 mode: 'test'
             };
 
-        controller.setHash(config);
-        expect(controller.getHash()).toEqual({
+        hashquery.setHash(config);
+        expect(hashquery.getHash()).toEqual({
             mode: 'test'//,
             // vars: {
             //     fire: 0

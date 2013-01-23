@@ -991,8 +991,8 @@ function splitSuffix(value) {
     return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 }());
-/* Test: "../../spec/_src/src/HashController/test.js" */
-Global['HashController'] = klass({
+/* Test: "../../spec/_src/src/HashQuery/test.js" */
+Global['HashQuery'] = klass({
     'extend': Base,
     'properties': {
         'typeCast': function(str) {
@@ -1655,7 +1655,7 @@ Global['ExternalInterface'] = function(config) {
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
 Global['ExternalInterface']['Android'] = klass({
-    'extend': Global['HashController'],
+    'extend': Global['HashQuery'],
     'init': function(config) {
         config = config || {};
 
@@ -1680,7 +1680,7 @@ Global['ExternalInterface']['Android'] = klass({
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
 Global['ExternalInterface']['IOS'] = klass({
-    'extend': Global['HashController'],
+    'extend': Global['HashQuery'],
     'init': function(config) {
         this.ios = {};
     },

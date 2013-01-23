@@ -16,7 +16,7 @@ src/ExternalInterface.IOS/\n\
 src/FPS/\n\
 src/Facebook/\n\
 src/FontImg/\n\
-src/HashController/\n\
+src/HashQuery/\n\
 src/ImgLoad/\n\
 src/LocalStorage/\n\
 src/Mobile/\n\
@@ -62,7 +62,7 @@ src/utility/\n\
 ../../js/src/FPS.js\n\
 ../../js/src/Facebook.js\n\
 ../../js/src/FontImg.js\n\
-../../js/src/HashController.js\n\
+../../js/src/HashQuery.js\n\
 ../../js/src/ImgLoad.js\n\
 ../../js/src/LocalStorage.js\n\
 ../../js/src/Mobile.js\n\
@@ -108,7 +108,7 @@ src/utility/\n\
 ../_src/src/FPS/test.js\n\
 ../_src/src/Facebook/test.js\n\
 ../_src/src/FontImg/test.js\n\
-../_src/src/HashController/test.js\n\
+../_src/src/HashQuery/test.js\n\
 ../_src/src/ImgLoad/test.js\n\
 ../_src/src/LocalStorage/test.js\n\
 ../_src/src/Mobile/test.js\n\

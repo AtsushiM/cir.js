@@ -3,7 +3,7 @@ describe('ExternalInterface.Androidは', function() {
     var c = window.C ? C : Global,
         external,
         orgHash = location.hash,
-        hashCntl = new c.HashController(),
+        hashCntl = new c.HashQuery(),
         androidMethod = {
             test1: function() {
             },

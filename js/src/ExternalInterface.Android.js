@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
 Global['ExternalInterface']['Android'] = klass({
-    'extend': Global['HashController'],
+    'extend': Global['HashQuery'],
     'init': function(config) {
         config = config || {};
 
