@@ -15,7 +15,7 @@ Global['Video'] = function(config) {
         len = suffix.length;
 
     for (; i < len; i++) {
-        if (video.canPlayType('video/' + suffix[i][1])) {
+        if (video['canPlayType']('video/' + suffix[i][1])) {
             support.push([suffix[i][0]]);
         }
     }

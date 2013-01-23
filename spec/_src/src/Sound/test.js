@@ -17,6 +17,7 @@ describe('Soundは', function() {
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
+            element: document.body,
             oncanplay: function(e) {
                 // write code.
             },

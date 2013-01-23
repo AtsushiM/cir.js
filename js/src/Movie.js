@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Sound/test.js" */
-Global['Sound'] = klass({
+Global['Movie'] = klass({
     'extend': Base,
     'init': function(config) {
         this['_super']();
@@ -7,7 +7,7 @@ Global['Sound'] = klass({
         var mine = this,
             autoplay = config['autoplay'],
             loop = config['loop'],
-            audio,
+            video,
             e_canplay = 'canplay',
             e_ended = 'ended',
             _parent = config['element'] || doc.body;
@@ -16,10 +16,10 @@ Global['Sound'] = klass({
         config['autoplay'] =
         config['loop'] = FALSE;
 
-        audio = new Global['Audio'](config);
-        mine._audio = audio;
+        video = Global['Video'](config);
+        mine._video = video;
 
-        if (!audio) {
+        if (!video) {
             return FALSE;
         }
 
@@ -28,7 +28,7 @@ Global['Sound'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(audio, e_canplay, autoplay);
+            this.ondispose(video, e_canplay, autoplay);
         }
         if (loop) {
             loop = function() {
@@ -36,36 +36,36 @@ Global['Sound'] = klass({
                 mine['play']();
             };
 
-            this.ondispose(audio, e_ended, loop);
+            this.ondispose(video, e_ended, loop);
         }
 
         if (config['oncanplay']) {
-            this.ondispose(audio, e_canplay, config['oncanplay']);
+            this.ondispose(video, e_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this.ondispose(audio, e_ended, config['onended']);
+            this.ondispose(video, e_ended, config['onended']);
         }
 
-        append(_parent, audio);
+        append(_parent, video);
     },
     'properties': {
-        'getAudio': function() {
-            return this._audio;
+        'getVideo': function() {
+            return this._video;
         },
         'getCurrent': function() {
-            return this._audio.currentTime;
+            return this._video.currentTime;
         },
         'getDuration': function() {
-            return this._audio.duration;
+            return this._video.duration;
         },
         'setCurrent': function(num) {
-            this._audio.currentTime = num;
+            this._video.currentTime = num;
         },
         'play': function() {
-            this._audio.play();
+            this._video.play();
         },
         'pause': function() {
-            this._audio.pause();
+            this._video.pause();
         },
         'stop': function() {
             this['pause']();

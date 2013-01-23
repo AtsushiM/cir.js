@@ -4,7 +4,7 @@ Global['Audio'] = function(config) {
         return FALSE;
     }
 
-    var audio = create('audio'),
+    var audio = new Audio(''),
         suffix = config['suffix'] || [
             ['mp3', 'mpeg'],
             ['wav', 'wav'],
