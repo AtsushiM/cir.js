@@ -1720,7 +1720,7 @@ Global['Facebook'] = klass({
     'extend': Base,
     'properties': {
         _b: 'https://www.facebook.com/dialog/feed?',
-        'getShareURL': function(vars) {
+        'shareURL': function(vars) {
             var url = this._b +
                     'app_id=' + vars['app_id'] + '&' +
                     'redirect_uri=' + vars['redirect_uri'];
@@ -2993,7 +2993,7 @@ Global['Twitter'] = klass({
     'extend': Base,
     'properties': {
         _b: 'https://twitter.com/intent/tweet?',
-        'getShareURL': function(vars) {
+        'shareURL': function(vars) {
             var caption = vars['caption'] || '',
                 name = vars['name'],
                 hash = vars['hash'],

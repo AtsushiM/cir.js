@@ -3,7 +3,7 @@ Global['Twitter'] = klass({
     'extend': Base,
     'properties': {
         _b: 'https://twitter.com/intent/tweet?',
-        'getShareURL': function(vars) {
+        'shareURL': function(vars) {
             var caption = vars['caption'] || '',
                 name = vars['name'],
                 hash = vars['hash'],

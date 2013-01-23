@@ -16,8 +16,8 @@ describe('Twitterは', function() {
         expect(twitter).toEqual({});
     });
 
-    it('getShareURL(options)でTwitter用のShareURLを作成する', function() {
-        var url = twitter.getShareURL({
+    it('shareURL(options)でTwitter用のShareURLを作成する', function() {
+        var url = twitter.shareURL({
                 redirect_uri: 'http://atms.sakura.ne.jp/wallsearch',
                 caption: 'テストキャプション',
                 description: 'テストデスクリプション'

@@ -16,8 +16,8 @@ describe('Facebookは', function() {
         expect(facebook).toEqual({});
     });
 
-    it('getShareURL(options)でfacebook用のShareURLを作成する', function() {
-        var url = facebook.getShareURL({
+    it('shareURL(options)でfacebook用のShareURLを作成する', function() {
+        var url = facebook.shareURL({
                 app_id: 168589393194273,
                 redirect_uri: 'http://atms.sakura.ne.jp/wallsearch',
                 link: 'http://google.co.jp',
