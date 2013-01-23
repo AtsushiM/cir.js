@@ -35,15 +35,20 @@ Global['ScriptLoad'] = klass({
             }
         },
         'request': function(vars) {
-            var script = create('script');
+            var mine = this,
+                script = create('script'),
+                disposeid;
 
             /* script.type = 'text/javascript'; */
             script.src = vars['src'];
             append(doc.body, script);
-            this.elements.push(script);
+            mine.elements.push(script);
 
             if (vars['callback']) {
-                this.ondispose(script, ev['load'], vars['callback']);
+                disposeid = mine.ondispose(script, ev['load'], function() {
+                    mine.offdispose(disposeid);
+                    vars['callback']();
+                });
             }
         }
     }

@@ -68,8 +68,8 @@ Global['Sound'] = klass({
             this._audio.pause();
         },
         'stop': function() {
-            this['pause']();
             this['setCurrent'](0);
+            this['pause']();
         }
     }
 });

@@ -10,7 +10,14 @@ Global['WindowLoad'] = klass({
     },
     'properties': {
         onload: function(func) {
-            this.ondispose(win, ev['load'], func);
+            var mine = this,
+                disposeid,
+                loaded = function() {
+                    mine.offdispose(disposeid);
+                    func();
+                };
+
+            disposeid = this.ondispose(win, ev['load'], loaded);
         }
     }
 });

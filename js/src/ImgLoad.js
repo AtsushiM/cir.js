@@ -7,6 +7,7 @@ Global['ImgLoad'] = klass({
         this.srcs = config['srcs'],
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
+        this.disposeid = [];
         this.onload = config['onload'] || nullFunction,
         this.onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
@@ -25,6 +26,13 @@ Global['ImgLoad'] = klass({
             this.onprogress(this.progress);
 
             if (this.loadcount >= this.srccount) {
+                var i = this.disposeid.length;
+
+                for (; i--;) {
+                    this.offdispose(this.disposeid[i]);
+                }
+                this.disposeid = [];
+
                 this.onload(this.loadedsrcs);
             }
         },
@@ -44,8 +52,7 @@ Global['ImgLoad'] = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                this.ondispose(img, ev['load'], countup);
-
+                mine.disposeid.push(mine.ondispose(img, ev['load'], countup));
                 mine.loadedsrcs.push(img);
             }
 

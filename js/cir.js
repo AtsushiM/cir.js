@@ -425,9 +425,10 @@ ev = Global['event'] = new ev();
 /* Test: "../../spec/_src/src/Base/test.js" */
 Base = Global['Base'] = klass({
     'init': function() {
-        this._dispose = [];
+        this._dispose = {};
     },
     'properties': {
+        id: 0,
         'dispose': function() {
             var i;
 
@@ -448,7 +449,17 @@ Base = Global['Base'] = klass({
         },
         ondispose: function(element, e, handler) {
             on(element, e, handler);
-            this._dispose.push([element, e, handler]);
+            this.id++;
+            this._dispose[this.id] = [element, e, handler];
+
+            return this.id;
+        },
+        offdispose: function(id) {
+            var arg = this._dispose[id];
+
+            delete this._dispose[id];
+
+            off(arg[0], arg[1], arg[2]);
         },
         _orgdis: function() {
             this.__proto__.__proto__['dispose'].call(this);
@@ -1474,8 +1485,8 @@ Global['Sound'] = klass({
             this._audio.pause();
         },
         'stop': function() {
-            this['pause']();
             this['setCurrent'](0);
+            this['pause']();
         }
     }
 });
@@ -1583,8 +1594,8 @@ Global['Movie'] = klass({
             this._video.pause();
         },
         'stop': function() {
-            this['pause']();
             this['setCurrent'](0);
+            this['pause']();
         }
     }
 });
@@ -2223,6 +2234,7 @@ Global['ImgLoad'] = klass({
         this.srcs = config['srcs'],
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
+        this.disposeid = [];
         this.onload = config['onload'] || nullFunction,
         this.onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
@@ -2241,6 +2253,13 @@ Global['ImgLoad'] = klass({
             this.onprogress(this.progress);
 
             if (this.loadcount >= this.srccount) {
+                var i = this.disposeid.length;
+
+                for (; i--;) {
+                    this.offdispose(this.disposeid[i]);
+                }
+                this.disposeid = [];
+
                 this.onload(this.loadedsrcs);
             }
         },
@@ -2260,8 +2279,7 @@ Global['ImgLoad'] = klass({
                 img = create('img');
                 img.src = mine.srcs[i];
 
-                this.ondispose(img, ev['load'], countup);
-
+                mine.disposeid.push(mine.ondispose(img, ev['load'], countup));
                 mine.loadedsrcs.push(img);
             }
 
@@ -2286,7 +2304,14 @@ Global['WindowLoad'] = klass({
     },
     'properties': {
         onload: function(func) {
-            this.ondispose(win, ev['load'], func);
+            var mine = this,
+                disposeid,
+                loaded = function() {
+                    mine.offdispose(disposeid);
+                    func();
+                };
+
+            disposeid = this.ondispose(win, ev['load'], loaded);
         }
     }
 });
@@ -2435,6 +2460,7 @@ Global['Mobile'] = klass({
         },
         'bindOrientation': function(vars) {
             var mine = this,
+                disposeid = [],
                 ret_remove;
 
             if (vars['immediately']) {
@@ -2455,17 +2481,19 @@ Global['Mobile'] = klass({
                 remove(change);
             };
 
-            return ret_remove;
-
             function add(handler) {
-                mine.ondispose(win, ev['load'], handler);
-                mine.ondispose(win, ev_orientationchange, handler);
-                mine.ondispose(win, ev['resize'], handler);
+                disposeid.push(mine.ondispose(win, ev['load'], handler));
+                disposeid.push(mine.ondispose(win, ev_orientationchange, handler));
+                disposeid.push(mine.ondispose(win, ev['resize'], handler));
             }
             function remove(handler) {
-                off(win, ev['load'], handler);
-                off(win, ev_orientationchange, handler);
-                off(win, ev['resize'], handler);
+                var i = disposeid.length;
+
+                for (; i--;) {
+                    mine.offdispose(disposeid[i]);
+                }
+
+                disposeid = [];
             }
             function onechange() {
                 change();
@@ -2480,6 +2508,8 @@ Global['Mobile'] = klass({
                 }
                 vars['landscape']();
             }
+
+            return ret_remove;
         }
     }
 });
@@ -2726,15 +2756,20 @@ Global['ScriptLoad'] = klass({
             }
         },
         'request': function(vars) {
-            var script = create('script');
+            var mine = this,
+                script = create('script'),
+                disposeid;
 
             /* script.type = 'text/javascript'; */
             script.src = vars['src'];
             append(doc.body, script);
-            this.elements.push(script);
+            mine.elements.push(script);
 
             if (vars['callback']) {
-                this.ondispose(script, ev['load'], vars['callback']);
+                disposeid = mine.ondispose(script, ev['load'], function() {
+                    mine.offdispose(disposeid);
+                    vars['callback']();
+                });
             }
         }
     }

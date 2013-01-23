@@ -71,6 +71,7 @@ Global['Mobile'] = klass({
         },
         'bindOrientation': function(vars) {
             var mine = this,
+                disposeid = [],
                 ret_remove;
 
             if (vars['immediately']) {
@@ -91,17 +92,19 @@ Global['Mobile'] = klass({
                 remove(change);
             };
 
-            return ret_remove;
-
             function add(handler) {
-                mine.ondispose(win, ev['load'], handler);
-                mine.ondispose(win, ev_orientationchange, handler);
-                mine.ondispose(win, ev['resize'], handler);
+                disposeid.push(mine.ondispose(win, ev['load'], handler));
+                disposeid.push(mine.ondispose(win, ev_orientationchange, handler));
+                disposeid.push(mine.ondispose(win, ev['resize'], handler));
             }
             function remove(handler) {
-                off(win, ev['load'], handler);
-                off(win, ev_orientationchange, handler);
-                off(win, ev['resize'], handler);
+                var i = disposeid.length;
+
+                for (; i--;) {
+                    mine.offdispose(disposeid[i]);
+                }
+
+                disposeid = [];
             }
             function onechange() {
                 change();
@@ -116,6 +119,8 @@ Global['Mobile'] = klass({
                 }
                 vars['landscape']();
             }
+
+            return ret_remove;
         }
     }
 });
