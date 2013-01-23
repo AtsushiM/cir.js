@@ -1,4 +1,9 @@
 // Cool is Right.
-(function(win, doc) {
+(function() {
 'use strict';
-var Global = win['C'] = {};
+var win = window,
+    doc = document,
+    TRUE = true,
+    FALSE = false,
+    NULL = null,
+    Global = win['C'] = {};

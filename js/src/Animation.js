@@ -9,7 +9,7 @@ var prop = [
         'animation'
     ],
     el = create('p'),
-    support = false,
+    support = FALSE,
     prefix,
     css_prefix = '',
     event_key = 'animation',
@@ -21,7 +21,7 @@ var prop = [
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
-        support = true;
+        support = TRUE;
         prefix = prop[i].match(/^(.*?)animation$/i)[1];
 
         if (prefix) {
@@ -43,7 +43,7 @@ Mine = Global['Animation'] = klass({
     'extend': Base,
     'init': function(element, property, option) {
         if (!support) {
-            return false;
+            return FALSE;
         }
 
         option = option || {};

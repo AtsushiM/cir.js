@@ -61,11 +61,11 @@ Global['Timer'] = function(config) {
         if (nowtime > endtime) {
             instance['stop']();
             ontimeup();
-            return true;
+            return TRUE;
         }
 
         loop();
-        return false;
+        return FALSE;
     }
 
     function getTime() {
@@ -81,7 +81,7 @@ Global['Timer'] = function(config) {
             few = adaptDigit({
                 num: parsed.few,
                 digit: digit.few,
-                isFew: true
+                isFew: TRUE
             });
 
         return (integer + '.' + few);

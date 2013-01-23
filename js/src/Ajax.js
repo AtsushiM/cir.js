@@ -42,7 +42,7 @@ Global['Ajax'] = klass({
 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState != 4) {
-                    return false;
+                    return FALSE;
                 }
 
                 if (xhr.status == 200) {

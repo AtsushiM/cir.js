@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Audio/test.js" */
 Global['Audio'] = function(config) {
     if (!win['HTMLAudioElement']) {
-        return false;
+        return FALSE;
     }
 
     var audio = new Audio(''),
@@ -22,13 +22,13 @@ Global['Audio'] = function(config) {
     }
 
     if (support.length === 0) {
-        return false;
+        return FALSE;
     }
 
-    audio['controls'] = config['controls'] ? true : false;
+    audio['controls'] = config['controls'] ? TRUE : FALSE;
     audio['preload'] = config['preload'] || 'auto';
-    audio['autoplay'] = config['autoplay'] ? true : false;
-    audio['loop'] = config['loop'] ? true : false;
+    audio['autoplay'] = config['autoplay'] ? TRUE : FALSE;
+    audio['loop'] = config['loop'] ? TRUE : FALSE;
     audio.src = config['dir'] + config['name'] + '.' + support[0];
 
     return audio;

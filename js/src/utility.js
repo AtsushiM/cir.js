@@ -27,10 +27,10 @@ function typeCast(str) {
         return matchstr * 1;
     }
     else if (matchstr === 'true') {
-        return true;
+        return TRUE;
     }
     else if (matchstr === 'false') {
-        return false;
+        return FALSE;
     }
 
     return str;
@@ -73,9 +73,9 @@ function parseQueryString(query) {
 }
 function is(key, vars) {
     if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
-        return true;
+        return TRUE;
     }
-    return false;
+    return FALSE;
 }
 function isObject(vars) {
     return is('Object', vars);
@@ -99,16 +99,16 @@ function isTouchDevice() {
     return 'ontouchstart' in win;
 }
 function nullFunction() {
-    return null;
+    return NULL;
 }
 function preventDefault(e) {
     e.preventDefault();
-    return false;
+    return FALSE;
 }
 function checkUserAgent(pattern, ua) {
     ua = ua ? ua : navigator.userAgent;
 
-    return ua.match(pattern) ? true : false;
+    return ua.match(pattern) ? TRUE : FALSE;
 }
 
 Global['utility'] = {

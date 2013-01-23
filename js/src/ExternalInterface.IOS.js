@@ -23,9 +23,9 @@ Global['ExternalInterface']['IOS'] = klass({
 
                 if (hash['mode'] === name) {
                     func(hash['vars']);
-                    return true;
+                    return TRUE;
                 }
-                return false;
+                return FALSE;
             };
             on(win, ev_hashchange, mine.ios[name]);
         },

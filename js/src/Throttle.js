@@ -4,9 +4,9 @@ Global['Throttle'] = klass({
     'init': function(config) {
         this.waittime = config['waittime'];
         this.callback = config['callback'];
-        // this.locked = false;
-        // this.waitid = null;
-        // this.waitarg = null;
+        // this.locked = FALSE;
+        // this.waitid = NULL;
+        // this.waitarg = NULL;
     },
     'properties': {
         'dispose': function() {
@@ -18,7 +18,7 @@ Global['Throttle'] = klass({
 
             if (mine.locked) {
                 mine.waitarg = vars;
-                return false;
+                return FALSE;
             }
 
             mine.callback(vars);
@@ -26,19 +26,19 @@ Global['Throttle'] = klass({
             mine.waitid = setTimeout(function() {
                 if (mine.waitarg) {
                     mine.callback(mine.waitarg);
-                    mine.waitarg = null;
+                    mine.waitarg = NULL;
                 }
 
                 mine['unlock']();
             }, mine.waittime, mine);
         },
         'lock': function() {
-            this.locked = true;
+            this.locked = TRUE;
         },
         'unlock': function(mine) {
             mine = mine || this;
 
-            mine.locked = false;
+            mine.locked = FALSE;
             clearInterval(mine.waitid);
         }
     }

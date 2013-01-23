@@ -14,10 +14,10 @@ Global['Bind'] = klass({
             return this.handler;
         },
         'add': function() {
-            this._e(true);
+            this._e(TRUE);
         },
         'remove': function() {
-            this._e(false);
+            this._e(FALSE);
         },
         _e: function(isBind) {
             var onoff = isBind ? on : off,

@@ -40,14 +40,14 @@ Global['Observer'] = klass({
             if (!func) {
                 delete observed[key];
 
-                return true;
+                return TRUE;
             }
 
             var target = observed[key],
                 i;
 
             if (!target) {
-                return false;
+                return FALSE;
             }
 
 
@@ -59,11 +59,11 @@ Global['Observer'] = klass({
                         delete observed[key];
                     }
 
-                    return true;
+                    return TRUE;
                 }
             }
 
-            return false;
+            return FALSE;
         },
         'fire': function(key, vars) {
             var target = this.observed[key],
@@ -71,7 +71,7 @@ Global['Observer'] = klass({
                 i;
 
             if (!target) {
-                return false;
+                return FALSE;
             }
 
             for (i = target.length; i--;) {
@@ -81,7 +81,7 @@ Global['Observer'] = klass({
                 }
             }
 
-            return true;
+            return TRUE;
         }
     }
 });

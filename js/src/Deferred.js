@@ -3,7 +3,7 @@ Global['Deferred'] = klass({
     'extend': Base,
     'init': function() {
         this.queue = [];
-        this.data = null;
+        /* this.data = NULL; */
     },
     'properties': {
         'isResolve': function() {
@@ -18,7 +18,7 @@ Global['Deferred'] = klass({
                 len = arr.length,
                 i = 0;
 
-            this.queue = null;
+            this.queue = NULL;
             this.data = data;
             for (; i < len; ++i) {
                 arr[i](data);

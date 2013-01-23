@@ -41,8 +41,8 @@ Global['Mobile'] = klass({
             off(doc, ev['touchmove'], preventDefault);
         },
         'hideAddress': function() {
-            this.ondispose(win, ev['load'], hideAddressHandler, false);
-            this.ondispose(win, ev_orientationchange, hideAddressHandler, false);
+            this.ondispose(win, ev['load'], hideAddressHandler, FALSE);
+            this.ondispose(win, ev_orientationchange, hideAddressHandler, FALSE);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -59,14 +59,14 @@ Global['Mobile'] = klass({
                 win.innerWidth < win.innerHeight
             ) {
                 return {
-                    'portrait': true,
-                    'landscape': false
+                    'portrait': TRUE,
+                    'landscape': FALSE
                 };
             }
 
             return {
-                'portrait': false,
-                'landscape': true
+                'portrait': FALSE,
+                'landscape': TRUE
             };
         },
         'bindOrientation': function(vars) {
@@ -112,7 +112,7 @@ Global['Mobile'] = klass({
                     mine['getOrientation']()['portrait']
                 ) {
                     vars['portrait']();
-                    return true;
+                    return TRUE;
                 }
                 vars['landscape']();
             }

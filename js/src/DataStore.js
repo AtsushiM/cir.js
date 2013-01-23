@@ -35,7 +35,7 @@ Global['DataStore'] = klass({
         },
         'remove': function(key) {
             if (!this.data[key]) {
-                return false;
+                return FALSE;
             }
 
             delete this.data[key];

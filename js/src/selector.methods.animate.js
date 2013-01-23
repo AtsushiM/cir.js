@@ -30,7 +30,7 @@ methods['stop'] = function() {
             this._animate[i]['stop']();
         }
 
-        this._animate = null;
+        this._animate = NULL;
     }
 
     return this;
@@ -43,11 +43,11 @@ function animate(element, params, duration, ease, callback) {
 
     if (isFunction(duration)) {
         callback = duration;
-        duration = null;
+        duration = NULL;
     }
     if (isFunction(ease) && !callback) {
         callback = ease;
-        ease = null;
+        ease = NULL;
     }
 
     if (ease) {

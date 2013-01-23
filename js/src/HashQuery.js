@@ -34,7 +34,7 @@ Global['HashQuery'] = klass({
         },
         'setHash': function(vars) {
             location.hash = this['makeHash'](vars);
-            return true;
+            return TRUE;
         },
         'parseHash': function(hashvars) {
             var hash,
@@ -48,7 +48,7 @@ Global['HashQuery'] = klass({
                    .split('#')[1];
 
             if (!hash) {
-                return false;
+                return FALSE;
             }
 
             hash = hash.split('?');

@@ -19,11 +19,11 @@ function exe(_this, func, arg) {
 
     ary[0] = _this[0];
 
-    return func.apply(null, ary);
+    return func.apply(NULL, ary);
 }
 
 function makeAry(arg) {
-    var ary = [null];
+    var ary = [NULL];
 
     ary.push.apply(ary, arg);
 

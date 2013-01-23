@@ -14,13 +14,13 @@ Global['Sound'] = klass({
         config['preload'] = 'auto';
         config['controls'] =
         config['autoplay'] =
-        config['loop'] = false;
+        config['loop'] = FALSE;
 
         audio = new Global['Audio'](config);
         mine._audio = audio;
 
         if (!audio) {
-            return false;
+            return FALSE;
         }
 
         if (autoplay) {

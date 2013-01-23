@@ -11,7 +11,7 @@ var Base = Global['Base'] = klass({
                 i = this._dispose.lenght;
 
                 for (; i--;) {
-                    off.apply(null, this._dispose[i]);
+                    off.apply(NULL, this._dispose[i]);
                 }
             }
 
@@ -19,8 +19,8 @@ var Base = Global['Base'] = klass({
                 delete this[i];
             }
 
-            this.__proto__ = null;
-            return null;
+            this.__proto__ = NULL;
+            return NULL;
         },
         ondispose: function(element, e, handler) {
             on(element, e, handler);

@@ -18,7 +18,7 @@ Global['DragFlick'] = klass({
             var mine = this,
                 startX,
                 startY,
-                dragflg = false;
+                dragflg = FALSE;
 
             this.ondispose(vars.element, ev['switchdown'], start);
             this.ondispose(win, ev['switchup'], end);
@@ -29,7 +29,7 @@ Global['DragFlick'] = klass({
                 startX = changed.pageX;
                 startY = changed.pageY;
 
-                dragflg = true;
+                dragflg = TRUE;
 
                 e.preventDefault();
             }
@@ -43,7 +43,7 @@ Global['DragFlick'] = klass({
 
                     vars['callback'](amount);
 
-                    dragflg = false;
+                    dragflg = FALSE;
                 }
             }
         },
@@ -53,34 +53,34 @@ Global['DragFlick'] = klass({
                 'callback': function(amount) {
                     var boundary = vars['boundary'] || 0,
                         direction = {
-                            'change': false,
-                            'top': false,
-                            'right': false,
-                            'bottom': false,
-                            'left': false,
+                            'change': FALSE,
+                            'top': FALSE,
+                            'right': FALSE,
+                            'bottom': FALSE,
+                            'left': FALSE,
                             'amount': amount
                         };
 
                     if (Math.abs(amount['x']) > boundary) {
                         if (amount['x'] > 0) {
-                            direction['right'] = true;
+                            direction['right'] = TRUE;
                         }
                         else if (amount['x'] < 0) {
-                            direction['left'] = true;
+                            direction['left'] = TRUE;
                         }
 
-                        direction['change'] = true;
+                        direction['change'] = TRUE;
                     }
 
                     if (Math.abs(amount['y']) > boundary) {
                         if (amount['y'] > 0) {
-                            direction['bottom'] = true;
+                            direction['bottom'] = TRUE;
                         }
                         else if (amount['y'] < 0) {
-                            direction['top'] = true;
+                            direction['top'] = TRUE;
                         }
 
-                        direction['change'] = true;
+                        direction['change'] = TRUE;
                     }
 
                     vars['callback'](direction);
@@ -94,7 +94,7 @@ Global['DragFlick'] = klass({
                 start = vars['start'] || nullFunction,
                 move = vars['move'] || nullFunction,
                 end = vars['end'] || nullFunction,
-                flg = false,
+                flg = FALSE,
                 startX = 0,
                 startY = 0;
 
@@ -107,7 +107,7 @@ Global['DragFlick'] = klass({
             }
 
             eventProxy(element, ev['switchdown'], function(_e) {
-                flg = true;
+                flg = TRUE;
 
                 startX = _e.pageX;
                 startY = _e.pageY;
@@ -141,7 +141,7 @@ Global['DragFlick'] = klass({
                         }
                     });
 
-                    flg = false;
+                    flg = FALSE;
                 }
             });
 

@@ -1,7 +1,12 @@
 // Cool is Right.
-(function(win, doc) {
+(function() {
 'use strict';
-var Global = win['C'] = {};
+var win = window,
+    doc = document,
+    TRUE = true,
+    FALSE = false,
+    NULL = null,
+    Global = win['C'] = {};
 /* Test: "../../spec/_src/src/utility/test.js" */
 if (!Date.now) {
     Date.now = function now() {
@@ -31,10 +36,10 @@ function typeCast(str) {
         return matchstr * 1;
     }
     else if (matchstr === 'true') {
-        return true;
+        return TRUE;
     }
     else if (matchstr === 'false') {
-        return false;
+        return FALSE;
     }
 
     return str;
@@ -77,9 +82,9 @@ function parseQueryString(query) {
 }
 function is(key, vars) {
     if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
-        return true;
+        return TRUE;
     }
-    return false;
+    return FALSE;
 }
 function isObject(vars) {
     return is('Object', vars);
@@ -103,16 +108,16 @@ function isTouchDevice() {
     return 'ontouchstart' in win;
 }
 function nullFunction() {
-    return null;
+    return NULL;
 }
 function preventDefault(e) {
     e.preventDefault();
-    return false;
+    return FALSE;
 }
 function checkUserAgent(pattern, ua) {
     ua = ua ? ua : navigator.userAgent;
 
-    return ua.match(pattern) ? true : false;
+    return ua.match(pattern) ? TRUE : FALSE;
 }
 
 Global['utility'] = {
@@ -167,18 +172,18 @@ function hasClass(element, cls) {
 
     for (; i < len; i++) {
         if (cls && cls === addedcls[i]) {
-            return true;
+            return TRUE;
         }
     }
 
-    return false;
+    return FALSE;
 }
 
 function addClass(element, cls) {
     var between = '';
 
     if (hasClass(element, cls)) {
-        return false;
+        return FALSE;
     }
 
     if (element.className) {
@@ -187,7 +192,7 @@ function addClass(element, cls) {
 
     element.className = element.className + between + cls;
 
-    return true;
+    return TRUE;
 }
 
 function removeClass(element, cls) {
@@ -197,7 +202,7 @@ function removeClass(element, cls) {
         len;
 
     if (!hasClass(element, cls)) {
-        return false;
+        return FALSE;
     }
 
     addedcls = element.className.split(' ');
@@ -212,7 +217,7 @@ function removeClass(element, cls) {
 
     element.className = bindcls.join(' ');
 
-    return true;
+    return TRUE;
 }
 function toggleClass(element, cls) {
     if (hasClass(element, cls)) {
@@ -230,7 +235,7 @@ function attr(element, vars, value) {
             element.setAttribute(i, vars[i]);
         }
 
-        return true;
+        return TRUE;
     }
 
     if (value || value === '') {
@@ -254,10 +259,10 @@ function create(tagname, attribute) {
 }
 
 function on(element, eventname, handler) {
-    element.addEventListener(eventname, handler, false);
+    element.addEventListener(eventname, handler, FALSE);
 }
 function off(element, eventname, handler) {
-    element.removeEventListener(eventname, handler, false);
+    element.removeEventListener(eventname, handler, FALSE);
 }
 function show(element) {
     element.style.display = 'block';
@@ -286,7 +291,7 @@ function css(element, addstyle) {
     }
 }
 function computedStyle(element) {
-    return doc.defaultView.getComputedStyle(element, null);
+    return doc.defaultView.getComputedStyle(element, NULL);
 }
 function append(element, addelement) {
     return element.appendChild(addelement);
@@ -426,7 +431,7 @@ var Base = Global['Base'] = klass({
                 i = this._dispose.lenght;
 
                 for (; i--;) {
-                    off.apply(null, this._dispose[i]);
+                    off.apply(NULL, this._dispose[i]);
                 }
             }
 
@@ -434,8 +439,8 @@ var Base = Global['Base'] = klass({
                 delete this[i];
             }
 
-            this.__proto__ = null;
-            return null;
+            this.__proto__ = NULL;
+            return NULL;
         },
         ondispose: function(element, e, handler) {
             on(element, e, handler);
@@ -598,7 +603,7 @@ var prop = [
         'animation'
     ],
     el = create('p'),
-    support = false,
+    support = FALSE,
     prefix,
     css_prefix = '',
     event_key = 'animation',
@@ -610,7 +615,7 @@ var prop = [
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
-        support = true;
+        support = TRUE;
         prefix = prop[i].match(/^(.*?)animation$/i)[1];
 
         if (prefix) {
@@ -632,7 +637,7 @@ Mine = Global['Animation'] = klass({
     'extend': Base,
     'init': function(element, property, option) {
         if (!support) {
-            return false;
+            return FALSE;
         }
 
         option = option || {};
@@ -805,11 +810,11 @@ function exe(_this, func, arg) {
 
     ary[0] = _this[0];
 
-    return func.apply(null, ary);
+    return func.apply(NULL, ary);
 }
 
 function makeAry(arg) {
-    var ary = [null];
+    var ary = [NULL];
 
     ary.push.apply(ary, arg);
 
@@ -908,7 +913,7 @@ methods['stop'] = function() {
             this._animate[i]['stop']();
         }
 
-        this._animate = null;
+        this._animate = NULL;
     }
 
     return this;
@@ -921,11 +926,11 @@ function animate(element, params, duration, ease, callback) {
 
     if (isFunction(duration)) {
         callback = duration;
-        duration = null;
+        duration = NULL;
     }
     if (isFunction(ease) && !callback) {
         callback = ease;
-        ease = null;
+        ease = NULL;
     }
 
     if (ease) {
@@ -1027,7 +1032,7 @@ Global['HashQuery'] = klass({
         },
         'setHash': function(vars) {
             location.hash = this['makeHash'](vars);
-            return true;
+            return TRUE;
         },
         'parseHash': function(hashvars) {
             var hash,
@@ -1041,7 +1046,7 @@ Global['HashQuery'] = klass({
                    .split('#')[1];
 
             if (!hash) {
-                return false;
+                return FALSE;
             }
 
             hash = hash.split('?');
@@ -1074,7 +1079,7 @@ Global['HashQuery'] = klass({
 /* Test: "../../spec/_src/src/Audio/test.js" */
 Global['Audio'] = function(config) {
     if (!win['HTMLAudioElement']) {
-        return false;
+        return FALSE;
     }
 
     var audio = new Audio(''),
@@ -1095,13 +1100,13 @@ Global['Audio'] = function(config) {
     }
 
     if (support.length === 0) {
-        return false;
+        return FALSE;
     }
 
-    audio['controls'] = config['controls'] ? true : false;
+    audio['controls'] = config['controls'] ? TRUE : FALSE;
     audio['preload'] = config['preload'] || 'auto';
-    audio['autoplay'] = config['autoplay'] ? true : false;
-    audio['loop'] = config['loop'] ? true : false;
+    audio['autoplay'] = config['autoplay'] ? TRUE : FALSE;
+    audio['loop'] = config['loop'] ? TRUE : FALSE;
     audio.src = config['dir'] + config['name'] + '.' + support[0];
 
     return audio;
@@ -1122,13 +1127,13 @@ Global['Sound'] = klass({
         config['preload'] = 'auto';
         config['controls'] =
         config['autoplay'] =
-        config['loop'] = false;
+        config['loop'] = FALSE;
 
         audio = new Global['Audio'](config);
         mine._audio = audio;
 
         if (!audio) {
-            return false;
+            return FALSE;
         }
 
         if (autoplay) {
@@ -1225,7 +1230,7 @@ Global['Ajax'] = klass({
 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState != 4) {
-                    return false;
+                    return FALSE;
                 }
 
                 if (xhr.status == 200) {
@@ -1293,10 +1298,10 @@ Global['Bind'] = klass({
             return this.handler;
         },
         'add': function() {
-            this._e(true);
+            this._e(TRUE);
         },
         'remove': function() {
-            this._e(false);
+            this._e(FALSE);
         },
         _e: function(isBind) {
             var onoff = isBind ? on : off,
@@ -1427,7 +1432,7 @@ Global['DataStore'] = klass({
         },
         'remove': function(key) {
             if (!this.data[key]) {
-                return false;
+                return FALSE;
             }
 
             delete this.data[key];
@@ -1442,7 +1447,7 @@ Global['Deferred'] = klass({
     'extend': Base,
     'init': function() {
         this.queue = [];
-        this.data = null;
+        /* this.data = NULL; */
     },
     'properties': {
         'isResolve': function() {
@@ -1457,7 +1462,7 @@ Global['Deferred'] = klass({
                 len = arr.length,
                 i = 0;
 
-            this.queue = null;
+            this.queue = NULL;
             this.data = data;
             for (; i < len; ++i) {
                 arr[i](data);
@@ -1492,7 +1497,7 @@ Global['DragFlick'] = klass({
             var mine = this,
                 startX,
                 startY,
-                dragflg = false;
+                dragflg = FALSE;
 
             this.ondispose(vars.element, ev['switchdown'], start);
             this.ondispose(win, ev['switchup'], end);
@@ -1503,7 +1508,7 @@ Global['DragFlick'] = klass({
                 startX = changed.pageX;
                 startY = changed.pageY;
 
-                dragflg = true;
+                dragflg = TRUE;
 
                 e.preventDefault();
             }
@@ -1517,7 +1522,7 @@ Global['DragFlick'] = klass({
 
                     vars['callback'](amount);
 
-                    dragflg = false;
+                    dragflg = FALSE;
                 }
             }
         },
@@ -1527,34 +1532,34 @@ Global['DragFlick'] = klass({
                 'callback': function(amount) {
                     var boundary = vars['boundary'] || 0,
                         direction = {
-                            'change': false,
-                            'top': false,
-                            'right': false,
-                            'bottom': false,
-                            'left': false,
+                            'change': FALSE,
+                            'top': FALSE,
+                            'right': FALSE,
+                            'bottom': FALSE,
+                            'left': FALSE,
                             'amount': amount
                         };
 
                     if (Math.abs(amount['x']) > boundary) {
                         if (amount['x'] > 0) {
-                            direction['right'] = true;
+                            direction['right'] = TRUE;
                         }
                         else if (amount['x'] < 0) {
-                            direction['left'] = true;
+                            direction['left'] = TRUE;
                         }
 
-                        direction['change'] = true;
+                        direction['change'] = TRUE;
                     }
 
                     if (Math.abs(amount['y']) > boundary) {
                         if (amount['y'] > 0) {
-                            direction['bottom'] = true;
+                            direction['bottom'] = TRUE;
                         }
                         else if (amount['y'] < 0) {
-                            direction['top'] = true;
+                            direction['top'] = TRUE;
                         }
 
-                        direction['change'] = true;
+                        direction['change'] = TRUE;
                     }
 
                     vars['callback'](direction);
@@ -1568,7 +1573,7 @@ Global['DragFlick'] = klass({
                 start = vars['start'] || nullFunction,
                 move = vars['move'] || nullFunction,
                 end = vars['end'] || nullFunction,
-                flg = false,
+                flg = FALSE,
                 startX = 0,
                 startY = 0;
 
@@ -1581,7 +1586,7 @@ Global['DragFlick'] = klass({
             }
 
             eventProxy(element, ev['switchdown'], function(_e) {
-                flg = true;
+                flg = TRUE;
 
                 startX = _e.pageX;
                 startY = _e.pageY;
@@ -1615,7 +1620,7 @@ Global['DragFlick'] = klass({
                         }
                     });
 
-                    flg = false;
+                    flg = FALSE;
                 }
             });
 
@@ -1703,9 +1708,9 @@ Global['ExternalInterface']['IOS'] = klass({
 
                 if (hash['mode'] === name) {
                     func(hash['vars']);
-                    return true;
+                    return TRUE;
                 }
-                return false;
+                return FALSE;
             };
             on(win, ev_hashchange, mine.ios[name]);
         },
@@ -1820,7 +1825,7 @@ Global['ImgLoad'] = klass({
         this.onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
         this.progress = 0;
-        this.started = false;
+        this.started = FALSE;
 
         if (!config['manual']) {
             this['start']();
@@ -1839,10 +1844,10 @@ Global['ImgLoad'] = klass({
         },
         'start': function() {
             if (this.started) {
-                return false;
+                return FALSE;
             }
 
-            this.started = true;
+            this.started = TRUE;
 
             var mine = this,
                 img,
@@ -1904,7 +1909,7 @@ Global['LocalStorage'] = klass({
         _s: win.localStorage,
         'set': function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
-            return true;
+            return TRUE;
         },
         'get': function(key) {
             var mine = this,
@@ -1933,18 +1938,18 @@ Global['LocalStorage'] = klass({
             key = this._n + key;
 
             if (!this._s.getItem(key)) {
-                return false;
+                return FALSE;
             }
 
             this._s.removeItem(key);
 
-            return true;
+            return TRUE;
         },
         'reset': function() {
             if (!this._n) {
                 this._s.clear();
 
-                return true;
+                return TRUE;
             }
 
             var i;
@@ -1998,8 +2003,8 @@ Global['Mobile'] = klass({
             off(doc, ev['touchmove'], preventDefault);
         },
         'hideAddress': function() {
-            this.ondispose(win, ev['load'], hideAddressHandler, false);
-            this.ondispose(win, ev_orientationchange, hideAddressHandler, false);
+            this.ondispose(win, ev['load'], hideAddressHandler, FALSE);
+            this.ondispose(win, ev_orientationchange, hideAddressHandler, FALSE);
 
             function doScroll() {
                 if (win.pageYOffset === 0) {
@@ -2016,14 +2021,14 @@ Global['Mobile'] = klass({
                 win.innerWidth < win.innerHeight
             ) {
                 return {
-                    'portrait': true,
-                    'landscape': false
+                    'portrait': TRUE,
+                    'landscape': FALSE
                 };
             }
 
             return {
-                'portrait': false,
-                'landscape': true
+                'portrait': FALSE,
+                'landscape': TRUE
             };
         },
         'bindOrientation': function(vars) {
@@ -2069,7 +2074,7 @@ Global['Mobile'] = klass({
                     mine['getOrientation']()['portrait']
                 ) {
                     vars['portrait']();
-                    return true;
+                    return TRUE;
                 }
                 vars['landscape']();
             }
@@ -2143,14 +2148,14 @@ Global['Observer'] = klass({
             if (!func) {
                 delete observed[key];
 
-                return true;
+                return TRUE;
             }
 
             var target = observed[key],
                 i;
 
             if (!target) {
-                return false;
+                return FALSE;
             }
 
 
@@ -2162,11 +2167,11 @@ Global['Observer'] = klass({
                         delete observed[key];
                     }
 
-                    return true;
+                    return TRUE;
                 }
             }
 
-            return false;
+            return FALSE;
         },
         'fire': function(key, vars) {
             var target = this.observed[key],
@@ -2174,7 +2179,7 @@ Global['Observer'] = klass({
                 i;
 
             if (!target) {
-                return false;
+                return FALSE;
             }
 
             for (i = target.length; i--;) {
@@ -2184,7 +2189,7 @@ Global['Observer'] = klass({
                 }
             }
 
-            return true;
+            return TRUE;
         }
     }
 });
@@ -2203,7 +2208,7 @@ Global['PreRender'] = klass({
         this.onrendered = config['onrendered'] || nullFunction;
         this.looptime = config['looptime'] || 100;
         this.loopblur = this.looptime + config['loopblur'];
-        /* this.loopid = this.prevtime = null; */
+        /* this.loopid = this.prevtime = NULL; */
 
         if (!config['manual']) {
             this['start']();
@@ -2337,7 +2342,7 @@ Global['ScriptLoad'] = klass({
 'use strict';
 
 var xhr,
-    isLoaded = false;
+    isLoaded = FALSE;
 
 Global['ServerMeta'] = klass({
     'extend' : Base,
@@ -2348,7 +2353,7 @@ Global['ServerMeta'] = klass({
 
         if (!xhr) {
             xhr = getHeader(function() {
-                isLoaded = true;
+                isLoaded = TRUE;
                 callback(xhr);
             });
         }
@@ -2391,7 +2396,7 @@ function getRes(value) {
     if (isLoaded) {
         return xhr.getResponseHeader(value);
     }
-    return false;
+    return FALSE;
 }
 
 function getHeader(callback) {
@@ -2402,7 +2407,7 @@ function getHeader(callback) {
     };
 
     xhr.open('HEAD', location.href + '?update' + Date.now() + '=1');
-    xhr.send(null);
+    xhr.send(NULL);
 
     return xhr;
 }
@@ -2428,7 +2433,7 @@ Global['SessionStorage'] = klass({
         _s: win.sessionStorage,
         'set': function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
-            return true;
+            return TRUE;
         },
         'get': function(key) {
             var mine = this,
@@ -2457,18 +2462,18 @@ Global['SessionStorage'] = klass({
             key = this._n + key;
 
             if (!this._s.getItem(key)) {
-                return false;
+                return FALSE;
             }
 
             this._s.removeItem(key);
 
-            return true;
+            return TRUE;
         },
         'reset': function() {
             if (!this._n) {
                 this._s.clear();
 
-                return true;
+                return TRUE;
             }
 
             var i;
@@ -2485,8 +2490,8 @@ Global['Surrogate'] = klass({
     'init': function(config) {
         this.delay = config['delay'];
         this.callback = config['callback'];
-        // this.args = null;
-        // this.waitid = null;
+        // this.args = NULL;
+        // this.waitid = NULL;
     },
     'properties': {
         'dispose': function() {
@@ -2514,9 +2519,9 @@ Global['Throttle'] = klass({
     'init': function(config) {
         this.waittime = config['waittime'];
         this.callback = config['callback'];
-        // this.locked = false;
-        // this.waitid = null;
-        // this.waitarg = null;
+        // this.locked = FALSE;
+        // this.waitid = NULL;
+        // this.waitarg = NULL;
     },
     'properties': {
         'dispose': function() {
@@ -2528,7 +2533,7 @@ Global['Throttle'] = klass({
 
             if (mine.locked) {
                 mine.waitarg = vars;
-                return false;
+                return FALSE;
             }
 
             mine.callback(vars);
@@ -2536,19 +2541,19 @@ Global['Throttle'] = klass({
             mine.waitid = setTimeout(function() {
                 if (mine.waitarg) {
                     mine.callback(mine.waitarg);
-                    mine.waitarg = null;
+                    mine.waitarg = NULL;
                 }
 
                 mine['unlock']();
             }, mine.waittime, mine);
         },
         'lock': function() {
-            this.locked = true;
+            this.locked = TRUE;
         },
         'unlock': function(mine) {
             mine = mine || this;
 
-            mine.locked = false;
+            mine.locked = FALSE;
             clearInterval(mine.waitid);
         }
     }
@@ -2616,11 +2621,11 @@ Global['Timer'] = function(config) {
         if (nowtime > endtime) {
             instance['stop']();
             ontimeup();
-            return true;
+            return TRUE;
         }
 
         loop();
-        return false;
+        return FALSE;
     }
 
     function getTime() {
@@ -2636,7 +2641,7 @@ Global['Timer'] = function(config) {
             few = adaptDigit({
                 num: parsed.few,
                 digit: digit.few,
-                isFew: true
+                isFew: TRUE
             });
 
         return (integer + '.' + few);
@@ -2707,7 +2712,7 @@ var prop = [
         'transitionProperty'
     ],
     el = create('p'),
-    support = false,
+    support = FALSE,
     prefix,
     css_prefix = '',
     event_key = 'transition',
@@ -2719,7 +2724,7 @@ var prop = [
 
 for (; i < len; i++) {
     if (el.style[prop[i]] !== undefined) {
-        support = true;
+        support = TRUE;
         prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];
 
         if (prefix) {
@@ -2741,7 +2746,7 @@ Mine = Global['Transition'] = klass({
     'extend': Base,
     'init': function(element, property, option) {
         if (!support) {
-            return false;
+            return FALSE;
         }
 
         option = option || {};
@@ -2955,7 +2960,7 @@ var Mine = Global['Tweener'] = klass({
                     mine.loop();
                 });
 
-                return true;
+                return TRUE;
             }
 
             this['stop']();
@@ -2976,14 +2981,14 @@ var Mine = Global['Tweener'] = klass({
         'stop': function() {
             Mine['Items'] = [];
             clearInterval(Mine.timerId);
-            Mine.timerId = null;
+            Mine.timerId = NULL;
         }
     }
 });
 Mine._setProp = function(target, prop, point) {
     target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
-/* Mine.timerId = null; */
+/* Mine.timerId = NULL; */
 Mine['Items'] = [];
 Mine['FPS'] = 30;
 Mine['Duration'] = 500;
@@ -3038,4 +3043,4 @@ Global['XML'] = klass({
         }
     }
 });
-}(window, document));
+}());

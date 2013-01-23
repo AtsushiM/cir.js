@@ -116,7 +116,7 @@ var Mine = Global['Tweener'] = klass({
                     mine.loop();
                 });
 
-                return true;
+                return TRUE;
             }
 
             this['stop']();
@@ -137,14 +137,14 @@ var Mine = Global['Tweener'] = klass({
         'stop': function() {
             Mine['Items'] = [];
             clearInterval(Mine.timerId);
-            Mine.timerId = null;
+            Mine.timerId = NULL;
         }
     }
 });
 Mine._setProp = function(target, prop, point) {
     target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
-/* Mine.timerId = null; */
+/* Mine.timerId = NULL; */
 Mine['Items'] = [];
 Mine['FPS'] = 30;
 Mine['Duration'] = 500;

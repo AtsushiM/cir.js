@@ -4,8 +4,8 @@ Global['Surrogate'] = klass({
     'init': function(config) {
         this.delay = config['delay'];
         this.callback = config['callback'];
-        // this.args = null;
-        // this.waitid = null;
+        // this.args = NULL;
+        // this.waitid = NULL;
     },
     'properties': {
         'dispose': function() {

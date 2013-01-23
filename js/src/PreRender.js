@@ -13,7 +13,7 @@ Global['PreRender'] = klass({
         this.onrendered = config['onrendered'] || nullFunction;
         this.looptime = config['looptime'] || 100;
         this.loopblur = this.looptime + config['loopblur'];
-        /* this.loopid = this.prevtime = null; */
+        /* this.loopid = this.prevtime = NULL; */
 
         if (!config['manual']) {
             this['start']();

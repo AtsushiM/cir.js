@@ -19,7 +19,7 @@ Global['SessionStorage'] = klass({
         _s: win.sessionStorage,
         'set': function(key, val) {
             this._s.setItem(this._n + key, JSON.stringify(val));
-            return true;
+            return TRUE;
         },
         'get': function(key) {
             var mine = this,
@@ -48,18 +48,18 @@ Global['SessionStorage'] = klass({
             key = this._n + key;
 
             if (!this._s.getItem(key)) {
-                return false;
+                return FALSE;
             }
 
             this._s.removeItem(key);
 
-            return true;
+            return TRUE;
         },
         'reset': function() {
             if (!this._n) {
                 this._s.clear();
 
-                return true;
+                return TRUE;
             }
 
             var i;

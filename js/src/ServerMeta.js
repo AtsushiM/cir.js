@@ -3,7 +3,7 @@
 'use strict';
 
 var xhr,
-    isLoaded = false;
+    isLoaded = FALSE;
 
 Global['ServerMeta'] = klass({
     'extend' : Base,
@@ -14,7 +14,7 @@ Global['ServerMeta'] = klass({
 
         if (!xhr) {
             xhr = getHeader(function() {
-                isLoaded = true;
+                isLoaded = TRUE;
                 callback(xhr);
             });
         }
@@ -57,7 +57,7 @@ function getRes(value) {
     if (isLoaded) {
         return xhr.getResponseHeader(value);
     }
-    return false;
+    return FALSE;
 }
 
 function getHeader(callback) {
@@ -68,7 +68,7 @@ function getHeader(callback) {
     };
 
     xhr.open('HEAD', location.href + '?update' + Date.now() + '=1');
-    xhr.send(null);
+    xhr.send(NULL);
 
     return xhr;
 }

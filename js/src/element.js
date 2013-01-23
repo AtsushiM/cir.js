@@ -28,18 +28,18 @@ function hasClass(element, cls) {
 
     for (; i < len; i++) {
         if (cls && cls === addedcls[i]) {
-            return true;
+            return TRUE;
         }
     }
 
-    return false;
+    return FALSE;
 }
 
 function addClass(element, cls) {
     var between = '';
 
     if (hasClass(element, cls)) {
-        return false;
+        return FALSE;
     }
 
     if (element.className) {
@@ -48,7 +48,7 @@ function addClass(element, cls) {
 
     element.className = element.className + between + cls;
 
-    return true;
+    return TRUE;
 }
 
 function removeClass(element, cls) {
@@ -58,7 +58,7 @@ function removeClass(element, cls) {
         len;
 
     if (!hasClass(element, cls)) {
-        return false;
+        return FALSE;
     }
 
     addedcls = element.className.split(' ');
@@ -73,7 +73,7 @@ function removeClass(element, cls) {
 
     element.className = bindcls.join(' ');
 
-    return true;
+    return TRUE;
 }
 function toggleClass(element, cls) {
     if (hasClass(element, cls)) {
@@ -91,7 +91,7 @@ function attr(element, vars, value) {
             element.setAttribute(i, vars[i]);
         }
 
-        return true;
+        return TRUE;
     }
 
     if (value || value === '') {
@@ -115,10 +115,10 @@ function create(tagname, attribute) {
 }
 
 function on(element, eventname, handler) {
-    element.addEventListener(eventname, handler, false);
+    element.addEventListener(eventname, handler, FALSE);
 }
 function off(element, eventname, handler) {
-    element.removeEventListener(eventname, handler, false);
+    element.removeEventListener(eventname, handler, FALSE);
 }
 function show(element) {
     element.style.display = 'block';
@@ -147,7 +147,7 @@ function css(element, addstyle) {
     }
 }
 function computedStyle(element) {
-    return doc.defaultView.getComputedStyle(element, null);
+    return doc.defaultView.getComputedStyle(element, NULL);
 }
 function append(element, addelement) {
     return element.appendChild(addelement);

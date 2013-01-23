@@ -11,7 +11,7 @@ Global['ImgLoad'] = klass({
         this.onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
         this.progress = 0;
-        this.started = false;
+        this.started = FALSE;
 
         if (!config['manual']) {
             this['start']();
@@ -30,10 +30,10 @@ Global['ImgLoad'] = klass({
         },
         'start': function() {
             if (this.started) {
-                return false;
+                return FALSE;
             }
 
-            this.started = true;
+            this.started = TRUE;
 
             var mine = this,
                 img,
