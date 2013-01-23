@@ -18,7 +18,7 @@ var prop = [
     Mine;
 
 for (; i < len; i++) {
-    if (el.style[prop[i]] !== undefined) {
+    if (el.style[prop[i]] !== UNDEFINED) {
         support = TRUE;
         prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];
 

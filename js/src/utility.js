@@ -101,7 +101,7 @@ function isTouchDevice() {
 function nullFunction() {
     return NULL;
 }
-function preventDefault(e) {
+function eventPrevent(e) {
     e.preventDefault();
     return FALSE;
 }
@@ -130,6 +130,6 @@ Global['utility'] = {
     'isArray': isArray,
     'isTouchDevice': isTouchDevice,
     'nullFunction': nullFunction,
-    'preventDefault': preventDefault,
+    'eventPrevent': eventPrevent,
     'checkUserAgent': checkUserAgent
 };

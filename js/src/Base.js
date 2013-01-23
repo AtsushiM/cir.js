@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Base/test.js" */
-var Base = Global['Base'] = klass({
+Base = Global['Base'] = klass({
     'init': function() {
         this._dispose = [];
     },

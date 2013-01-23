@@ -1,9 +1,4 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
-var isTouch = isTouchDevice(),
-    ev,
-    ev_hashchange = 'hashchange',
-    ev_orientationchange = 'orientationchange';
-
 ev = klass({
     'init': function(config) {
         config = config || {};

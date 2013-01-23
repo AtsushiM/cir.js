@@ -6,7 +6,7 @@ Global['XML'] = klass({
         this.data = {};
 
         if (config && config['data']) {
-            this['setData'](config['data']);
+            this.setData(config['data']);
         }
     },
     'properties': {

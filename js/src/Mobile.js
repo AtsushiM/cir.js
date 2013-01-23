@@ -32,13 +32,13 @@ Global['Mobile'] = klass({
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, ev['touchmove'], preventDefault);
+            on(doc, ev['touchmove'], eventPrevent);
         },
         'revivalScroll': function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, ev['touchmove'], preventDefault);
+            off(doc, ev['touchmove'], eventPrevent);
         },
         'hideAddress': function() {
             this.ondispose(win, ev['load'], hideAddressHandler, FALSE);

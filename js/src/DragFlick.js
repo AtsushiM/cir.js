@@ -31,7 +31,7 @@ Global['DragFlick'] = klass({
 
                 dragflg = TRUE;
 
-                e.preventDefault();
+                eventPrevent(e);
             }
             function end(e) {
                 if (dragflg) {

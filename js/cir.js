@@ -6,7 +6,16 @@ var win = window,
     TRUE = true,
     FALSE = false,
     NULL = null,
+    UNDEFINED = undefined,
+    isTouch = isTouchDevice(),
+    klass,
+    ev,
+    ev_hashchange = 'hashchange',
+    ev_orientationchange = 'orientationchange',
+    easebackrate = 1.70158,
+    Base,
     Global = win['C'] = {};
+
 /* Test: "../../spec/_src/src/utility/test.js" */
 if (!Date.now) {
     Date.now = function now() {
@@ -110,7 +119,7 @@ function isTouchDevice() {
 function nullFunction() {
     return NULL;
 }
-function preventDefault(e) {
+function eventPrevent(e) {
     e.preventDefault();
     return FALSE;
 }
@@ -139,7 +148,7 @@ Global['utility'] = {
     'isArray': isArray,
     'isTouchDevice': isTouchDevice,
     'nullFunction': nullFunction,
-    'preventDefault': preventDefault,
+    'eventPrevent': eventPrevent,
     'checkUserAgent': checkUserAgent
 };
 /* Test: "../../spec/_src/src/element/test.js" */
@@ -336,7 +345,7 @@ Global['element'] = {
     'html': html
 };
 /* Test: "../../spec/_src/src/klass/test.js" */
-var klass = Global['klass'] = function(config) {
+klass = Global['klass'] = function(config) {
     'use strict';
 
     var init = config['init'] || function() {},
@@ -379,11 +388,6 @@ Global['extend'] = function(child, _super) {
     };
 };
 /* Test: "../../spec/_src/src/Event/test.js" */
-var isTouch = isTouchDevice(),
-    ev,
-    ev_hashchange = 'hashchange',
-    ev_orientationchange = 'orientationchange';
-
 ev = klass({
     'init': function(config) {
         config = config || {};
@@ -419,7 +423,7 @@ ev = klass({
 Global['Event'] = ev;
 ev = Global['event'] = new ev();
 /* Test: "../../spec/_src/src/Base/test.js" */
-var Base = Global['Base'] = klass({
+Base = Global['Base'] = klass({
     'init': function() {
         this._dispose = [];
     },
@@ -452,7 +456,6 @@ var Base = Global['Base'] = klass({
     }
 });
 /* Test: "../../spec/_src/src/ease/test.js" */
-var easebackrate = 1.70158;
 Global['ease'] = {
     'linear': function(time, from, dist, duration) {
         return dist * time / duration + from;
@@ -614,7 +617,7 @@ var prop = [
     Mine;
 
 for (; i < len; i++) {
-    if (el.style[prop[i]] !== undefined) {
+    if (el.style[prop[i]] !== UNDEFINED) {
         support = TRUE;
         prefix = prop[i].match(/^(.*?)animation$/i)[1];
 
@@ -1082,7 +1085,7 @@ Global['Audio'] = function(config) {
         return FALSE;
     }
 
-    var audio = new Audio(''),
+    var audio = create('audio'),
         suffix = config['suffix'] || [
             ['mp3', 'mpeg'],
             ['wav', 'wav'],
@@ -1186,6 +1189,40 @@ Global['Sound'] = klass({
         }
     }
 });
+/* Test: "%JASMINE_TEST_PATH%" */
+Global['Video'] = function(config) {
+    if (!win['HTMLVideoElement']) {
+        return FALSE;
+    }
+
+    var video = create('video'),
+        suffix = config['suffix'] || [
+            ['webm', 'webm'],
+            ['mp4', 'mp4'],
+            ['ogv', 'ogg']
+        ],
+        support = [],
+        i = 0,
+        len = suffix.length;
+
+    for (; i < len; i++) {
+        if (video.canPlayType('video/' + suffix[i][1])) {
+            support.push([suffix[i][0]]);
+        }
+    }
+
+    if (support.length === 0) {
+        return FALSE;
+    }
+
+    video['controls'] = config['controls'] ? TRUE : FALSE;
+    video['preload'] = config['preload'] || 'auto';
+    video['autoplay'] = config['autoplay'] ? TRUE : FALSE;
+    video['loop'] = config['loop'] ? TRUE : FALSE;
+    video.src = config['dir'] + config['name'] + '.' + support[0];
+
+    return video;
+};
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global['Ajax'] = klass({
     'extend': Base,
@@ -1510,7 +1547,7 @@ Global['DragFlick'] = klass({
 
                 dragflg = TRUE;
 
-                e.preventDefault();
+                eventPrevent(e);
             }
             function end(e) {
                 if (dragflg) {
@@ -1994,13 +2031,13 @@ Global['Mobile'] = klass({
             if (!isNoTop) {
                 pageTop();
             }
-            on(doc, ev['touchmove'], preventDefault);
+            on(doc, ev['touchmove'], eventPrevent);
         },
         'revivalScroll': function(isNoTop) {
             if (!isNoTop) {
                 pageTop();
             }
-            off(doc, ev['touchmove'], preventDefault);
+            off(doc, ev['touchmove'], eventPrevent);
         },
         'hideAddress': function() {
             this.ondispose(win, ev['load'], hideAddressHandler, FALSE);
@@ -2723,7 +2760,7 @@ var prop = [
     Mine;
 
 for (; i < len; i++) {
-    if (el.style[prop[i]] !== undefined) {
+    if (el.style[prop[i]] !== UNDEFINED) {
         support = TRUE;
         prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];
 
@@ -3024,7 +3061,7 @@ Global['XML'] = klass({
         this.data = {};
 
         if (config && config['data']) {
-            this['setData'](config['data']);
+            this.setData(config['data']);
         }
     },
     'properties': {

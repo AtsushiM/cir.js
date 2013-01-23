@@ -1,5 +1,4 @@
 /* Test: "../../spec/_src/src/ease/test.js" */
-var easebackrate = 1.70158;
 Global['ease'] = {
     'linear': function(time, from, dist, duration) {
         return dist * time / duration + from;
