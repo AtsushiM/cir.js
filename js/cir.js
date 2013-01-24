@@ -1431,7 +1431,7 @@ Global['Sound'] = klass({
         config['autoplay'] =
         config['loop'] = FALSE;
 
-        audio = new Global['Audio'](config);
+        audio = Global['Audio'](config);
         mine._audio = audio;
 
         if (!audio) {
@@ -1439,19 +1439,16 @@ Global['Sound'] = klass({
         }
 
         if (autoplay) {
+            var autoplayid;
             autoplay = function() {
+                mine['uncontract'](autoplayid);
                 mine['play']();
             };
 
-            this['contract'](audio, e_canplay, autoplay);
+            autoplayid = this['contract'](audio, e_canplay, autoplay);
         }
         if (loop) {
-            loop = function() {
-                mine['stop']();
-                mine['play']();
-            };
-
-            this['contract'](audio, e_ended, loop);
+            this['loop'](TRUE);
         }
 
         if (config['oncanplay']) {
@@ -1464,6 +1461,10 @@ Global['Sound'] = klass({
         append(_parent, audio);
     },
     'properties': {
+        'dispose': function() {
+            remove(this._audio);
+            this._orgdis();
+        },
         'getAudio': function() {
             return this._audio;
         },
@@ -1475,6 +1476,21 @@ Global['Sound'] = klass({
         },
         'setCurrent': function(num) {
             this._audio.currentTime = num;
+        },
+        'loop': function(bool) {
+            if (this.loopid) {
+                this['uncontract'](this.loopid);
+                delete this.loopid;
+            }
+
+            if (bool) {
+                this.loopid = this['contract'](this._audio, e_ended, function() {
+                    mine['stop']();
+                    mine['play']();
+                });
+            }
+        },
+        'autoplay': function(bool) {
         },
         'play': function() {
             this._audio.play();
@@ -1555,12 +1571,7 @@ Global['Movie'] = klass({
             this['contract'](video, e_canplay, autoplay);
         }
         if (loop) {
-            loop = function() {
-                mine['stop']();
-                mine['play']();
-            };
-
-            this['contract'](video, e_ended, loop);
+            this['loop'](TRUE);
         }
 
         if (config['oncanplay']) {
@@ -1573,6 +1584,10 @@ Global['Movie'] = klass({
         append(_parent, video);
     },
     'properties': {
+        'dispose': function() {
+            remove(this._video);
+            this._orgdis();
+        },
         'getVideo': function() {
             return this._video;
         },
@@ -1585,6 +1600,19 @@ Global['Movie'] = klass({
         'setCurrent': function(num) {
             console.log(this._video);
             this._video.currentTime = num;
+        },
+        'loop': function(bool) {
+            if (this.loopid) {
+                this['uncontract'](this.loopid);
+                delete this.loopid;
+            }
+
+            if (bool) {
+                this.loopid = this['contract'](this._video, e_ended, function() {
+                    mine['stop']();
+                    mine['play']();
+                });
+            }
         },
         'play': function() {
             this._video.play();
