@@ -139,6 +139,39 @@ describe('Movieは', function() {
         });
     });
 
+    it('loop()でループを設定する', function() {
+        var end = 0;
+
+        movie = new c.Movie({
+            dir: '/spec/common/',
+            name: 'testmovie',
+            autoplay: false,
+            loop: false,
+            oncanplay: function(e) {
+                // write code.
+            },
+            onended: function(e) {
+                console.log(end);
+                end++;
+            }
+        });
+
+        waits(100);
+        // runs(function() {
+        //     movie.loop(true);
+        //     movie.play();
+        // });
+        // waits(25000);
+        // runs(function() {
+        //     expect(end).toEqual(2);
+        //     movie.loop(false);
+        // });
+        // waits(25000);
+        // runs(function() {
+        //     expect(end).toEqual(3);
+        // });
+    });
+
     it('pause()で一時停止する', function() {
         movie = new c.Movie({
             dir: '/spec/common/',

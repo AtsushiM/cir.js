@@ -12,6 +12,8 @@ var win = window,
     ev,
     ev_hashchange = 'hashchange',
     ev_orientationchange = 'orientationchange',
+    ev_canplay = 'canplay',
+    ev_ended = 'ended',
     easebackrate = 1.70158,
     Base,
     Global = win['C'] = {};

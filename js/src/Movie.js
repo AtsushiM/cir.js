@@ -8,8 +8,6 @@ Global['Movie'] = klass({
             autoplay = config['autoplay'],
             loop = config['loop'],
             video,
-            e_canplay = 'canplay',
-            e_ended = 'ended',
             _parent = config['element'] || doc.body;
 
         config['preload'] = 'auto';
@@ -28,17 +26,17 @@ Global['Movie'] = klass({
                 mine['play']();
             };
 
-            this['contract'](video, e_canplay, autoplay);
+            this['contract'](video, ev_canplay, autoplay);
         }
         if (loop) {
             this['loop'](TRUE);
         }
 
         if (config['oncanplay']) {
-            this['contract'](video, e_canplay, config['oncanplay']);
+            this['contract'](video, ev_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this['contract'](video, e_ended, config['onended']);
+            this['contract'](video, ev_ended, config['onended']);
         }
 
         append(_parent, video);
@@ -62,13 +60,14 @@ Global['Movie'] = klass({
             this._video.currentTime = num;
         },
         'loop': function(bool) {
-            if (this.loopid) {
-                this['uncontract'](this.loopid);
-                delete this.loopid;
+            var mine = this;
+            if (mine.loopid) {
+                mine['uncontract'](mine.loopid);
+                delete mine.loopid;
             }
 
             if (bool) {
-                this.loopid = this['contract'](this._video, e_ended, function() {
+                mine.loopid = mine['contract'](mine._video, ev_ended, function() {
                     mine['stop']();
                     mine['play']();
                 });

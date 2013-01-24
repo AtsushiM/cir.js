@@ -136,6 +136,39 @@ describe('Soundは', function() {
         });
     });
 
+    it('loop()でループを設定する', function() {
+        var end = 0;
+
+        sound = new c.Sound({
+            dir: '/spec/common/',
+            name: 'tm2_door000',
+            autoplay: false,
+            loop: false,
+            oncanplay: function(e) {
+                // write code.
+            },
+            onended: function(e) {
+                console.log(end);
+                end++;
+            }
+        });
+
+        waits(100);
+        runs(function() {
+            sound.loop(true);
+            sound.play();
+        });
+        waits(2500);
+        runs(function() {
+            expect(end).toEqual(2);
+            sound.loop(false);
+        });
+        waits(2500);
+        runs(function() {
+            expect(end).toEqual(3);
+        });
+    });
+
     it('pause()で一時停止する', function() {
         sound = new c.Sound({
             dir: '/spec/common/',
