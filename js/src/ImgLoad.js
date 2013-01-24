@@ -8,8 +8,8 @@ Global['ImgLoad'] = klass({
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
         this.disposeid = [];
-        this.onload = config['onload'] || nullFunction,
-        this.onprogress = config['onprogress'] || nullFunction,
+        this._onload = config['onload'] || nullFunction,
+        this._onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
         this.progress = 0;
         this.started = FALSE;
@@ -23,7 +23,7 @@ Global['ImgLoad'] = klass({
             this.loadcount++;
 
             this.progress = this.loadcount / this.srccount;
-            this.onprogress(this.progress);
+            this._onprogress(this.progress);
 
             if (this.loadcount >= this.srccount) {
                 var i = this.disposeid.length;
@@ -33,7 +33,7 @@ Global['ImgLoad'] = klass({
                 }
                 this.disposeid = [];
 
-                this.onload(this.loadedsrcs);
+                this._onload(this.loadedsrcs);
             }
         },
         'start': function() {

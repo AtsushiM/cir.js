@@ -2,8 +2,8 @@
 Global['XML'] = klass({
     'extend': Base,
     'init': function(config) {
-        this.element = create('div');
-        this.data = {};
+        this.el = create('div');
+        this._data = {};
 
         if (config && config['data']) {
             this.setData(config['data']);
@@ -11,17 +11,17 @@ Global['XML'] = klass({
     },
     'properties': {
         'getData': function() {
-            return this.data;
+            return this._data;
         },
         'setData': function(d) {
-            this.data =
-            this.element.innerHTML = d;
+            this._data =
+            this.el.innerHTML = d;
         },
         '$': function(selector) {
-            return $child(selector, this.element);
+            return $child(selector, this.el);
         },
         '$$': function(selector) {
-            return $$child(selector, this.element);
+            return $$child(selector, this.el);
         }
     }
 });

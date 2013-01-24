@@ -46,10 +46,10 @@ Mine = Global['Animation'] = klass({
 
         this.onComplete = option['onComplete'] || nullFunction;
 
-        this.element = element;
+        this.el = element;
 
         Mine['id']++;
-        this['id'] = 'ciranim' + Mine['id'];
+        this._id = 'ciranim' + Mine['id'];
 
         var duration = option['duration'] || Mine['Duration'],
             ease = option['ease'] || 'ease';
@@ -74,14 +74,14 @@ Mine = Global['Animation'] = klass({
         );
 
         sheet.insertRule(
-            '@' + css_prefix + 'keyframes ' + this.id + '{to' + prop + '}',
+            '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
             sheet.cssRules.length);
 
         if (!isArray(ease)) {
             ease = [ease];
         }
 
-        addCSSRule(this.id, css_prefix, duration, ease);
+        addCSSRule(this._id, css_prefix, duration, ease);
 
         if (!option['manual']) {
             this['start']();
@@ -89,8 +89,8 @@ Mine = Global['Animation'] = klass({
     },
     'properties': {
         _off: function() {
-            off(this.element, event_key + 'End', this.end);
-            off(this.element, 'animationend', this.end);
+            off(this.el, event_key + 'End', this.end);
+            off(this.el, 'animationend', this.end);
         },
         'dispose': function() {
             this.stop();
@@ -100,10 +100,10 @@ Mine = Global['Animation'] = klass({
             var mine = this;
 
             mine.end = endaction;
-            on(mine.element, event_key + 'End', endaction);
-            on(mine.element, 'animationend', endaction);
+            on(mine.el, event_key + 'End', endaction);
+            on(mine.el, 'animationend', endaction);
 
-            addClass(mine.element, mine.id);
+            addClass(mine.el, mine._id);
 
             function endaction(e) {
                 var rule = sheet.cssRules,
@@ -118,13 +118,13 @@ Mine = Global['Animation'] = klass({
                         name = rule[len].name ||
                             ('' + rule[len].selectorText).split('.')[1];
 
-                        if (name === mine.id) {
+                        if (name === mine._id) {
                             sheet.deleteRule(len);
                         }
                     }
-                    removeClass(mine.element, mine.id);
+                    removeClass(mine.el, mine._id);
 
-                    css(mine.element, mine.property);
+                    css(mine.el, mine.property);
                 }
                 mine.onComplete(e);
             }
@@ -134,7 +134,7 @@ Mine = Global['Animation'] = klass({
 
             stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
-            css(this.element, stopobj);
+            css(this.el, stopobj);
             this._off();
         }
     }

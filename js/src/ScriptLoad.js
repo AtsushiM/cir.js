@@ -3,7 +3,7 @@ Global['ScriptLoad'] = klass({
     'extend': Base,
     'init': function() {
         this['_super']();
-        this.elements = [];
+        this.els = [];
     },
     'properties': {
         'requests': function(varary, callback) {
@@ -30,7 +30,7 @@ Global['ScriptLoad'] = klass({
                 i--;
 
                 if (i === 0) {
-                    callback(mine.elements);
+                    callback(mine.els);
                 }
             }
         },
@@ -42,7 +42,7 @@ Global['ScriptLoad'] = klass({
             /* script.type = 'text/javascript'; */
             script.src = vars['src'];
             append(doc.body, script);
-            mine.elements.push(script);
+            mine.els.push(script);
 
             if (vars['callback']) {
                 disposeid = mine['contract'](script, ev['load'], function() {

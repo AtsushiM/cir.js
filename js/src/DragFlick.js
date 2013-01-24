@@ -20,7 +20,7 @@ Global['DragFlick'] = klass({
                 startY,
                 dragflg = FALSE;
 
-            this['contract'](vars.element, ev['switchdown'], start);
+            this['contract'](vars['element'], ev['switchdown'], start);
             this['contract'](win, ev['switchup'], end);
 
             function start(e) {

@@ -48,7 +48,7 @@ Mine = Global['Transition'] = klass({
         option['onComplete'] = option['onComplete'] || nullFunction;
 
         Mine['id']++;
-        this.id = 'cirtrans' + Mine['id'];
+        this._id = 'cirtrans' + Mine['id'];
 
         var transProp = [],
             animeProp = override({}, property),
@@ -64,9 +64,9 @@ Mine = Global['Transition'] = klass({
             transProp.push(i);
         }
 
-        addCSSRule(this.id, css_prefix, duration, ease, transProp);
+        addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-        this.element = element;
+        this.el = element;
         this.property = property;
         this.option = option;
 
@@ -89,25 +89,25 @@ Mine = Global['Transition'] = klass({
                 }, 1);
             };
 
-            on(mine.element, event_key + 'End', mine._endfunc);
-            on(mine.element, 'transitionend', mine._endfunc);
-            addClass(mine.element, mine.id);
-            css(mine.element, mine.property);
+            on(mine.el, event_key + 'End', mine._endfunc);
+            on(mine.el, 'transitionend', mine._endfunc);
+            addClass(mine.el, mine._id);
+            css(mine.el, mine.property);
         },
         'stop': function() {
             var rule = sheet.cssRules,
                 len = rule.length,
                 name;
 
-            off(this.element, event_key + 'End', this._endfunc);
-            off(this.element, 'transitionend', this._endfunc);
-            removeClass(this.element, this.id);
+            off(this.el, event_key + 'End', this._endfunc);
+            off(this.el, 'transitionend', this._endfunc);
+            removeClass(this.el, this._id);
 
             for (; len--;) {
                 name = rule[len].name ||
                     ('' + rule[len].selectorText).split('.')[1];
 
-                if (name === this.id) {
+                if (name === this._id) {
                     sheet.deleteRule(len);
                     break;
                 }

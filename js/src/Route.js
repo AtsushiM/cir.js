@@ -7,9 +7,9 @@ Global['Route'] = klass({
             return Global['Route'].instance;
         }
 
-        this.target = config['target'] || '';
-        this.noregex = config['noregex'];
-        this.action = config['action'];
+        this._target = config['target'] || '';
+        this._noregex = config['noregex'];
+        this._action = config['action'];
 
         if (!config['manual']) {
             this['start']();
@@ -21,18 +21,18 @@ Global['Route'] = klass({
     },
     'properties': {
         'start': function() {
-            this['fire'](this.target);
+            this['fire'](this._target);
         },
         'fire': function(action) {
             var i;
 
-            if (this.noregex && this.action[action]) {
-                return this.action[action](action);
+            if (this._noregex && this._action[action]) {
+                return this._action[action](action);
             }
 
-            for (i in this.action) {
+            for (i in this._action) {
                 if (action.match(i)) {
-                    this.action[i](i);
+                    this._action[i](i);
                 }
             }
         }

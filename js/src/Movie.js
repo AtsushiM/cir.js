@@ -1,4 +1,4 @@
-/* Test: "../../spec/_src/src/Sound/test.js" */
+/* Test: "../../spec/_src/src/Movie/test.js" */
 Global['Movie'] = klass({
     'extend': Base,
     'init': function(config) {
@@ -59,6 +59,7 @@ Global['Movie'] = klass({
             return this._video.duration;
         },
         'setCurrent': function(num) {
+            console.log(this._video);
             this._video.currentTime = num;
         },
         'play': function() {

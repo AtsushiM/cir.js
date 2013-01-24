@@ -8,7 +8,7 @@ Global['PreRender'] = klass({
             config['loopblur'] = 20;
         }
 
-        this.elements = config['elements'] || [];
+        this.els = config['elements'] || [];
         this.guesslimit = config['guesslimit'] || 30;
         this.onrendered = config['onrendered'] || nullFunction;
         this.looptime = config['looptime'] || 100;
@@ -23,8 +23,8 @@ Global['PreRender'] = klass({
         'start': function() {
             var i;
 
-            for (i = this.elements.length; i--;) {
-                show(this.elements[i]);
+            for (i = this.els.length; i--;) {
+                show(this.els[i]);
             }
             this.prevtime = Date.now();
             this.loopid = setInterval(check, this.looptime, this);
@@ -41,8 +41,8 @@ Global['PreRender'] = klass({
                     if (mine.guesslimit < 1) {
                         clearInterval(mine.loopid);
 
-                        for (var i = mine.elements.length; i--;) {
-                            hide(mine.elements[i]);
+                        for (var i = mine.els.length; i--;) {
+                            hide(mine.els[i]);
                         }
 
                         mine.onrendered();

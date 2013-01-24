@@ -1,4 +1,4 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Video/test.js" */
 Global['Video'] = function(config) {
     if (!win['HTMLVideoElement']) {
         return FALSE;

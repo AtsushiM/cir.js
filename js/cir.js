@@ -652,10 +652,10 @@ Mine = Global['Animation'] = klass({
 
         this.onComplete = option['onComplete'] || nullFunction;
 
-        this.element = element;
+        this.el = element;
 
         Mine['id']++;
-        this['id'] = 'ciranim' + Mine['id'];
+        this._id = 'ciranim' + Mine['id'];
 
         var duration = option['duration'] || Mine['Duration'],
             ease = option['ease'] || 'ease';
@@ -680,14 +680,14 @@ Mine = Global['Animation'] = klass({
         );
 
         sheet.insertRule(
-            '@' + css_prefix + 'keyframes ' + this.id + '{to' + prop + '}',
+            '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
             sheet.cssRules.length);
 
         if (!isArray(ease)) {
             ease = [ease];
         }
 
-        addCSSRule(this.id, css_prefix, duration, ease);
+        addCSSRule(this._id, css_prefix, duration, ease);
 
         if (!option['manual']) {
             this['start']();
@@ -695,8 +695,8 @@ Mine = Global['Animation'] = klass({
     },
     'properties': {
         _off: function() {
-            off(this.element, event_key + 'End', this.end);
-            off(this.element, 'animationend', this.end);
+            off(this.el, event_key + 'End', this.end);
+            off(this.el, 'animationend', this.end);
         },
         'dispose': function() {
             this.stop();
@@ -706,10 +706,10 @@ Mine = Global['Animation'] = klass({
             var mine = this;
 
             mine.end = endaction;
-            on(mine.element, event_key + 'End', endaction);
-            on(mine.element, 'animationend', endaction);
+            on(mine.el, event_key + 'End', endaction);
+            on(mine.el, 'animationend', endaction);
 
-            addClass(mine.element, mine.id);
+            addClass(mine.el, mine._id);
 
             function endaction(e) {
                 var rule = sheet.cssRules,
@@ -724,13 +724,13 @@ Mine = Global['Animation'] = klass({
                         name = rule[len].name ||
                             ('' + rule[len].selectorText).split('.')[1];
 
-                        if (name === mine.id) {
+                        if (name === mine._id) {
                             sheet.deleteRule(len);
                         }
                     }
-                    removeClass(mine.element, mine.id);
+                    removeClass(mine.el, mine._id);
 
-                    css(mine.element, mine.property);
+                    css(mine.el, mine.property);
                 }
                 mine.onComplete(e);
             }
@@ -740,7 +740,7 @@ Mine = Global['Animation'] = klass({
 
             stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
-            css(this.element, stopobj);
+            css(this.el, stopobj);
             this._off();
         }
     }
@@ -816,7 +816,7 @@ Mine = Global['Transition'] = klass({
         option['onComplete'] = option['onComplete'] || nullFunction;
 
         Mine['id']++;
-        this.id = 'cirtrans' + Mine['id'];
+        this._id = 'cirtrans' + Mine['id'];
 
         var transProp = [],
             animeProp = override({}, property),
@@ -832,9 +832,9 @@ Mine = Global['Transition'] = klass({
             transProp.push(i);
         }
 
-        addCSSRule(this.id, css_prefix, duration, ease, transProp);
+        addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-        this.element = element;
+        this.el = element;
         this.property = property;
         this.option = option;
 
@@ -857,25 +857,25 @@ Mine = Global['Transition'] = klass({
                 }, 1);
             };
 
-            on(mine.element, event_key + 'End', mine._endfunc);
-            on(mine.element, 'transitionend', mine._endfunc);
-            addClass(mine.element, mine.id);
-            css(mine.element, mine.property);
+            on(mine.el, event_key + 'End', mine._endfunc);
+            on(mine.el, 'transitionend', mine._endfunc);
+            addClass(mine.el, mine._id);
+            css(mine.el, mine.property);
         },
         'stop': function() {
             var rule = sheet.cssRules,
                 len = rule.length,
                 name;
 
-            off(this.element, event_key + 'End', this._endfunc);
-            off(this.element, 'transitionend', this._endfunc);
-            removeClass(this.element, this.id);
+            off(this.el, event_key + 'End', this._endfunc);
+            off(this.el, 'transitionend', this._endfunc);
+            removeClass(this.el, this._id);
 
             for (; len--;) {
                 name = rule[len].name ||
                     ('' + rule[len].selectorText).split('.')[1];
 
-                if (name === this.id) {
+                if (name === this._id) {
                     sheet.deleteRule(len);
                     break;
                 }
@@ -915,21 +915,21 @@ var Mine = Global['Tweener'] = klass({
 
         option = option || {};
 
-        this.target = target;
+        this._target = target;
         this.property = [];
 
         for (name in property) {
             prop = property[name];
             prop['name'] = name;
 
-            prop['distance'] = prop['to'] - prop['from'];
+            prop.distance = prop['to'] - prop['from'];
             prop['prefix'] = prop['prefix'] || '';
             prop['suffix'] = prop['suffix'] || 'px';
 
             this.property.push(prop);
         }
 
-        this.duration = option['duration'] || Mine['Duration'];
+        this._duration = option['duration'] || Mine['Duration'];
         this.ease = option['ease'] || this._ease;
         this.onComplete = option['onComplete'];
 
@@ -979,7 +979,7 @@ var Mine = Global['Tweener'] = klass({
         }()),
         loop: function() {
             var mine = this,
-                items = Mine['Items'],
+                items = Mine.Items,
                 item,
                 now = Date.now(),
                 time,
@@ -993,15 +993,15 @@ var Mine = Global['Tweener'] = klass({
                 len = item.property.length;
                 time = now - item.begin;
 
-                if (time < item.duration) {
+                if (time < item._duration) {
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Mine._setProp(item.target, prop, item.ease(
+                        Mine._setProp(item._target, prop, item.ease(
                             time,
                             prop['from'],
-                            prop['distance'],
-                            item.duration
+                            prop.distance,
+                            item._duration
                         ));
                     }
                 }
@@ -1009,7 +1009,7 @@ var Mine = Global['Tweener'] = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Mine._setProp(item.target, prop, prop['to']);
+                        Mine._setProp(item._target, prop, prop['to']);
                     }
                     if (item.onComplete) {
                         item.onComplete();
@@ -1033,7 +1033,7 @@ var Mine = Global['Tweener'] = klass({
 
             mine.begin = Date.now();
 
-            Mine['Items'].push(mine);
+            Mine.Items.push(mine);
             if (!Mine.timerId) {
                 Mine.timerId = 1;
                 mine._requestAnimationFrame(function() {
@@ -1042,7 +1042,7 @@ var Mine = Global['Tweener'] = klass({
             }
         },
         'stop': function() {
-            Mine['Items'] = [];
+            Mine.Items = [];
             clearInterval(Mine.timerId);
             Mine.timerId = NULL;
         }
@@ -1052,7 +1052,7 @@ Mine._setProp = function(target, prop, point) {
     target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
 /* Mine.timerId = NULL; */
-Mine['Items'] = [];
+Mine.Items = [];
 Mine['FPS'] = 30;
 Mine['Duration'] = 500;
 }());
@@ -1093,7 +1093,7 @@ Global['$'] = function(query, _parent) {
 };
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
-var el= Global['element'];
+var el = Global['element'];
 
 function forExe(_this, func, arg) {
     var i = 0,
@@ -1488,7 +1488,7 @@ Global['Sound'] = klass({
         }
     }
 });
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Video/test.js" */
 Global['Video'] = function(config) {
     if (!win['HTMLVideoElement']) {
         return FALSE;
@@ -1522,7 +1522,7 @@ Global['Video'] = function(config) {
 
     return video;
 };
-/* Test: "../../spec/_src/src/Sound/test.js" */
+/* Test: "../../spec/_src/src/Movie/test.js" */
 Global['Movie'] = klass({
     'extend': Base,
     'init': function(config) {
@@ -1583,6 +1583,7 @@ Global['Movie'] = klass({
             return this._video.duration;
         },
         'setCurrent': function(num) {
+            console.log(this._video);
             this._video.currentTime = num;
         },
         'play': function() {
@@ -1732,18 +1733,18 @@ Global['Bind'] = klass({
 Global['Brush'] = klass({
     'extend': Base,
     'init': function(config) {
-        this.canvas = config['canvas'];
-        this.ctx = this.canvas.getContext('2d');
+        this._canvas = config['canvas'];
+        this.ctx = this._canvas.getContext('2d');
 
         this['setSize'](config);
     },
     'properties': {
         'setSize': function(vars) {
             if (vars['width']) {
-                this.canvas.width = vars['width'];
+                this._canvas.width = vars['width'];
             }
             if (vars['height']) {
-                this.canvas.height = vars['height'];
+                this._canvas.height = vars['height'];
             }
         },
         'pigment': function(vars) {
@@ -1797,7 +1798,7 @@ Global['Brush'] = klass({
         'draw': function(layer) {
             var i = 0, len = layer.length, item;
 
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
             for (; i < len; i++) {
                 item = layer[i];
@@ -1910,7 +1911,7 @@ Global['DragFlick'] = klass({
                 startY,
                 dragflg = FALSE;
 
-            this['contract'](vars.element, ev['switchdown'], start);
+            this['contract'](vars['element'], ev['switchdown'], start);
             this['contract'](win, ev['switchup'], end);
 
             function start(e) {
@@ -2233,8 +2234,8 @@ Global['ImgLoad'] = klass({
         this.srccount = this.srcs.length,
         this.loadedsrcs = [];
         this.disposeid = [];
-        this.onload = config['onload'] || nullFunction,
-        this.onprogress = config['onprogress'] || nullFunction,
+        this._onload = config['onload'] || nullFunction,
+        this._onprogress = config['onprogress'] || nullFunction,
         this.loadcount = 0;
         this.progress = 0;
         this.started = FALSE;
@@ -2248,7 +2249,7 @@ Global['ImgLoad'] = klass({
             this.loadcount++;
 
             this.progress = this.loadcount / this.srccount;
-            this.onprogress(this.progress);
+            this._onprogress(this.progress);
 
             if (this.loadcount >= this.srccount) {
                 var i = this.disposeid.length;
@@ -2258,7 +2259,7 @@ Global['ImgLoad'] = klass({
                 }
                 this.disposeid = [];
 
-                this.onload(this.loadedsrcs);
+                this._onload(this.loadedsrcs);
             }
         },
         'start': function() {
@@ -2642,7 +2643,7 @@ Global['PreRender'] = klass({
             config['loopblur'] = 20;
         }
 
-        this.elements = config['elements'] || [];
+        this.els = config['elements'] || [];
         this.guesslimit = config['guesslimit'] || 30;
         this.onrendered = config['onrendered'] || nullFunction;
         this.looptime = config['looptime'] || 100;
@@ -2657,8 +2658,8 @@ Global['PreRender'] = klass({
         'start': function() {
             var i;
 
-            for (i = this.elements.length; i--;) {
-                show(this.elements[i]);
+            for (i = this.els.length; i--;) {
+                show(this.els[i]);
             }
             this.prevtime = Date.now();
             this.loopid = setInterval(check, this.looptime, this);
@@ -2675,8 +2676,8 @@ Global['PreRender'] = klass({
                     if (mine.guesslimit < 1) {
                         clearInterval(mine.loopid);
 
-                        for (var i = mine.elements.length; i--;) {
-                            hide(mine.elements[i]);
+                        for (var i = mine.els.length; i--;) {
+                            hide(mine.els[i]);
                         }
 
                         mine.onrendered();
@@ -2695,9 +2696,9 @@ Global['Route'] = klass({
             return Global['Route'].instance;
         }
 
-        this.target = config['target'] || '';
-        this.noregex = config['noregex'];
-        this.action = config['action'];
+        this._target = config['target'] || '';
+        this._noregex = config['noregex'];
+        this._action = config['action'];
 
         if (!config['manual']) {
             this['start']();
@@ -2709,18 +2710,18 @@ Global['Route'] = klass({
     },
     'properties': {
         'start': function() {
-            this['fire'](this.target);
+            this['fire'](this._target);
         },
         'fire': function(action) {
             var i;
 
-            if (this.noregex && this.action[action]) {
-                return this.action[action](action);
+            if (this._noregex && this._action[action]) {
+                return this._action[action](action);
             }
 
-            for (i in this.action) {
+            for (i in this._action) {
                 if (action.match(i)) {
-                    this.action[i](i);
+                    this._action[i](i);
                 }
             }
         }
@@ -2731,7 +2732,7 @@ Global['ScriptLoad'] = klass({
     'extend': Base,
     'init': function() {
         this['_super']();
-        this.elements = [];
+        this.els = [];
     },
     'properties': {
         'requests': function(varary, callback) {
@@ -2758,7 +2759,7 @@ Global['ScriptLoad'] = klass({
                 i--;
 
                 if (i === 0) {
-                    callback(mine.elements);
+                    callback(mine.els);
                 }
             }
         },
@@ -2770,7 +2771,7 @@ Global['ScriptLoad'] = klass({
             /* script.type = 'text/javascript'; */
             script.src = vars['src'];
             append(doc.body, script);
-            mine.elements.push(script);
+            mine.els.push(script);
 
             if (vars['callback']) {
                 disposeid = mine['contract'](script, ev['load'], function() {
@@ -3174,8 +3175,8 @@ Global['Twitter'] = klass({
 Global['XML'] = klass({
     'extend': Base,
     'init': function(config) {
-        this.element = create('div');
-        this.data = {};
+        this.el = create('div');
+        this._data = {};
 
         if (config && config['data']) {
             this.setData(config['data']);
@@ -3183,17 +3184,17 @@ Global['XML'] = klass({
     },
     'properties': {
         'getData': function() {
-            return this.data;
+            return this._data;
         },
         'setData': function(d) {
-            this.data =
-            this.element.innerHTML = d;
+            this._data =
+            this.el.innerHTML = d;
         },
         '$': function(selector) {
-            return $child(selector, this.element);
+            return $child(selector, this.el);
         },
         '$$': function(selector) {
-            return $$child(selector, this.element);
+            return $$child(selector, this.el);
         }
     }
 });

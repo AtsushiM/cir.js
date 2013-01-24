@@ -8,21 +8,21 @@ var Mine = Global['Tweener'] = klass({
 
         option = option || {};
 
-        this.target = target;
+        this._target = target;
         this.property = [];
 
         for (name in property) {
             prop = property[name];
             prop['name'] = name;
 
-            prop['distance'] = prop['to'] - prop['from'];
+            prop.distance = prop['to'] - prop['from'];
             prop['prefix'] = prop['prefix'] || '';
             prop['suffix'] = prop['suffix'] || 'px';
 
             this.property.push(prop);
         }
 
-        this.duration = option['duration'] || Mine['Duration'];
+        this._duration = option['duration'] || Mine['Duration'];
         this.ease = option['ease'] || this._ease;
         this.onComplete = option['onComplete'];
 
@@ -72,7 +72,7 @@ var Mine = Global['Tweener'] = klass({
         }()),
         loop: function() {
             var mine = this,
-                items = Mine['Items'],
+                items = Mine.Items,
                 item,
                 now = Date.now(),
                 time,
@@ -86,15 +86,15 @@ var Mine = Global['Tweener'] = klass({
                 len = item.property.length;
                 time = now - item.begin;
 
-                if (time < item.duration) {
+                if (time < item._duration) {
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Mine._setProp(item.target, prop, item.ease(
+                        Mine._setProp(item._target, prop, item.ease(
                             time,
                             prop['from'],
-                            prop['distance'],
-                            item.duration
+                            prop.distance,
+                            item._duration
                         ));
                     }
                 }
@@ -102,7 +102,7 @@ var Mine = Global['Tweener'] = klass({
                     for (i = 0; i < len; i++) {
                         prop = item.property[i];
 
-                        Mine._setProp(item.target, prop, prop['to']);
+                        Mine._setProp(item._target, prop, prop['to']);
                     }
                     if (item.onComplete) {
                         item.onComplete();
@@ -126,7 +126,7 @@ var Mine = Global['Tweener'] = klass({
 
             mine.begin = Date.now();
 
-            Mine['Items'].push(mine);
+            Mine.Items.push(mine);
             if (!Mine.timerId) {
                 Mine.timerId = 1;
                 mine._requestAnimationFrame(function() {
@@ -135,7 +135,7 @@ var Mine = Global['Tweener'] = klass({
             }
         },
         'stop': function() {
-            Mine['Items'] = [];
+            Mine.Items = [];
             clearInterval(Mine.timerId);
             Mine.timerId = NULL;
         }
@@ -145,7 +145,7 @@ Mine._setProp = function(target, prop, point) {
     target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
 /* Mine.timerId = NULL; */
-Mine['Items'] = [];
+Mine.Items = [];
 Mine['FPS'] = 30;
 Mine['Duration'] = 500;
 }());

@@ -20,6 +20,7 @@ src/HashQuery/\n\
 src/ImgLoad/\n\
 src/LocalStorage/\n\
 src/Mobile/\n\
+src/Movie/\n\
 src/Observer/\n\
 src/PreRender/\n\
 src/Route/\n\
@@ -33,6 +34,7 @@ src/Timer/\n\
 src/Transition/\n\
 src/Tweener/\n\
 src/Twitter/\n\
+src/Video/\n\
 src/WindowLoad/\n\
 src/XML/\n\
 src/cssease/\n\
@@ -66,6 +68,7 @@ src/utility/\n\
 ../../js/src/ImgLoad.js\n\
 ../../js/src/LocalStorage.js\n\
 ../../js/src/Mobile.js\n\
+../../js/src/Movie.js\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/Route.js\n\
@@ -79,6 +82,7 @@ src/utility/\n\
 ../../js/src/Transition.js\n\
 ../../js/src/Tweener.js\n\
 ../../js/src/Twitter.js\n\
+../../js/src/Video.js\n\
 ../../js/src/WindowLoad.js\n\
 ../../js/src/XML.js\n\
 ../../js/src/cssease.js\n\
@@ -112,6 +116,7 @@ src/utility/\n\
 ../_src/src/ImgLoad/test.js\n\
 ../_src/src/LocalStorage/test.js\n\
 ../_src/src/Mobile/test.js\n\
+../_src/src/Movie/test.js\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
 ../_src/src/Route/test.js\n\
@@ -125,6 +130,7 @@ src/utility/\n\
 ../_src/src/Transition/test.js\n\
 ../_src/src/Tweener/test.js\n\
 ../_src/src/Twitter/test.js\n\
+../_src/src/Video/test.js\n\
 ../_src/src/WindowLoad/test.js\n\
 ../_src/src/XML/test.js\n\
 ../_src/src/cssease/test.js\n\
