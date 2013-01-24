@@ -1,4 +1,4 @@
-/* Test: "../../spec/_src/src/element/test.js" */
+/* Test: "../../spec/_src/src/dom/test.js" */
 function $(selector) {
     return $child(selector, doc);
 }
@@ -166,7 +166,7 @@ function html(element, text) {
     element.innerHTML = text;
 }
 
-Global['element'] = {
+Global['dom'] = {
     '$': $,
     '$$': $$,
     '$child': $child,

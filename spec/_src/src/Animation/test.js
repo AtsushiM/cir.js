@@ -6,12 +6,12 @@ describe('Animationは', function() {
 
     beforeEach(function() {
         // init
-        div = c.element.create('div');
-        c.element.append(document.body, div);
+        div = c.dom.create('div');
+        c.dom.append(document.body, div);
     });
     afterEach(function() {
         // clear
-        c.element.remove(div);
+        c.dom.remove(div);
     });
 
     it('dispose()でインスタンスを解放する', function() {

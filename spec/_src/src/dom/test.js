@@ -1,10 +1,10 @@
-/* Class: "../../../../js/src/element.js" */
-describe('elementは', function() {
-    var element;
+/* Class: "../../../../js/src/dom.js" */
+describe('domは', function() {
+    var dom;
 
     beforeEach(function() {
         // init
-        el = window.C ? C.element : Global.element;
+        el = window.C ? C.dom : Global.dom;
     });
     afterEach(function() {
         // clear

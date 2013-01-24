@@ -38,8 +38,8 @@ src/Video/\n\
 src/WindowLoad/\n\
 src/XML/\n\
 src/cssease/\n\
+src/dom/\n\
 src/ease/\n\
-src/element/\n\
 src/extend/\n\
 src/klass/\n\
 src/selector/\n\
@@ -86,8 +86,8 @@ src/utility/\n\
 ../../js/src/WindowLoad.js\n\
 ../../js/src/XML.js\n\
 ../../js/src/cssease.js\n\
+../../js/src/dom.js\n\
 ../../js/src/ease.js\n\
-../../js/src/element.js\n\
 ../../js/src/extend.js\n\
 ../../js/src/klass.js\n\
 ../../js/src/selector.js\n\
@@ -134,8 +134,8 @@ src/utility/\n\
 ../_src/src/WindowLoad/test.js\n\
 ../_src/src/XML/test.js\n\
 ../_src/src/cssease/test.js\n\
+../_src/src/dom/test.js\n\
 ../_src/src/ease/test.js\n\
-../_src/src/element/test.js\n\
 ../_src/src/extend/test.js\n\
 ../_src/src/klass/test.js\n\
 ../_src/src/selector/test.js\n\
