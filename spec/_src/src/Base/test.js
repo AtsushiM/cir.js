@@ -20,6 +20,20 @@ describe('Baseは', function() {
         expect(base).toEqual({});
         expect(base.dispose).not.toBeDefined();
     });
+
+    it('contract(element, e, handler)でelementにeventnameでhandlerを登録する', function() {
+        base.contract(window, 'load', function() {
+            expect(1).toEqual(1);
+        });
+    });
+
+    it('uncontract(id)でidを元にelementのhandlerを解除する', function() {
+        var func = function() {
+                expect(1).toEqual(0);
+            };
+
+        base.uncontract(base.contract(window, 'load', func));
+    });
 });
 /*
 describe('XXXは', function() {

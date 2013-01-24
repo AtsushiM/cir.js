@@ -43,7 +43,7 @@ describe('elementは', function() {
 
     it('off(element, eventname, handler)でelementにeventnameでhandlerを解除する', function() {
         var func = function() {
-                expect(1).toEqual(1);
+                expect(1).toEqual(0);
             };
 
         el.on(window, 'load', func);
