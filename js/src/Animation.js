@@ -2,10 +2,6 @@
 (function() {
 var prop = [
         'webkitAnimation',
-        // 'MozAnimation',
-        // 'mozAnimation',
-        // 'msAnimation',
-        // 'oAnimation',
         'animation'
     ],
     el = create('p'),

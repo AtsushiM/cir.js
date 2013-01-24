@@ -553,7 +553,7 @@ Global['ease'] = {
         return -dist / 2 * ((--time) * (time - 2) - 1) + from;
     },
     'inBack': function(time, from, dist, duration) {
-        return dist * (time /= duration) * time * ((s + 1) * time - s) + from;
+        return dist * (time /= duration) * time * ((easebackrate + 1) * time - easebackrate) + from;
     },
     'outBack': function(time, from, dist, duration) {
         return dist * ((time = time / duration - 1) * time *
@@ -608,10 +608,6 @@ Global['cssease'] = {
 (function() {
 var prop = [
         'webkitAnimation',
-        // 'MozAnimation',
-        // 'mozAnimation',
-        // 'msAnimation',
-        // 'oAnimation',
         'animation'
     ],
     el = create('p'),
