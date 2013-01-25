@@ -643,130 +643,132 @@ for (; i < len; i++) {
     }
 }
 
-Mine = Global['Animation'] = klass({
-    'extend': Base,
-    'init': function(element, property, option) {
-        if (!support) {
-            return FALSE;
-        }
+if (support) {
+    Mine = Global['Animation'] = klass({
+        'extend': Base,
+        'init': function(element, property, option) {
+            option = option || {};
 
-        option = option || {};
+            this.onComplete = option['onComplete'] || nullFunction;
 
-        this.onComplete = option['onComplete'] || nullFunction;
+            this.el = element;
 
-        this.el = element;
+            Mine['id']++;
+            this._id = 'ciranim' + Mine['id'];
 
-        Mine['id']++;
-        this._id = 'ciranim' + Mine['id'];
+            var duration = option['duration'] || Mine['Duration'],
+                ease = option['ease'] || 'ease';
 
-        var duration = option['duration'] || Mine['Duration'],
-            ease = option['ease'] || 'ease';
+            // property
+            var i,
+                prop = {};
 
-        // property
-        var i,
-            prop = {};
-
-        for (i in property) {
-            prop[i] = property[i];
-            if (isNumber(prop[i])) {
-                prop[i] = prop[i] + 'px';
-            }
-        }
-
-        this.property = prop;
-
-        prop = replaceAll(
-            replaceAll(JSON.stringify(prop), '"', ''),
-            ',',
-            ';'
-        );
-
-        sheet.insertRule(
-            '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
-            sheet.cssRules.length);
-
-        if (!isArray(ease)) {
-            ease = [ease];
-        }
-
-        addCSSRule(this._id, css_prefix, duration, ease);
-
-        if (!option['manual']) {
-            this['start']();
-        }
-    },
-    'properties': {
-        _off: function() {
-            off(this.el, event_key + 'End', this.end);
-            off(this.el, 'animationend', this.end);
-        },
-        'dispose': function() {
-            this.stop();
-            this._orgdis();
-        },
-        'start': function() {
-            var mine = this;
-
-            mine.end = endaction;
-            on(mine.el, event_key + 'End', endaction);
-            on(mine.el, 'animationend', endaction);
-
-            addClass(mine.el, mine._id);
-
-            function endaction(e) {
-                var rule = sheet.cssRules,
-                    len = rule.length,
-                    name;
-
-                mine._off();
-
-
-                if (prefix === 'webkit') {
-                    for (; len--;) {
-                        name = rule[len].name ||
-                            ('' + rule[len].selectorText).split('.')[1];
-
-                        if (name === mine._id) {
-                            sheet.deleteRule(len);
-                        }
-                    }
-                    removeClass(mine.el, mine._id);
-
-                    css(mine.el, mine.property);
+            for (i in property) {
+                prop[i] = property[i];
+                if (isNumber(prop[i])) {
+                    prop[i] = prop[i] + 'px';
                 }
-                mine.onComplete(e);
+            }
+
+            this.property = prop;
+
+            prop = replaceAll(
+                replaceAll(JSON.stringify(prop), '"', ''),
+                ',',
+                ';'
+            );
+
+            sheet.insertRule(
+                '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
+                sheet.cssRules.length);
+
+            if (!isArray(ease)) {
+                ease = [ease];
+            }
+
+            addCSSRule(this._id, css_prefix, duration, ease);
+
+            if (!option['manual']) {
+                this['start']();
             }
         },
-        'stop': function() {
-            var stopobj = {};
+        'properties': {
+            _off: function() {
+                off(this.el, event_key + 'End', this.end);
+                off(this.el, 'animationend', this.end);
+            },
+            'dispose': function() {
+                this.stop();
+                this._orgdis();
+            },
+            'start': function() {
+                var mine = this;
 
-            stopobj[css_prefix + 'animation-play-state'] = 'paused';
+                mine.end = endaction;
+                on(mine.el, event_key + 'End', endaction);
+                on(mine.el, 'animationend', endaction);
 
-            css(this.el, stopobj);
-            this._off();
+                addClass(mine.el, mine._id);
+
+                function endaction(e) {
+                    var rule = sheet.cssRules,
+                        len = rule.length,
+                        name;
+
+                    mine._off();
+
+
+                    if (prefix === 'webkit') {
+                        for (; len--;) {
+                            name = rule[len].name ||
+                                ('' + rule[len].selectorText).split('.')[1];
+
+                            if (name === mine._id) {
+                                sheet.deleteRule(len);
+                            }
+                        }
+                        removeClass(mine.el, mine._id);
+
+                        css(mine.el, mine.property);
+                    }
+                    mine.onComplete(e);
+                }
+            },
+            'stop': function() {
+                var stopobj = {};
+
+                stopobj[css_prefix + 'animation-play-state'] = 'paused';
+
+                css(this.el, stopobj);
+                this._off();
+            }
         }
+    });
+
+    function addCSSRule(id, css_prefix, duration, eases) {
+        var i = 0,
+            len = eases.length,
+            rule = '';
+
+        for (; i < len; i++) {
+            rule += css_prefix + 'animation:' +
+                    id + ' ' +
+                    duration + 'ms ' +
+                    eases[i] + ' 0s 1 normal both;';
+        }
+
+        sheet.insertRule('.' + id +
+            '{' + rule + '}',
+            sheet.cssRules.length);
     }
-});
+}
+else {
+    Mine = Global['Animation'] = {};
+}
+
 Mine['id'] = 0;
 Mine['Duration'] = 500;
 Mine['support'] = support;
-
-function addCSSRule(id, css_prefix, duration, eases) {
-    var i = 0,
-        len = eases.length,
-        rule = '';
-
-    for (; i < len; i++) {
-        rule += css_prefix + 'animation:' +
-                id + ' ' +
-                duration + 'ms ' +
-                eases[i] + ' 0s 1 normal both;';
-    }
-
-    sheet.insertRule('.' + id +
-        '{' + rule + '}',
-        sheet.cssRules.length);
-}
 }());
 /* Test: "../../spec/_src/src/Transition/test.js" */
 (function() {
@@ -807,105 +809,107 @@ for (; i < len; i++) {
     }
 }
 
-Mine = Global['Transition'] = klass({
-    'extend': Base,
-    'init': function(element, property, option) {
-        if (!support) {
-            return FALSE;
-        }
+if (support) {
+    Mine = Global['Transition'] = klass({
+        'extend': Base,
+        'init': function(element, property, option) {
+            option = option || {};
+            option['onComplete'] = option['onComplete'] || nullFunction;
 
-        option = option || {};
-        option['onComplete'] = option['onComplete'] || nullFunction;
+            Mine['id']++;
+            this._id = 'cirtrans' + Mine['id'];
 
-        Mine['id']++;
-        this._id = 'cirtrans' + Mine['id'];
+            var transProp = [],
+                animeProp = override({}, property),
+                i,
+                duration = option['duration'] || Mine['Duration'],
+                ease = option['ease'] || 'ease';
 
-        var transProp = [],
-            animeProp = override({}, property),
-            i,
-            duration = option['duration'] || Mine['Duration'],
-            ease = option['ease'] || 'ease';
+            if (!isArray(ease)) {
+                ease = [ease];
+            }
 
-        if (!isArray(ease)) {
-            ease = [ease];
-        }
+            for (i in property) {
+                transProp.push(i);
+            }
 
-        for (i in property) {
-            transProp.push(i);
-        }
+            addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-        addCSSRule(this._id, css_prefix, duration, ease, transProp);
+            this.el = element;
+            this.property = property;
+            this.option = option;
 
-        this.el = element;
-        this.property = property;
-        this.option = option;
-
-        if (!option['manual']) {
-            this['start']();
-        }
-    },
-    'properties': {
-        'dispose': function() {
-            this['stop']();
-            this._orgdis();
+            if (!option['manual']) {
+                this['start']();
+            }
         },
-        'start': function() {
-            var mine = this;
+        'properties': {
+            'dispose': function() {
+                this['stop']();
+                this._orgdis();
+            },
+            'start': function() {
+                var mine = this;
 
-            mine._endfunc = function(e) {
-                mine['stop']();
-                setTimeout(function() {
-                    mine.option['onComplete'](e);
-                }, 1);
-            };
+                mine._endfunc = function(e) {
+                    mine['stop']();
+                    setTimeout(function() {
+                        mine.option['onComplete'](e);
+                    }, 1);
+                };
 
-            on(mine.el, event_key + 'End', mine._endfunc);
-            on(mine.el, 'transitionend', mine._endfunc);
-            addClass(mine.el, mine._id);
-            css(mine.el, mine.property);
-        },
-        'stop': function() {
-            var rule = sheet.cssRules,
-                len = rule.length,
-                name;
+                on(mine.el, event_key + 'End', mine._endfunc);
+                on(mine.el, 'transitionend', mine._endfunc);
+                addClass(mine.el, mine._id);
+                css(mine.el, mine.property);
+            },
+            'stop': function() {
+                var rule = sheet.cssRules,
+                    len = rule.length,
+                    name;
 
-            off(this.el, event_key + 'End', this._endfunc);
-            off(this.el, 'transitionend', this._endfunc);
-            removeClass(this.el, this._id);
+                off(this.el, event_key + 'End', this._endfunc);
+                off(this.el, 'transitionend', this._endfunc);
+                removeClass(this.el, this._id);
 
-            for (; len--;) {
-                name = rule[len].name ||
-                    ('' + rule[len].selectorText).split('.')[1];
+                for (; len--;) {
+                    name = rule[len].name ||
+                        ('' + rule[len].selectorText).split('.')[1];
 
-                if (name === this._id) {
-                    sheet.deleteRule(len);
-                    break;
+                    if (name === this._id) {
+                        sheet.deleteRule(len);
+                        break;
+                    }
                 }
             }
         }
+    });
+
+    function addCSSRule(id, css_prefix, duration, eases, transProp) {
+        var i = 0,
+            len = eases.length,
+            rule = '';
+
+        rule +=
+            css_prefix + 'transition-property:' + transProp.join(' ') + ';' +
+            css_prefix + 'transition-duration:' + duration + 'ms;';
+
+        for (; i < len; i++) {
+            rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
+        }
+
+        sheet.insertRule('.' + id +
+            '{' + rule + '}',
+            sheet.cssRules.length);
     }
-});
+}
+else {
+    Mine = Global['Transition'] = {};
+}
+
 Mine['id'] = 0;
 Mine['support'] = support;
 Mine['Duration'] = 500;
-
-function addCSSRule(id, css_prefix, duration, eases, transProp) {
-    var i = 0,
-        len = eases.length,
-        rule = '';
-
-    rule +=
-        css_prefix + 'transition-property:' + transProp.join(' ') + ';' +
-        css_prefix + 'transition-duration:' + duration + 'ms;';
-
-    for (; i < len; i++) {
-        rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
-    }
-
-    sheet.insertRule('.' + id +
-        '{' + rule + '}',
-        sheet.cssRules.length);
-}
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 (function() {
@@ -1546,48 +1550,6 @@ Global['Movie'] = function(config) {
     config['type'] = 'Video';
     return new Global['Media'](config);
 };
-/* Test: "%JASMINE_TEST_PATH%" */
-Global['DeviceOrientation'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        if (!Global['DeviceOrientation']['support']) {
-            return false;
-        }
-    },
-    'propeties': {
-        'bind': function(func) {
-            this['unbind']();
-            this._bindid = this['contract'](win, 'deviceorientation', func);
-        },
-        'unbind': function() {
-            if (this._bindid) {
-                this['uncontract'](this._bindid);
-            }
-        }
-    }
-});
-Global['DeviceOrientation']['support'] = 'deviceorientation' in win;
-/* Test: "%JASMINE_TEST_PATH%" */
-Global['DeviceMotion'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        if (!Global['DeviceMotion']['support']) {
-            return false;
-        }
-    },
-    'propeties': {
-        'bind': function(func) {
-            this['unbind']();
-            this._bindid = this['contract'](win, 'devicemotion', func);
-        },
-        'unbind': function() {
-            if (this._bindid) {
-                this['uncontract'](this._bindid);
-            }
-        }
-    }
-});
-Global['DeviceMotion']['support'] = 'devicemotion' in win;
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global['Ajax'] = klass({
     'extend': Base,
@@ -2526,6 +2488,145 @@ Global['Mobile'] = klass({
         }
     }
 });
+/* Test: "%JASMINE_TEST_PATH%" */
+(function() {
+var support = 'ondeviceorientation' in win;
+
+if (support) {
+    Global['DeviceOrientation'] = klass({
+        'extend': Base,
+        'init': function(config) {
+            this['_super']();
+        },
+        'properties': {
+            'bind': function(func) {
+                this['unbind']();
+                this._bindid = this['contract'](win, 'deviceorientation', func);
+            },
+            'unbind': function() {
+                if (this._bindid) {
+                    this['uncontract'](this._bindid);
+                }
+            }
+        }
+    });
+}
+else {
+    Global['DeviceOrientation'] = {};
+}
+
+Global['DeviceOrientation']['support'] = support;
+}());
+/* Test: "%JASMINE_TEST_PATH%" */
+(function() {
+var support = 'ondevicemotion' in win;
+
+if (support) {
+    Global['DeviceMotion'] = klass({
+        'extend': Base,
+        'init': function(config) {
+            this['_super']();
+        },
+        'properties': {
+            'bind': function(func) {
+                this['unbind']();
+                this._bindid = this['contract'](win, 'devicemotion', func);
+            },
+            'unbind': function() {
+                if (this._bindid) {
+                    this['uncontract'](this._bindid);
+                }
+            }
+        }
+    });
+}
+else {
+    Global['DeviceMotion'] = {};
+}
+
+Global['DeviceMotion']['support'] = support;
+}());
+/* Test: "%JASMINE_TEST_PATH%" */
+(function() {
+var Shake,
+    convert,
+    mobile = new C['Mobile']();
+
+if (mobile['isMobile']()) {
+    if (Global['DeviceOrientation']['support']) {
+        Shake = Global['DeviceOrientation'];
+        convert = function(e) {
+            return e;
+        };
+    }
+    else if (Global['DeviceMotion']['support']) {
+        Shake = Global['DeviceMotion'];
+        convert = function(e) {
+            return e['rotationRate'];
+        };
+    }
+}
+mobile = mobile['dispose']();
+
+if (!Shake) {
+    Global['DeviceShake'] = {
+        'support': FALSE
+    };
+    return false;
+}
+
+Global['DeviceShake'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
+        this._shaker = new Shake();
+        this._limit = config['limit'];
+        this._waittime = config['waittime'];
+        this._callback = config['callback'];
+
+        this['bind']();
+    },
+    'properties': {
+        'dispose': function() {
+            this['unbind']();
+            this._orgdis();
+        },
+        'bind': function() {
+            var mine = this,
+                base_e,
+                shaked = FALSE,
+                diffbeta,
+                wraphandle = function(e) {
+                    e = convert(e);
+
+                    if (!base_e) {
+                        base_e = e;
+                    }
+
+                    diffbeta = Math.abs(e['beta'] - base_e['beta']);
+
+                    if (diffbeta > mine._limit) {
+                        shaked = TRUE;
+                        base_e = NULL;
+
+                        mine._callback(e);
+
+                        setTimeout(function() {
+                            shaked = FALSE;
+                        }, mine._waittime);
+                    }
+                };
+
+            mine._shaker['bind'](wraphandle);
+        },
+        'unbind': function() {
+            this._shaker['unbind']();
+        }
+    }
+});
+Global['DeviceShake']['support'] = TRUE;
+
+}());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
 Global['FontImg'] = klass({
     'extend': Base,
