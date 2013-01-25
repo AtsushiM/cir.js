@@ -1,72 +1,7 @@
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
-Global['LocalStorage'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        config = config || {};
+Global['LocalStorage'] = function(config) {
+    config = config || {};
 
-        // singleton
-        if (config['single'] && Global['LocalStorage'].instance) {
-            return Global['LocalStorage'].instance;
-        }
-
-        this._n = config['namespace'] ? config['namespace'] + '-' : '';
-
-        if (config['single']) {
-            Global['LocalStorage'].instance = this;
-        }
-    },
-    'properties': {
-        _s: win.localStorage,
-        'set': function(key, val) {
-            this._s.setItem(this._n + key, JSON.stringify(val));
-            return TRUE;
-        },
-        'get': function(key) {
-            var mine = this,
-                ret = {},
-                i;
-
-            if (key) {
-                return JSON.parse(mine._s.getItem(mine._n + key));
-            }
-
-            for (i in mine._s) {
-                if (!this._n) {
-                    ret[i] = JSON.parse(mine._s[i]);
-                }
-                else {
-                    key = i.split(this._n)[1];
-                    if (key) {
-                        ret[key] = JSON.parse(mine._s[i]);
-                    }
-                }
-            }
-
-            return ret;
-        },
-        'remove': function(key) {
-            key = this._n + key;
-
-            if (!this._s.getItem(key)) {
-                return FALSE;
-            }
-
-            this._s.removeItem(key);
-
-            return TRUE;
-        },
-        'reset': function() {
-            if (!this._n) {
-                this._s.clear();
-
-                return TRUE;
-            }
-
-            var i;
-
-            for (i in this._s) {
-                this.remove(i);
-            }
-        }
-    }
-});
+    config['type'] = 'Local';
+    return new Global['WebStorage'](config);
+};

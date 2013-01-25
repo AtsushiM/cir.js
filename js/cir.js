@@ -1380,43 +1380,40 @@ Global['HashQuery'] = klass({
         }
     }
 });
-/* Test: "../../spec/_src/src/Audio/test.js" */
-Global['Audio'] = function(config) {
-    if (!win['HTMLAudioElement']) {
+/* Test: "../../spec/_src/src/Embed/test.js" */
+Global['Embed'] = function(config) {
+    if (!win['HTML' + config['type'] + 'Element']) {
         return FALSE;
     }
 
-    var audio = new Audio(''),
-        suffix = config['suffix'] || [
-            ['mp3', 'mpeg'],
-            ['wav', 'wav'],
-            ['ogg', 'ogg'],
-            ['m4a', 'mp4']
-        ],
-        support = [],
+    var type = config['type'].toLowerCase(),
+        embed = create(type),
+        suffix = config['suffix'],
+        support,
         i = 0,
         len = suffix.length;
 
     for (; i < len; i++) {
-        if (audio.canPlayType('audio/' + suffix[i][1])) {
-            support.push([suffix[i][0]]);
+        if (embed.canPlayType(type + '/' + suffix[i][1])) {
+            support = suffix[i][0];
+            break;
         }
     }
 
-    if (support.length === 0) {
+    if (!support) {
         return FALSE;
     }
 
-    audio['controls'] = config['controls'] ? TRUE : FALSE;
-    audio['preload'] = config['preload'] || 'auto';
-    audio['autoplay'] = config['autoplay'] ? TRUE : FALSE;
-    audio['loop'] = config['loop'] ? TRUE : FALSE;
-    audio.src = config['dir'] + config['name'] + '.' + support[0];
+    embed['controls'] = config['controls'] ? TRUE : FALSE;
+    embed['preload'] = config['preload'] || 'auto';
+    embed['autoplay'] = config['autoplay'] ? TRUE : FALSE;
+    embed['loop'] = config['loop'] ? TRUE : FALSE;
+    embed['src'] = config['dir'] + config['name'] + '.' + support;
 
-    return audio;
+    return embed;
 };
-/* Test: "../../spec/_src/src/Sound/test.js" */
-Global['Sound'] = klass({
+/* Test: "../../spec/_src/src/Media/test.js" */
+Global['Media'] = klass({
     'extend': Base,
     'init': function(config) {
         this['_super']();
@@ -1424,7 +1421,7 @@ Global['Sound'] = klass({
         var mine = this,
             autoplay = config['autoplay'],
             loop = config['loop'],
-            audio,
+            media,
             ev_canplay = 'canplay',
             _parent = config['element'] || doc.body;
 
@@ -1432,10 +1429,17 @@ Global['Sound'] = klass({
         config['autoplay'] =
         config['loop'] = FALSE;
 
-        audio = Global['Audio'](config);
-        mine._audio = audio;
+        switch (config['type']) {
+            case 'Audio':
+                media = Global['Audio'](config);
+                break;
+            case 'Video':
+                media = Global['Video'](config);
+                break;
+        }
+        mine._el = media;
 
-        if (!audio) {
+        if (!media) {
             return FALSE;
         }
 
@@ -1446,37 +1450,37 @@ Global['Sound'] = klass({
                 mine['play']();
             };
 
-            autoplayid = this['contract'](audio, ev_canplay, autoplay);
+            autoplayid = this['contract'](media, ev_canplay, autoplay);
         }
         if (loop) {
             this['loop'](TRUE);
         }
 
         if (config['oncanplay']) {
-            this['contract'](audio, ev_canplay, config['oncanplay']);
+            this['contract'](media, ev_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this['contract'](audio, ev_ended, config['onended']);
+            this['contract'](media, ev_ended, config['onended']);
         }
 
-        append(_parent, audio);
+        append(_parent, media);
     },
     'properties': {
         'dispose': function() {
-            remove(this._audio);
+            remove(this._el);
             this._orgdis();
         },
-        'getAudio': function() {
-            return this._audio;
+        'getElement': function() {
+            return this._el;
         },
         'getCurrent': function() {
-            return this._audio.currentTime;
+            return this._el.currentTime;
         },
         'getDuration': function() {
-            return this._audio.duration;
+            return this._el.duration;
         },
         'setCurrent': function(num) {
-            this._audio.currentTime = num;
+            this._el.currentTime = num;
         },
         'loop': function(bool) {
             var mine = this;
@@ -1487,7 +1491,7 @@ Global['Sound'] = klass({
 
             if (bool) {
                 mine.loopid =
-                mine['contract'](mine._audio, ev_ended, function() {
+                mine['contract'](mine._el, ev_ended, function() {
                     mine['stop']();
                     mine['play']();
                 });
@@ -1496,10 +1500,10 @@ Global['Sound'] = klass({
         'autoplay': function(bool) {
         },
         'play': function() {
-            this._audio.play();
+            this._el.play();
         },
         'pause': function() {
-            this._audio.pause();
+            this._el.pause();
         },
         'stop': function() {
             this['setCurrent'](0);
@@ -1507,127 +1511,41 @@ Global['Sound'] = klass({
         }
     }
 });
+/* Test: "../../spec/_src/src/Audio/test.js" */
+Global['Audio'] = function(config) {
+    config['type'] = 'Audio';
+
+    config['suffix'] = config['suffix'] || [
+        ['mp3', 'mpeg'],
+        ['wav', 'wav'],
+        ['ogg', 'ogg'],
+        ['m4a', 'mp4']
+    ];
+
+    return new Global['Embed'](config);
+};
+/* Test: "../../spec/_src/src/Sound/test.js" */
+Global['Sound'] = function(config) {
+    config['type'] = 'Audio';
+    return new Global['Media'](config);
+};
 /* Test: "../../spec/_src/src/Video/test.js" */
 Global['Video'] = function(config) {
-    if (!win['HTMLVideoElement']) {
-        return FALSE;
-    }
+    config['type'] = 'Video';
 
-    var video = create('video'),
-        suffix = config['suffix'] || [
-            ['webm', 'webm'],
-            ['mp4', 'mp4'],
-            ['ogv', 'ogg']
-        ],
-        support = [],
-        i = 0,
-        len = suffix.length;
+    config['suffix'] = config['suffix'] || [
+        ['webm', 'webm'],
+        ['mp4', 'mp4'],
+        ['ogv', 'ogg']
+    ];
 
-    for (; i < len; i++) {
-        if (video['canPlayType']('video/' + suffix[i][1])) {
-            support.push([suffix[i][0]]);
-        }
-    }
-
-    if (support.length === 0) {
-        return FALSE;
-    }
-
-    video['controls'] = config['controls'] ? TRUE : FALSE;
-    video['preload'] = config['preload'] || 'auto';
-    video['autoplay'] = config['autoplay'] ? TRUE : FALSE;
-    video['loop'] = config['loop'] ? TRUE : FALSE;
-    video.src = config['dir'] + config['name'] + '.' + support[0];
-
-    return video;
+    return new Global['Embed'](config);
 };
 /* Test: "../../spec/_src/src/Movie/test.js" */
-Global['Movie'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
-
-        var mine = this,
-            autoplay = config['autoplay'],
-            loop = config['loop'],
-            video,
-            _parent = config['element'] || doc.body;
-
-        config['preload'] = 'auto';
-        config['autoplay'] =
-        config['loop'] = FALSE;
-
-        video = Global['Video'](config);
-        mine._video = video;
-
-        if (!video) {
-            return FALSE;
-        }
-
-        if (autoplay) {
-            autoplay = function() {
-                mine['play']();
-            };
-
-            this['contract'](video, ev_canplay, autoplay);
-        }
-        if (loop) {
-            this['loop'](TRUE);
-        }
-
-        if (config['oncanplay']) {
-            this['contract'](video, ev_canplay, config['oncanplay']);
-        }
-        if (config['onended']) {
-            this['contract'](video, ev_ended, config['onended']);
-        }
-
-        append(_parent, video);
-    },
-    'properties': {
-        'dispose': function() {
-            remove(this._video);
-            this._orgdis();
-        },
-        'getVideo': function() {
-            return this._video;
-        },
-        'getCurrent': function() {
-            return this._video.currentTime;
-        },
-        'getDuration': function() {
-            return this._video.duration;
-        },
-        'setCurrent': function(num) {
-            console.log(this._video);
-            this._video.currentTime = num;
-        },
-        'loop': function(bool) {
-            var mine = this;
-            if (mine.loopid) {
-                mine['uncontract'](mine.loopid);
-                delete mine.loopid;
-            }
-
-            if (bool) {
-                mine.loopid = mine['contract'](mine._video, ev_ended, function() {
-                    mine['stop']();
-                    mine['play']();
-                });
-            }
-        },
-        'play': function() {
-            this._video.play();
-        },
-        'pause': function() {
-            this._video.pause();
-        },
-        'stop': function() {
-            this['setCurrent'](0);
-            this['pause']();
-        }
-    }
-});
+Global['Movie'] = function(config) {
+    config['type'] = 'Video';
+    return new Global['Media'](config);
+};
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global['Ajax'] = klass({
     'extend': Base,
@@ -1884,6 +1802,93 @@ Global['DataStore'] = klass({
         }
     }
 });
+/* Test: "../../spec/_src/src/WebStorage/test.js" */
+Global['WebStorage'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        var key = 'Storage',
+            klassname = config['type'] + key;
+
+        // singleton
+        if (config['single'] && Global[klassname].instance) {
+            return Global[klassname].instance;
+        }
+
+        this._n = config['namespace'] ? config['namespace'] + '-' : '';
+        this._storage = win[config['type'].toLowerCase() + key];
+
+        if (config['single']) {
+            Global[klassname].instance = this;
+        }
+    },
+    'properties': {
+        'set': function(key, val) {
+            this._storage.setItem(this._n + key, JSON.stringify(val));
+            return TRUE;
+        },
+        'get': function(key) {
+            var mine = this,
+                ret = {},
+                i;
+
+            if (key) {
+                return JSON.parse(mine._storage.getItem(mine._n + key));
+            }
+
+            for (i in mine._storage) {
+                if (!this._n) {
+                    ret[i] = JSON.parse(mine._storage[i]);
+                }
+                else {
+                    key = i.split(this._n)[1];
+                    if (key) {
+                        ret[key] = JSON.parse(mine._storage[i]);
+                    }
+                }
+            }
+
+            return ret;
+        },
+        'remove': function(key) {
+            key = this._n + key;
+
+            if (!this._storage.getItem(key)) {
+                return FALSE;
+            }
+
+            this._storage.removeItem(key);
+
+            return TRUE;
+        },
+        'reset': function() {
+            if (!this._n) {
+                this._storage.clear();
+
+                return TRUE;
+            }
+
+            var i;
+
+            for (i in this._storage) {
+                this.remove(i);
+            }
+        }
+    }
+});
+/* Test: "../../spec/_src/src/LocalStorage/test.js" */
+Global['LocalStorage'] = function(config) {
+    config = config || {};
+
+    config['type'] = 'Local';
+    return new Global['WebStorage'](config);
+};
+/* Test: "../../spec/_src/src/SessionStorage/test.js" */
+Global['SessionStorage'] = function(config) {
+    config = config || {};
+
+    config['type'] = 'Session';
+    return new Global['WebStorage'](config);
+};
 /* Test: "../../spec/_src/src/Deferred/test.js" */
 Global['Deferred'] = klass({
     'extend': Base,
@@ -2341,78 +2346,6 @@ Global['WindowLoad'] = klass({
                 };
 
             disposeid = this['contract'](win, ev['load'], loaded);
-        }
-    }
-});
-/* Test: "../../spec/_src/src/LocalStorage/test.js" */
-Global['LocalStorage'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        config = config || {};
-
-        // singleton
-        if (config['single'] && Global['LocalStorage'].instance) {
-            return Global['LocalStorage'].instance;
-        }
-
-        this._n = config['namespace'] ? config['namespace'] + '-' : '';
-
-        if (config['single']) {
-            Global['LocalStorage'].instance = this;
-        }
-    },
-    'properties': {
-        _s: win.localStorage,
-        'set': function(key, val) {
-            this._s.setItem(this._n + key, JSON.stringify(val));
-            return TRUE;
-        },
-        'get': function(key) {
-            var mine = this,
-                ret = {},
-                i;
-
-            if (key) {
-                return JSON.parse(mine._s.getItem(mine._n + key));
-            }
-
-            for (i in mine._s) {
-                if (!this._n) {
-                    ret[i] = JSON.parse(mine._s[i]);
-                }
-                else {
-                    key = i.split(this._n)[1];
-                    if (key) {
-                        ret[key] = JSON.parse(mine._s[i]);
-                    }
-                }
-            }
-
-            return ret;
-        },
-        'remove': function(key) {
-            key = this._n + key;
-
-            if (!this._s.getItem(key)) {
-                return FALSE;
-            }
-
-            this._s.removeItem(key);
-
-            return TRUE;
-        },
-        'reset': function() {
-            if (!this._n) {
-                this._s.clear();
-
-                return TRUE;
-            }
-
-            var i;
-
-            for (i in this._s) {
-                this.remove(i);
-            }
         }
     }
 });
@@ -2887,78 +2820,6 @@ function getHeader(callback) {
     return xhr;
 }
 }());
-/* Test: "../../spec/_src/src/SessionStorage/test.js" */
-Global['SessionStorage'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        config = config || {};
-
-        // singleton
-        if (config['single'] && Global['SessionStorage'].instance) {
-            return Global['SessionStorage'].instance;
-        }
-
-        this._n = config['namespace'] ? config['namespace'] + '-' : '';
-
-        if (config['single']) {
-            Global['SessionStorage'].instance = this;
-        }
-    },
-    'properties': {
-        _s: win.sessionStorage,
-        'set': function(key, val) {
-            this._s.setItem(this._n + key, JSON.stringify(val));
-            return TRUE;
-        },
-        'get': function(key) {
-            var mine = this,
-                ret = {},
-                i;
-
-            if (key) {
-                return JSON.parse(mine._s.getItem(mine._n + key));
-            }
-
-            for (i in mine._s) {
-                if (!this._n) {
-                    ret[i] = JSON.parse(mine._s[i]);
-                }
-                else {
-                    key = i.split(this._n)[1];
-                    if (key) {
-                        ret[key] = JSON.parse(mine._s[i]);
-                    }
-                }
-            }
-
-            return ret;
-        },
-        'remove': function(key) {
-            key = this._n + key;
-
-            if (!this._s.getItem(key)) {
-                return FALSE;
-            }
-
-            this._s.removeItem(key);
-
-            return TRUE;
-        },
-        'reset': function() {
-            if (!this._n) {
-                this._s.clear();
-
-                return TRUE;
-            }
-
-            var i;
-
-            for (i in this._s) {
-                this.remove(i);
-            }
-        }
-    }
-});
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
 Global['Surrogate'] = klass({
     'extend': Base,

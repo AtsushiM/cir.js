@@ -29,7 +29,7 @@ describe('Movieは', function() {
         expect(movie).toEqual({});
     });
 
-    it('getVideo()でvideo要素を取得する', function() {
+    it('getElement()でvideo要素を取得する', function() {
         movie = new c.Movie({
             dir: '/spec/common/',
             name: 'testmovie',
@@ -45,7 +45,7 @@ describe('Movieは', function() {
 
         waits(100);
         runs(function() {
-            expect(movie.getVideo().nodeName).toEqual('VIDEO');
+            expect(movie.getElement().nodeName).toEqual('VIDEO');
         });
     });
 

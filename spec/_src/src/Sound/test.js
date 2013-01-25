@@ -29,7 +29,7 @@ describe('Soundは', function() {
         expect(sound).toEqual({});
     });
 
-    it('getAudio()でAudio要素を取得する', function() {
+    it('getElement()でAudio要素を取得する', function() {
         sound = new c.Sound({
             dir: '/spec/common/',
             name: 'tm2_door000',
@@ -45,7 +45,7 @@ describe('Soundは', function() {
 
         waits(100);
         runs(function() {
-            expect(sound.getAudio().nodeName).toEqual('AUDIO');
+            expect(sound.getElement().nodeName).toEqual('AUDIO');
         });
     });
 
