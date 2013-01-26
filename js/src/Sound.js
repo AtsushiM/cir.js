@@ -3,3 +3,4 @@ Global['Sound'] = function(config) {
     config['type'] = 'Audio';
     return new Global['Media'](config);
 };
+Global['Sound']['support'] = Global['Audio']['support'];

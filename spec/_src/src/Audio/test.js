@@ -8,12 +8,6 @@ describe('Audioは', function() {
         audio = new c.Audio({
             dir: '/spec/common/',
             name: 'tm2_door000',
-            suffix: [ // default: undefined
-                ['mp3', 'mpeg'], // [suffix,  type]
-                ['wav', 'wav'],
-                ['ogg', 'ogg'],
-                ['m4a', 'mp4']
-            ],
             preload: 'auto',
             autoplay: true,
             loop: false

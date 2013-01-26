@@ -3,3 +3,4 @@ Global['Movie'] = function(config) {
     config['type'] = 'Video';
     return new Global['Media'](config);
 };
+Global['Movie']['support'] = Global['Video']['support'];

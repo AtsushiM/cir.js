@@ -1,6 +1,7 @@
 /* Test: "%JASMINE_TEST_PATH%" */
 (function() {
 var Shake,
+    support = false,
     convert,
     mobile = new C['Mobile']();
 
@@ -17,15 +18,12 @@ if (mobile['isMobile']()) {
             return e['rotationRate'];
         };
     }
+
+    if (Shake) {
+        support = true;
+    }
 }
 mobile = mobile['dispose']();
-
-if (!Shake) {
-    Global['DeviceShake'] = {
-        'support': FALSE
-    };
-    return false;
-}
 
 Global['DeviceShake'] = klass({
     'extend': Base,
@@ -76,6 +74,7 @@ Global['DeviceShake'] = klass({
         }
     }
 });
-Global['DeviceShake']['support'] = TRUE;
+
+Global['DeviceShake']['support'] = support ? TRUE : FALSE;
 
 }());

@@ -1386,6 +1386,17 @@ Global['HashQuery'] = klass({
 });
 /* Test: "../../spec/_src/src/Embed/test.js" */
 Global['Embed'] = function(config) {
+    var embed = create(config['type'].toLowerCase());
+
+    embed['controls'] = config['controls'] ? TRUE : FALSE;
+    embed['preload'] = config['preload'] || 'auto';
+    embed['autoplay'] = config['autoplay'] ? TRUE : FALSE;
+    embed['loop'] = config['loop'] ? TRUE : FALSE;
+    embed['src'] = config['dir'] + config['name'] + '.' + config['suffix'][0][0];
+
+    return embed;
+};
+Global['Embed']['supportcheck'] = function(config) {
     if (!win['HTML' + config['type'] + 'Element']) {
         return FALSE;
     }
@@ -1393,28 +1404,21 @@ Global['Embed'] = function(config) {
     var type = config['type'].toLowerCase(),
         embed = create(type),
         suffix = config['suffix'],
-        support,
+        support = [],
         i = 0,
         len = suffix.length;
 
     for (; i < len; i++) {
         if (embed.canPlayType(type + '/' + suffix[i][1])) {
-            support = suffix[i][0];
-            break;
+            support.push(suffix[i]);
         }
     }
 
-    if (!support) {
+    if (!support.length) {
         return FALSE;
     }
 
-    embed['controls'] = config['controls'] ? TRUE : FALSE;
-    embed['preload'] = config['preload'] || 'auto';
-    embed['autoplay'] = config['autoplay'] ? TRUE : FALSE;
-    embed['loop'] = config['loop'] ? TRUE : FALSE;
-    embed['src'] = config['dir'] + config['name'] + '.' + support;
-
-    return embed;
+    return support;
 };
 /* Test: "../../spec/_src/src/Media/test.js" */
 Global['Media'] = klass({
@@ -1515,41 +1519,52 @@ Global['Media'] = klass({
         }
     }
 });
+Global['Media']['supportcheck'] = Global['Embed']['supportcheck'];
 /* Test: "../../spec/_src/src/Audio/test.js" */
 Global['Audio'] = function(config) {
     config['type'] = 'Audio';
 
-    config['suffix'] = config['suffix'] || [
+    config['suffix'] = Global['Audio']['support'];
+
+    return Global['Embed'](config);
+};
+Global['Audio']['support'] = Global['Embed']['supportcheck']({
+    'type': 'Audio',
+    'suffix': [
         ['mp3', 'mpeg'],
         ['wav', 'wav'],
         ['ogg', 'ogg'],
         ['m4a', 'mp4']
-    ];
-
-    return new Global['Embed'](config);
-};
+    ]
+});
 /* Test: "../../spec/_src/src/Sound/test.js" */
 Global['Sound'] = function(config) {
     config['type'] = 'Audio';
     return new Global['Media'](config);
 };
+Global['Sound']['support'] = Global['Audio']['support'];
 /* Test: "../../spec/_src/src/Video/test.js" */
 Global['Video'] = function(config) {
     config['type'] = 'Video';
 
-    config['suffix'] = config['suffix'] || [
-        ['webm', 'webm'],
-        ['mp4', 'mp4'],
-        ['ogv', 'ogg']
-    ];
+    config['suffix'] = Global['Video']['support'];
 
     return new Global['Embed'](config);
 };
+Global['Video']['support'] = Global['Embed']['supportcheck']({
+    'type': 'Video',
+    'suffix': [
+        ['webm', 'webm'],
+        ['mp4', 'mp4'],
+        ['ogv', 'ogg']
+    ]
+});
 /* Test: "../../spec/_src/src/Movie/test.js" */
 Global['Movie'] = function(config) {
     config['type'] = 'Video';
     return new Global['Media'](config);
 };
+Global['Movie']['support'] = Global['Video']['support'];
 /* Test: "../../spec/_src/src/Ajax/test.js" */
 Global['Ajax'] = klass({
     'extend': Base,
@@ -1759,6 +1774,7 @@ Global['Brush'] = klass({
         }
     }
 });
+Global['Brush']['support'] = !!win['HTMLCanvasElement'];
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 Global['DataStore'] = klass({
     'extend': Base,
@@ -2489,66 +2505,47 @@ Global['Mobile'] = klass({
     }
 });
 /* Test: "%JASMINE_TEST_PATH%" */
-(function() {
-var support = 'ondeviceorientation' in win;
-
-if (support) {
-    Global['DeviceOrientation'] = klass({
-        'extend': Base,
-        'init': function(config) {
-            this['_super']();
+Global['DeviceOrientation'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
+    },
+    'properties': {
+        'bind': function(func) {
+            this['unbind']();
+            this._bindid = this['contract'](win, 'deviceorientation', func);
         },
-        'properties': {
-            'bind': function(func) {
-                this['unbind']();
-                this._bindid = this['contract'](win, 'deviceorientation', func);
-            },
-            'unbind': function() {
-                if (this._bindid) {
-                    this['uncontract'](this._bindid);
-                }
+        'unbind': function() {
+            if (this._bindid) {
+                this['uncontract'](this._bindid);
             }
         }
-    });
-}
-else {
-    Global['DeviceOrientation'] = {};
-}
-
-Global['DeviceOrientation']['support'] = support;
-}());
+    }
+});
+Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
 /* Test: "%JASMINE_TEST_PATH%" */
-(function() {
-var support = 'ondevicemotion' in win;
-
-if (support) {
-    Global['DeviceMotion'] = klass({
-        'extend': Base,
-        'init': function(config) {
-            this['_super']();
+Global['DeviceMotion'] = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super']();
+    },
+    'properties': {
+        'bind': function(func) {
+            this['unbind']();
+            this._bindid = this['contract'](win, 'devicemotion', func);
         },
-        'properties': {
-            'bind': function(func) {
-                this['unbind']();
-                this._bindid = this['contract'](win, 'devicemotion', func);
-            },
-            'unbind': function() {
-                if (this._bindid) {
-                    this['uncontract'](this._bindid);
-                }
+        'unbind': function() {
+            if (this._bindid) {
+                this['uncontract'](this._bindid);
             }
         }
-    });
-}
-else {
-    Global['DeviceMotion'] = {};
-}
-
-Global['DeviceMotion']['support'] = support;
-}());
+    }
+});
+Global['DeviceMotion']['support'] = 'ondevicemotion' in win;
 /* Test: "%JASMINE_TEST_PATH%" */
 (function() {
 var Shake,
+    support = false,
     convert,
     mobile = new C['Mobile']();
 
@@ -2565,15 +2562,12 @@ if (mobile['isMobile']()) {
             return e['rotationRate'];
         };
     }
+
+    if (Shake) {
+        support = true;
+    }
 }
 mobile = mobile['dispose']();
-
-if (!Shake) {
-    Global['DeviceShake'] = {
-        'support': FALSE
-    };
-    return false;
-}
 
 Global['DeviceShake'] = klass({
     'extend': Base,
@@ -2624,7 +2618,8 @@ Global['DeviceShake'] = klass({
         }
     }
 });
-Global['DeviceShake']['support'] = TRUE;
+
+Global['DeviceShake']['support'] = support ? TRUE : FALSE;
 
 }());
 /* Test: "../../spec/_src/src/FontImg/test.js" */

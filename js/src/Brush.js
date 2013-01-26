@@ -76,3 +76,4 @@ Global['Brush'] = klass({
         }
     }
 });
+Global['Brush']['support'] = !!win['HTMLCanvasElement'];

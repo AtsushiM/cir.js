@@ -8,11 +8,6 @@ describe('Videoは', function() {
         video = new c.Video({
             dir: '/spec/common/',
             name: 'testmovie',
-            suffix: [ // default: undefined
-                ['webm', 'webm'],
-                ['mp4', 'mp4'],
-                ['ogv', 'ogg']
-            ],
             preload: 'auto',
             autoplay: true,
             loop: false

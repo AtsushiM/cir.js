@@ -97,3 +97,4 @@ Global['Media'] = klass({
         }
     }
 });
+Global['Media']['supportcheck'] = Global['Embed']['supportcheck'];

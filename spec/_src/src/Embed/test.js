@@ -25,6 +25,7 @@ describe('Embedは', function() {
             autoplay: false,
             loop: false
         });
+        console.log(embed);
         expect(embed.nodeName).toEqual('AUDIO');
         expect(embed.preload).toEqual('auto');
         expect(embed.autoplay).toBeFalsy();

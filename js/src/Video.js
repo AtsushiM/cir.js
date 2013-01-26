@@ -2,11 +2,15 @@
 Global['Video'] = function(config) {
     config['type'] = 'Video';
 
-    config['suffix'] = config['suffix'] || [
-        ['webm', 'webm'],
-        ['mp4', 'mp4'],
-        ['ogv', 'ogg']
-    ];
+    config['suffix'] = Global['Video']['support'];
 
     return new Global['Embed'](config);
 };
+Global['Video']['support'] = Global['Embed']['supportcheck']({
+    'type': 'Video',
+    'suffix': [
+        ['webm', 'webm'],
+        ['mp4', 'mp4'],
+        ['ogv', 'ogg']
+    ]
+});
