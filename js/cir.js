@@ -2575,31 +2575,25 @@ Global['DeviceShake'] = klass({
         /* this._callback = config['callback']; */
 
         if (config['callback'] && config['direction']) {
-            switch (config['direction']) {
-                case 'x':
-                    bindprop = 'gamma';
-                    break;
-                case 'y':
-                    bindprop = 'beta';
-                    break;
-                case 'z':
-                    bindprop = 'alpha';
-                    break;
-            }
-
-            this['bind'](bindprop, config['callback']);
+            this['bind'](config['direction'], config['callback']);
         }
     },
     'properties': {
+        convertName: {
+            'x': 'gamma',
+            'y': 'beta',
+            'z': 'alpha'
+        },
         'dispose': function() {
-            this['unbind']();
+            this._shaker['dispose']();
             this._orgdis();
         },
-        'bind': function(propname, callback) {
+        'bind': function(direction, callback) {
+            direction = this.convertName[direction];
+
             var mine = this,
                 base_e,
                 shaked = FALSE,
-                diffbeta,
                 wraphandle = function(e) {
                     e = convert(e);
 
@@ -2607,9 +2601,7 @@ Global['DeviceShake'] = klass({
                         base_e = e;
                     }
 
-                    diffbeta = Math.abs(e[propname] - base_e[propname]);
-
-                    if (diffbeta > mine._limit) {
+                    if (Math.abs(e[direction] - base_e[direction]) > mine._limit) {
                         shaked = TRUE;
                         base_e = NULL;
 
