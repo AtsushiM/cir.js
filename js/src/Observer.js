@@ -1,19 +1,13 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global['Observer'] = klass({
+var ObserverName = 'Observer';
+Global[ObserverName] = klass({
     'extend': Base,
     'init': function(config) {
-        config = config || {};
-
-        // singleton
-        if (config['single'] && Global['Observer'].instance) {
-            return Global['Observer'].instance;
-        }
+        this['_super'](config);
 
         this.observed = {};
 
-        if (config['single']) {
-            Global['Observer'].instance = this;
-        }
+        return this.singleAct(ObserverName);
     },
     'properties': {
         'on': function(key, func) {

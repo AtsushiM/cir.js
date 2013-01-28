@@ -2,9 +2,8 @@
 Global['Facebook'] = klass({
     'extend': Base,
     'properties': {
-        _b: 'https://www.facebook.com/dialog/feed?',
         'shareURL': function(vars) {
-            var url = this._b +
+            var url = 'https://www.facebook.com/dialog/feed?' +
                     'app_id=' + vars['app_id'] + '&' +
                     'redirect_uri=' + vars['redirect_uri'];
 

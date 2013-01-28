@@ -4,7 +4,7 @@ Global['WindowLoad'] = klass({
     'init': function(config) {
         this['_super']();
 
-        if (config && config['onload']) {
+        if (config) {
             this.onload(config['onload']);
         }
     },

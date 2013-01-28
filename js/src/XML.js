@@ -5,7 +5,7 @@ Global['XML'] = klass({
         this.el = create('div');
         this._data = {};
 
-        if (config && config['data']) {
+        if (config) {
             this['setData'](config['data']);
         }
     },

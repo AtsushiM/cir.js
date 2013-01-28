@@ -1,19 +1,11 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
-Global['FPS'] = klass({
+var FPSName = 'FPS';
+Global[FPSName] = klass({
     'extend': Base,
     'init': function(config) {
-        config = config || {};
+        this['_super'](config);
 
-        if (!config['criterion']) {
-            config['criterion'] = 20;
-        }
-
-        // singleton
-        if (config['single'] && Global['FPS'].instance) {
-            return Global['FPS'].instance;
-        }
-
-        this.criterion = config['criterion'],
+        this.criterion = config['criterion'] || 20,
         this.surver = this.criterion,
         this.enterframe = config['enterframe'],
         this.msecFrame = this._getFrame(this.criterion),
@@ -25,9 +17,7 @@ Global['FPS'] = klass({
             this['start']();
         }
 
-        if (config['single']) {
-            Global['FPS'].instance = this;
-        }
+        return this.singleAct(FPSName);
     },
     'properties': {
         'dispose': function() {

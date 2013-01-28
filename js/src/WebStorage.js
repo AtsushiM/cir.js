@@ -1,21 +1,17 @@
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
-Global['WebStorage'] = klass({
+var WebStorageName = 'WebStorage';
+Global[WebStorageName] = klass({
     'extend': Base,
     'init': function(config) {
+        this['_super'](config);
+
         var key = 'Storage',
             klassname = config['type'] + key;
-
-        // singleton
-        if (config['single'] && Global[klassname].instance) {
-            return Global[klassname].instance;
-        }
 
         this._n = config['namespace'] ? config['namespace'] + '-' : '';
         this._storage = win[config['type'].toLowerCase() + key];
 
-        if (config['single']) {
-            Global[klassname].instance = this;
-        }
+        return this.singleAct(WebStorageName);
     },
     'properties': {
         'set': function(key, val) {

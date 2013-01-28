@@ -40,7 +40,7 @@ describe('Animationは', function() {
 
         expect(count).toEqual(0);
 
-        waits(c.Animation.Duration + 200);
+        waits(c.Animation.duration + 200);
         runs(function() {
             expect(count).toEqual(1);
         });
@@ -58,12 +58,12 @@ describe('Animationは', function() {
             }
         });
 
-        waits(c.Animation.Duration + 200);
+        waits(c.Animation.duration + 200);
         runs(function() {
             expect(count).toEqual(0);
             animation.start();
         });
-        waits(c.Animation.Duration + 200);
+        waits(c.Animation.duration + 200);
         runs(function() {
             expect(count).toEqual(1);
         });
@@ -82,7 +82,7 @@ describe('Animationは', function() {
 
         animation.stop();
 
-        waits(c.Animation.Duration + 200);
+        waits(c.Animation.duration + 200);
         runs(function() {
             expect(count).toEqual(0);
         });

@@ -400,49 +400,26 @@ Global['extend'] = function(child, _super) {
         prev.apply(this, arguments);
     };
 };
-/* Test: "../../spec/_src/src/Event/test.js" */
-ev = klass({
-    'extend': Base,
-    'init': function(config) {
-        config = config || {};
-
-        // singleton
-        if (config['single'] && Global['Event'].instance) {
-            return Global['Event'].instance;
-        }
-
-        if (config['single']) {
-            Global['Event'].instance = this;
-        }
-    },
-    'properties': {
-        'switchclick': isTouch ? 'touchstart' : 'click',
-        'switchdown': isTouch ? 'touchstart' : 'mousedown',
-        'switchmove': isTouch ? 'touchmove' : 'mousemove',
-        'switchup': isTouch ? 'touchend' : 'mouseup',
-        'load': 'load',
-        'change': 'change',
-        /* hashchange: 'hashchange', */
-        'click': 'click',
-        'mousedown': 'mousedown',
-        'mousemove': 'mousemove',
-        'mouseup': 'mouseup',
-        'touchstart': 'touchstart',
-        'touchmove': 'touchmove',
-        'touchend': 'touchend',
-        /* orientationchange: 'orientationchange', */
-        'resize': 'resize'
-    }
-});
-Global['Event'] = ev;
-ev = Global['event'] = new ev();
 /* Test: "../../spec/_src/src/Base/test.js" */
 Base = Global['Base'] = klass({
-    'init': function() {
+    'init': function(config) {
+        config = config || {};
         this._dispose = {};
+        this._single = config['single'];
     },
     'properties': {
         _disid: 0,
+        singleAct: function(name) {
+            if (this._single) {
+                if (Global[name].instance) {
+                    return Global[name].instance;
+                }
+
+                Global[name].instance = this;
+            }
+
+            return this;
+        },
         'dispose': function() {
             var i;
 
@@ -478,6 +455,37 @@ Base = Global['Base'] = klass({
         }
     }
 });
+/* Test: "../../spec/_src/src/Event/test.js" */
+var EventName = 'Event';
+ev = klass({
+    'extend': Base,
+    'init': function(config) {
+        this['_super'](config);
+
+        // singleton
+        return this.singleAct(EventName);
+    },
+    'properties': {
+        'switchclick': isTouch ? 'touchstart' : 'click',
+        'switchdown': isTouch ? 'touchstart' : 'mousedown',
+        'switchmove': isTouch ? 'touchmove' : 'mousemove',
+        'switchup': isTouch ? 'touchend' : 'mouseup',
+        'load': 'load',
+        'change': 'change',
+        /* hashchange: 'hashchange', */
+        'click': 'click',
+        'mousedown': 'mousedown',
+        'mousemove': 'mousemove',
+        'mouseup': 'mouseup',
+        'touchstart': 'touchstart',
+        'touchmove': 'touchmove',
+        'touchend': 'touchend',
+        /* orientationchange: 'orientationchange', */
+        'resize': 'resize'
+    }
+});
+Global[EventName] = ev;
+ev = Global['event'] = new ev();
 /* Test: "../../spec/_src/src/ease/test.js" */
 Global['ease'] = {
     'linear': function(time, from, dist, duration) {
@@ -667,7 +675,7 @@ Mine = Global['Animation'] = klass({
         Mine['id']++;
         this._id = 'ciranim' + Mine['id'];
 
-        var duration = option['duration'] || Mine['Duration'],
+        var duration = option['duration'] || Mine['duration'],
             ease = option['ease'] || 'ease';
 
         // property
@@ -774,7 +782,7 @@ function addCSSRule(id, css_prefix, duration, eases) {
 }
 
 Mine['id'] = 0;
-Mine['Duration'] = 500;
+Mine['duration'] = 500;
 Mine['support'] = support;
 }());
 /* Test: "../../spec/_src/src/Transition/test.js" */
@@ -828,7 +836,7 @@ Mine = Global['Transition'] = klass({
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option['duration'] || Mine['Duration'],
+            duration = option['duration'] || Mine['duration'],
             ease = option['ease'] || 'ease';
 
         if (!isArray(ease)) {
@@ -911,7 +919,7 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 
 Mine['id'] = 0;
 Mine['support'] = support;
-Mine['Duration'] = 500;
+Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 (function() {
@@ -937,7 +945,7 @@ var Mine = Global['Tweener'] = klass({
             this.property.push(prop);
         }
 
-        this._duration = option['duration'] || Mine['Duration'];
+        this._duration = option['duration'] || Mine['duration'];
         this.ease = option['ease'] || this._ease;
         this.onComplete = option['onComplete'];
 
@@ -982,7 +990,7 @@ var Mine = Global['Tweener'] = klass({
             }
 
             return function(callback) {
-                setTimeout(callback, 1000 / Mine.FPS);
+                setTimeout(callback, 1000 / Mine.fps);
             };
         }()),
         loop: function() {
@@ -1061,8 +1069,8 @@ Mine._setProp = function(target, prop, point) {
 };
 /* Mine.timerId = NULL; */
 Mine.Items = [];
-Mine['FPS'] = 30;
-Mine['Duration'] = 500;
+Mine['fps'] = 30;
+Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/selector/test.js" */
 Global['$'] = function(query, _parent) {
@@ -1776,21 +1784,15 @@ Global['Brush'] = klass({
 });
 Global['Brush']['support'] = !!win['HTMLCanvasElement'];
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-Global['DataStore'] = klass({
+var DataStoreName = 'DataStore';
+Global[DataStoreName] = klass({
     'extend': Base,
     'init': function(config) {
-        config = config || {};
-
-        // singleton
-        if (config['single'] && Global['DataStore'].instance) {
-            return Global['DataStore'].instance;
-        }
+        this['_super'](config);
 
         this.data = {};
 
-        if (config['single']) {
-            Global['DataStore'].instance = this;
-        }
+        return this.singleAct(DataStoreName);
     },
     'properties': {
         'set': function(key, val) {
@@ -1823,23 +1825,19 @@ Global['DataStore'] = klass({
     }
 });
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
-Global['WebStorage'] = klass({
+var WebStorageName = 'WebStorage';
+Global[WebStorageName] = klass({
     'extend': Base,
     'init': function(config) {
+        this['_super'](config);
+
         var key = 'Storage',
             klassname = config['type'] + key;
-
-        // singleton
-        if (config['single'] && Global[klassname].instance) {
-            return Global[klassname].instance;
-        }
 
         this._n = config['namespace'] ? config['namespace'] + '-' : '';
         this._storage = win[config['type'].toLowerCase() + key];
 
-        if (config['single']) {
-            Global[klassname].instance = this;
-        }
+        return this.singleAct(WebStorageName);
     },
     'properties': {
         'set': function(key, val) {
@@ -2191,9 +2189,8 @@ Global['ExternalInterface']['IOS'] = klass({
 Global['Facebook'] = klass({
     'extend': Base,
     'properties': {
-        _b: 'https://www.facebook.com/dialog/feed?',
         'shareURL': function(vars) {
-            var url = this._b +
+            var url = 'https://www.facebook.com/dialog/feed?' +
                     'app_id=' + vars['app_id'] + '&' +
                     'redirect_uri=' + vars['redirect_uri'];
 
@@ -2210,21 +2207,13 @@ Global['Facebook'] = klass({
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
-Global['FPS'] = klass({
+var FPSName = 'FPS';
+Global[FPSName] = klass({
     'extend': Base,
     'init': function(config) {
-        config = config || {};
+        this['_super'](config);
 
-        if (!config['criterion']) {
-            config['criterion'] = 20;
-        }
-
-        // singleton
-        if (config['single'] && Global['FPS'].instance) {
-            return Global['FPS'].instance;
-        }
-
-        this.criterion = config['criterion'],
+        this.criterion = config['criterion'] || 20,
         this.surver = this.criterion,
         this.enterframe = config['enterframe'],
         this.msecFrame = this._getFrame(this.criterion),
@@ -2236,9 +2225,7 @@ Global['FPS'] = klass({
             this['start']();
         }
 
-        if (config['single']) {
-            Global['FPS'].instance = this;
-        }
+        return this.singleAct(FPSName);
     },
     'properties': {
         'dispose': function() {
@@ -2352,7 +2339,7 @@ Global['WindowLoad'] = klass({
     'init': function(config) {
         this['_super']();
 
-        if (config && config['onload']) {
+        if (config) {
             this.onload(config['onload']);
         }
     },
@@ -2650,21 +2637,15 @@ Global['FontImg'] = klass({
     }
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global['Observer'] = klass({
+var ObserverName = 'Observer';
+Global[ObserverName] = klass({
     'extend': Base,
     'init': function(config) {
-        config = config || {};
-
-        // singleton
-        if (config['single'] && Global['Observer'].instance) {
-            return Global['Observer'].instance;
-        }
+        this['_super'](config);
 
         this.observed = {};
 
-        if (config['single']) {
-            Global['Observer'].instance = this;
-        }
+        return this.singleAct(ObserverName);
     },
     'properties': {
         'on': function(key, func) {
@@ -2797,13 +2778,11 @@ Global['PreRender'] = klass({
     }
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
-Global['Route'] = klass({
+var RouteName = 'Route';
+Global[RouteName] = klass({
     'extend': Base,
     'init': function(config) {
-        // singleton
-        if (config['single'] && Global['Route'].instance) {
-            return Global['Route'].instance;
-        }
+        this['_super'](config);
 
         this._target = config['target'] || '';
         this._noregex = config['noregex'];
@@ -2813,9 +2792,7 @@ Global['Route'] = klass({
             this['start']();
         }
 
-        if (config['single']) {
-            Global['Route'].instance = this;
-        }
+        return this.singleAct(RouteName);
     },
     'properties': {
         'start': function() {
@@ -3189,12 +3166,11 @@ Global['Timer'] = function(config) {
 Global['Twitter'] = klass({
     'extend': Base,
     'properties': {
-        _b: 'https://twitter.com/intent/tweet?',
         'shareURL': function(vars) {
             var caption = vars['caption'] || '',
                 name = vars['name'],
                 hash = vars['hash'],
-                url = this._b;
+                url = 'https://twitter.com/intent/tweet?';
 
             name = name ? ' 「' + name + '」' : '';
             hash = hash ? ' ' + hash : '';
@@ -3215,7 +3191,7 @@ Global['XML'] = klass({
         this.el = create('div');
         this._data = {};
 
-        if (config && config['data']) {
+        if (config) {
             this['setData'](config['data']);
         }
     },

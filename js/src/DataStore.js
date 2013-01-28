@@ -1,19 +1,13 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-Global['DataStore'] = klass({
+var DataStoreName = 'DataStore';
+Global[DataStoreName] = klass({
     'extend': Base,
     'init': function(config) {
-        config = config || {};
-
-        // singleton
-        if (config['single'] && Global['DataStore'].instance) {
-            return Global['DataStore'].instance;
-        }
+        this['_super'](config);
 
         this.data = {};
 
-        if (config['single']) {
-            Global['DataStore'].instance = this;
-        }
+        return this.singleAct(DataStoreName);
     },
     'properties': {
         'set': function(key, val) {

@@ -22,7 +22,7 @@ var Mine = Global['Tweener'] = klass({
             this.property.push(prop);
         }
 
-        this._duration = option['duration'] || Mine['Duration'];
+        this._duration = option['duration'] || Mine['duration'];
         this.ease = option['ease'] || this._ease;
         this.onComplete = option['onComplete'];
 
@@ -67,7 +67,7 @@ var Mine = Global['Tweener'] = klass({
             }
 
             return function(callback) {
-                setTimeout(callback, 1000 / Mine.FPS);
+                setTimeout(callback, 1000 / Mine.fps);
             };
         }()),
         loop: function() {
@@ -146,6 +146,6 @@ Mine._setProp = function(target, prop, point) {
 };
 /* Mine.timerId = NULL; */
 Mine.Items = [];
-Mine['FPS'] = 30;
-Mine['Duration'] = 500;
+Mine['fps'] = 30;
+Mine['duration'] = 500;
 }());

@@ -70,13 +70,13 @@ describe('Tweenerは', function() {
                 }
             );
         });
-        waits(C.Tweener.Duration / 2);
+        waits(C.Tweener.duration / 2);
         runs(function() {
             expect(comp).toBeFalsy();
             expect(element.style.width).toBeDefined();
             expect(element.style.height).toBeDefined();
         });
-        waits(C.Tweener.Duration / 2 + 10);
+        waits(C.Tweener.duration / 2 + 10);
         runs(function() {
             expect(comp).toBeTruthy();
             expect(element.style.width).toEqual('100px');
@@ -109,24 +109,24 @@ describe('Tweenerは', function() {
                 }
             );
         });
-        waits(C.Tweener.Duration / 2);
+        waits(C.Tweener.duration / 2);
         runs(function() {
             expect(comp).toBeFalsy();
             tweener.stop();
             expect(comp).toBeFalsy();
         });
-        waits(C.Tweener.Duration / 2);
+        waits(C.Tweener.duration / 2);
         runs(function() {
             expect(comp).toBeFalsy();
         });
     });
 
-    it('C.Tweener.FPSでFPSを調整する', function() {
-        expect(C.Tweener.FPS).toBeDefined();
+    it('C.Tweener.fpsでFPSを調整する', function() {
+        expect(C.Tweener.fps).toBeDefined();
     });
 
-    it('C.Tweener.Durationでデフォルトのアニメーション実行時間を設定する', function() {
-        expect(C.Tweener.Duration).toBeDefined();
+    it('C.Tweener.durationでデフォルトのアニメーション実行時間を設定する', function() {
+        expect(C.Tweener.duration).toBeDefined();
     });
 });
 /*

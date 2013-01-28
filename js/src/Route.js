@@ -1,11 +1,9 @@
 /* Test: "../../spec/_src/src/Route/test.js" */
-Global['Route'] = klass({
+var RouteName = 'Route';
+Global[RouteName] = klass({
     'extend': Base,
     'init': function(config) {
-        // singleton
-        if (config['single'] && Global['Route'].instance) {
-            return Global['Route'].instance;
-        }
+        this['_super'](config);
 
         this._target = config['target'] || '';
         this._noregex = config['noregex'];
@@ -15,9 +13,7 @@ Global['Route'] = klass({
             this['start']();
         }
 
-        if (config['single']) {
-            Global['Route'].instance = this;
-        }
+        return this.singleAct(RouteName);
     },
     'properties': {
         'start': function() {

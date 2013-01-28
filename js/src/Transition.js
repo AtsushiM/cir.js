@@ -49,7 +49,7 @@ Mine = Global['Transition'] = klass({
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option['duration'] || Mine['Duration'],
+            duration = option['duration'] || Mine['duration'],
             ease = option['ease'] || 'ease';
 
         if (!isArray(ease)) {
@@ -132,5 +132,5 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 
 Mine['id'] = 0;
 Mine['support'] = support;
-Mine['Duration'] = 500;
+Mine['duration'] = 500;
 }());

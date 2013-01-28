@@ -1,17 +1,12 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
+var EventName = 'Event';
 ev = klass({
     'extend': Base,
     'init': function(config) {
-        config = config || {};
+        this['_super'](config);
 
         // singleton
-        if (config['single'] && Global['Event'].instance) {
-            return Global['Event'].instance;
-        }
-
-        if (config['single']) {
-            Global['Event'].instance = this;
-        }
+        return this.singleAct(EventName);
     },
     'properties': {
         'switchclick': isTouch ? 'touchstart' : 'click',
@@ -32,5 +27,5 @@ ev = klass({
         'resize': 'resize'
     }
 });
-Global['Event'] = ev;
+Global[EventName] = ev;
 ev = Global['event'] = new ev();

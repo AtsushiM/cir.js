@@ -53,12 +53,12 @@ describe('Transitionは', function() {
             }
         });
 
-        waits(c.Transition.Duration + 200);
+        waits(c.Transition.duration + 200);
         runs(function() {
             expect(count).toEqual(0);
             transition.start();
         });
-        waits(c.Transition.Duration + 200);
+        waits(c.Transition.duration + 200);
         runs(function() {
             expect(count).toEqual(1);
         });
@@ -77,7 +77,7 @@ describe('Transitionは', function() {
 
         transition.stop();
 
-        waits(c.Transition.Duration + 200);
+        waits(c.Transition.duration + 200);
         runs(function() {
             expect(count).toEqual(0);
         });

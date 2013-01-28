@@ -47,7 +47,7 @@ Mine = Global['Animation'] = klass({
         Mine['id']++;
         this._id = 'ciranim' + Mine['id'];
 
-        var duration = option['duration'] || Mine['Duration'],
+        var duration = option['duration'] || Mine['duration'],
             ease = option['ease'] || 'ease';
 
         // property
@@ -154,6 +154,6 @@ function addCSSRule(id, css_prefix, duration, eases) {
 }
 
 Mine['id'] = 0;
-Mine['Duration'] = 500;
+Mine['duration'] = 500;
 Mine['support'] = support;
 }());
