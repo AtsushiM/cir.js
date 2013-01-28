@@ -6,7 +6,7 @@ Global['XML'] = klass({
         this._data = {};
 
         if (config && config['data']) {
-            this.setData(config['data']);
+            this['setData'](config['data']);
         }
     },
     'properties': {
@@ -14,8 +14,8 @@ Global['XML'] = klass({
             return this._data;
         },
         'setData': function(d) {
-            this._data =
-            this.el.innerHTML = d;
+            this._data = d;
+            html(this.el, d);
         },
         '$': function(selector) {
             return $child(selector, this.el);

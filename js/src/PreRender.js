@@ -20,20 +20,26 @@ Global['PreRender'] = klass({
         }
     },
     'properties': {
+        'dispose': function() {
+            clearInterval(this.loopid);
+            this._orgdis();
+        },
         'start': function() {
-            var i;
+            var i,
+                mine = this,
+                prevtime = dateNow();
 
-            for (i = this.els.length; i--;) {
-                show(this.els[i]);
+            for (i = mine.els.length; i--;) {
+                show(mine.els[i]);
             }
-            this.prevtime = Date.now();
-            this.loopid = setInterval(check, this.looptime, this);
+            mine.loopid = setInterval(check, this.looptime, this);
 
-            function check(mine) {
-                var gettime = Date.now(),
-                    difftime = gettime - mine.prevtime;
+            function check() {
+                var gettime = dateNow(),
+                    difftime = gettime - prevtime,
+                    i;
 
-                mine.prevtime = gettime;
+                prevtime = gettime;
 
                 if (difftime < mine.loopblur) {
                     mine.guesslimit--;
@@ -41,7 +47,7 @@ Global['PreRender'] = klass({
                     if (mine.guesslimit < 1) {
                         clearInterval(mine.loopid);
 
-                        for (var i = mine.els.length; i--;) {
+                        for (i = mine.els.length; i--;) {
                             hide(mine.els[i]);
                         }
 

@@ -19,7 +19,7 @@ Global['WebStorage'] = klass({
     },
     'properties': {
         'set': function(key, val) {
-            this._storage.setItem(this._n + key, JSON.stringify(val));
+            this._storage.setItem(this._n + key, jsonStringify(val));
             return TRUE;
         },
         'get': function(key) {
@@ -28,17 +28,17 @@ Global['WebStorage'] = klass({
                 i;
 
             if (key) {
-                return JSON.parse(mine._storage.getItem(mine._n + key));
+                return jsonParse(mine._storage.getItem(mine._n + key));
             }
 
             for (i in mine._storage) {
                 if (!this._n) {
-                    ret[i] = JSON.parse(mine._storage[i]);
+                    ret[i] = jsonParse(mine._storage[i]);
                 }
                 else {
                     key = i.split(this._n)[1];
                     if (key) {
-                        ret[key] = JSON.parse(mine._storage[i]);
+                        ret[key] = jsonParse(mine._storage[i]);
                     }
                 }
             }

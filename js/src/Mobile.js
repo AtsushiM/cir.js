@@ -133,3 +133,4 @@ Global['Mobile'] = klass({
         }
     }
 });
+Global['mobile'] = new Global['Mobile']();

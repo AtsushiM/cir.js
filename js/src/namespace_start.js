@@ -16,5 +16,6 @@ var win = window,
     ev_ended = 'ended',
     easebackrate = 1.70158,
     Base,
-    Global = win['C'] = {};
+    /* Global = win['C'] = {}; */
+    Global = C = {};
 

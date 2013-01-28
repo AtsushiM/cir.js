@@ -67,7 +67,7 @@ function getHeader(callback) {
         callback(xhr);
     };
 
-    xhr.open('HEAD', location.href + '?update' + Date.now() + '=1');
+    xhr.open('HEAD', location.href + '?update' + dateNow() + '=1');
     xhr.send(NULL);
 
     return xhr;

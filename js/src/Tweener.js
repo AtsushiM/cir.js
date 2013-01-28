@@ -74,7 +74,7 @@ var Mine = Global['Tweener'] = klass({
             var mine = this,
                 items = Mine.Items,
                 item,
-                now = Date.now(),
+                now = dateNow(),
                 time,
                 n = items.length,
                 i,
@@ -124,7 +124,7 @@ var Mine = Global['Tweener'] = klass({
         'start': function() {
             var mine = this;
 
-            mine.begin = Date.now();
+            mine.begin = dateNow();
 
             Mine.Items.push(mine);
             if (!Mine.timerId) {

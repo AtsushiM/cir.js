@@ -10,7 +10,7 @@ Global['Embed'] = function(config) {
 
     return embed;
 };
-Global['Embed']['supportcheck'] = function(config) {
+function embedSupportCheck(config) {
     if (!win['HTML' + config['type'] + 'Element']) {
         return FALSE;
     }
@@ -33,4 +33,5 @@ Global['Embed']['supportcheck'] = function(config) {
     }
 
     return support;
-};
+}
+Global['Embed']['supportcheck'] = embedSupportCheck;

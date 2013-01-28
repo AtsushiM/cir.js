@@ -1,5 +1,6 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
 ev = klass({
+    'extend': Base,
     'init': function(config) {
         config = config || {};
 

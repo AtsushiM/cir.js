@@ -23,11 +23,10 @@ function $id(id) {
 function hasClass(element, cls) {
     var clsName = element.className,
         addedcls = clsName ? clsName.split(' ') : [],
-        i = 0,
-        len = addedcls.length;
+        i = addedcls.length;
 
-    for (; i < len; i++) {
-        if (cls && cls === addedcls[i]) {
+    for (; i--;) {
+        if (cls === addedcls[i]) {
             return TRUE;
         }
     }
@@ -36,17 +35,18 @@ function hasClass(element, cls) {
 }
 
 function addClass(element, cls) {
-    var between = '';
+    var between = '',
+        orgcls = element.className;
 
     if (hasClass(element, cls)) {
         return FALSE;
     }
 
-    if (element.className) {
+    if (orgcls) {
         between = ' ';
     }
 
-    element.className = element.className + between + cls;
+    element.className = orgcls + between + cls;
 
     return TRUE;
 }
@@ -150,10 +150,10 @@ function computedStyle(element) {
     return doc.defaultView.getComputedStyle(element, NULL);
 }
 function append(element, addelement) {
-    return element.appendChild(addelement);
+    return element['appendChild'](addelement);
 }
 function parent(element) {
-    return element.parentNode;
+    return element['parentNode'];
 }
 function remove(element) {
     return parent(element).removeChild(element);

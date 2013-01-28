@@ -50,11 +50,11 @@ Global['FPS'] = klass({
             });
         },
         'start': function() {
-            this.prevtime = Date.now();
+            this.prevtime = dateNow();
             this.loopid = setInterval(this._loop, this.msecFrame, this);
         },
         _loop: function(mine) {
-            mine.nowtime = Date.now();
+            mine.nowtime = dateNow();
             mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
             mine.prevtime = mine.nowtime;
 

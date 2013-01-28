@@ -1,8 +1,12 @@
 /* Test: "../../spec/_src/src/utility/test.js" */
-if (!Date.now) {
-    Date.now = function now() {
+if (!Date['now']) {
+    Date['now'] = function now() {
         return +(new Date);
     };
+}
+
+function dateNow() {
+    return Date['now']();
 }
 
 function pageTop() {
@@ -21,7 +25,7 @@ function typeCast(str) {
     var matchstr = '' + str;
 
     if (matchstr.match('^{.*}$')) {
-        return JSON.parse(matchstr);
+        return jsonParse(matchstr);
     }
     else if (matchstr.match('^[0-9\.]+$')) {
         return matchstr * 1;
@@ -109,6 +113,12 @@ function checkUserAgent(pattern, ua) {
     ua = ua ? ua : navigator.userAgent;
 
     return ua.match(pattern) ? TRUE : FALSE;
+}
+function jsonParse(json) {
+    return win['JSON']['parse'](json);
+}
+function jsonStringify(text) {
+    return win['JSON']['stringify'](text);
 }
 
 Global['utility'] = {

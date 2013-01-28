@@ -21,12 +21,14 @@ Global['Ajax'] = klass({
                 query = '',
                 xhr;
 
+            xhr = this.xhr = new XMLHttpRequest();
+
             if (!vars['cash']) {
                 if (!vars['query']) {
                     vars['query'] = {};
                 }
 
-                vars['query']['cirajaxcash' + Date.now()] = '0';
+                vars['query']['cirajaxcash' + dateNow()] = '0';
             }
             if (vars['query']) {
                 query = vars['query'];
@@ -36,9 +38,6 @@ Global['Ajax'] = klass({
                     query = encodeURI(query);
                 }
             }
-
-            this.xhr = new XMLHttpRequest();
-            xhr = this.xhr;
 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState != 4) {
@@ -82,7 +81,7 @@ Global['Ajax'] = klass({
                 error = vars['error'];
 
             vars['callback'] = function(data) {
-                callback(JSON.parse(data));
+                callback(jsonParse(data));
             };
             vars['error'] = function(data) {
                 if (error) {

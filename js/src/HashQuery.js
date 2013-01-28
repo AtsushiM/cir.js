@@ -26,7 +26,7 @@ Global['HashQuery'] = klass({
                 hash +=
                     sign +
                     i + '=' +
-                    JSON.stringify(vars[i]);
+                    jsonStringify(vars[i]);
                 sign = '&';
             }
 

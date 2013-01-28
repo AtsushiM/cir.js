@@ -83,8 +83,6 @@ Global['Media'] = klass({
                 });
             }
         },
-        'autoplay': function(bool) {
-        },
         'play': function() {
             this._el.play();
         },
@@ -97,4 +95,4 @@ Global['Media'] = klass({
         }
     }
 });
-Global['Media']['supportcheck'] = Global['Embed']['supportcheck'];
+Global['Media']['supportcheck'] = embedSupportCheck;

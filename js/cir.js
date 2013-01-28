@@ -16,13 +16,18 @@ var win = window,
     ev_ended = 'ended',
     easebackrate = 1.70158,
     Base,
-    Global = win['C'] = {};
+    /* Global = win['C'] = {}; */
+    Global = C = {};
 
 /* Test: "../../spec/_src/src/utility/test.js" */
-if (!Date.now) {
-    Date.now = function now() {
+if (!Date['now']) {
+    Date['now'] = function now() {
         return +(new Date);
     };
+}
+
+function dateNow() {
+    return Date['now']();
 }
 
 function pageTop() {
@@ -41,7 +46,7 @@ function typeCast(str) {
     var matchstr = '' + str;
 
     if (matchstr.match('^{.*}$')) {
-        return JSON.parse(matchstr);
+        return jsonParse(matchstr);
     }
     else if (matchstr.match('^[0-9\.]+$')) {
         return matchstr * 1;
@@ -130,6 +135,12 @@ function checkUserAgent(pattern, ua) {
 
     return ua.match(pattern) ? TRUE : FALSE;
 }
+function jsonParse(json) {
+    return win['JSON']['parse'](json);
+}
+function jsonStringify(text) {
+    return win['JSON']['stringify'](text);
+}
 
 Global['utility'] = {
     'win': win,
@@ -178,11 +189,10 @@ function $id(id) {
 function hasClass(element, cls) {
     var clsName = element.className,
         addedcls = clsName ? clsName.split(' ') : [],
-        i = 0,
-        len = addedcls.length;
+        i = addedcls.length;
 
-    for (; i < len; i++) {
-        if (cls && cls === addedcls[i]) {
+    for (; i--;) {
+        if (cls === addedcls[i]) {
             return TRUE;
         }
     }
@@ -191,17 +201,18 @@ function hasClass(element, cls) {
 }
 
 function addClass(element, cls) {
-    var between = '';
+    var between = '',
+        orgcls = element.className;
 
     if (hasClass(element, cls)) {
         return FALSE;
     }
 
-    if (element.className) {
+    if (orgcls) {
         between = ' ';
     }
 
-    element.className = element.className + between + cls;
+    element.className = orgcls + between + cls;
 
     return TRUE;
 }
@@ -305,10 +316,10 @@ function computedStyle(element) {
     return doc.defaultView.getComputedStyle(element, NULL);
 }
 function append(element, addelement) {
-    return element.appendChild(addelement);
+    return element['appendChild'](addelement);
 }
 function parent(element) {
-    return element.parentNode;
+    return element['parentNode'];
 }
 function remove(element) {
     return parent(element).removeChild(element);
@@ -391,6 +402,7 @@ Global['extend'] = function(child, _super) {
 };
 /* Test: "../../spec/_src/src/Event/test.js" */
 ev = klass({
+    'extend': Base,
     'init': function(config) {
         config = config || {};
 
@@ -643,127 +655,122 @@ for (; i < len; i++) {
     }
 }
 
-if (support) {
-    Mine = Global['Animation'] = klass({
-        'extend': Base,
-        'init': function(element, property, option) {
-            option = option || {};
+Mine = Global['Animation'] = klass({
+    'extend': Base,
+    'init': function(element, property, option) {
+        option = option || {};
 
-            this.onComplete = option['onComplete'] || nullFunction;
+        this.onComplete = option['onComplete'] || nullFunction;
 
-            this.el = element;
+        this.el = element;
 
-            Mine['id']++;
-            this._id = 'ciranim' + Mine['id'];
+        Mine['id']++;
+        this._id = 'ciranim' + Mine['id'];
 
-            var duration = option['duration'] || Mine['Duration'],
-                ease = option['ease'] || 'ease';
+        var duration = option['duration'] || Mine['Duration'],
+            ease = option['ease'] || 'ease';
 
-            // property
-            var i,
-                prop = {};
+        // property
+        var i,
+            prop = {};
 
-            for (i in property) {
-                prop[i] = property[i];
-                if (isNumber(prop[i])) {
-                    prop[i] = prop[i] + 'px';
+        for (i in property) {
+            prop[i] = property[i];
+            if (isNumber(prop[i])) {
+                prop[i] = prop[i] + 'px';
+            }
+        }
+
+        this.property = prop;
+
+        prop = replaceAll(
+            replaceAll(jsonStringify(prop), '"', ''),
+            ',',
+            ';'
+        );
+
+        sheet.insertRule(
+            '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
+            sheet.cssRules.length);
+
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
+
+        addCSSRule(this._id, css_prefix, duration, ease);
+
+        if (!option['manual']) {
+            this['start']();
+        }
+    },
+    'properties': {
+        _off: function() {
+            off(this.el, event_key + 'End', this.end);
+            off(this.el, 'animationend', this.end);
+        },
+        'dispose': function() {
+            this.stop();
+            this._orgdis();
+        },
+        'start': function() {
+            var mine = this;
+
+            mine.end = endaction;
+            on(mine.el, event_key + 'End', endaction);
+            on(mine.el, 'animationend', endaction);
+
+            addClass(mine.el, mine._id);
+
+            function endaction(e) {
+                var rule = sheet.cssRules,
+                    len = rule.length,
+                    name;
+
+                mine._off();
+
+
+                if (prefix === 'webkit') {
+                    for (; len--;) {
+                        name = rule[len].name ||
+                            ('' + rule[len].selectorText).split('.')[1];
+
+                        if (name === mine._id) {
+                            sheet.deleteRule(len);
+                        }
+                    }
+                    removeClass(mine.el, mine._id);
+
+                    css(mine.el, mine.property);
                 }
-            }
-
-            this.property = prop;
-
-            prop = replaceAll(
-                replaceAll(JSON.stringify(prop), '"', ''),
-                ',',
-                ';'
-            );
-
-            sheet.insertRule(
-                '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
-                sheet.cssRules.length);
-
-            if (!isArray(ease)) {
-                ease = [ease];
-            }
-
-            addCSSRule(this._id, css_prefix, duration, ease);
-
-            if (!option['manual']) {
-                this['start']();
+                mine.onComplete(e);
             }
         },
-        'properties': {
-            _off: function() {
-                off(this.el, event_key + 'End', this.end);
-                off(this.el, 'animationend', this.end);
-            },
-            'dispose': function() {
-                this.stop();
-                this._orgdis();
-            },
-            'start': function() {
-                var mine = this;
+        'stop': function() {
+            var stopobj = {};
 
-                mine.end = endaction;
-                on(mine.el, event_key + 'End', endaction);
-                on(mine.el, 'animationend', endaction);
+            stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
-                addClass(mine.el, mine._id);
-
-                function endaction(e) {
-                    var rule = sheet.cssRules,
-                        len = rule.length,
-                        name;
-
-                    mine._off();
-
-
-                    if (prefix === 'webkit') {
-                        for (; len--;) {
-                            name = rule[len].name ||
-                                ('' + rule[len].selectorText).split('.')[1];
-
-                            if (name === mine._id) {
-                                sheet.deleteRule(len);
-                            }
-                        }
-                        removeClass(mine.el, mine._id);
-
-                        css(mine.el, mine.property);
-                    }
-                    mine.onComplete(e);
-                }
-            },
-            'stop': function() {
-                var stopobj = {};
-
-                stopobj[css_prefix + 'animation-play-state'] = 'paused';
-
-                css(this.el, stopobj);
-                this._off();
-            }
+            css(this.el, stopobj);
+            this._off();
         }
-    });
-
-    function addCSSRule(id, css_prefix, duration, eases) {
-        var i = 0,
-            len = eases.length,
-            rule = '';
-
-        for (; i < len; i++) {
-            rule += css_prefix + 'animation:' +
-                    id + ' ' +
-                    duration + 'ms ' +
-                    eases[i] + ' 0s 1 normal both;';
-        }
-
-        sheet.insertRule('.' + id +
-            '{' + rule + '}',
-            sheet.cssRules.length);
     }
-}
-else {
-    Mine = Global['Animation'] = {};
+});
+
+function addCSSRule(id, css_prefix, duration, eases) {
+    var i = 0,
+        len = eases.length,
+        rule = '';
+
+    for (; i < len; i++) {
+        rule += css_prefix + 'animation:' +
+                id + ' ' +
+                duration + 'ms ' +
+                eases[i] + ' 0s 1 normal both;';
+    }
+
+    sheet.insertRule('.' + id +
+        '{' + rule + '}',
+        sheet.cssRules.length);
 }
 
 Mine['id'] = 0;
@@ -809,102 +816,97 @@ for (; i < len; i++) {
     }
 }
 
-if (support) {
-    Mine = Global['Transition'] = klass({
-        'extend': Base,
-        'init': function(element, property, option) {
-            option = option || {};
-            option['onComplete'] = option['onComplete'] || nullFunction;
+Mine = Global['Transition'] = klass({
+    'extend': Base,
+    'init': function(element, property, option) {
+        option = option || {};
+        option['onComplete'] = option['onComplete'] || nullFunction;
 
-            Mine['id']++;
-            this._id = 'cirtrans' + Mine['id'];
+        Mine['id']++;
+        this._id = 'cirtrans' + Mine['id'];
 
-            var transProp = [],
-                animeProp = override({}, property),
-                i,
-                duration = option['duration'] || Mine['Duration'],
-                ease = option['ease'] || 'ease';
+        var transProp = [],
+            animeProp = override({}, property),
+            i,
+            duration = option['duration'] || Mine['Duration'],
+            ease = option['ease'] || 'ease';
 
-            if (!isArray(ease)) {
-                ease = [ease];
-            }
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
 
-            for (i in property) {
-                transProp.push(i);
-            }
+        for (i in property) {
+            transProp.push(i);
+        }
 
-            addCSSRule(this._id, css_prefix, duration, ease, transProp);
+        addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-            this.el = element;
-            this.property = property;
-            this.option = option;
+        this.el = element;
+        this.property = property;
+        this.option = option;
 
-            if (!option['manual']) {
-                this['start']();
-            }
+        if (!option['manual']) {
+            this['start']();
+        }
+    },
+    'properties': {
+        'dispose': function() {
+            this['stop']();
+            this._orgdis();
         },
-        'properties': {
-            'dispose': function() {
-                this['stop']();
-                this._orgdis();
-            },
-            'start': function() {
-                var mine = this;
+        'start': function() {
+            var mine = this;
 
-                mine._endfunc = function(e) {
-                    mine['stop']();
-                    setTimeout(function() {
-                        mine.option['onComplete'](e);
-                    }, 1);
-                };
+            mine._endfunc = function(e) {
+                mine['stop']();
+                setTimeout(function() {
+                    mine.option['onComplete'](e);
+                }, 1);
+            };
 
-                on(mine.el, event_key + 'End', mine._endfunc);
-                on(mine.el, 'transitionend', mine._endfunc);
-                addClass(mine.el, mine._id);
-                css(mine.el, mine.property);
-            },
-            'stop': function() {
-                var rule = sheet.cssRules,
-                    len = rule.length,
-                    name;
+            on(mine.el, event_key + 'End', mine._endfunc);
+            on(mine.el, 'transitionend', mine._endfunc);
+            addClass(mine.el, mine._id);
+            css(mine.el, mine.property);
+        },
+        'stop': function() {
+            var rule = sheet.cssRules,
+                len = rule.length,
+                name;
 
-                off(this.el, event_key + 'End', this._endfunc);
-                off(this.el, 'transitionend', this._endfunc);
-                removeClass(this.el, this._id);
+            off(this.el, event_key + 'End', this._endfunc);
+            off(this.el, 'transitionend', this._endfunc);
+            removeClass(this.el, this._id);
 
-                for (; len--;) {
-                    name = rule[len].name ||
-                        ('' + rule[len].selectorText).split('.')[1];
+            for (; len--;) {
+                name = rule[len].name ||
+                    ('' + rule[len].selectorText).split('.')[1];
 
-                    if (name === this._id) {
-                        sheet.deleteRule(len);
-                        break;
-                    }
+                if (name === this._id) {
+                    sheet.deleteRule(len);
+                    break;
                 }
             }
         }
-    });
-
-    function addCSSRule(id, css_prefix, duration, eases, transProp) {
-        var i = 0,
-            len = eases.length,
-            rule = '';
-
-        rule +=
-            css_prefix + 'transition-property:' + transProp.join(' ') + ';' +
-            css_prefix + 'transition-duration:' + duration + 'ms;';
-
-        for (; i < len; i++) {
-            rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
-        }
-
-        sheet.insertRule('.' + id +
-            '{' + rule + '}',
-            sheet.cssRules.length);
     }
-}
-else {
-    Mine = Global['Transition'] = {};
+});
+
+function addCSSRule(id, css_prefix, duration, eases, transProp) {
+    var i = 0,
+        len = eases.length,
+        rule = '';
+
+    rule +=
+        css_prefix + 'transition-property:' + transProp.join(' ') + ';' +
+        css_prefix + 'transition-duration:' + duration + 'ms;';
+
+    for (; i < len; i++) {
+        rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
+    }
+
+    sheet.insertRule('.' + id +
+        '{' + rule + '}',
+        sheet.cssRules.length);
 }
 
 Mine['id'] = 0;
@@ -987,7 +989,7 @@ var Mine = Global['Tweener'] = klass({
             var mine = this,
                 items = Mine.Items,
                 item,
-                now = Date.now(),
+                now = dateNow(),
                 time,
                 n = items.length,
                 i,
@@ -1037,7 +1039,7 @@ var Mine = Global['Tweener'] = klass({
         'start': function() {
             var mine = this;
 
-            mine.begin = Date.now();
+            mine.begin = dateNow();
 
             Mine.Items.push(mine);
             if (!Mine.timerId) {
@@ -1332,7 +1334,7 @@ Global['HashQuery'] = klass({
                 hash +=
                     sign +
                     i + '=' +
-                    JSON.stringify(vars[i]);
+                    jsonStringify(vars[i]);
                 sign = '&';
             }
 
@@ -1396,7 +1398,7 @@ Global['Embed'] = function(config) {
 
     return embed;
 };
-Global['Embed']['supportcheck'] = function(config) {
+function embedSupportCheck(config) {
     if (!win['HTML' + config['type'] + 'Element']) {
         return FALSE;
     }
@@ -1419,7 +1421,8 @@ Global['Embed']['supportcheck'] = function(config) {
     }
 
     return support;
-};
+}
+Global['Embed']['supportcheck'] = embedSupportCheck;
 /* Test: "../../spec/_src/src/Media/test.js" */
 Global['Media'] = klass({
     'extend': Base,
@@ -1505,8 +1508,6 @@ Global['Media'] = klass({
                 });
             }
         },
-        'autoplay': function(bool) {
-        },
         'play': function() {
             this._el.play();
         },
@@ -1519,7 +1520,7 @@ Global['Media'] = klass({
         }
     }
 });
-Global['Media']['supportcheck'] = Global['Embed']['supportcheck'];
+Global['Media']['supportcheck'] = embedSupportCheck;
 /* Test: "../../spec/_src/src/Audio/test.js" */
 Global['Audio'] = function(config) {
     config['type'] = 'Audio';
@@ -1528,7 +1529,7 @@ Global['Audio'] = function(config) {
 
     return Global['Embed'](config);
 };
-Global['Audio']['support'] = Global['Embed']['supportcheck']({
+Global['Audio']['support'] = embedSupportCheck({
     'type': 'Audio',
     'suffix': [
         ['mp3', 'mpeg'],
@@ -1551,7 +1552,7 @@ Global['Video'] = function(config) {
 
     return new Global['Embed'](config);
 };
-Global['Video']['support'] = Global['Embed']['supportcheck']({
+Global['Video']['support'] = embedSupportCheck({
     'type': 'Video',
     'suffix': [
         ['webm', 'webm'],
@@ -1588,12 +1589,14 @@ Global['Ajax'] = klass({
                 query = '',
                 xhr;
 
+            xhr = this.xhr = new XMLHttpRequest();
+
             if (!vars['cash']) {
                 if (!vars['query']) {
                     vars['query'] = {};
                 }
 
-                vars['query']['cirajaxcash' + Date.now()] = '0';
+                vars['query']['cirajaxcash' + dateNow()] = '0';
             }
             if (vars['query']) {
                 query = vars['query'];
@@ -1603,9 +1606,6 @@ Global['Ajax'] = klass({
                     query = encodeURI(query);
                 }
             }
-
-            this.xhr = new XMLHttpRequest();
-            xhr = this.xhr;
 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState != 4) {
@@ -1649,7 +1649,7 @@ Global['Ajax'] = klass({
                 error = vars['error'];
 
             vars['callback'] = function(data) {
-                callback(JSON.parse(data));
+                callback(jsonParse(data));
             };
             vars['error'] = function(data) {
                 if (error) {
@@ -1843,7 +1843,7 @@ Global['WebStorage'] = klass({
     },
     'properties': {
         'set': function(key, val) {
-            this._storage.setItem(this._n + key, JSON.stringify(val));
+            this._storage.setItem(this._n + key, jsonStringify(val));
             return TRUE;
         },
         'get': function(key) {
@@ -1852,17 +1852,17 @@ Global['WebStorage'] = klass({
                 i;
 
             if (key) {
-                return JSON.parse(mine._storage.getItem(mine._n + key));
+                return jsonParse(mine._storage.getItem(mine._n + key));
             }
 
             for (i in mine._storage) {
                 if (!this._n) {
-                    ret[i] = JSON.parse(mine._storage[i]);
+                    ret[i] = jsonParse(mine._storage[i]);
                 }
                 else {
                     key = i.split(this._n)[1];
                     if (key) {
-                        ret[key] = JSON.parse(mine._storage[i]);
+                        ret[key] = jsonParse(mine._storage[i]);
                     }
                 }
             }
@@ -2261,11 +2261,11 @@ Global['FPS'] = klass({
             });
         },
         'start': function() {
-            this.prevtime = Date.now();
+            this.prevtime = dateNow();
             this.loopid = setInterval(this._loop, this.msecFrame, this);
         },
         _loop: function(mine) {
-            mine.nowtime = Date.now();
+            mine.nowtime = dateNow();
             mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
             mine.prevtime = mine.nowtime;
 
@@ -2504,16 +2504,23 @@ Global['Mobile'] = klass({
         }
     }
 });
+Global['mobile'] = new Global['Mobile']();
 /* Test: "%JASMINE_TEST_PATH%" */
-Global['DeviceOrientation'] = klass({
+Global.DeviceAction = klass({
     'extend': Base,
     'init': function(config) {
         this['_super']();
+
+        this._e = config.e;
+
+        if (config['callback']) {
+            this['bind'](config['callback']);
+        }
     },
     'properties': {
         'bind': function(func) {
             this['unbind']();
-            this._bindid = this['contract'](win, 'deviceorientation', func);
+            this._bindid = this['contract'](win, this._e, func);
         },
         'unbind': function() {
             if (this._bindid) {
@@ -2522,34 +2529,24 @@ Global['DeviceOrientation'] = klass({
         }
     }
 });
+/* Test: "%JASMINE_TEST_PATH%" */
+Global['DeviceOrientation'] = function(config) {
+    config.e = 'deviceorientation';
+    return new Glogal.DeviceAction(config);
+};
 Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
 /* Test: "%JASMINE_TEST_PATH%" */
-Global['DeviceMotion'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
-    },
-    'properties': {
-        'bind': function(func) {
-            this['unbind']();
-            this._bindid = this['contract'](win, 'devicemotion', func);
-        },
-        'unbind': function() {
-            if (this._bindid) {
-                this['uncontract'](this._bindid);
-            }
-        }
-    }
-});
+Global['DeviceMotion'] = function(config) {
+    config.e = 'devicemotion';
+    return new Glogal.DeviceAction(config);
+};
 Global['DeviceMotion']['support'] = 'ondevicemotion' in win;
 /* Test: "%JASMINE_TEST_PATH%" */
 (function() {
 var Shake,
-    support = false,
-    convert,
-    mobile = new C['Mobile']();
+    convert;
 
-if (mobile['isMobile']()) {
+if (Global['mobile']['isMobile']()) {
     if (Global['DeviceOrientation']['support']) {
         Shake = Global['DeviceOrientation'];
         convert = function(e) {
@@ -2562,30 +2559,41 @@ if (mobile['isMobile']()) {
             return e['rotationRate'];
         };
     }
-
-    if (Shake) {
-        support = true;
-    }
 }
-mobile = mobile['dispose']();
 
 Global['DeviceShake'] = klass({
     'extend': Base,
     'init': function(config) {
+        var bindprop;
+
         this['_super']();
         this._shaker = new Shake();
         this._limit = config['limit'];
         this._waittime = config['waittime'];
-        this._callback = config['callback'];
+        /* this._callback = config['callback']; */
 
-        this['bind']();
+        if (config['callback'] && config['direction']) {
+            switch (config['direction']) {
+                case 'x':
+                    bindprop = 'gamma';
+                    break;
+                case 'y':
+                    bindprop = 'beta';
+                    break;
+                case 'z':
+                    bindprop = 'alpha';
+                    break;
+            }
+
+            this['bind'](bindprop, config['callback']);
+        }
     },
     'properties': {
         'dispose': function() {
             this['unbind']();
             this._orgdis();
         },
-        'bind': function() {
+        'bind': function(propname, callback) {
             var mine = this,
                 base_e,
                 shaked = FALSE,
@@ -2597,13 +2605,13 @@ Global['DeviceShake'] = klass({
                         base_e = e;
                     }
 
-                    diffbeta = Math.abs(e['beta'] - base_e['beta']);
+                    diffbeta = Math.abs(e[propname] - base_e[propname]);
 
                     if (diffbeta > mine._limit) {
                         shaked = TRUE;
                         base_e = NULL;
 
-                        mine._callback(e);
+                        callback(e);
 
                         setTimeout(function() {
                             shaked = FALSE;
@@ -2611,7 +2619,7 @@ Global['DeviceShake'] = klass({
                     }
                 };
 
-            mine._shaker['bind'](wraphandle);
+            return mine._shaker['bind'](wraphandle);
         },
         'unbind': function() {
             this._shaker['unbind']();
@@ -2619,7 +2627,7 @@ Global['DeviceShake'] = klass({
     }
 });
 
-Global['DeviceShake']['support'] = support ? TRUE : FALSE;
+Global['DeviceShake']['support'] = Shake ? TRUE : FALSE;
 
 }());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
@@ -2756,20 +2764,26 @@ Global['PreRender'] = klass({
         }
     },
     'properties': {
+        'dispose': function() {
+            clearInterval(this.loopid);
+            this._orgdis();
+        },
         'start': function() {
-            var i;
+            var i,
+                mine = this,
+                prevtime = dateNow();
 
-            for (i = this.els.length; i--;) {
-                show(this.els[i]);
+            for (i = mine.els.length; i--;) {
+                show(mine.els[i]);
             }
-            this.prevtime = Date.now();
-            this.loopid = setInterval(check, this.looptime, this);
+            mine.loopid = setInterval(check, this.looptime, this);
 
-            function check(mine) {
-                var gettime = Date.now(),
-                    difftime = gettime - mine.prevtime;
+            function check() {
+                var gettime = dateNow(),
+                    difftime = gettime - prevtime,
+                    i;
 
-                mine.prevtime = gettime;
+                prevtime = gettime;
 
                 if (difftime < mine.loopblur) {
                     mine.guesslimit--;
@@ -2777,7 +2791,7 @@ Global['PreRender'] = klass({
                     if (mine.guesslimit < 1) {
                         clearInterval(mine.loopid);
 
-                        for (var i = mine.els.length; i--;) {
+                        for (i = mine.els.length; i--;) {
                             hide(mine.els[i]);
                         }
 
@@ -2952,7 +2966,7 @@ function getHeader(callback) {
         callback(xhr);
     };
 
-    xhr.open('HEAD', location.href + '?update' + Date.now() + '=1');
+    xhr.open('HEAD', location.href + '?update' + dateNow() + '=1');
     xhr.send(NULL);
 
     return xhr;
@@ -3103,7 +3117,7 @@ Global['Timer'] = function(config) {
     }
 
     function getTime() {
-        return Date.now();
+        return dateNow();
     }
 
     function getPreformedNum(num) {
@@ -3208,7 +3222,7 @@ Global['XML'] = klass({
         this._data = {};
 
         if (config && config['data']) {
-            this.setData(config['data']);
+            this['setData'](config['data']);
         }
     },
     'properties': {
@@ -3216,8 +3230,8 @@ Global['XML'] = klass({
             return this._data;
         },
         'setData': function(d) {
-            this._data =
-            this.el.innerHTML = d;
+            this._data = d;
+            html(this.el, d);
         },
         '$': function(selector) {
             return $child(selector, this.el);

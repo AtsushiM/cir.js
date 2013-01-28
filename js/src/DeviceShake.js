@@ -1,11 +1,9 @@
 /* Test: "%JASMINE_TEST_PATH%" */
 (function() {
 var Shake,
-    support = false,
-    convert,
-    mobile = new C['Mobile']();
+    convert;
 
-if (mobile['isMobile']()) {
+if (Global['mobile']['isMobile']()) {
     if (Global['DeviceOrientation']['support']) {
         Shake = Global['DeviceOrientation'];
         convert = function(e) {
@@ -18,30 +16,41 @@ if (mobile['isMobile']()) {
             return e['rotationRate'];
         };
     }
-
-    if (Shake) {
-        support = true;
-    }
 }
-mobile = mobile['dispose']();
 
 Global['DeviceShake'] = klass({
     'extend': Base,
     'init': function(config) {
+        var bindprop;
+
         this['_super']();
         this._shaker = new Shake();
         this._limit = config['limit'];
         this._waittime = config['waittime'];
-        this._callback = config['callback'];
+        /* this._callback = config['callback']; */
 
-        this['bind']();
+        if (config['callback'] && config['direction']) {
+            switch (config['direction']) {
+                case 'x':
+                    bindprop = 'gamma';
+                    break;
+                case 'y':
+                    bindprop = 'beta';
+                    break;
+                case 'z':
+                    bindprop = 'alpha';
+                    break;
+            }
+
+            this['bind'](bindprop, config['callback']);
+        }
     },
     'properties': {
         'dispose': function() {
             this['unbind']();
             this._orgdis();
         },
-        'bind': function() {
+        'bind': function(propname, callback) {
             var mine = this,
                 base_e,
                 shaked = FALSE,
@@ -53,13 +62,13 @@ Global['DeviceShake'] = klass({
                         base_e = e;
                     }
 
-                    diffbeta = Math.abs(e['beta'] - base_e['beta']);
+                    diffbeta = Math.abs(e[propname] - base_e[propname]);
 
                     if (diffbeta > mine._limit) {
                         shaked = TRUE;
                         base_e = NULL;
 
-                        mine._callback(e);
+                        callback(e);
 
                         setTimeout(function() {
                             shaked = FALSE;
@@ -67,7 +76,7 @@ Global['DeviceShake'] = klass({
                     }
                 };
 
-            mine._shaker['bind'](wraphandle);
+            return mine._shaker['bind'](wraphandle);
         },
         'unbind': function() {
             this._shaker['unbind']();
@@ -75,6 +84,6 @@ Global['DeviceShake'] = klass({
     }
 });
 
-Global['DeviceShake']['support'] = support ? TRUE : FALSE;
+Global['DeviceShake']['support'] = Shake ? TRUE : FALSE;
 
 }());

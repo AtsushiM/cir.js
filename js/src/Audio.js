@@ -6,7 +6,7 @@ Global['Audio'] = function(config) {
 
     return Global['Embed'](config);
 };
-Global['Audio']['support'] = Global['Embed']['supportcheck']({
+Global['Audio']['support'] = embedSupportCheck({
     'type': 'Audio',
     'suffix': [
         ['mp3', 'mpeg'],

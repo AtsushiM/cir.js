@@ -6,7 +6,7 @@ Global['Video'] = function(config) {
 
     return new Global['Embed'](config);
 };
-Global['Video']['support'] = Global['Embed']['supportcheck']({
+Global['Video']['support'] = embedSupportCheck({
     'type': 'Video',
     'suffix': [
         ['webm', 'webm'],

@@ -69,7 +69,7 @@ Global['Timer'] = function(config) {
     }
 
     function getTime() {
-        return Date.now();
+        return dateNow();
     }
 
     function getPreformedNum(num) {
