@@ -3,7 +3,7 @@
 var Shake,
     convert;
 
-if (Global['mobile']['isMobile']()) {
+/* if (Global['mobile']['isMobile']()) { */
     if (Global['DeviceOrientation']['support']) {
         Shake = Global['DeviceOrientation'];
         convert = function(e) {
@@ -16,7 +16,7 @@ if (Global['mobile']['isMobile']()) {
             return e['rotationRate'];
         };
     }
-}
+/* } */
 
 Global['DeviceShake'] = klass({
     'extend': Base,

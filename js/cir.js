@@ -2511,7 +2511,7 @@ Global.DeviceAction = klass({
     'init': function(config) {
         this['_super']();
 
-        this._e = config.e;
+        this._e = config['e'];
 
         if (config['callback']) {
             this['bind'](config['callback']);
@@ -2531,14 +2531,16 @@ Global.DeviceAction = klass({
 });
 /* Test: "%JASMINE_TEST_PATH%" */
 Global['DeviceOrientation'] = function(config) {
-    config.e = 'deviceorientation';
-    return new Glogal.DeviceAction(config);
+    config = config || {};
+    config['e'] = 'deviceorientation';
+    return new Global.DeviceAction(config);
 };
 Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
 /* Test: "%JASMINE_TEST_PATH%" */
 Global['DeviceMotion'] = function(config) {
-    config.e = 'devicemotion';
-    return new Glogal.DeviceAction(config);
+    config = config || {};
+    config['e'] = 'devicemotion';
+    return new Global.DeviceAction(config);
 };
 Global['DeviceMotion']['support'] = 'ondevicemotion' in win;
 /* Test: "%JASMINE_TEST_PATH%" */
@@ -2546,7 +2548,7 @@ Global['DeviceMotion']['support'] = 'ondevicemotion' in win;
 var Shake,
     convert;
 
-if (Global['mobile']['isMobile']()) {
+/* if (Global['mobile']['isMobile']()) { */
     if (Global['DeviceOrientation']['support']) {
         Shake = Global['DeviceOrientation'];
         convert = function(e) {
@@ -2559,7 +2561,7 @@ if (Global['mobile']['isMobile']()) {
             return e['rotationRate'];
         };
     }
-}
+/* } */
 
 Global['DeviceShake'] = klass({
     'extend': Base,

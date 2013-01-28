@@ -4,7 +4,7 @@ Global.DeviceAction = klass({
     'init': function(config) {
         this['_super']();
 
-        this._e = config.e;
+        this._e = config['e'];
 
         if (config['callback']) {
             this['bind'](config['callback']);
