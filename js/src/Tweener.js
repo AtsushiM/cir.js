@@ -77,17 +77,18 @@ var Mine = Global['Tweener'] = klass({
                 now = dateNow(),
                 time,
                 n = items.length,
-                i,
+                /* i = 0, */
                 len,
                 prop;
 
             while (n--) {
                 item = items[n];
-                len = item.property.length;
+                /* len = item.property.length; */
+                i = item.property.length;
                 time = now - item.begin;
 
                 if (time < item._duration) {
-                    for (i = 0; i < len; i++) {
+                    for (; i--;) {
                         prop = item.property[i];
 
                         Mine._setProp(item._target, prop, item.ease(
@@ -99,7 +100,7 @@ var Mine = Global['Tweener'] = klass({
                     }
                 }
                 else {
-                    for (i = 0; i < len; i++) {
+                    for (; i--;) {
                         prop = item.property[i];
 
                         Mine._setProp(item._target, prop, prop['to']);

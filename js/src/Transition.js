@@ -11,13 +11,12 @@ var prop = [
     prefix,
     css_prefix = '',
     event_key = 'transition',
-    i = 0,
-    len = prop.length,
+    i = prop.length,
     style,
     sheet,
     Mine;
 
-for (; i < len; i++) {
+for (; i--;) {
     if (el.style[prop[i]] !== UNDEFINED) {
         support = TRUE;
         prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];

@@ -86,11 +86,11 @@ function parseQueryString(query) {
         .replace(/^\?/, '');
 
     var params = query.split('&'),
-        i,
+        i = params.length,
         p,
         result = {};
 
-    for (i = params.length; i--;) {
+    for (; i--;) {
         p = params[i].split('=');
         result[p[0]] = typeCast(decodeURIComponent(p[1]));
     }
@@ -228,10 +228,9 @@ function removeClass(element, cls) {
     }
 
     addedcls = element.className.split(' ');
-    i = 0,
-    len = addedcls.length;
+    i = addedcls.length;
 
-    for (; i < len; i++) {
+    for (; i--;) {
         if (cls !== addedcls[i]) {
             bindcls.push(addedcls[i]);
         }
@@ -629,21 +628,20 @@ Global['cssease'] = {
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var prop = [
-        'webkitAnimation',
-        'animation'
+        'animation',
+        'webkitAnimation'
     ],
     el = create('p'),
     support = FALSE,
     prefix,
     css_prefix = '',
     event_key = 'animation',
-    i = 0,
-    len = prop.length,
+    i = prop.length,
     style,
     sheet,
     Mine;
 
-for (; i < len; i++) {
+for (; i--;) {
     if (el.style[prop[i]] !== UNDEFINED) {
         support = TRUE;
         prefix = prop[i].match(/^(.*?)animation$/i)[1];
@@ -798,13 +796,12 @@ var prop = [
     prefix,
     css_prefix = '',
     event_key = 'transition',
-    i = 0,
-    len = prop.length,
+    i = prop.length,
     style,
     sheet,
     Mine;
 
-for (; i < len; i++) {
+for (; i--;) {
     if (el.style[prop[i]] !== UNDEFINED) {
         support = TRUE;
         prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];
@@ -1000,17 +997,18 @@ var Mine = Global['Tweener'] = klass({
                 now = dateNow(),
                 time,
                 n = items.length,
-                i,
+                /* i = 0, */
                 len,
                 prop;
 
             while (n--) {
                 item = items[n];
-                len = item.property.length;
+                /* len = item.property.length; */
+                i = item.property.length;
                 time = now - item.begin;
 
                 if (time < item._duration) {
-                    for (i = 0; i < len; i++) {
+                    for (; i--;) {
                         prop = item.property[i];
 
                         Mine._setProp(item._target, prop, item.ease(
@@ -1022,7 +1020,7 @@ var Mine = Global['Tweener'] = klass({
                     }
                 }
                 else {
-                    for (i = 0; i < len; i++) {
+                    for (; i--;) {
                         prop = item.property[i];
 
                         Mine._setProp(item._target, prop, prop['to']);
@@ -1079,7 +1077,6 @@ Global['$'] = function(query, _parent) {
     var $elements,
         base,
         instance,
-        i = 0,
         len;
 
     _parent = _parent || doc;
@@ -1101,8 +1098,9 @@ Global['$'] = function(query, _parent) {
     /* instance._selector = query; */
     instance._parent = _parent;
 
-    for (; i < len; i++) {
-        instance[i] = $elements[i];
+    /* for (; i < len; i++) { */
+    for (;len--;) {
+        instance[len] = $elements[len];
     }
 
     return instance;
@@ -1112,11 +1110,10 @@ Global['$'] = function(query, _parent) {
 var el = Global['element'];
 
 function forExe(_this, func, arg) {
-    var i = 0,
-        len = _this.length,
+    var i = _this.length,
         ary = makeAry(arg);
 
-    for (; i < len; i++) {
+    for (; i--;) {
         ary[0] = _this[i];
         func.apply(_this, ary);
     }
@@ -1224,10 +1221,9 @@ methods['animate'] = function() {
 }
 methods['stop'] = function() {
     if (this._animate) {
-        var i = 0,
-            len = this._animate.length;
+        var i = this._animate.length;
 
-        for (; i < len; i++) {
+        for (; i--;) {
             this._animate[i]['stop']();
         }
 
@@ -2313,10 +2309,9 @@ Global['ImgLoad'] = klass({
 
             var mine = this,
                 img,
-                i = 0,
-                len = mine.srccount;
+                i = mine.srccount;
 
-            for (; i < len; i++) {
+            for (; i--;) {
                 img = create('img');
                 img.src = mine.srcs[i];
 
@@ -2624,9 +2619,9 @@ Global['FontImg'] = klass({
         'make': function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',
-                i;
+                i = aryX.length;
 
-            for (i = aryX.length; i--;) {
+            for (; i--;) {
                 tags = '<' + this.tag +
                     ' class="font_' + this.type + aryX[i] +
                     '">&nbsp;</' + this.tag + '>' + tags;

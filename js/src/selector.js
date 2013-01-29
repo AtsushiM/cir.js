@@ -5,7 +5,6 @@ Global['$'] = function(query, _parent) {
     var $elements,
         base,
         instance,
-        i = 0,
         len;
 
     _parent = _parent || doc;
@@ -27,8 +26,9 @@ Global['$'] = function(query, _parent) {
     /* instance._selector = query; */
     instance._parent = _parent;
 
-    for (; i < len; i++) {
-        instance[i] = $elements[i];
+    /* for (; i < len; i++) { */
+    for (;len--;) {
+        instance[len] = $elements[len];
     }
 
     return instance;

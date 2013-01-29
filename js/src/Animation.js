@@ -1,21 +1,20 @@
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var prop = [
-        'webkitAnimation',
-        'animation'
+        'animation',
+        'webkitAnimation'
     ],
     el = create('p'),
     support = FALSE,
     prefix,
     css_prefix = '',
     event_key = 'animation',
-    i = 0,
-    len = prop.length,
+    i = prop.length,
     style,
     sheet,
     Mine;
 
-for (; i < len; i++) {
+for (; i--;) {
     if (el.style[prop[i]] !== UNDEFINED) {
         support = TRUE;
         prefix = prop[i].match(/^(.*?)animation$/i)[1];

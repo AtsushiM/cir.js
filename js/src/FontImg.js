@@ -11,9 +11,9 @@ Global['FontImg'] = klass({
         'make': function(x) {
             var aryX = ('' + x).split(''),
                 tags = '',
-                i;
+                i = aryX.length;
 
-            for (i = aryX.length; i--;) {
+            for (; i--;) {
                 tags = '<' + this.tag +
                     ' class="font_' + this.type + aryX[i] +
                     '">&nbsp;</' + this.tag + '>' + tags;

@@ -23,10 +23,9 @@ methods['animate'] = function() {
 }
 methods['stop'] = function() {
     if (this._animate) {
-        var i = 0,
-            len = this._animate.length;
+        var i = this._animate.length;
 
-        for (; i < len; i++) {
+        for (; i--;) {
             this._animate[i]['stop']();
         }
 

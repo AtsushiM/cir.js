@@ -45,10 +45,9 @@ Global['ImgLoad'] = klass({
 
             var mine = this,
                 img,
-                i = 0,
-                len = mine.srccount;
+                i = mine.srccount;
 
-            for (; i < len; i++) {
+            for (; i--;) {
                 img = create('img');
                 img.src = mine.srcs[i];
 

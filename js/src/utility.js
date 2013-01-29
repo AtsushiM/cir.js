@@ -65,11 +65,11 @@ function parseQueryString(query) {
         .replace(/^\?/, '');
 
     var params = query.split('&'),
-        i,
+        i = params.length,
         p,
         result = {};
 
-    for (i = params.length; i--;) {
+    for (; i--;) {
         p = params[i].split('=');
         result[p[0]] = typeCast(decodeURIComponent(p[1]));
     }

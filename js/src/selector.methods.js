@@ -3,11 +3,10 @@
 var el = Global['element'];
 
 function forExe(_this, func, arg) {
-    var i = 0,
-        len = _this.length,
+    var i = _this.length,
         ary = makeAry(arg);
 
-    for (; i < len; i++) {
+    for (; i--;) {
         ary[0] = _this[i];
         func.apply(_this, ary);
     }

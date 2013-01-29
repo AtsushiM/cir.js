@@ -62,10 +62,9 @@ function removeClass(element, cls) {
     }
 
     addedcls = element.className.split(' ');
-    i = 0,
-    len = addedcls.length;
+    i = addedcls.length;
 
-    for (; i < len; i++) {
+    for (; i--;) {
         if (cls !== addedcls[i]) {
             bindcls.push(addedcls[i]);
         }
