@@ -680,10 +680,8 @@ Mine = Global['Animation'] = klassExtendBase(function(element, property, option)
     this._id = 'ciranim' + Mine['id'];
 
     var duration = option['duration'] || Mine['duration'],
-        ease = option['ease'] || 'ease';
-
-    // property
-    var i,
+        ease = option['ease'] || 'ease',
+        i,
         prop = {};
 
     for (i in property) {

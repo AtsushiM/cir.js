@@ -1,4 +1,4 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/DeviceAction/test.js" */
 Global.DeviceAction = klassExtendBase(function(config) {
     this['_super']();
 

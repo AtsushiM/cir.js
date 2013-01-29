@@ -1,4 +1,4 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/DeviceOrientation/test.js" */
 Global['DeviceOrientation'] = function(config) {
     config = config || {};
     config['e'] = 'deviceorientation';

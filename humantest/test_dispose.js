@@ -37,21 +37,3 @@ $('#dispose').on(C.event.click, function() {
         flg = false;
     }
 });
-
-(function () {
-    var a = new Klass(1);
-
-    console.dir(a);
-}());
-
-try {
-    function Klass(name) {
-        throw false;
-    }
-}
-catch (e) {
-    return e;
-}
-finally {
-    return false;
-}

@@ -8,7 +8,13 @@
     <p id="test"></p>
     <input type="button" id="start" value="start" />
     <input type="button" id="dispose" value="dispose" />
+    <script type="text/javascript">
+        console.time('cir parse');
+    </script>
     <script src="../js/cir.min.js"></script>
+    <script type="text/javascript">
+        console.timeEnd('cir parse');
+    </script>
     <script src="test_dispose.js"></script>
 </body>
 </html>

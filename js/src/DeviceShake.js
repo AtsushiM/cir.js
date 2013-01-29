@@ -1,4 +1,4 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/DeviceShake/test.js" */
 (function() {
 var Shake,
     convert;

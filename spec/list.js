@@ -8,6 +8,10 @@ src/Bind/\n\
 src/Brush/\n\
 src/DataStore/\n\
 src/Deferred/\n\
+src/DeviceAction/\n\
+src/DeviceMotion/\n\
+src/DeviceOrientation/\n\
+src/DeviceShake/\n\
 src/DragFlick/\n\
 src/Embed/\n\
 src/Event/\n\
@@ -59,6 +63,10 @@ src/utility/\n\
 ../../js/src/Brush.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/Deferred.js\n\
+../../js/src/DeviceAction.js\n\
+../../js/src/DeviceMotion.js\n\
+../../js/src/DeviceOrientation.js\n\
+../../js/src/DeviceShake.js\n\
 ../../js/src/DragFlick.js\n\
 ../../js/src/Embed.js\n\
 ../../js/src/Event.js\n\
@@ -110,6 +118,10 @@ src/utility/\n\
 ../_src/src/Brush/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/Deferred/test.js\n\
+../_src/src/DeviceAction/test.js\n\
+../_src/src/DeviceMotion/test.js\n\
+../_src/src/DeviceOrientation/test.js\n\
+../_src/src/DeviceShake/test.js\n\
 ../_src/src/DragFlick/test.js\n\
 ../_src/src/Embed/test.js\n\
 ../_src/src/Event/test.js\n\
