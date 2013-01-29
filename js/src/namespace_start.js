@@ -73,3 +73,10 @@ function checkCSSAnimTranCheck(propnames, event_key) {
         sheet: sheet
     };
 }
+
+function jsonParse(json) {
+    return win['JSON']['parse'](json);
+}
+function jsonStringify(text) {
+    return win['JSON']['stringify'](text);
+}

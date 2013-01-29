@@ -73,6 +73,13 @@ function checkCSSAnimTranCheck(propnames, event_key) {
         sheet: sheet
     };
 }
+
+function jsonParse(json) {
+    return win['JSON']['parse'](json);
+}
+function jsonStringify(text) {
+    return win['JSON']['stringify'](text);
+}
 /* Test: "../../spec/_src/src/utility/test.js" */
 if (!Date['now']) {
     Date['now'] = function now() {
@@ -117,8 +124,25 @@ function typeCast(str) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
-function windowOpen(url, windowname) {
-    return win.open(url, windowname);
+function windowOpen(url, windowname, option) {
+    var i,
+        option_ary = [];
+
+    for (i in option) {
+        if (isBoolean(option[i])) {
+            switch (option[i]) {
+                case TRUE:
+                    option[i] = 'yes';
+                    break;
+                case FALSE:
+                    option[i] = 'no';
+                    break;
+            }
+        }
+        option_ary.push(i + '=' + option[i]);
+    }
+
+    return win.open(url, windowname, option_ary.join(','));
 }
 function makeQueryString(vars) {
     var sign = '',
@@ -188,12 +212,6 @@ function checkUserAgent(pattern, ua) {
     ua = ua ? ua : navigator.userAgent;
 
     return ua.match(pattern) ? TRUE : FALSE;
-}
-function jsonParse(json) {
-    return win['JSON']['parse'](json);
-}
-function jsonStringify(text) {
-    return win['JSON']['stringify'](text);
 }
 
 Global['utility'] = {
