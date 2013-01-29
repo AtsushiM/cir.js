@@ -1,27 +1,23 @@
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global['XML'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this.el = create('div');
-        this._data = {};
+Global['XML'] = klassExtendBase(function(config) {
+    this.el = create('div');
+    this._data = {};
 
-        if (config) {
-            this['setData'](config['data']);
-        }
+    if (config) {
+        this['setData'](config['data']);
+    }
+}, {
+    'getData': function() {
+        return this._data;
     },
-    'properties': {
-        'getData': function() {
-            return this._data;
-        },
-        'setData': function(d) {
-            this._data = d;
-            html(this.el, d);
-        },
-        '$': function(selector) {
-            return $child(selector, this.el);
-        },
-        '$$': function(selector) {
-            return $$child(selector, this.el);
-        }
+    'setData': function(d) {
+        this._data = d;
+        html(this.el, d);
+    },
+    '$': function(selector) {
+        return $child(selector, this.el);
+    },
+    '$$': function(selector) {
+        return $$child(selector, this.el);
     }
 });

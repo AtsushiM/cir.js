@@ -5,51 +5,47 @@
 var xhr,
     isLoaded = FALSE;
 
-Global['ServerMeta'] = klass({
-    'extend' : Base,
-    'init': function(config) {
-        config = config || {};
+Global['ServerMeta'] = klassExtendBase(function(config) {
+    config = config || {};
 
-        var callback = config['callback'] || nullFunction;
+    var callback = config['callback'] || nullFunction;
 
-        if (!xhr) {
-            xhr = getHeader(function() {
-                isLoaded = TRUE;
-                callback(xhr);
-            });
-        }
-        else {
+    if (!xhr) {
+        xhr = getHeader(function() {
+            isLoaded = TRUE;
             callback(xhr);
-        }
+        });
+    }
+    else {
+        callback(xhr);
+    }
+}, {
+    'date': function(callback) {
+        return getHeader(function(xhr) {
+            var time = new Date(xhr.getResponseHeader('Date'));
+            callback(time);
+        });
     },
-    'properties': {
-        'date': function(callback) {
-            return getHeader(function(xhr) {
-                var time = new Date(xhr.getResponseHeader('Date'));
-                callback(time);
-            });
-        },
-        'connection': function() {
-            return getRes('Connection');
-        },
-        'contentLength': function() {
-            return getRes('Content-Length');
-        },
-        'lastModified': function() {
-            return getRes('Last-Modified');
-        },
-        'server': function() {
-            return getRes('Server');
-        },
-        'contentType': function() {
-            return getRes('Content-Type');
-        },
-        'acceptRanges': function() {
-            return getRes('Accept-Ranges');
-        },
-        'keepAlive': function() {
-            return getRes('Keep-Alive');
-        }
+    'connection': function() {
+        return getRes('Connection');
+    },
+    'contentLength': function() {
+        return getRes('Content-Length');
+    },
+    'lastModified': function() {
+        return getRes('Last-Modified');
+    },
+    'server': function() {
+        return getRes('Server');
+    },
+    'contentType': function() {
+        return getRes('Content-Type');
+    },
+    'acceptRanges': function() {
+        return getRes('Accept-Ranges');
+    },
+    'keepAlive': function() {
+        return getRes('Keep-Alive');
     }
 });
 

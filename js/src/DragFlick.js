@@ -1,157 +1,153 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-Global['DragFlick'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
+Global['DragFlick'] = klassExtendBase(function(config) {
+    this['_super']();
 
-        if (config) {
-            this['bind'](config);
+    if (config) {
+        this['bind'](config);
+    }
+}, {
+    _t: function(e) {
+        var changed = e.changedTouches ? e.changedTouches[0] : e;
+
+        return changed;
+    },
+    'amount': function(vars) {
+        var mine = this,
+            startX,
+            startY,
+            dragflg = FALSE;
+
+        this['contract'](vars['element'], ev['switchdown'], start);
+        this['contract'](win, ev['switchup'], end);
+
+        function start(e) {
+            var changed = mine._t(e);
+
+            startX = changed.pageX;
+            startY = changed.pageY;
+
+            dragflg = TRUE;
+
+            eventPrevent(e);
+        }
+        function end(e) {
+            if (dragflg) {
+                var changed = mine._t(e),
+                    amount = {
+                        'x': changed.pageX - startX,
+                        'y': changed.pageY - startY
+                    };
+
+                vars['callback'](amount);
+
+                dragflg = FALSE;
+            }
         }
     },
-    'properties': {
-        _t: function(e) {
-            var changed = e.changedTouches ? e.changedTouches[0] : e;
+    'direction': function(vars) {
+        this['amount']({
+            'element': vars['element'],
+            'callback': function(amount) {
+                var boundary = vars['boundary'] || 0,
+                    direction = {
+                        'change': FALSE,
+                        'top': FALSE,
+                        'right': FALSE,
+                        'bottom': FALSE,
+                        'left': FALSE,
+                        'amount': amount
+                    };
 
-            return changed;
-        },
-        'amount': function(vars) {
-            var mine = this,
-                startX,
-                startY,
-                dragflg = FALSE;
+                if (Math.abs(amount['x']) > boundary) {
+                    if (amount['x'] > 0) {
+                        direction['right'] = TRUE;
+                    }
+                    else if (amount['x'] < 0) {
+                        direction['left'] = TRUE;
+                    }
 
-            this['contract'](vars['element'], ev['switchdown'], start);
-            this['contract'](win, ev['switchup'], end);
-
-            function start(e) {
-                var changed = mine._t(e);
-
-                startX = changed.pageX;
-                startY = changed.pageY;
-
-                dragflg = TRUE;
-
-                eventPrevent(e);
-            }
-            function end(e) {
-                if (dragflg) {
-                    var changed = mine._t(e),
-                        amount = {
-                            'x': changed.pageX - startX,
-                            'y': changed.pageY - startY
-                        };
-
-                    vars['callback'](amount);
-
-                    dragflg = FALSE;
+                    direction['change'] = TRUE;
                 }
+
+                if (Math.abs(amount['y']) > boundary) {
+                    if (amount['y'] > 0) {
+                        direction['bottom'] = TRUE;
+                    }
+                    else if (amount['y'] < 0) {
+                        direction['top'] = TRUE;
+                    }
+
+                    direction['change'] = TRUE;
+                }
+
+                vars['callback'](direction);
             }
-        },
-        'direction': function(vars) {
-            this['amount']({
-                'element': vars['element'],
-                'callback': function(amount) {
-                    var boundary = vars['boundary'] || 0,
-                        direction = {
-                            'change': FALSE,
-                            'top': FALSE,
-                            'right': FALSE,
-                            'bottom': FALSE,
-                            'left': FALSE,
-                            'amount': amount
-                        };
+        });
+    },
+    'bind': function(vars) {
+        var mine = this,
+            element = vars['element'],
+            el = Global['element'],
+            start = vars['start'] || nullFunction,
+            move = vars['move'] || nullFunction,
+            end = vars['end'] || nullFunction,
+            flg = FALSE,
+            startX = 0,
+            startY = 0;
 
-                    if (Math.abs(amount['x']) > boundary) {
-                        if (amount['x'] > 0) {
-                            direction['right'] = TRUE;
-                        }
-                        else if (amount['x'] < 0) {
-                            direction['left'] = TRUE;
-                        }
+        if (vars['direction']) {
+            mine['direction']({
+                'element': element,
+                'boundary': vars['boundary'],
+                'callback': vars['direction']
+            });
+        }
 
-                        direction['change'] = TRUE;
-                    }
+        eventProxy(element, ev['switchdown'], function(_e) {
+            flg = TRUE;
 
-                    if (Math.abs(amount['y']) > boundary) {
-                        if (amount['y'] > 0) {
-                            direction['bottom'] = TRUE;
-                        }
-                        else if (amount['y'] < 0) {
-                            direction['top'] = TRUE;
-                        }
+            startX = _e.pageX;
+            startY = _e.pageY;
 
-                        direction['change'] = TRUE;
-                    }
-
-                    vars['callback'](direction);
+            start({
+                'e': _e,
+                'move': {
+                    'x': startX,
+                    'y': startY
                 }
             });
-        },
-        'bind': function(vars) {
-            var mine = this,
-                element = vars['element'],
-                el = Global['element'],
-                start = vars['start'] || nullFunction,
-                move = vars['move'] || nullFunction,
-                end = vars['end'] || nullFunction,
-                flg = FALSE,
-                startX = 0,
-                startY = 0;
-
-            if (vars['direction']) {
-                mine['direction']({
-                    'element': element,
-                    'boundary': vars['boundary'],
-                    'callback': vars['direction']
-                });
-            }
-
-            eventProxy(element, ev['switchdown'], function(_e) {
-                flg = TRUE;
-
-                startX = _e.pageX;
-                startY = _e.pageY;
-
-                start({
+        });
+        eventProxy(doc, ev['switchmove'], function(_e) {
+            if (flg) {
+                move({
                     'e': _e,
                     'move': {
-                        'x': startX,
-                        'y': startY
+                        'x': _e.pageX - startX,
+                        'y': _e.pageY - startY
                     }
                 });
-            });
-            eventProxy(doc, ev['switchmove'], function(_e) {
-                if (flg) {
-                    move({
-                        'e': _e,
-                        'move': {
-                            'x': _e.pageX - startX,
-                            'y': _e.pageY - startY
-                        }
-                    });
-                }
-            });
-            eventProxy(doc, ev['switchup'], function(_e) {
-                if (flg) {
-                    end({
-                        'e': _e,
-                        'move': {
-                            'x': _e.pageX - startX,
-                            'y': _e.pageY - startY
-                        }
-                    });
-
-                    flg = FALSE;
-                }
-            });
-
-            function eventProxy(element, ev, callback) {
-                var handler = function(e) {
-                        var changed = mine._t(e);
-                        callback(changed);
-                    };
-                mine['contract'](element, ev, handler);
             }
+        });
+        eventProxy(doc, ev['switchup'], function(_e) {
+            if (flg) {
+                end({
+                    'e': _e,
+                    'move': {
+                        'x': _e.pageX - startX,
+                        'y': _e.pageY - startY
+                    }
+                });
+
+                flg = FALSE;
+            }
+        });
+
+        function eventProxy(element, ev, callback) {
+            var handler = function(e) {
+                    var changed = mine._t(e);
+                    callback(changed);
+                };
+            mine['contract'](element, ev, handler);
         }
     }
 });

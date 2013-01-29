@@ -19,6 +19,16 @@ var win = window,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
+function klassExtend(kls, init, properties) {
+    return klass({
+        'extend': kls,
+        'init': init,
+        'properties': properties
+    });
+}
+function klassExtendBase(init, properties) {
+    return klassExtend(Base, init, properties);
+}
 /* Test: "../../spec/_src/src/utility/test.js" */
 if (!Date['now']) {
     Date['now'] = function now() {
@@ -456,32 +466,30 @@ Base = Global['Base'] = klass({
 });
 /* Test: "../../spec/_src/src/Event/test.js" */
 var EventName = 'Event';
-ev = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super'](config);
+ev = klassExtendBase(function(config) {
+    this['_super'](config);
 
-        // singleton
-        return this.singleAct(EventName);
-    },
-    'properties': {
-        'switchclick': isTouch ? 'touchstart' : 'click',
-        'switchdown': isTouch ? 'touchstart' : 'mousedown',
-        'switchmove': isTouch ? 'touchmove' : 'mousemove',
-        'switchup': isTouch ? 'touchend' : 'mouseup',
-        'load': 'load',
-        'change': 'change',
-        /* hashchange: 'hashchange', */
-        'click': 'click',
-        'mousedown': 'mousedown',
-        'mousemove': 'mousemove',
-        'mouseup': 'mouseup',
-        'touchstart': 'touchstart',
-        'touchmove': 'touchmove',
-        'touchend': 'touchend',
-        /* orientationchange: 'orientationchange', */
-        'resize': 'resize'
-    }
+    // singleton
+    return this.singleAct(EventName);
+}, {
+    'switchclick': isTouch ? 'touchstart' : 'click',
+    'switchdown': isTouch ? 'touchstart' : 'mousedown',
+    'switchmove': isTouch ? 'touchmove' : 'mousemove',
+    'switchup': isTouch ? 'touchend' : 'mouseup',
+    'switchover': isTouch ? 'touchstart' : 'mouseover',
+    'switchout': isTouch ? 'touchend' : 'mouseout',
+    'load': 'load',
+    'change': 'change',
+    'click': 'click',
+    'mousedown': 'mousedown',
+    'mousemove': 'mousemove',
+    'mouseup': 'mouseup',
+    'mouseover': 'mouseover',
+    'mouseout': 'mouseout',
+    'touchstart': 'touchstart',
+    'touchmove': 'touchmove',
+    'touchend': 'touchend',
+    'resize': 'resize'
 });
 Global[EventName] = ev;
 ev = Global['event'] = new ev();
@@ -661,104 +669,100 @@ for (; i--;) {
     }
 }
 
-Mine = Global['Animation'] = klass({
-    'extend': Base,
-    'init': function(element, property, option) {
-        option = option || {};
+Mine = Global['Animation'] = klassExtendBase(function(element, property, option) {
+    option = option || {};
 
-        this.onComplete = option['onComplete'] || nullFunction;
+    this.onComplete = option['onComplete'] || nullFunction;
 
-        this.el = element;
+    this.el = element;
 
-        Mine['id']++;
-        this._id = 'ciranim' + Mine['id'];
+    Mine['id']++;
+    this._id = 'ciranim' + Mine['id'];
 
-        var duration = option['duration'] || Mine['duration'],
-            ease = option['ease'] || 'ease';
+    var duration = option['duration'] || Mine['duration'],
+        ease = option['ease'] || 'ease';
 
-        // property
-        var i,
-            prop = {};
+    // property
+    var i,
+        prop = {};
 
-        for (i in property) {
-            prop[i] = property[i];
-            if (isNumber(prop[i])) {
-                prop[i] = prop[i] + 'px';
+    for (i in property) {
+        prop[i] = property[i];
+        if (isNumber(prop[i])) {
+            prop[i] = prop[i] + 'px';
+        }
+    }
+
+    this.property = prop;
+
+    prop = replaceAll(
+        replaceAll(jsonStringify(prop), '"', ''),
+        ',',
+        ';'
+    );
+
+    sheet.insertRule(
+        '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
+        sheet.cssRules.length);
+
+    if (!isArray(ease)) {
+        ease = [ease];
+    }
+
+    addCSSRule(this._id, css_prefix, duration, ease);
+
+    if (!option['manual']) {
+        this['start']();
+    }
+}, {
+    _off: function() {
+        off(this.el, event_key + 'End', this.end);
+        off(this.el, 'animationend', this.end);
+    },
+    'dispose': function() {
+        this.stop();
+        this._orgdis();
+    },
+    'start': function() {
+        var mine = this;
+
+        mine.end = endaction;
+        on(mine.el, event_key + 'End', endaction);
+        on(mine.el, 'animationend', endaction);
+
+        addClass(mine.el, mine._id);
+
+        function endaction(e) {
+            var rule = sheet.cssRules,
+                len = rule.length,
+                name;
+
+            mine._off();
+
+
+            if (prefix === 'webkit') {
+                for (; len--;) {
+                    name = rule[len].name ||
+                        ('' + rule[len].selectorText).split('.')[1];
+
+                    if (name === mine._id) {
+                        sheet.deleteRule(len);
+                    }
+                }
+                removeClass(mine.el, mine._id);
+
+                css(mine.el, mine.property);
             }
-        }
-
-        this.property = prop;
-
-        prop = replaceAll(
-            replaceAll(jsonStringify(prop), '"', ''),
-            ',',
-            ';'
-        );
-
-        sheet.insertRule(
-            '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
-            sheet.cssRules.length);
-
-        if (!isArray(ease)) {
-            ease = [ease];
-        }
-
-        addCSSRule(this._id, css_prefix, duration, ease);
-
-        if (!option['manual']) {
-            this['start']();
+            mine.onComplete(e);
         }
     },
-    'properties': {
-        _off: function() {
-            off(this.el, event_key + 'End', this.end);
-            off(this.el, 'animationend', this.end);
-        },
-        'dispose': function() {
-            this.stop();
-            this._orgdis();
-        },
-        'start': function() {
-            var mine = this;
+    'stop': function() {
+        var stopobj = {};
 
-            mine.end = endaction;
-            on(mine.el, event_key + 'End', endaction);
-            on(mine.el, 'animationend', endaction);
+        stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
-            addClass(mine.el, mine._id);
-
-            function endaction(e) {
-                var rule = sheet.cssRules,
-                    len = rule.length,
-                    name;
-
-                mine._off();
-
-
-                if (prefix === 'webkit') {
-                    for (; len--;) {
-                        name = rule[len].name ||
-                            ('' + rule[len].selectorText).split('.')[1];
-
-                        if (name === mine._id) {
-                            sheet.deleteRule(len);
-                        }
-                    }
-                    removeClass(mine.el, mine._id);
-
-                    css(mine.el, mine.property);
-                }
-                mine.onComplete(e);
-            }
-        },
-        'stop': function() {
-            var stopobj = {};
-
-            stopobj[css_prefix + 'animation-play-state'] = 'paused';
-
-            css(this.el, stopobj);
-            this._off();
-        }
+        css(this.el, stopobj);
+        this._off();
     }
 });
 
@@ -821,76 +825,72 @@ for (; i--;) {
     }
 }
 
-Mine = Global['Transition'] = klass({
-    'extend': Base,
-    'init': function(element, property, option) {
-        option = option || {};
-        option['onComplete'] = option['onComplete'] || nullFunction;
+Mine = Global['Transition'] = klassExtendBase(function(element, property, option) {
+    option = option || {};
+    option['onComplete'] = option['onComplete'] || nullFunction;
 
-        Mine['id']++;
-        this._id = 'cirtrans' + Mine['id'];
+    Mine['id']++;
+    this._id = 'cirtrans' + Mine['id'];
 
-        var transProp = [],
-            animeProp = override({}, property),
-            i,
-            duration = option['duration'] || Mine['duration'],
-            ease = option['ease'] || 'ease';
+    var transProp = [],
+        animeProp = override({}, property),
+        i,
+        duration = option['duration'] || Mine['duration'],
+        ease = option['ease'] || 'ease';
 
-        if (!isArray(ease)) {
-            ease = [ease];
-        }
+    if (!isArray(ease)) {
+        ease = [ease];
+    }
 
-        for (i in property) {
-            transProp.push(i);
-        }
+    for (i in property) {
+        transProp.push(i);
+    }
 
-        addCSSRule(this._id, css_prefix, duration, ease, transProp);
+    addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-        this.el = element;
-        this.property = property;
-        this.option = option;
+    this.el = element;
+    this.property = property;
+    this.option = option;
 
-        if (!option['manual']) {
-            this['start']();
-        }
+    if (!option['manual']) {
+        this['start']();
+    }
+}, {
+    'dispose': function() {
+        this['stop']();
+        this._orgdis();
     },
-    'properties': {
-        'dispose': function() {
-            this['stop']();
-            this._orgdis();
-        },
-        'start': function() {
-            var mine = this;
+    'start': function() {
+        var mine = this;
 
-            mine._endfunc = function(e) {
-                mine['stop']();
-                setTimeout(function() {
-                    mine.option['onComplete'](e);
-                }, 1);
-            };
+        mine._endfunc = function(e) {
+            mine['stop']();
+            setTimeout(function() {
+                mine.option['onComplete'](e);
+            }, 1);
+        };
 
-            on(mine.el, event_key + 'End', mine._endfunc);
-            on(mine.el, 'transitionend', mine._endfunc);
-            addClass(mine.el, mine._id);
-            css(mine.el, mine.property);
-        },
-        'stop': function() {
-            var rule = sheet.cssRules,
-                len = rule.length,
-                name;
+        on(mine.el, event_key + 'End', mine._endfunc);
+        on(mine.el, 'transitionend', mine._endfunc);
+        addClass(mine.el, mine._id);
+        css(mine.el, mine.property);
+    },
+    'stop': function() {
+        var rule = sheet.cssRules,
+            len = rule.length,
+            name;
 
-            off(this.el, event_key + 'End', this._endfunc);
-            off(this.el, 'transitionend', this._endfunc);
-            removeClass(this.el, this._id);
+        off(this.el, event_key + 'End', this._endfunc);
+        off(this.el, 'transitionend', this._endfunc);
+        removeClass(this.el, this._id);
 
-            for (; len--;) {
-                name = rule[len].name ||
-                    ('' + rule[len].selectorText).split('.')[1];
+        for (; len--;) {
+            name = rule[len].name ||
+                ('' + rule[len].selectorText).split('.')[1];
 
-                if (name === this._id) {
-                    sheet.deleteRule(len);
-                    break;
-                }
+            if (name === this._id) {
+                sheet.deleteRule(len);
+                break;
             }
         }
     }
@@ -920,146 +920,142 @@ Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
 (function() {
-var Mine = Global['Tweener'] = klass({
-    'extend': Base,
-    'init': function(target, property, option) {
-        var name,
+var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option) {
+    var name,
+        prop;
+
+    option = option || {};
+
+    this._target = target;
+    this.property = [];
+
+    for (name in property) {
+        prop = property[name];
+        prop['name'] = name;
+
+        prop.distance = prop['to'] - prop['from'];
+        prop['prefix'] = prop['prefix'] || '';
+        prop['suffix'] = prop['suffix'] || 'px';
+
+        this.property.push(prop);
+    }
+
+    this._duration = option['duration'] || Mine['duration'];
+    this.ease = option['ease'] || this._ease;
+    this.onComplete = option['onComplete'];
+
+    if (!option['manual']) {
+        this['start']();
+    }
+}, {
+    'dispose': function() {
+        this['stop']();
+        this._orgdis();
+    },
+    // easeOutExpo
+    _ease: function(time, from, dist, duration) {
+        return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
+    },
+    _requestAnimationFrame: (function() {
+        if (win.requestAnimationFrame) {
+            return function(callback) {
+                requestAnimationFrame(callback);
+            };
+        }
+        if (win.webkitRequestAnimationFrame) {
+            return function(callback) {
+                webkitRequestAnimationFrame(callback);
+            };
+        }
+        if (win.mozRequestAnimationFrame) {
+            return function(callback) {
+                mozRequestAnimationFrame(callback);
+            };
+        }
+        if (win.oRequestAnimationFrame) {
+            return function(callback) {
+                oRequestAnimationFrame(callback);
+            };
+        }
+        if (win.msRequestAnimationFrame) {
+            return function(callback) {
+                msRequestAnimationFrame(callback);
+            };
+        }
+
+        return function(callback) {
+            setTimeout(callback, 1000 / Mine.fps);
+        };
+    }()),
+    loop: function() {
+        var mine = this,
+            items = Mine.Items,
+            item,
+            now = dateNow(),
+            time,
+            n = items.length,
+            /* i = 0, */
+            len,
             prop;
 
-        option = option || {};
+        while (n--) {
+            item = items[n];
+            /* len = item.property.length; */
+            i = item.property.length;
+            time = now - item.begin;
 
-        this._target = target;
-        this.property = [];
+            if (time < item._duration) {
+                for (; i--;) {
+                    prop = item.property[i];
 
-        for (name in property) {
-            prop = property[name];
-            prop['name'] = name;
+                    Mine._setProp(item._target, prop, item.ease(
+                        time,
+                        prop['from'],
+                        prop.distance,
+                        item._duration
+                    ));
+                }
+            }
+            else {
+                for (; i--;) {
+                    prop = item.property[i];
 
-            prop.distance = prop['to'] - prop['from'];
-            prop['prefix'] = prop['prefix'] || '';
-            prop['suffix'] = prop['suffix'] || 'px';
-
-            this.property.push(prop);
+                    Mine._setProp(item._target, prop, prop['to']);
+                }
+                if (item.onComplete) {
+                    item.onComplete();
+                }
+                items.splice(n, 1);
+            }
         }
 
-        this._duration = option['duration'] || Mine['duration'];
-        this.ease = option['ease'] || this._ease;
-        this.onComplete = option['onComplete'];
+        if (items.length) {
+            mine._requestAnimationFrame(function() {
+                mine.loop();
+            });
 
-        if (!option['manual']) {
-            this['start']();
+            return TRUE;
+        }
+
+        this['stop']();
+    },
+    'start': function() {
+        var mine = this;
+
+        mine.begin = dateNow();
+
+        Mine.Items.push(mine);
+        if (!Mine.timerId) {
+            Mine.timerId = 1;
+            mine._requestAnimationFrame(function() {
+                mine.loop();
+            });
         }
     },
-    'properties': {
-        'dispose': function() {
-            this['stop']();
-            this._orgdis();
-        },
-        // easeOutExpo
-        _ease: function(time, from, dist, duration) {
-            return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
-        },
-        _requestAnimationFrame: (function() {
-            if (win.requestAnimationFrame) {
-                return function(callback) {
-                    requestAnimationFrame(callback);
-                };
-            }
-            if (win.webkitRequestAnimationFrame) {
-                return function(callback) {
-                    webkitRequestAnimationFrame(callback);
-                };
-            }
-            if (win.mozRequestAnimationFrame) {
-                return function(callback) {
-                    mozRequestAnimationFrame(callback);
-                };
-            }
-            if (win.oRequestAnimationFrame) {
-                return function(callback) {
-                    oRequestAnimationFrame(callback);
-                };
-            }
-            if (win.msRequestAnimationFrame) {
-                return function(callback) {
-                    msRequestAnimationFrame(callback);
-                };
-            }
-
-            return function(callback) {
-                setTimeout(callback, 1000 / Mine.fps);
-            };
-        }()),
-        loop: function() {
-            var mine = this,
-                items = Mine.Items,
-                item,
-                now = dateNow(),
-                time,
-                n = items.length,
-                /* i = 0, */
-                len,
-                prop;
-
-            while (n--) {
-                item = items[n];
-                /* len = item.property.length; */
-                i = item.property.length;
-                time = now - item.begin;
-
-                if (time < item._duration) {
-                    for (; i--;) {
-                        prop = item.property[i];
-
-                        Mine._setProp(item._target, prop, item.ease(
-                            time,
-                            prop['from'],
-                            prop.distance,
-                            item._duration
-                        ));
-                    }
-                }
-                else {
-                    for (; i--;) {
-                        prop = item.property[i];
-
-                        Mine._setProp(item._target, prop, prop['to']);
-                    }
-                    if (item.onComplete) {
-                        item.onComplete();
-                    }
-                    items.splice(n, 1);
-                }
-            }
-
-            if (items.length) {
-                mine._requestAnimationFrame(function() {
-                    mine.loop();
-                });
-
-                return TRUE;
-            }
-
-            this['stop']();
-        },
-        'start': function() {
-            var mine = this;
-
-            mine.begin = dateNow();
-
-            Mine.Items.push(mine);
-            if (!Mine.timerId) {
-                Mine.timerId = 1;
-                mine._requestAnimationFrame(function() {
-                    mine.loop();
-                });
-            }
-        },
-        'stop': function() {
-            Mine.Items = [];
-            clearInterval(Mine.timerId);
-            Mine.timerId = NULL;
-        }
+    'stop': function() {
+        Mine.Items = [];
+        clearInterval(Mine.timerId);
+        Mine.timerId = NULL;
     }
 });
 Mine._setProp = function(target, prop, point) {
@@ -1311,83 +1307,81 @@ function splitSuffix(value) {
 }
 }());
 /* Test: "../../spec/_src/src/HashQuery/test.js" */
-Global['HashQuery'] = klass({
-    'extend': Base,
-    'properties': {
-        'typeCast': function(str) {
-            var caststr = typeCast(str),
-                matchstr;
+Global['HashQuery'] = klassExtendBase(UNDEFINED,
+{
+    'typeCast': function(str) {
+        var caststr = typeCast(str),
+            matchstr;
 
-            if (str === caststr) {
-                matchstr = str.match('^["\'](.*)["\']$');
+        if (str === caststr) {
+            matchstr = str.match('^["\'](.*)["\']$');
 
-                if (matchstr) {
-                    return matchstr[1];
-                }
+            if (matchstr) {
+                return matchstr[1];
             }
-
-            return caststr;
-        },
-        'makeHash': function(conf) {
-            var hash = '#' + conf['mode'],
-                vars = conf['vars'],
-                sign = '?',
-                i;
-
-            for (i in vars) {
-                hash +=
-                    sign +
-                    i + '=' +
-                    jsonStringify(vars[i]);
-                sign = '&';
-            }
-
-            return encodeURI(hash);
-        },
-        'setHash': function(vars) {
-            location.hash = this['makeHash'](vars);
-            return TRUE;
-        },
-        'parseHash': function(hashvars) {
-            var hash,
-                mode,
-                varsHash,
-                vars,
-                splitVar,
-                i;
-
-            hash = decodeURIComponent(hashvars)
-                   .split('#')[1];
-
-            if (!hash) {
-                return FALSE;
-            }
-
-            hash = hash.split('?');
-
-            mode = hash[0];
-
-            if (hash[1]) {
-                vars = {};
-                varsHash = hash[1].split('&');
-
-                // hashをオブジェクトに整形
-                for (i = varsHash.length; i--;) {
-                    if (varsHash[i]) {
-                        splitVar = varsHash[i].split('=');
-                        vars[splitVar[0]] = this['typeCast'](splitVar[1]);
-                    }
-                }
-            }
-
-            return {
-                'mode': mode,
-                'vars': vars
-            };
-        },
-        'getHash': function() {
-            return this['parseHash'](location.hash);
         }
+
+        return caststr;
+    },
+    'makeHash': function(conf) {
+        var hash = '#' + conf['mode'],
+            vars = conf['vars'],
+            sign = '?',
+            i;
+
+        for (i in vars) {
+            hash +=
+                sign +
+                i + '=' +
+                jsonStringify(vars[i]);
+            sign = '&';
+        }
+
+        return encodeURI(hash);
+    },
+    'setHash': function(vars) {
+        location.hash = this['makeHash'](vars);
+        return TRUE;
+    },
+    'parseHash': function(hashvars) {
+        var hash,
+            mode,
+            varsHash,
+            vars,
+            splitVar,
+            i;
+
+        hash = decodeURIComponent(hashvars)
+               .split('#')[1];
+
+        if (!hash) {
+            return FALSE;
+        }
+
+        hash = hash.split('?');
+
+        mode = hash[0];
+
+        if (hash[1]) {
+            vars = {};
+            varsHash = hash[1].split('&');
+
+            // hashをオブジェクトに整形
+            for (i = varsHash.length; i--;) {
+                if (varsHash[i]) {
+                    splitVar = varsHash[i].split('=');
+                    vars[splitVar[0]] = this['typeCast'](splitVar[1]);
+                }
+            }
+        }
+
+        return {
+            'mode': mode,
+            'vars': vars
+        };
+    },
+    'getHash': function() {
+        return this['parseHash'](location.hash);
     }
 });
 /* Test: "../../spec/_src/src/Embed/test.js" */
@@ -1428,100 +1422,96 @@ function embedSupportCheck(config) {
 }
 Global['Embed']['supportcheck'] = embedSupportCheck;
 /* Test: "../../spec/_src/src/Media/test.js" */
-Global['Media'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
+Global['Media'] = klassExtendBase(function(config) {
+    this['_super']();
 
-        var mine = this,
-            autoplay = config['autoplay'],
-            loop = config['loop'],
-            media,
-            ev_canplay = 'canplay',
-            _parent = config['element'] || doc.body;
+    var mine = this,
+        autoplay = config['autoplay'],
+        loop = config['loop'],
+        media,
+        ev_canplay = 'canplay',
+        _parent = config['element'] || doc.body;
 
-        config['preload'] = 'auto';
-        config['autoplay'] =
-        config['loop'] = FALSE;
+    config['preload'] = 'auto';
+    config['autoplay'] =
+    config['loop'] = FALSE;
 
-        switch (config['type']) {
-            case 'Audio':
-                media = Global['Audio'](config);
-                break;
-            case 'Video':
-                media = Global['Video'](config);
-                break;
-        }
-        mine._el = media;
+    switch (config['type']) {
+        case 'Audio':
+            media = Global['Audio'](config);
+            break;
+        case 'Video':
+            media = Global['Video'](config);
+            break;
+    }
+    mine._el = media;
 
-        if (!media) {
-            return FALSE;
-        }
+    if (!media) {
+        return FALSE;
+    }
 
-        if (autoplay) {
-            var autoplayid;
-            autoplay = function() {
-                mine['uncontract'](autoplayid);
-                mine['play']();
-            };
+    if (autoplay) {
+        var autoplayid;
+        autoplay = function() {
+            mine['uncontract'](autoplayid);
+            mine['play']();
+        };
 
-            autoplayid = this['contract'](media, ev_canplay, autoplay);
-        }
-        if (loop) {
-            this['loop'](TRUE);
-        }
+        autoplayid = this['contract'](media, ev_canplay, autoplay);
+    }
+    if (loop) {
+        this['loop'](TRUE);
+    }
 
-        if (config['oncanplay']) {
-            this['contract'](media, ev_canplay, config['oncanplay']);
-        }
-        if (config['onended']) {
-            this['contract'](media, ev_ended, config['onended']);
-        }
+    if (config['oncanplay']) {
+        this['contract'](media, ev_canplay, config['oncanplay']);
+    }
+    if (config['onended']) {
+        this['contract'](media, ev_ended, config['onended']);
+    }
 
-        append(_parent, media);
+    append(_parent, media);
+}, {
+    'dispose': function() {
+        remove(this._el);
+        this._orgdis();
     },
-    'properties': {
-        'dispose': function() {
-            remove(this._el);
-            this._orgdis();
-        },
-        'getElement': function() {
-            return this._el;
-        },
-        'getCurrent': function() {
-            return this._el.currentTime;
-        },
-        'getDuration': function() {
-            return this._el.duration;
-        },
-        'setCurrent': function(num) {
-            this._el.currentTime = num;
-        },
-        'loop': function(bool) {
-            var mine = this;
-            if (mine.loopid) {
-                mine['uncontract'](mine.loopid);
-                delete mine.loopid;
-            }
-
-            if (bool) {
-                mine.loopid =
-                mine['contract'](mine._el, ev_ended, function() {
-                    mine['stop']();
-                    mine['play']();
-                });
-            }
-        },
-        'play': function() {
-            this._el.play();
-        },
-        'pause': function() {
-            this._el.pause();
-        },
-        'stop': function() {
-            this['setCurrent'](0);
-            this['pause']();
+    'getElement': function() {
+        return this._el;
+    },
+    'getCurrent': function() {
+        return this._el.currentTime;
+    },
+    'getDuration': function() {
+        return this._el.duration;
+    },
+    'setCurrent': function(num) {
+        this._el.currentTime = num;
+    },
+    'loop': function(bool) {
+        var mine = this;
+        if (mine.loopid) {
+            mine['uncontract'](mine.loopid);
+            delete mine.loopid;
         }
+
+        if (bool) {
+            mine.loopid =
+            mine['contract'](mine._el, ev_ended, function() {
+                mine['stop']();
+                mine['play']();
+            });
+        }
+    },
+    'play': function() {
+        this._el.play();
+    },
+    'pause': function() {
+        this._el.pause();
+    },
+    'stop': function() {
+        this['setCurrent'](0);
+        this['pause']();
     }
 });
 Global['Media']['supportcheck'] = embedSupportCheck;
@@ -1571,321 +1561,301 @@ Global['Movie'] = function(config) {
 };
 Global['Movie']['support'] = Global['Video']['support'];
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global['Ajax'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        if (config) {
-            this['request'](config);
+Global['Ajax'] = klassExtendBase(function(config) {
+    if (config) {
+        this['request'](config);
+    }
+}, {
+    'request': function(vars) {
+        if (vars.dataType === 'json') {
+            delete vars.dataType;
+
+            return this.json(vars);
+        }
+
+        var url = vars['url'],
+            callback = vars['callback'] || nullFunction,
+            error = vars['error'] || nullFunction,
+            type = vars['type'] || 'GET',
+            query = '',
+            xhr;
+
+        xhr = this.xhr = new XMLHttpRequest();
+
+        if (!vars['cash']) {
+            if (!vars['query']) {
+                vars['query'] = {};
+            }
+
+            vars['query']['cirajaxcash' + dateNow()] = '0';
+        }
+        if (vars['query']) {
+            query = vars['query'];
+
+            if (isObject(query)) {
+                query = makeQueryString(query);
+                query = encodeURI(query);
+            }
+        }
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState != 4) {
+                return FALSE;
+            }
+
+            if (xhr.status == 200) {
+                return callback(xhr.responseText, xhr);
+            }
+
+            return error(xhr);
+        }
+
+        if (type === 'GET') {
+            if (url.indexOf('?') !== -1) {
+                url += '&';
+            }
+            else {
+                url += '?';
+            }
+            url += query;
+
+            query = '';
+        }
+
+        xhr.open(type, url);
+
+        if (type === 'POST') {
+            xhr.setRequestHeader('Content-Type',
+                    'application/x-www-form-urlencoded');
+        }
+        xhr.send(query);
+    },
+    'abort': function() {
+        if (this.xhr) {
+            this.xhr.abort();
         }
     },
-    'properties': {
-        'request': function(vars) {
-            if (vars.dataType === 'json') {
-                delete vars.dataType;
+    'json': function(vars) {
+        var callback = vars['callback'],
+            error = vars['error'];
 
-                return this.json(vars);
+        vars['callback'] = function(data) {
+            callback(jsonParse(data));
+        };
+        vars['error'] = function(data) {
+            if (error) {
+                error(data);
             }
+        };
 
-            var url = vars['url'],
-                callback = vars['callback'] || nullFunction,
-                error = vars['error'] || nullFunction,
-                type = vars['type'] || 'GET',
-                query = '',
-                xhr;
-
-            xhr = this.xhr = new XMLHttpRequest();
-
-            if (!vars['cash']) {
-                if (!vars['query']) {
-                    vars['query'] = {};
-                }
-
-                vars['query']['cirajaxcash' + dateNow()] = '0';
-            }
-            if (vars['query']) {
-                query = vars['query'];
-
-                if (isObject(query)) {
-                    query = makeQueryString(query);
-                    query = encodeURI(query);
-                }
-            }
-
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState != 4) {
-                    return FALSE;
-                }
-
-                if (xhr.status == 200) {
-                    return callback(xhr.responseText, xhr);
-                }
-
-                return error(xhr);
-            }
-
-            if (type === 'GET') {
-                if (url.indexOf('?') !== -1) {
-                    url += '&';
-                }
-                else {
-                    url += '?';
-                }
-                url += query;
-
-                query = '';
-            }
-
-            xhr.open(type, url);
-
-            if (type === 'POST') {
-                xhr.setRequestHeader('Content-Type',
-                        'application/x-www-form-urlencoded');
-            }
-            xhr.send(query);
-        },
-        'abort': function() {
-            if (this.xhr) {
-                this.xhr.abort();
-            }
-        },
-        'json': function(vars) {
-            var callback = vars['callback'],
-                error = vars['error'];
-
-            vars['callback'] = function(data) {
-                callback(jsonParse(data));
-            };
-            vars['error'] = function(data) {
-                if (error) {
-                    error(data);
-                }
-            };
-
-            this['request'](vars);
-        }
+        this['request'](vars);
     }
 });
 /* Test: "../../spec/_src/src/Bind/test.js" */
-Global['Bind'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this.handler = config;
-        this['add']();
+Global['Bind'] = klassExtendBase(function(config) {
+    this.handler = config;
+    this['add']();
+}, {
+    'dispose': function() {
+        this['remove']();
+        this._orgdis();
     },
-    'properties': {
-        'dispose': function() {
-            this['remove']();
-            this._orgdis();
-        },
-        'getHandler': function() {
-            return this.handler;
-        },
-        'add': function() {
-            this._e(TRUE);
-        },
-        'remove': function() {
-            this._e(FALSE);
-        },
-        _e: function(isBind) {
-            var onoff = isBind ? on : off,
-                i;
+    'getHandler': function() {
+        return this.handler;
+    },
+    'add': function() {
+        this._e(TRUE);
+    },
+    'remove': function() {
+        this._e(FALSE);
+    },
+    _e: function(isBind) {
+        var onoff = isBind ? on : off,
+            i;
 
-            for (i in this.handler['events']) {
-                onoff(
-                    this.handler['element'],
-                    i,
-                    this.handler['events'][i]
-                );
-            }
+        for (i in this.handler['events']) {
+            onoff(
+                this.handler['element'],
+                i,
+                this.handler['events'][i]
+            );
         }
     }
 });
 /* Test: "../../spec/_src/src/Brush/test.js" */
-Global['Brush'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this._canvas = config['canvas'];
-        this.ctx = this._canvas.getContext('2d');
+Global['Brush'] = klassExtendBase(function(config) {
+    this._canvas = config['canvas'];
+    this.ctx = this._canvas.getContext('2d');
 
-        this['setSize'](config);
+    this['setSize'](config);
+}, {
+    'setSize': function(vars) {
+        if (vars['width']) {
+            this._canvas.width = vars['width'];
+        }
+        if (vars['height']) {
+            this._canvas.height = vars['height'];
+        }
     },
-    'properties': {
-        'setSize': function(vars) {
-            if (vars['width']) {
-                this._canvas.width = vars['width'];
-            }
-            if (vars['height']) {
-                this._canvas.height = vars['height'];
-            }
-        },
-        'pigment': function(vars) {
-            var canv = create('canvas'),
-                img = create('img');
+    'pigment': function(vars) {
+        var canv = create('canvas'),
+            img = create('img');
 
-            img.onload = function() {
-                canv.width = vars['width'];
-                canv.height = vars['height'];
-                canv.getContext('2d').drawImage(img, 0, 0);
+        img.onload = function() {
+            canv.width = vars['width'];
+            canv.height = vars['height'];
+            canv.getContext('2d').drawImage(img, 0, 0);
 
-                vars.onload(canv, img);
+            vars.onload(canv, img);
+        };
+        img.src = vars['src'];
+
+        return {'image': canv, 'x': vars.x || 0, 'y': vars.y || 0};
+    },
+    'pigments': function(vars, callback) {
+        var mine = this,
+            i,
+            count = 0,
+            ret = {};
+
+        callback = callback || nullFunction;
+
+        for (i in vars) {
+            pigment(vars[i]);
+        }
+
+        function pigment(pig) {
+            var pigload = pig['onload'] || nullFunction;
+
+            pig.onload = function(canvas, img) {
+                pigload(canvas, img);
+                count--;
+
+                if (count === 0) {
+                    onload();
+                }
             };
-            img.src = vars['src'];
 
-            return {'image': canv, 'x': vars.x || 0, 'y': vars.y || 0};
-        },
-        'pigments': function(vars, callback) {
-            var mine = this,
-                i,
-                count = 0,
-                ret = {};
+            ret[i] = mine['pigment'](pig);
+            count++;
+        }
+        function onload() {
+            callback(ret);
+        }
 
-            callback = callback || nullFunction;
+        return ret;
+    },
+    'draw': function(layer) {
+        var i = 0, len = layer.length, item;
 
-            for (i in vars) {
-                pigment(vars[i]);
-            }
+        this.ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
-            function pigment(pig) {
-                var pigload = pig['onload'] || nullFunction;
-
-                pig.onload = function(canvas, img) {
-                    pigload(canvas, img);
-                    count--;
-
-                    if (count === 0) {
-                        onload();
-                    }
-                };
-
-                ret[i] = mine['pigment'](pig);
-                count++;
-            }
-            function onload() {
-                callback(ret);
-            }
-
-            return ret;
-        },
-        'draw': function(layer) {
-            var i = 0, len = layer.length, item;
-
-            this.ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
-
-            for (; i < len; i++) {
-                item = layer[i];
-                this.ctx.drawImage(item['image'], item['x'], item['y']);
-            }
+        for (; i < len; i++) {
+            item = layer[i];
+            this.ctx.drawImage(item['image'], item['x'], item['y']);
         }
     }
 });
 Global['Brush']['support'] = !!win['HTMLCanvasElement'];
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 var DataStoreName = 'DataStore';
-Global[DataStoreName] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super'](config);
+Global[DataStoreName] = klassExtendBase(function(config) {
+    this['_super'](config);
 
-        this.data = {};
+    this.data = {};
 
-        return this.singleAct(DataStoreName);
+    return this.singleAct(DataStoreName);
+}, {
+    'set': function(key, val) {
+        this.data[key] = val;
     },
-    'properties': {
-        'set': function(key, val) {
-            this.data[key] = val;
-        },
-        'get': function(key) {
-            var ret = {},
-                i;
+    'get': function(key) {
+        var ret = {},
+            i;
 
-            if (key) {
-                return this.data[key];
-            }
-
-            for (i in this.data) {
-                ret[i] = this.data[i];
-            }
-
-            return ret;
-        },
-        'remove': function(key) {
-            if (!this.data[key]) {
-                return FALSE;
-            }
-
-            delete this.data[key];
-        },
-        'reset': function() {
-            this.data = {};
+        if (key) {
+            return this.data[key];
         }
+
+        for (i in this.data) {
+            ret[i] = this.data[i];
+        }
+
+        return ret;
+    },
+    'remove': function(key) {
+        if (!this.data[key]) {
+            return FALSE;
+        }
+
+        delete this.data[key];
+    },
+    'reset': function() {
+        this.data = {};
     }
 });
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
 var WebStorageName = 'WebStorage';
-Global[WebStorageName] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super'](config);
+Global[WebStorageName] = klassExtendBase(function(config) {
+    this['_super'](config);
 
-        var key = 'Storage',
-            klassname = config['type'] + key;
+    var key = 'Storage',
+        klassname = config['type'] + key;
 
-        this._n = config['namespace'] ? config['namespace'] + '-' : '';
-        this._storage = win[config['type'].toLowerCase() + key];
+    this._n = config['namespace'] ? config['namespace'] + '-' : '';
+    this._storage = win[config['type'].toLowerCase() + key];
 
-        return this.singleAct(WebStorageName);
+    return this.singleAct(WebStorageName);
+}, {
+    'set': function(key, val) {
+        this._storage.setItem(this._n + key, jsonStringify(val));
+        return TRUE;
     },
-    'properties': {
-        'set': function(key, val) {
-            this._storage.setItem(this._n + key, jsonStringify(val));
-            return TRUE;
-        },
-        'get': function(key) {
-            var mine = this,
-                ret = {},
-                i;
+    'get': function(key) {
+        var mine = this,
+            ret = {},
+            i;
 
-            if (key) {
-                return jsonParse(mine._storage.getItem(mine._n + key));
-            }
+        if (key) {
+            return jsonParse(mine._storage.getItem(mine._n + key));
+        }
 
-            for (i in mine._storage) {
-                if (!this._n) {
-                    ret[i] = jsonParse(mine._storage[i]);
-                }
-                else {
-                    key = i.split(this._n)[1];
-                    if (key) {
-                        ret[key] = jsonParse(mine._storage[i]);
-                    }
-                }
-            }
-
-            return ret;
-        },
-        'remove': function(key) {
-            key = this._n + key;
-
-            if (!this._storage.getItem(key)) {
-                return FALSE;
-            }
-
-            this._storage.removeItem(key);
-
-            return TRUE;
-        },
-        'reset': function() {
+        for (i in mine._storage) {
             if (!this._n) {
-                this._storage.clear();
-
-                return TRUE;
+                ret[i] = jsonParse(mine._storage[i]);
             }
-
-            var i;
-
-            for (i in this._storage) {
-                this.remove(i);
+            else {
+                key = i.split(this._n)[1];
+                if (key) {
+                    ret[key] = jsonParse(mine._storage[i]);
+                }
             }
+        }
+
+        return ret;
+    },
+    'remove': function(key) {
+        key = this._n + key;
+
+        if (!this._storage.getItem(key)) {
+            return FALSE;
+        }
+
+        this._storage.removeItem(key);
+
+        return TRUE;
+    },
+    'reset': function() {
+        if (!this._n) {
+            this._storage.clear();
+
+            return TRUE;
+        }
+
+        var i;
+
+        for (i in this._storage) {
+            this.remove(i);
         }
     }
 });
@@ -1904,194 +1874,186 @@ Global['SessionStorage'] = function(config) {
     return new Global['WebStorage'](config);
 };
 /* Test: "../../spec/_src/src/Deferred/test.js" */
-Global['Deferred'] = klass({
-    'extend': Base,
-    'init': function() {
-        this.queue = [];
-        /* this.data = NULL; */
+Global['Deferred'] = klassExtendBase(function() {
+    this.queue = [];
+    /* this.data = NULL; */
+}, {
+    'isResolve': function() {
+        return !this.queue;
     },
-    'properties': {
-        'isResolve': function() {
-            return !this.queue;
-        },
-        'resolve': function(data) {
-            if (this['isResolve']()) {
-                return this;
-            }
-
-            var arr = this.queue,
-                len = arr.length,
-                i = 0;
-
-            this.queue = NULL;
-            this.data = data;
-            for (; i < len; ++i) {
-                arr[i](data);
-            }
-
-            return this;
-        },
-        'done': function(func) {
-            this.queue ? this.queue.push(func) : func(this.data);
-
+    'resolve': function(data) {
+        if (this['isResolve']()) {
             return this;
         }
+
+        var arr = this.queue,
+            len = arr.length,
+            i = 0;
+
+        this.queue = NULL;
+        this.data = data;
+        for (; i < len; ++i) {
+            arr[i](data);
+        }
+
+        return this;
+    },
+    'done': function(func) {
+        this.queue ? this.queue.push(func) : func(this.data);
+
+        return this;
     }
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-Global['DragFlick'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
+Global['DragFlick'] = klassExtendBase(function(config) {
+    this['_super']();
 
-        if (config) {
-            this['bind'](config);
+    if (config) {
+        this['bind'](config);
+    }
+}, {
+    _t: function(e) {
+        var changed = e.changedTouches ? e.changedTouches[0] : e;
+
+        return changed;
+    },
+    'amount': function(vars) {
+        var mine = this,
+            startX,
+            startY,
+            dragflg = FALSE;
+
+        this['contract'](vars['element'], ev['switchdown'], start);
+        this['contract'](win, ev['switchup'], end);
+
+        function start(e) {
+            var changed = mine._t(e);
+
+            startX = changed.pageX;
+            startY = changed.pageY;
+
+            dragflg = TRUE;
+
+            eventPrevent(e);
+        }
+        function end(e) {
+            if (dragflg) {
+                var changed = mine._t(e),
+                    amount = {
+                        'x': changed.pageX - startX,
+                        'y': changed.pageY - startY
+                    };
+
+                vars['callback'](amount);
+
+                dragflg = FALSE;
+            }
         }
     },
-    'properties': {
-        _t: function(e) {
-            var changed = e.changedTouches ? e.changedTouches[0] : e;
+    'direction': function(vars) {
+        this['amount']({
+            'element': vars['element'],
+            'callback': function(amount) {
+                var boundary = vars['boundary'] || 0,
+                    direction = {
+                        'change': FALSE,
+                        'top': FALSE,
+                        'right': FALSE,
+                        'bottom': FALSE,
+                        'left': FALSE,
+                        'amount': amount
+                    };
 
-            return changed;
-        },
-        'amount': function(vars) {
-            var mine = this,
-                startX,
-                startY,
-                dragflg = FALSE;
+                if (Math.abs(amount['x']) > boundary) {
+                    if (amount['x'] > 0) {
+                        direction['right'] = TRUE;
+                    }
+                    else if (amount['x'] < 0) {
+                        direction['left'] = TRUE;
+                    }
 
-            this['contract'](vars['element'], ev['switchdown'], start);
-            this['contract'](win, ev['switchup'], end);
-
-            function start(e) {
-                var changed = mine._t(e);
-
-                startX = changed.pageX;
-                startY = changed.pageY;
-
-                dragflg = TRUE;
-
-                eventPrevent(e);
-            }
-            function end(e) {
-                if (dragflg) {
-                    var changed = mine._t(e),
-                        amount = {
-                            'x': changed.pageX - startX,
-                            'y': changed.pageY - startY
-                        };
-
-                    vars['callback'](amount);
-
-                    dragflg = FALSE;
+                    direction['change'] = TRUE;
                 }
+
+                if (Math.abs(amount['y']) > boundary) {
+                    if (amount['y'] > 0) {
+                        direction['bottom'] = TRUE;
+                    }
+                    else if (amount['y'] < 0) {
+                        direction['top'] = TRUE;
+                    }
+
+                    direction['change'] = TRUE;
+                }
+
+                vars['callback'](direction);
             }
-        },
-        'direction': function(vars) {
-            this['amount']({
-                'element': vars['element'],
-                'callback': function(amount) {
-                    var boundary = vars['boundary'] || 0,
-                        direction = {
-                            'change': FALSE,
-                            'top': FALSE,
-                            'right': FALSE,
-                            'bottom': FALSE,
-                            'left': FALSE,
-                            'amount': amount
-                        };
+        });
+    },
+    'bind': function(vars) {
+        var mine = this,
+            element = vars['element'],
+            el = Global['element'],
+            start = vars['start'] || nullFunction,
+            move = vars['move'] || nullFunction,
+            end = vars['end'] || nullFunction,
+            flg = FALSE,
+            startX = 0,
+            startY = 0;
 
-                    if (Math.abs(amount['x']) > boundary) {
-                        if (amount['x'] > 0) {
-                            direction['right'] = TRUE;
-                        }
-                        else if (amount['x'] < 0) {
-                            direction['left'] = TRUE;
-                        }
+        if (vars['direction']) {
+            mine['direction']({
+                'element': element,
+                'boundary': vars['boundary'],
+                'callback': vars['direction']
+            });
+        }
 
-                        direction['change'] = TRUE;
-                    }
+        eventProxy(element, ev['switchdown'], function(_e) {
+            flg = TRUE;
 
-                    if (Math.abs(amount['y']) > boundary) {
-                        if (amount['y'] > 0) {
-                            direction['bottom'] = TRUE;
-                        }
-                        else if (amount['y'] < 0) {
-                            direction['top'] = TRUE;
-                        }
+            startX = _e.pageX;
+            startY = _e.pageY;
 
-                        direction['change'] = TRUE;
-                    }
-
-                    vars['callback'](direction);
+            start({
+                'e': _e,
+                'move': {
+                    'x': startX,
+                    'y': startY
                 }
             });
-        },
-        'bind': function(vars) {
-            var mine = this,
-                element = vars['element'],
-                el = Global['element'],
-                start = vars['start'] || nullFunction,
-                move = vars['move'] || nullFunction,
-                end = vars['end'] || nullFunction,
-                flg = FALSE,
-                startX = 0,
-                startY = 0;
-
-            if (vars['direction']) {
-                mine['direction']({
-                    'element': element,
-                    'boundary': vars['boundary'],
-                    'callback': vars['direction']
-                });
-            }
-
-            eventProxy(element, ev['switchdown'], function(_e) {
-                flg = TRUE;
-
-                startX = _e.pageX;
-                startY = _e.pageY;
-
-                start({
+        });
+        eventProxy(doc, ev['switchmove'], function(_e) {
+            if (flg) {
+                move({
                     'e': _e,
                     'move': {
-                        'x': startX,
-                        'y': startY
+                        'x': _e.pageX - startX,
+                        'y': _e.pageY - startY
                     }
                 });
-            });
-            eventProxy(doc, ev['switchmove'], function(_e) {
-                if (flg) {
-                    move({
-                        'e': _e,
-                        'move': {
-                            'x': _e.pageX - startX,
-                            'y': _e.pageY - startY
-                        }
-                    });
-                }
-            });
-            eventProxy(doc, ev['switchup'], function(_e) {
-                if (flg) {
-                    end({
-                        'e': _e,
-                        'move': {
-                            'x': _e.pageX - startX,
-                            'y': _e.pageY - startY
-                        }
-                    });
-
-                    flg = FALSE;
-                }
-            });
-
-            function eventProxy(element, ev, callback) {
-                var handler = function(e) {
-                        var changed = mine._t(e);
-                        callback(changed);
-                    };
-                mine['contract'](element, ev, handler);
             }
+        });
+        eventProxy(doc, ev['switchup'], function(_e) {
+            if (flg) {
+                end({
+                    'e': _e,
+                    'move': {
+                        'x': _e.pageX - startX,
+                        'y': _e.pageY - startY
+                    }
+                });
+
+                flg = FALSE;
+            }
+        });
+
+        function eventProxy(element, ev, callback) {
+            var handler = function(e) {
+                    var changed = mine._t(e);
+                    callback(changed);
+                };
+            mine['contract'](element, ev, handler);
         }
     }
 });
@@ -2120,394 +2082,364 @@ Global['ExternalInterface'] = function(config) {
     return external;
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-Global['ExternalInterface']['Android'] = klass({
-    'extend': Global['HashQuery'],
-    'init': function(config) {
-        config = config || {};
+Global['ExternalInterface']['Android'] = klassExtend(Global['HashQuery'], function(config) {
+    config = config || {};
 
-        this.android = config['android'];
-        this.externalObj = config['externalObj'];
+    this.android = config['android'];
+    this.externalObj = config['externalObj'];
+}, {
+    'call': function(conf) {
+        this.android[conf['mode']](this['makeHash'](conf));
     },
-    'properties': {
-        'call': function(conf) {
-            this.android[conf['mode']](this['makeHash'](conf));
-        },
-        'addCallback': function(name, func) {
-            var mine = this;
-            mine.externalObj[name] = function(vars) {
-                var objs = mine['parseHash'](vars);
-                return func(objs['vars']);
-            };
-        },
-        'removeCallback': function(name) {
-            delete this.externalObj[name];
-        }
+    'addCallback': function(name, func) {
+        var mine = this;
+        mine.externalObj[name] = function(vars) {
+            var objs = mine['parseHash'](vars);
+            return func(objs['vars']);
+        };
+    },
+    'removeCallback': function(name) {
+        delete this.externalObj[name];
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-Global['ExternalInterface']['IOS'] = klass({
-    'extend': Global['HashQuery'],
-    'init': function(config) {
-        this.ios = {};
-    },
-    'properties': {
-        'dispose': function() {
-            var i;
+Global['ExternalInterface']['IOS'] = klassExtend(Global['HashQuery'], function(config) {
+    this.ios = {};
+}, {
+    'dispose': function() {
+        var i;
 
-            for (i in this.ios) {
-                this['removeCallback'](i);
-            }
-            this._orgdis();
-        },
-        'call': function(conf) {
-            this['setHash'](conf);
-        },
-        'addCallback': function(name, func) {
-            var mine = this;
-            mine.ios[name] = function(e) {
-                var hash = mine['getHash']();
-
-                if (hash['mode'] === name) {
-                    func(hash['vars']);
-                    return TRUE;
-                }
-                return FALSE;
-            };
-            on(win, ev_hashchange, mine.ios[name]);
-        },
-        'removeCallback': function(name) {
-            off(win, ev_hashchange, this.ios[name]);
-            delete this.ios[name];
+        for (i in this.ios) {
+            this['removeCallback'](i);
         }
+        this._orgdis();
+    },
+    'call': function(conf) {
+        this['setHash'](conf);
+    },
+    'addCallback': function(name, func) {
+        var mine = this;
+        mine.ios[name] = function(e) {
+            var hash = mine['getHash']();
+
+            if (hash['mode'] === name) {
+                func(hash['vars']);
+                return TRUE;
+            }
+            return FALSE;
+        };
+        on(win, ev_hashchange, mine.ios[name]);
+    },
+    'removeCallback': function(name) {
+        off(win, ev_hashchange, this.ios[name]);
+        delete this.ios[name];
     }
 });
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-Global['Facebook'] = klass({
-    'extend': Base,
-    'properties': {
-        'shareURL': function(vars) {
-            var url = 'https://www.facebook.com/dialog/feed?' +
-                    'app_id=' + vars['app_id'] + '&' +
-                    'redirect_uri=' + vars['redirect_uri'];
+Global['Facebook'] = klassExtendBase(UNDEFINED,
+{
+    'shareURL': function(vars) {
+        var url = 'https://www.facebook.com/dialog/feed?' +
+                'app_id=' + vars['app_id'] + '&' +
+                'redirect_uri=' + vars['redirect_uri'];
 
-            url += makeQueryString({
-                'link': vars['link'],
-                'picture': vars['picture'],
-                'name': vars['name'],
-                'caption': vars['caption'],
-                'description': vars['description']
-            });
+        url += makeQueryString({
+            'link': vars['link'],
+            'picture': vars['picture'],
+            'name': vars['name'],
+            'caption': vars['caption'],
+            'description': vars['description']
+        });
 
-            return url;
-        }
+        return url;
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
 var FPSName = 'FPS';
-Global[FPSName] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super'](config);
+Global[FPSName] = klassExtendBase(function(config) {
+    this['_super'](config);
 
-        this.criterion = config['criterion'] || 20,
-        this.surver = this.criterion,
-        this.enterframe = config['enterframe'],
-        this.msecFrame = this._getFrame(this.criterion),
-        this.prevtime =
-        this.nowtime =
-        this.loopid = 0;
+    this.criterion = config['criterion'] || 20,
+    this.surver = this.criterion,
+    this.enterframe = config['enterframe'],
+    this.msecFrame = this._getFrame(this.criterion),
+    this.prevtime =
+    this.nowtime =
+    this.loopid = 0;
 
-        if (!config['manual']) {
-            this['start']();
-        }
+    if (!config['manual']) {
+        this['start']();
+    }
 
-        return this.singleAct(FPSName);
+    return this.singleAct(FPSName);
+}, {
+    'dispose': function() {
+        this['stop']();
+        this._orgdis();
     },
-    'properties': {
-        'dispose': function() {
-            this['stop']();
-            this._orgdis();
-        },
-        'getCriterion': function() {
-            return this.criterion;
-        },
-        'getSurver': function() {
-            return this.surver;
-        },
-        'getFrameTime': function() {
-            return this.msecFrame;
-        },
-        'enter': function() {
-            this.enterframe({
-                'criterion': this.criterion,
-                'surver': this.surver
-            });
-        },
-        'start': function() {
-            this.prevtime = dateNow();
-            this.loopid = setInterval(this._loop, this.msecFrame, this);
-        },
-        _loop: function(mine) {
-            mine.nowtime = dateNow();
-            mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
-            mine.prevtime = mine.nowtime;
+    'getCriterion': function() {
+        return this.criterion;
+    },
+    'getSurver': function() {
+        return this.surver;
+    },
+    'getFrameTime': function() {
+        return this.msecFrame;
+    },
+    'enter': function() {
+        this.enterframe({
+            'criterion': this.criterion,
+            'surver': this.surver
+        });
+    },
+    'start': function() {
+        this.prevtime = dateNow();
+        this.loopid = setInterval(this._loop, this.msecFrame, this);
+    },
+    _loop: function(mine) {
+        mine.nowtime = dateNow();
+        mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
+        mine.prevtime = mine.nowtime;
 
-            mine['enter']();
-        },
-        _getFrame: function(time) {
-            return Math.round(1000 / time);
-        },
-        'stop': function() {
-            clearInterval(this.loopid);
-        }
+        mine['enter']();
+    },
+    _getFrame: function(time) {
+        return Math.round(1000 / time);
+    },
+    'stop': function() {
+        clearInterval(this.loopid);
     }
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-Global['ImgLoad'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
+Global['ImgLoad'] = klassExtendBase(function(config) {
+    this['_super']();
 
-        this.srcs = config['srcs'],
-        this.srccount = this.srcs.length,
-        this.loadedsrcs = [];
-        this.disposeid = [];
-        this._onload = config['onload'] || nullFunction,
-        this._onprogress = config['onprogress'] || nullFunction,
-        this.loadcount = 0;
-        this.progress = 0;
-        this.started = FALSE;
+    this.srcs = config['srcs'],
+    this.srccount = this.srcs.length,
+    this.loadedsrcs = [];
+    this.disposeid = [];
+    this._onload = config['onload'] || nullFunction,
+    this._onprogress = config['onprogress'] || nullFunction,
+    this.loadcount = 0;
+    this.progress = 0;
+    this.started = FALSE;
 
-        if (!config['manual']) {
-            this['start']();
-        }
-    },
-    'properties': {
-        _c: function() {
-            this.loadcount++;
+    if (!config['manual']) {
+        this['start']();
+    }
+}, {
+    _c: function() {
+        this.loadcount++;
 
-            this.progress = this.loadcount / this.srccount;
-            this._onprogress(this.progress);
+        this.progress = this.loadcount / this.srccount;
+        this._onprogress(this.progress);
 
-            if (this.loadcount >= this.srccount) {
-                var i = this.disposeid.length;
-
-                for (; i--;) {
-                    this['uncontract'](this.disposeid[i]);
-                }
-                this.disposeid = [];
-
-                this._onload(this.loadedsrcs);
-            }
-        },
-        'start': function() {
-            if (this.started) {
-                return FALSE;
-            }
-
-            this.started = TRUE;
-
-            var mine = this,
-                img,
-                i = mine.srccount;
+        if (this.loadcount >= this.srccount) {
+            var i = this.disposeid.length;
 
             for (; i--;) {
-                img = create('img');
-                img.src = mine.srcs[i];
-
-                mine.disposeid.push(mine['contract'](img, ev['load'], countup));
-                mine.loadedsrcs.push(img);
+                this['uncontract'](this.disposeid[i]);
             }
+            this.disposeid = [];
 
-            function countup() {
-                mine._c();
-            }
-        },
-        'getProgress': function() {
-            return this.progress;
+            this._onload(this.loadedsrcs);
         }
+    },
+    'start': function() {
+        if (this.started) {
+            return FALSE;
+        }
+
+        this.started = TRUE;
+
+        var mine = this,
+            img,
+            i = mine.srccount;
+
+        for (; i--;) {
+            img = create('img');
+            img.src = mine.srcs[i];
+
+            mine.disposeid.push(mine['contract'](img, ev['load'], countup));
+            mine.loadedsrcs.push(img);
+        }
+
+        function countup() {
+            mine._c();
+        }
+    },
+    'getProgress': function() {
+        return this.progress;
     }
 });
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
-Global['WindowLoad'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
+Global['WindowLoad'] = klassExtendBase(function(config) {
+    this['_super']();
 
-        if (config) {
-            this.onload(config['onload']);
-        }
-    },
-    'properties': {
-        onload: function(func) {
-            var mine = this,
-                disposeid,
-                loaded = function() {
-                    mine['uncontract'](disposeid);
-                    func();
-                };
+    if (config) {
+        this.onload(config['onload']);
+    }
+}, {
+    onload: function(func) {
+        var mine = this,
+            disposeid,
+            loaded = function() {
+                mine['uncontract'](disposeid);
+                func();
+            };
 
-            disposeid = this['contract'](win, ev['load'], loaded);
-        }
+        disposeid = this['contract'](win, ev['load'], loaded);
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global['Mobile'] = klass({
-    'extend': Base,
-    'init': function() {
-        this['_super']();
+Global['Mobile'] = klassExtendBase(function() {
+    this['_super']();
+}, {
+    'getZoom': function() {
+        return doc.body.clientWidth / win.innerWidth;
     },
-    'properties': {
-        'getZoom': function() {
-            return doc.body.clientWidth / win.innerWidth;
-        },
-        'isAndroid': function(ua) {
-            return checkUserAgent(/Android/i, ua);
-        },
-        'isIOS': function(ua) {
-            return checkUserAgent(/iPhone|iPad|iPod/i, ua);
-        },
-        'isWindows': function(ua) {
-            return checkUserAgent(/IEMobile/i, ua);
-        },
-        'isFBAPP': function(ua) {
-            return checkUserAgent(/FBAN/, ua);
-        },
-        'isMobile': function() {
-            return (
-                this['isAndroid']() ||
-                this['isIOS']() ||
-                this['isWindows']() ||
-                this['isFBAPP']()
-            );
-        },
-        'killScroll': function(isNoTop) {
-            if (this.killscrollid) {
-                return FALSE;
-            }
-
-            if (!isNoTop) {
-                pageTop();
-            }
-            this.killscrollid = this['contract'](doc, ev['touchmove'], eventPrevent);
-        },
-        'revivalScroll': function(isNoTop) {
-            if (!this.killscrollid) {
-                return FALSE;
-            }
-
-            if (!isNoTop) {
-                pageTop();
-            }
-            this['uncontract'](this.killscrollid);
-            delete this.killscrollid;
-        },
-        'hideAddress': function() {
-            this['contract'](win, ev['load'], hideAddressHandler, FALSE);
-            this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
-
-            function doScroll() {
-                if (win.pageYOffset === 0) {
-                    pageTop();
-                }
-            }
-            function hideAddressHandler() {
-                setTimeout(doScroll, 100);
-            }
-        },
-        'getOrientation': function() {
-            if (
-                Math.abs(win.orientation) !== 90 &&
-                win.innerWidth < win.innerHeight
-            ) {
-                return {
-                    'portrait': TRUE,
-                    'landscape': FALSE
-                };
-            }
-
-            return {
-                'portrait': FALSE,
-                'landscape': TRUE
-            };
-        },
-        'bindOrientation': function(vars) {
-            var mine = this,
-                disposeid = [],
-                ret_remove;
-
-            if (vars['immediately']) {
-                change();
-            }
-
-            if (vars['one']) {
-                add(onechange);
-
-                return function() {
-                    remove(onechange);
-                };
-            }
-
-            add(change);
-
-            ret_remove = function() {
-                remove(change);
-            };
-
-            function add(handler) {
-                disposeid.push(mine['contract'](win, ev['load'], handler));
-                disposeid.push(mine['contract'](win, ev_orientationchange, handler));
-                disposeid.push(mine['contract'](win, ev['resize'], handler));
-            }
-            function remove(handler) {
-                var i = disposeid.length;
-
-                for (; i--;) {
-                    mine['uncontract'](disposeid[i]);
-                }
-
-                disposeid = [];
-            }
-            function onechange() {
-                change();
-                remove(onechange);
-            }
-            function change() {
-                if (
-                    mine['getOrientation']()['portrait']
-                ) {
-                    vars['portrait']();
-                    return TRUE;
-                }
-                vars['landscape']();
-            }
-
-            return ret_remove;
+    'isAndroid': function(ua) {
+        return checkUserAgent(/Android/i, ua);
+    },
+    'isIOS': function(ua) {
+        return checkUserAgent(/iPhone|iPad|iPod/i, ua);
+    },
+    'isWindows': function(ua) {
+        return checkUserAgent(/IEMobile/i, ua);
+    },
+    'isFBAPP': function(ua) {
+        return checkUserAgent(/FBAN/, ua);
+    },
+    'isMobile': function() {
+        return (
+            this['isAndroid']() ||
+            this['isIOS']() ||
+            this['isWindows']() ||
+            this['isFBAPP']()
+        );
+    },
+    'killScroll': function(isNoTop) {
+        if (this.killscrollid) {
+            return FALSE;
         }
+
+        if (!isNoTop) {
+            pageTop();
+        }
+        this.killscrollid = this['contract'](doc, ev['touchmove'], eventPrevent);
+    },
+    'revivalScroll': function(isNoTop) {
+        if (!this.killscrollid) {
+            return FALSE;
+        }
+
+        if (!isNoTop) {
+            pageTop();
+        }
+        this['uncontract'](this.killscrollid);
+        delete this.killscrollid;
+    },
+    'hideAddress': function() {
+        this['contract'](win, ev['load'], hideAddressHandler, FALSE);
+        this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
+
+        function doScroll() {
+            if (win.pageYOffset === 0) {
+                pageTop();
+            }
+        }
+        function hideAddressHandler() {
+            setTimeout(doScroll, 100);
+        }
+    },
+    'getOrientation': function() {
+        if (
+            Math.abs(win.orientation) !== 90 &&
+            win.innerWidth < win.innerHeight
+        ) {
+            return {
+                'portrait': TRUE,
+                'landscape': FALSE
+            };
+        }
+
+        return {
+            'portrait': FALSE,
+            'landscape': TRUE
+        };
+    },
+    'bindOrientation': function(vars) {
+        var mine = this,
+            disposeid = [],
+            ret_remove;
+
+        if (vars['immediately']) {
+            change();
+        }
+
+        if (vars['one']) {
+            add(onechange);
+
+            return function() {
+                remove(onechange);
+            };
+        }
+
+        add(change);
+
+        ret_remove = function() {
+            remove(change);
+        };
+
+        function add(handler) {
+            disposeid.push(mine['contract'](win, ev['load'], handler));
+            disposeid.push(mine['contract'](win, ev_orientationchange, handler));
+            disposeid.push(mine['contract'](win, ev['resize'], handler));
+        }
+        function remove(handler) {
+            var i = disposeid.length;
+
+            for (; i--;) {
+                mine['uncontract'](disposeid[i]);
+            }
+
+            disposeid = [];
+        }
+        function onechange() {
+            change();
+            remove(onechange);
+        }
+        function change() {
+            if (
+                mine['getOrientation']()['portrait']
+            ) {
+                vars['portrait']();
+                return TRUE;
+            }
+            vars['landscape']();
+        }
+
+        return ret_remove;
     }
 });
 Global['mobile'] = new Global['Mobile']();
 /* Test: "%JASMINE_TEST_PATH%" */
-Global.DeviceAction = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super']();
+Global.DeviceAction = klassExtendBase(function(config) {
+    this['_super']();
 
-        this._e = config['e'];
+    this._e = config['e'];
 
-        if (config['callback']) {
-            this['bind'](config['callback']);
-        }
+    if (config['callback']) {
+        this['bind'](config['callback']);
+    }
+}, {
+    'bind': function(func) {
+        this['unbind']();
+        this._bindid = this['contract'](win, this._e, func);
     },
-    'properties': {
-        'bind': function(func) {
-            this['unbind']();
-            this._bindid = this['contract'](win, this._e, func);
-        },
-        'unbind': function() {
-            if (this._bindid) {
-                this['uncontract'](this._bindid);
-            }
+    'unbind': function() {
+        if (this._bindid) {
+            this['uncontract'](this._bindid);
         }
     }
 });
@@ -2545,61 +2477,57 @@ var Shake,
     }
 /* } */
 
-Global['DeviceShake'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        var bindprop;
+Global['DeviceShake'] = klassExtendBase(function(config) {
+    var bindprop;
 
-        this['_super']();
-        this._shaker = new Shake();
-        this._limit = config['limit'];
-        this._waittime = config['waittime'];
-        /* this._callback = config['callback']; */
+    this['_super']();
+    this._shaker = new Shake();
+    this._limit = config['limit'];
+    this._waittime = config['waittime'];
+    /* this._callback = config['callback']; */
 
-        if (config['callback'] && config['direction']) {
-            this['bind'](config['direction'], config['callback']);
-        }
+    if (config['callback'] && config['direction']) {
+        this['bind'](config['direction'], config['callback']);
+    }
+}, {
+    convertName: {
+        'x': 'gamma',
+        'y': 'beta',
+        'z': 'alpha'
     },
-    'properties': {
-        convertName: {
-            'x': 'gamma',
-            'y': 'beta',
-            'z': 'alpha'
-        },
-        'dispose': function() {
-            this._shaker['dispose']();
-            this._orgdis();
-        },
-        'bind': function(direction, callback) {
-            direction = this.convertName[direction];
+    'dispose': function() {
+        this._shaker['dispose']();
+        this._orgdis();
+    },
+    'bind': function(direction, callback) {
+        direction = this.convertName[direction];
 
-            var mine = this,
-                base_e,
-                shaked = FALSE,
-                wraphandle = function(e) {
-                    e = convert(e);
+        var mine = this,
+            base_e,
+            shaked = FALSE,
+            wraphandle = function(e) {
+                e = convert(e);
 
-                    if (!base_e) {
-                        base_e = e;
-                    }
+                if (!base_e) {
+                    base_e = e;
+                }
 
-                    if (Math.abs(e[direction] - base_e[direction]) > mine._limit) {
-                        shaked = TRUE;
-                        base_e = NULL;
+                if (Math.abs(e[direction] - base_e[direction]) > mine._limit) {
+                    shaked = TRUE;
+                    base_e = NULL;
 
-                        callback(e);
+                    callback(e);
 
-                        setTimeout(function() {
-                            shaked = FALSE;
-                        }, mine._waittime);
-                    }
-                };
+                    setTimeout(function() {
+                        shaked = FALSE;
+                    }, mine._waittime);
+                }
+            };
 
-            return mine._shaker['bind'](wraphandle);
-        },
-        'unbind': function() {
-            this._shaker['unbind']();
-        }
+        return mine._shaker['bind'](wraphandle);
+    },
+    'unbind': function() {
+        this._shaker['unbind']();
     }
 });
 
@@ -2607,166 +2535,154 @@ Global['DeviceShake']['support'] = Shake ? TRUE : FALSE;
 
 }());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
-Global['FontImg'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        config = config || {type: ''};
+Global['FontImg'] = klassExtendBase(function(config) {
+    config = config || {};
 
-        this.type = config['type'] ? config['type'] + '_' : '';
-        this.tag = config['tag'] || 'span';
-    },
-    'properties': {
-        'make': function(x) {
-            var aryX = ('' + x).split(''),
-                tags = '',
-                i = aryX.length;
+    this.type = config['type'] ? config['type'] + '_' : '';
+    this.tag = config['tag'] || 'span';
+}, {
+    'make': function(x) {
+        var aryX = ('' + x).split(''),
+            tags = '',
+            i = aryX.length;
 
-            for (; i--;) {
-                tags = '<' + this.tag +
-                    ' class="font_' + this.type + aryX[i] +
-                    '">&nbsp;</' + this.tag + '>' + tags;
-            }
-
-            return tags;
+        for (; i--;) {
+            tags = '<' + this.tag +
+                ' class="font_' + this.type + aryX[i] +
+                '">&nbsp;</' + this.tag + '>' + tags;
         }
+
+        return tags;
     }
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
 var ObserverName = 'Observer';
-Global[ObserverName] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super'](config);
+Global[ObserverName] = klassExtendBase(function(config) {
+    this['_super'](config);
 
-        this.observed = {};
+    this.observed = {};
 
-        return this.singleAct(ObserverName);
+    return this.singleAct(ObserverName);
+}, {
+    'on': function(key, func) {
+        var observed = this.observed;
+
+        if (!observed[key]) {
+            observed[key] = [];
+        }
+
+        observed[key].push(func);
     },
-    'properties': {
-        'on': function(key, func) {
-            var observed = this.observed;
+    'one': function(key, func) {
+        var mine = this,
+            wrapfunc = function(vars) {
+                func(vars);
+                mine['off'](key, wrapfunc);
+            };
 
-            if (!observed[key]) {
-                observed[key] = [];
-            }
+        mine['on'](key, wrapfunc);
+    },
+    'off': function(key, func) {
+        var observed = this.observed;
 
-            observed[key].push(func);
-        },
-        'one': function(key, func) {
-            var mine = this,
-                wrapfunc = function(vars) {
-                    func(vars);
-                    mine['off'](key, wrapfunc);
-                };
-
-            mine['on'](key, wrapfunc);
-        },
-        'off': function(key, func) {
-            var observed = this.observed;
-
-            if (!func) {
-                delete observed[key];
-
-                return TRUE;
-            }
-
-            var target = observed[key],
-                i;
-
-            if (!target) {
-                return FALSE;
-            }
-
-
-            for (i = target.length; i--;) {
-                if (func === target[i]) {
-                    target.splice(i, 1);
-
-                    if (target.length === 0) {
-                        delete observed[key];
-                    }
-
-                    return TRUE;
-                }
-            }
-
-            return FALSE;
-        },
-        'fire': function(key, vars) {
-            var target = this.observed[key],
-                func,
-                i;
-
-            if (!target) {
-                return FALSE;
-            }
-
-            for (i = target.length; i--;) {
-                func = target[i];
-                if (func) {
-                    func(vars);
-                }
-            }
+        if (!func) {
+            delete observed[key];
 
             return TRUE;
         }
+
+        var target = observed[key],
+            i;
+
+        if (!target) {
+            return FALSE;
+        }
+
+
+        for (i = target.length; i--;) {
+            if (func === target[i]) {
+                target.splice(i, 1);
+
+                if (target.length === 0) {
+                    delete observed[key];
+                }
+
+                return TRUE;
+            }
+        }
+
+        return FALSE;
+    },
+    'fire': function(key, vars) {
+        var target = this.observed[key],
+            func,
+            i;
+
+        if (!target) {
+            return FALSE;
+        }
+
+        for (i = target.length; i--;) {
+            func = target[i];
+            if (func) {
+                func(vars);
+            }
+        }
+
+        return TRUE;
     }
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-Global['PreRender'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        config = config || {};
+Global['PreRender'] = klassExtendBase(function(config) {
+    config = config || {};
 
-        if (!config['loopblur']) {
-            config['loopblur'] = 20;
-        }
+    if (!config['loopblur']) {
+        config['loopblur'] = 20;
+    }
 
-        this.els = config['elements'] || [];
-        this.guesslimit = config['guesslimit'] || 30;
-        this.onrendered = config['onrendered'] || nullFunction;
-        this.looptime = config['looptime'] || 100;
-        this.loopblur = this.looptime + config['loopblur'];
-        /* this.loopid = this.prevtime = NULL; */
+    this.els = config['elements'] || [];
+    this.guesslimit = config['guesslimit'] || 30;
+    this.onrendered = config['onrendered'] || nullFunction;
+    this.looptime = config['looptime'] || 100;
+    this.loopblur = this.looptime + config['loopblur'];
+    /* this.loopid = this.prevtime = NULL; */
 
-        if (!config['manual']) {
-            this['start']();
-        }
+    if (!config['manual']) {
+        this['start']();
+    }
+}, {
+    'dispose': function() {
+        clearInterval(this.loopid);
+        this._orgdis();
     },
-    'properties': {
-        'dispose': function() {
-            clearInterval(this.loopid);
-            this._orgdis();
-        },
-        'start': function() {
-            var i,
-                mine = this,
-                prevtime = dateNow();
+    'start': function() {
+        var i,
+            mine = this,
+            prevtime = dateNow();
 
-            for (i = mine.els.length; i--;) {
-                show(mine.els[i]);
-            }
-            mine.loopid = setInterval(check, this.looptime, this);
+        for (i = mine.els.length; i--;) {
+            show(mine.els[i]);
+        }
+        mine.loopid = setInterval(check, this.looptime, this);
 
-            function check() {
-                var gettime = dateNow(),
-                    difftime = gettime - prevtime,
-                    i;
+        function check() {
+            var gettime = dateNow(),
+                difftime = gettime - prevtime,
+                i;
 
-                prevtime = gettime;
+            prevtime = gettime;
 
-                if (difftime < mine.loopblur) {
-                    mine.guesslimit--;
+            if (difftime < mine.loopblur) {
+                mine.guesslimit--;
 
-                    if (mine.guesslimit < 1) {
-                        clearInterval(mine.loopid);
+                if (mine.guesslimit < 1) {
+                    clearInterval(mine.loopid);
 
-                        for (i = mine.els.length; i--;) {
-                            hide(mine.els[i]);
-                        }
-
-                        mine.onrendered();
+                    for (i = mine.els.length; i--;) {
+                        hide(mine.els[i]);
                     }
+
+                    mine.onrendered();
                 }
             }
         }
@@ -2774,92 +2690,84 @@ Global['PreRender'] = klass({
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
 var RouteName = 'Route';
-Global[RouteName] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this['_super'](config);
+Global[RouteName] = klassExtendBase(function(config) {
+    this['_super'](config);
 
-        this._target = config['target'] || '';
-        this._noregex = config['noregex'];
-        this._action = config['action'];
+    this._target = config['target'] || '';
+    this._noregex = config['noregex'];
+    this._action = config['action'];
 
-        if (!config['manual']) {
-            this['start']();
+    if (!config['manual']) {
+        this['start']();
+    }
+
+    return this.singleAct(RouteName);
+}, {
+    'start': function() {
+        this['fire'](this._target);
+    },
+    'fire': function(action) {
+        var i;
+
+        if (this._noregex && this._action[action]) {
+            return this._action[action](action);
         }
 
-        return this.singleAct(RouteName);
-    },
-    'properties': {
-        'start': function() {
-            this['fire'](this._target);
-        },
-        'fire': function(action) {
-            var i;
-
-            if (this._noregex && this._action[action]) {
-                return this._action[action](action);
-            }
-
-            for (i in this._action) {
-                if (action.match(i)) {
-                    this._action[i](i);
-                }
+        for (i in this._action) {
+            if (action.match(i)) {
+                this._action[i](i);
             }
         }
     }
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-Global['ScriptLoad'] = klass({
-    'extend': Base,
-    'init': function() {
-        this['_super']();
-        this.els = [];
+Global['ScriptLoad'] = klassExtendBase(function() {
+    this['_super']();
+    this.els = [];
+}, {
+    'requests': function(varary, callback) {
+        var mine = this,
+            i = 0,
+            len = varary.length;
+
+        for (; i < len; i++) {
+            request(i);
+        }
+
+        function request(i) {
+            var callback = varary[i]['callback'],
+                check = function(e) {
+                    callback(e);
+                    countdown();
+                };
+
+            varary[i]['callback'] = check;
+
+            mine['request'](varary[i]);
+        }
+        function countdown() {
+            i--;
+
+            if (i === 0) {
+                callback(mine.els);
+            }
+        }
     },
-    'properties': {
-        'requests': function(varary, callback) {
-            var mine = this,
-                i = 0,
-                len = varary.length;
+    'request': function(vars) {
+        var mine = this,
+            script = create('script'),
+            disposeid;
 
-            for (; i < len; i++) {
-                request(i);
-            }
+        /* script.type = 'text/javascript'; */
+        script.src = vars['src'];
+        append(doc.body, script);
+        mine.els.push(script);
 
-            function request(i) {
-                var callback = varary[i]['callback'],
-                    check = function(e) {
-                        callback(e);
-                        countdown();
-                    };
-
-                varary[i]['callback'] = check;
-
-                mine['request'](varary[i]);
-            }
-            function countdown() {
-                i--;
-
-                if (i === 0) {
-                    callback(mine.els);
-                }
-            }
-        },
-        'request': function(vars) {
-            var mine = this,
-                script = create('script'),
-                disposeid;
-
-            /* script.type = 'text/javascript'; */
-            script.src = vars['src'];
-            append(doc.body, script);
-            mine.els.push(script);
-
-            if (vars['callback']) {
-                disposeid = mine['contract'](script, ev['load'], function() {
-                    mine['uncontract'](disposeid);
-                    vars['callback'].apply(this, arguments);
-                });
-            }
+        if (vars['callback']) {
+            disposeid = mine['contract'](script, ev['load'], function() {
+                mine['uncontract'](disposeid);
+                vars['callback'].apply(this, arguments);
+            });
         }
     }
 });
@@ -2870,51 +2778,47 @@ Global['ScriptLoad'] = klass({
 var xhr,
     isLoaded = FALSE;
 
-Global['ServerMeta'] = klass({
-    'extend' : Base,
-    'init': function(config) {
-        config = config || {};
+Global['ServerMeta'] = klassExtendBase(function(config) {
+    config = config || {};
 
-        var callback = config['callback'] || nullFunction;
+    var callback = config['callback'] || nullFunction;
 
-        if (!xhr) {
-            xhr = getHeader(function() {
-                isLoaded = TRUE;
-                callback(xhr);
-            });
-        }
-        else {
+    if (!xhr) {
+        xhr = getHeader(function() {
+            isLoaded = TRUE;
             callback(xhr);
-        }
+        });
+    }
+    else {
+        callback(xhr);
+    }
+}, {
+    'date': function(callback) {
+        return getHeader(function(xhr) {
+            var time = new Date(xhr.getResponseHeader('Date'));
+            callback(time);
+        });
     },
-    'properties': {
-        'date': function(callback) {
-            return getHeader(function(xhr) {
-                var time = new Date(xhr.getResponseHeader('Date'));
-                callback(time);
-            });
-        },
-        'connection': function() {
-            return getRes('Connection');
-        },
-        'contentLength': function() {
-            return getRes('Content-Length');
-        },
-        'lastModified': function() {
-            return getRes('Last-Modified');
-        },
-        'server': function() {
-            return getRes('Server');
-        },
-        'contentType': function() {
-            return getRes('Content-Type');
-        },
-        'acceptRanges': function() {
-            return getRes('Accept-Ranges');
-        },
-        'keepAlive': function() {
-            return getRes('Keep-Alive');
-        }
+    'connection': function() {
+        return getRes('Connection');
+    },
+    'contentLength': function() {
+        return getRes('Content-Length');
+    },
+    'lastModified': function() {
+        return getRes('Last-Modified');
+    },
+    'server': function() {
+        return getRes('Server');
+    },
+    'contentType': function() {
+        return getRes('Content-Type');
+    },
+    'acceptRanges': function() {
+        return getRes('Accept-Ranges');
+    },
+    'keepAlive': function() {
+        return getRes('Keep-Alive');
     }
 });
 
@@ -2939,77 +2843,69 @@ function getHeader(callback) {
 }
 }());
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-Global['Surrogate'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this.delay = config['delay'];
-        this.callback = config['callback'];
-        // this.args = NULL;
-        // this.waitid = NULL;
+Global['Surrogate'] = klassExtendBase(function(config) {
+    this.delay = config['delay'];
+    this.callback = config['callback'];
+    // this.args = NULL;
+    // this.waitid = NULL;
+}, {
+    'dispose': function() {
+        this['clear']();
+        this._orgdis();
     },
-    'properties': {
-        'dispose': function() {
-            this['clear']();
-            this._orgdis();
-        },
-        'request': function(arg) {
-            this.args = arg;
-            this['clear']();
-            this.waitid = setTimeout(this['flush'], this.delay, this);
-        },
-        'flush': function(mine) {
-            mine = mine || this;
+    'request': function(arg) {
+        this.args = arg;
+        this['clear']();
+        this.waitid = setTimeout(this['flush'], this.delay, this);
+    },
+    'flush': function(mine) {
+        mine = mine || this;
 
-            mine.callback(mine.args);
-        },
-        'clear': function() {
-            clearInterval(this.waitid);
-        }
+        mine.callback(mine.args);
+    },
+    'clear': function() {
+        clearInterval(this.waitid);
     }
 });
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-Global['Throttle'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this.waittime = config['waittime'];
-        this.callback = config['callback'];
-        // this.locked = FALSE;
-        // this.waitid = NULL;
-        // this.waitarg = NULL;
+Global['Throttle'] = klassExtendBase(function(config) {
+    this.waittime = config['waittime'];
+    this.callback = config['callback'];
+    // this.locked = FALSE;
+    // this.waitid = NULL;
+    // this.waitarg = NULL;
+}, {
+    'dispose': function() {
+        this['unlock']();
+        this._orgdis();
     },
-    'properties': {
-        'dispose': function() {
-            this['unlock']();
-            this._orgdis();
-        },
-        'request': function(vars) {
-            var mine = this;
+    'request': function(vars) {
+        var mine = this;
 
-            if (mine.locked) {
-                mine.waitarg = vars;
-                return FALSE;
+        if (mine.locked) {
+            mine.waitarg = vars;
+            return FALSE;
+        }
+
+        mine.callback(vars);
+        mine['lock']();
+        mine.waitid = setTimeout(function() {
+            if (mine.waitarg) {
+                mine.callback(mine.waitarg);
+                mine.waitarg = NULL;
             }
 
-            mine.callback(vars);
-            mine['lock']();
-            mine.waitid = setTimeout(function() {
-                if (mine.waitarg) {
-                    mine.callback(mine.waitarg);
-                    mine.waitarg = NULL;
-                }
+            mine['unlock']();
+        }, mine.waittime, mine);
+    },
+    'lock': function() {
+        this.locked = TRUE;
+    },
+    'unlock': function(mine) {
+        mine = mine || this;
 
-                mine['unlock']();
-            }, mine.waittime, mine);
-        },
-        'lock': function() {
-            this.locked = TRUE;
-        },
-        'unlock': function(mine) {
-            mine = mine || this;
-
-            mine.locked = FALSE;
-            clearInterval(mine.waitid);
-        }
+        mine.locked = FALSE;
+        clearInterval(mine.waitid);
     }
 });
 /* Test: "../../spec/_src/src/Timer/test.js" */
@@ -3158,52 +3054,46 @@ Global['Timer'] = function(config) {
     return instance;
 };
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-Global['Twitter'] = klass({
-    'extend': Base,
-    'properties': {
-        'shareURL': function(vars) {
-            var caption = vars['caption'] || '',
-                name = vars['name'],
-                hash = vars['hash'],
-                url = 'https://twitter.com/intent/tweet?';
+Global['Twitter'] = klassExtendBase(UNDEFINED,
+{
+    'shareURL': function(vars) {
+        var caption = vars['caption'] || '',
+            name = vars['name'],
+            hash = vars['hash'],
+            url = 'https://twitter.com/intent/tweet?';
 
-            name = name ? ' 「' + name + '」' : '';
-            hash = hash ? ' ' + hash : '';
+        name = name ? ' 「' + name + '」' : '';
+        hash = hash ? ' ' + hash : '';
 
-            url += makeQueryString({
-                'url': vars['redirect_uri'],
-                'text': caption + name + hash
-            });
+        url += makeQueryString({
+            'url': vars['redirect_uri'],
+            'text': caption + name + hash
+        });
 
-            return url;
-        }
+        return url;
     }
 });
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global['XML'] = klass({
-    'extend': Base,
-    'init': function(config) {
-        this.el = create('div');
-        this._data = {};
+Global['XML'] = klassExtendBase(function(config) {
+    this.el = create('div');
+    this._data = {};
 
-        if (config) {
-            this['setData'](config['data']);
-        }
+    if (config) {
+        this['setData'](config['data']);
+    }
+}, {
+    'getData': function() {
+        return this._data;
     },
-    'properties': {
-        'getData': function() {
-            return this._data;
-        },
-        'setData': function(d) {
-            this._data = d;
-            html(this.el, d);
-        },
-        '$': function(selector) {
-            return $child(selector, this.el);
-        },
-        '$$': function(selector) {
-            return $$child(selector, this.el);
-        }
+    'setData': function(d) {
+        this._data = d;
+        html(this.el, d);
+    },
+    '$': function(selector) {
+        return $child(selector, this.el);
+    },
+    '$$': function(selector) {
+        return $$child(selector, this.el);
     }
 });
 }());

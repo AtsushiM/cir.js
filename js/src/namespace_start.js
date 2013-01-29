@@ -19,3 +19,13 @@ var win = window,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
+function klassExtend(kls, init, properties) {
+    return klass({
+        'extend': kls,
+        'init': init,
+        'properties': properties
+    });
+}
+function klassExtendBase(init, properties) {
+    return klassExtend(Base, init, properties);
+}
