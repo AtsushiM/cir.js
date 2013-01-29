@@ -47,8 +47,9 @@ function checkCSSAnimTranCheck(propnames, event_key) {
             prefix = prop[i].match(regex)[1];
 
             if (prefix) {
-                css_prefix = '-' + prefix.toLowerCase() + '-';
-                event_key = prefix.toLowerCase() + event_key;
+                css_prefix = prefix.toLowerCase();
+                event_key = css_prefix + event_key;
+                css_prefix = '-' + css_prefix + '-';
             }
             else {
                 event_key = event_key.toLowerCase();
