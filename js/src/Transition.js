@@ -2,41 +2,20 @@
 (function() {
 'use strict';
 
-var prop = [
-        'webkitTransitionProperty',
-        'transitionProperty'
-    ],
-    el = create('p'),
-    support = FALSE,
-    prefix,
-    css_prefix = '',
-    event_key = 'transition',
-    i = prop.length,
-    style,
-    sheet,
+var ret = checkCSSAnimTranCheck([
+        'transitionProperty',
+        'webkitTransitionProperty'
+    ], 'Transition'),
+    support = ret.support,
+    prefix = ret.prefix,
+    css_prefix = ret.css_prefix,
+    event_key = ret.event_key,
+    sheet = ret.sheet,
     Mine;
 
-for (; i--;) {
-    if (el.style[prop[i]] !== UNDEFINED) {
-        support = TRUE;
-        prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];
+Mine = Global['Transition'] =
+    klassExtendBase(function(element, property, option) {
 
-        if (prefix) {
-            css_prefix = '-' + prefix.toLowerCase() + '-';
-            event_key = prefix.toLowerCase() + 'Transition';
-        }
-
-        style = append($('head'),
-            create('style', {
-                type: 'text/css'
-            }));
-        sheet = style.sheet;
-
-        break;
-    }
-}
-
-Mine = Global['Transition'] = klassExtendBase(function(element, property, option) {
     option = option || {};
     option['onComplete'] = option['onComplete'] || nullFunction;
 

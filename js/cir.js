@@ -29,6 +29,49 @@ function klassExtend(kls, init, properties) {
 function klassExtendBase(init, properties) {
     return klassExtend(Base, init, properties);
 }
+
+function checkCSSAnimTranCheck(propnames, event_key) {
+    var prop = propnames,
+        el = create('p'),
+        support = FALSE,
+        prefix,
+        css_prefix = '',
+        i = prop.length,
+        style,
+        sheet,
+        regex = new RegExp('^(.*?)' + prop[0] + '$', 'i');
+
+    for (; i--;) {
+        if (el.style[prop[i]] !== UNDEFINED) {
+            support = TRUE;
+            prefix = prop[i].match(regex)[1];
+
+            if (prefix) {
+                css_prefix = '-' + prefix.toLowerCase() + '-';
+                event_key = prefix.toLowerCase() + event_key;
+            }
+            else {
+                event_key = event_key.toLowerCase();
+            }
+
+            style = append($('head'),
+                create('style', {
+                    type: 'text/css'
+                }));
+            sheet = style.sheet;
+
+            break;
+        }
+    }
+
+    return {
+        event_key: event_key,
+        support: support,
+        prefix: prefix,
+        css_prefix: css_prefix,
+        sheet: sheet
+    };
+}
 /* Test: "../../spec/_src/src/utility/test.js" */
 if (!Date['now']) {
     Date['now'] = function now() {
@@ -635,41 +678,22 @@ Global['cssease'] = {
 };
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
-var prop = [
+'use strict';
+
+var ret = checkCSSAnimTranCheck([
         'animation',
         'webkitAnimation'
-    ],
-    el = create('p'),
-    support = FALSE,
-    prefix,
-    css_prefix = '',
-    event_key = 'animation',
-    i = prop.length,
-    style,
-    sheet,
+    ], 'Animation'),
+    support = ret.support,
+    prefix = ret.prefix,
+    css_prefix = ret.css_prefix,
+    event_key = ret.event_key,
+    sheet = ret.sheet,
     Mine;
 
-for (; i--;) {
-    if (el.style[prop[i]] !== UNDEFINED) {
-        support = TRUE;
-        prefix = prop[i].match(/^(.*?)animation$/i)[1];
+Mine = Global['Animation'] =
+    klassExtendBase(function(element, property, option) {
 
-        if (prefix) {
-            css_prefix = '-' + prefix.toLowerCase() + '-';
-            event_key = prefix + 'Animation';
-        }
-
-        style = append($('head'),
-            create('style', {
-                type: 'text/css'
-            }));
-        sheet = style.sheet;
-
-        break;
-    }
-}
-
-Mine = Global['Animation'] = klassExtendBase(function(element, property, option) {
     option = option || {};
 
     this.onComplete = option['onComplete'] || nullFunction;
@@ -789,41 +813,20 @@ Mine['support'] = support;
 (function() {
 'use strict';
 
-var prop = [
-        'webkitTransitionProperty',
-        'transitionProperty'
-    ],
-    el = create('p'),
-    support = FALSE,
-    prefix,
-    css_prefix = '',
-    event_key = 'transition',
-    i = prop.length,
-    style,
-    sheet,
+var ret = checkCSSAnimTranCheck([
+        'transitionProperty',
+        'webkitTransitionProperty'
+    ], 'Transition'),
+    support = ret.support,
+    prefix = ret.prefix,
+    css_prefix = ret.css_prefix,
+    event_key = ret.event_key,
+    sheet = ret.sheet,
     Mine;
 
-for (; i--;) {
-    if (el.style[prop[i]] !== UNDEFINED) {
-        support = TRUE;
-        prefix = prop[i].match(/^(.*?)transitionproperty$/i)[1];
+Mine = Global['Transition'] =
+    klassExtendBase(function(element, property, option) {
 
-        if (prefix) {
-            css_prefix = '-' + prefix.toLowerCase() + '-';
-            event_key = prefix.toLowerCase() + 'Transition';
-        }
-
-        style = append($('head'),
-            create('style', {
-                type: 'text/css'
-            }));
-        sheet = style.sheet;
-
-        break;
-    }
-}
-
-Mine = Global['Transition'] = klassExtendBase(function(element, property, option) {
     option = option || {};
     option['onComplete'] = option['onComplete'] || nullFunction;
 
@@ -2421,7 +2424,7 @@ Global['Mobile'] = klassExtendBase(function() {
     }
 });
 Global['mobile'] = new Global['Mobile']();
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/DeviceAction/test.js" */
 Global.DeviceAction = klassExtendBase(function(config) {
     this['_super']();
 
@@ -2441,21 +2444,21 @@ Global.DeviceAction = klassExtendBase(function(config) {
         }
     }
 });
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/DeviceOrientation/test.js" */
 Global['DeviceOrientation'] = function(config) {
     config = config || {};
     config['e'] = 'deviceorientation';
     return new Global.DeviceAction(config);
 };
 Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/DeviceMotion/test.js" */
 Global['DeviceMotion'] = function(config) {
     config = config || {};
     config['e'] = 'devicemotion';
     return new Global.DeviceAction(config);
 };
 Global['DeviceMotion']['support'] = 'ondevicemotion' in win;
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/DeviceShake/test.js" */
 (function() {
 var Shake,
     convert;
@@ -2476,8 +2479,6 @@ var Shake,
 /* } */
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
-    var bindprop;
-
     this['_super']();
     this._shaker = new Shake();
     this._limit = config['limit'];

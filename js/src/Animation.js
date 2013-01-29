@@ -1,40 +1,21 @@
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
-var prop = [
+'use strict';
+
+var ret = checkCSSAnimTranCheck([
         'animation',
         'webkitAnimation'
-    ],
-    el = create('p'),
-    support = FALSE,
-    prefix,
-    css_prefix = '',
-    event_key = 'animation',
-    i = prop.length,
-    style,
-    sheet,
+    ], 'Animation'),
+    support = ret.support,
+    prefix = ret.prefix,
+    css_prefix = ret.css_prefix,
+    event_key = ret.event_key,
+    sheet = ret.sheet,
     Mine;
 
-for (; i--;) {
-    if (el.style[prop[i]] !== UNDEFINED) {
-        support = TRUE;
-        prefix = prop[i].match(/^(.*?)animation$/i)[1];
+Mine = Global['Animation'] =
+    klassExtendBase(function(element, property, option) {
 
-        if (prefix) {
-            css_prefix = '-' + prefix.toLowerCase() + '-';
-            event_key = prefix + 'Animation';
-        }
-
-        style = append($('head'),
-            create('style', {
-                type: 'text/css'
-            }));
-        sheet = style.sheet;
-
-        break;
-    }
-}
-
-Mine = Global['Animation'] = klassExtendBase(function(element, property, option) {
     option = option || {};
 
     this.onComplete = option['onComplete'] || nullFunction;

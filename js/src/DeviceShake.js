@@ -19,8 +19,6 @@ var Shake,
 /* } */
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
-    var bindprop;
-
     this['_super']();
     this._shaker = new Shake();
     this._limit = config['limit'];
