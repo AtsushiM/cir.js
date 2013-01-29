@@ -25,7 +25,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
                 vars['query'] = {};
             }
 
-            vars['query']['cirajaxcash' + dateNow()] = '0';
+            vars['query']['cir' + dateNow()] = '0';
         }
         if (vars['query']) {
             query = vars['query'];

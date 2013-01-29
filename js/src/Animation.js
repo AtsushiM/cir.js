@@ -64,7 +64,7 @@ Mine = Global['Animation'] =
         off(this.el, 'animationend', this.end);
     },
     'dispose': function() {
-        this.stop();
+        this['stop']();
         this._orgdis();
     },
     'start': function() {

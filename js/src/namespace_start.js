@@ -8,26 +8,24 @@ var win = window,
     NULL = null,
     UNDEFINED = undefined,
     isTouch = isTouchDevice(),
-    klass,
     ev,
     ev_hashchange = 'hashchange',
     ev_orientationchange = 'orientationchange',
     ev_canplay = 'canplay',
     ev_ended = 'ended',
     easebackrate = 1.70158,
-    Base,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
 function klassExtend(kls, init, properties) {
-    return klass({
+    return Global['klass']({
         'extend': kls,
         'init': init,
         'properties': properties
     });
 }
 function klassExtendBase(init, properties) {
-    return klassExtend(Base, init, properties);
+    return klassExtend(Global['Base'], init, properties);
 }
 
 function checkCSSAnimTranCheck(propnames, event_key) {

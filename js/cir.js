@@ -8,26 +8,24 @@ var win = window,
     NULL = null,
     UNDEFINED = undefined,
     isTouch = isTouchDevice(),
-    klass,
     ev,
     ev_hashchange = 'hashchange',
     ev_orientationchange = 'orientationchange',
     ev_canplay = 'canplay',
     ev_ended = 'ended',
     easebackrate = 1.70158,
-    Base,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
 function klassExtend(kls, init, properties) {
-    return klass({
+    return Global['klass']({
         'extend': kls,
         'init': init,
         'properties': properties
     });
 }
 function klassExtendBase(init, properties) {
-    return klassExtend(Base, init, properties);
+    return klassExtend(Global['Base'], init, properties);
 }
 
 function checkCSSAnimTranCheck(propnames, event_key) {
@@ -429,7 +427,7 @@ Global['dom'] = {
     'html': html
 };
 /* Test: "../../spec/_src/src/klass/test.js" */
-klass = Global['klass'] = function(config) {
+Global['klass'] = function(config) {
     'use strict';
 
     var init = config['init'] || function() {},
@@ -472,7 +470,7 @@ Global['extend'] = function(child, _super) {
     };
 };
 /* Test: "../../spec/_src/src/Base/test.js" */
-Base = Global['Base'] = klass({
+Global['Base'] = Global['klass']({
     'init': function(config) {
         config = config || {};
         this._dispose = {};
@@ -761,7 +759,7 @@ Mine = Global['Animation'] =
         off(this.el, 'animationend', this.end);
     },
     'dispose': function() {
-        this.stop();
+        this['stop']();
         this._orgdis();
     },
     'start': function() {
@@ -1607,7 +1605,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
                 vars['query'] = {};
             }
 
-            vars['query']['cirajaxcash' + dateNow()] = '0';
+            vars['query']['cir' + dateNow()] = '0';
         }
         if (vars['query']) {
             query = vars['query'];

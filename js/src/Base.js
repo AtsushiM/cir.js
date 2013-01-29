@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Base/test.js" */
-Base = Global['Base'] = klass({
+Global['Base'] = Global['klass']({
     'init': function(config) {
         config = config || {};
         this._dispose = {};
