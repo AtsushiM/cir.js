@@ -3,7 +3,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     this['_super']();
 
     if (config) {
-        this['bind'](config);
+        this['attach'](config);
     }
 }, {
     _t: function(e) {
@@ -84,7 +84,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         });
     },
-    'bind': function(vars) {
+    'attach': function(vars) {
         var mine = this,
             element = vars['element'],
             el = Global['element'],

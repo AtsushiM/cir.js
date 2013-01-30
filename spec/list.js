@@ -4,7 +4,6 @@ src/Ajax/\n\
 src/Animation/\n\
 src/Audio/\n\
 src/Base/\n\
-src/Bind/\n\
 src/Brush/\n\
 src/DataStore/\n\
 src/Deferred/\n\
@@ -21,6 +20,7 @@ src/ExternalInterface.IOS/\n\
 src/FPS/\n\
 src/Facebook/\n\
 src/FontImg/\n\
+src/Handle/\n\
 src/HashQuery/\n\
 src/ImgLoad/\n\
 src/LocalStorage/\n\
@@ -59,7 +59,6 @@ src/utility/\n\
 ../../js/src/Animation.js\n\
 ../../js/src/Audio.js\n\
 ../../js/src/Base.js\n\
-../../js/src/Bind.js\n\
 ../../js/src/Brush.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/Deferred.js\n\
@@ -76,6 +75,7 @@ src/utility/\n\
 ../../js/src/FPS.js\n\
 ../../js/src/Facebook.js\n\
 ../../js/src/FontImg.js\n\
+../../js/src/Handle.js\n\
 ../../js/src/HashQuery.js\n\
 ../../js/src/ImgLoad.js\n\
 ../../js/src/LocalStorage.js\n\
@@ -114,7 +114,6 @@ src/utility/\n\
 ../_src/src/Animation/test.js\n\
 ../_src/src/Audio/test.js\n\
 ../_src/src/Base/test.js\n\
-../_src/src/Bind/test.js\n\
 ../_src/src/Brush/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/Deferred/test.js\n\
@@ -131,6 +130,7 @@ src/utility/\n\
 ../_src/src/FPS/test.js\n\
 ../_src/src/Facebook/test.js\n\
 ../_src/src/FontImg/test.js\n\
+../_src/src/Handle/test.js\n\
 ../_src/src/HashQuery/test.js\n\
 ../_src/src/ImgLoad/test.js\n\
 ../_src/src/LocalStorage/test.js\n\

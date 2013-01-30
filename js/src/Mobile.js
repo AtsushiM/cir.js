@@ -75,7 +75,7 @@ Global['Mobile'] = klassExtendBase(function() {
             'landscape': TRUE
         };
     },
-    'bindOrientation': function(vars) {
+    'attachOrientation': function(vars) {
         var mine = this,
             disposeid = [],
             ret_remove;

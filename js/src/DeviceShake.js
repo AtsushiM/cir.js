@@ -26,7 +26,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
     /* this._callback = config['callback']; */
 
     if (config['callback'] && config['direction']) {
-        this['bind'](config['direction'], config['callback']);
+        this['attach'](config['direction'], config['callback']);
     }
 }, {
     convertName: {
@@ -38,7 +38,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         this._shaker['dispose']();
         this._orgdis();
     },
-    'bind': function(direction, callback) {
+    'attach': function(direction, callback) {
         direction = this.convertName[direction];
 
         var mine = this,
@@ -63,10 +63,10 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
                 }
             };
 
-        return mine._shaker['bind'](wraphandle);
+        return mine._shaker['attach'](wraphandle);
     },
-    'unbind': function() {
-        this._shaker['unbind']();
+    'detach': function() {
+        this._shaker['detach']();
     }
 });
 

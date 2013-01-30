@@ -289,7 +289,7 @@ function addClass(element, cls) {
 
 function removeClass(element, cls) {
     var addedcls,
-        bindcls = [],
+        attachcls = [],
         i,
         len;
 
@@ -302,11 +302,11 @@ function removeClass(element, cls) {
 
     for (; i--;) {
         if (cls !== addedcls[i]) {
-            bindcls.push(addedcls[i]);
+            attachcls.push(addedcls[i]);
         }
     }
 
-    element.className = bindcls.join(' ');
+    element.className = attachcls.join(' ');
 
     return TRUE;
 }
@@ -1669,22 +1669,19 @@ Global['Ajax'] = klassExtendBase(function(config) {
         this['request'](vars);
     }
 });
-/* Test: "../../spec/_src/src/Bind/test.js" */
-Global['Bind'] = klassExtendBase(function(config) {
+/* Test: "../../spec/_src/src/Handle/test.js" */
+Global['Handle'] = klassExtendBase(function(config) {
     this.handler = config;
-    this['add']();
+    this['attach']();
 }, {
     'dispose': function() {
-        this['remove']();
+        this['detach']();
         this._orgdis();
     },
-    'getHandler': function() {
-        return this.handler;
-    },
-    'add': function() {
+    'attach': function() {
         this._e(TRUE);
     },
-    'remove': function() {
+    'detach': function() {
         this._e(FALSE);
     },
     _e: function(isBind) {
@@ -1927,7 +1924,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     this['_super']();
 
     if (config) {
-        this['bind'](config);
+        this['attach'](config);
     }
 }, {
     _t: function(e) {
@@ -2008,7 +2005,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         });
     },
-    'bind': function(vars) {
+    'attach': function(vars) {
         var mine = this,
             element = vars['element'],
             el = Global['element'],
@@ -2386,7 +2383,7 @@ Global['Mobile'] = klassExtendBase(function() {
             'landscape': TRUE
         };
     },
-    'bindOrientation': function(vars) {
+    'attachOrientation': function(vars) {
         var mine = this,
             disposeid = [],
             ret_remove;
@@ -2448,16 +2445,16 @@ Global.DeviceAction = klassExtendBase(function(config) {
     this._e = config['e'];
 
     if (config['callback']) {
-        this['bind'](config['callback']);
+        this['attach'](config['callback']);
     }
 }, {
-    'bind': function(func) {
-        this['unbind']();
-        this._bindid = this['contract'](win, this._e, func);
+    'attach': function(func) {
+        this['detach']();
+        this._attachid = this['contract'](win, this._e, func);
     },
-    'unbind': function() {
-        if (this._bindid) {
-            this['uncontract'](this._bindid);
+    'detach': function() {
+        if (this._attachid) {
+            this['uncontract'](this._attachid);
         }
     }
 });
@@ -2503,7 +2500,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
     /* this._callback = config['callback']; */
 
     if (config['callback'] && config['direction']) {
-        this['bind'](config['direction'], config['callback']);
+        this['attach'](config['direction'], config['callback']);
     }
 }, {
     convertName: {
@@ -2515,7 +2512,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         this._shaker['dispose']();
         this._orgdis();
     },
-    'bind': function(direction, callback) {
+    'attach': function(direction, callback) {
         direction = this.convertName[direction];
 
         var mine = this,
@@ -2540,10 +2537,10 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
                 }
             };
 
-        return mine._shaker['bind'](wraphandle);
+        return mine._shaker['attach'](wraphandle);
     },
-    'unbind': function() {
-        this._shaker['unbind']();
+    'detach': function() {
+        this._shaker['detach']();
     }
 });
 

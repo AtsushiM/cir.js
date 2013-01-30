@@ -1,70 +1,60 @@
-/* Class: "../../../../js/src/DragFlick.js" */
-describe('DragFlickは', function() {
+/* Class: "../../../../js/src/Handle.js" */
+describe('Handleは', function() {
     var c = window.C ? C : Global,
-        dragflick;
+        handle,
+        eventHandeler;
 
     beforeEach(function() {
         // init
-        dragflick = new c.DragFlick();
+        eventHandeler = {
+            element: document.body,
+            events: {
+                click: function(str) {
+                    eventHandeler.clicktest = true;
+                },
+                rollover: function() {}
+            }
+        };
+        handle = new c.Handle(eventHandeler);
     });
     afterEach(function() {
-        // clear
+        if (handle.detach) {
+            handle.detach();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {
-        dragflick.dispose();
-        expect(dragflick).toEqual({});
+        handle.dispose();
+        expect(handle).toEqual({});
     });
 
-    it('amount({element, callback})でelementがフリックされた際、callbackに移動量を{x,y}の形式で渡す', function() {
-        dragflick.amount({
-            element: document.body,
-            callback: function(amount) {
-                expect(amount.x).toBeDefined();
-                expect(amount.y).toBeDefined();
-            }
-        });
-
-        expect(0).toEqual(0);
+    it('初期化時に{element: element, events: {event: function}}に合わせてイベントを追加する', function() {
+        document.body.click();
+        expect(eventHandeler.clicktest).toBeTruthy();
     });
 
-    it('direction({element, boundary, callback})でelementがフリックされた際、boundaryで指定した移動量以上フリックされたらcallbackに移動方向を渡す', function() {
-        dragflick.direction({
-            element: document.body,
-            boundary: 0,
-            callback: function(direction) {
-                expect(direction.top).toBeDefined();
-                expect(direction.right).toBeDefined();
-                expect(direction.bottom).toBeDefined();
-                expect(direction.left).toBeDefined();
-                expect(direction.amount).toBeDefined();
-            }
-        });
-
-        expect(0).toEqual(0);
+    it('attach()でelementにeventsを追加する', function() {
+        handle.attach();
+        document.body.click();
+        expect(eventHandeler.clicktest).toBeTruthy();
     });
 
-    it('attach({element, boundary, direction, start, move, end})でelementに対してdirectionメソッドを実行し、touchstart,touchmove,touchendにそれぞれをバインドする', function() {
-        dragflick.attach({
-            element: document.body,
-            boundary: 0,
-            direction: function(direction) {
-                expect(direction.top).toBeDefined();
-                expect(direction.right).toBeDefined();
-                expect(direction.bottom).toBeDefined();
-                expect(direction.left).toBeDefined();
-                expect(direction.amount).toBeDefined();
-            },
-            start: function(e) {
-            },
-            move: function(e) {
-            },
-            end: function(e) {
-            }
-        });
-
-        expect(0).toEqual(0);
+    it('detach()でelementからeventsを排除する', function() {
+        handle.attach();
+        handle.detach();
+        document.body.click();
+        expect(eventHandeler.clicktest).not.toBeTruthy();
     });
+
+//     it('_e(eventHandeler, bool)でelementにeventを設定する', function() {
+//         spyOn(eventHandeler.events, 'click').andCallThrough();
+//         handle._e(false);
+//         document.body.click();
+//         expect(eventHandeler.events.click).not.toHaveBeenCalled();
+//         handle._e(true);
+//         document.body.click();
+//         expect(eventHandeler.events.click).toHaveBeenCalled();
+//     });
 });
 /*
 describe('XXXは', function() {

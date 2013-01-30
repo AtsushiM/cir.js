@@ -82,8 +82,8 @@ describe('Mobileは', function() {
         expect(orient.landscape).toBeDefined();
     });
 
-    it('bindOrientation()で画面サイズ変更の際の処理を実行する', function() {
-        mb.bindOrientation({
+    it('attachOrientation()で画面サイズ変更の際の処理を実行する', function() {
+        mb.attachOrientation({
             landscape: function() {
                 // 横
             },
@@ -94,8 +94,8 @@ describe('Mobileは', function() {
         expect(0).toEqual(0);
     });
 
-    it('bindOrientation()は画面向きチェックに紐付けたイベントを削除する関数を返す', function() {
-        var remove = mb.bindOrientation({
+    it('attachOrientation()は画面向きチェックに紐付けたイベントを削除する関数を返す', function() {
+        var remove = mb.attachOrientation({
             landscape: function() {
                 // 横
             },

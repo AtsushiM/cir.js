@@ -53,7 +53,7 @@ function addClass(element, cls) {
 
 function removeClass(element, cls) {
     var addedcls,
-        bindcls = [],
+        attachcls = [],
         i,
         len;
 
@@ -66,11 +66,11 @@ function removeClass(element, cls) {
 
     for (; i--;) {
         if (cls !== addedcls[i]) {
-            bindcls.push(addedcls[i]);
+            attachcls.push(addedcls[i]);
         }
     }
 
-    element.className = bindcls.join(' ');
+    element.className = attachcls.join(' ');
 
     return TRUE;
 }
