@@ -1,15 +1,19 @@
 /* Test: "../../spec/_src/src/Embed/test.js" */
-Global['Embed'] = function(config) {
+/* Global.Embed = function(config) { */
+function Embed(config) {
     var embed = create(config['type'].toLowerCase());
 
     embed['controls'] = config['controls'] ? TRUE : FALSE;
     embed['preload'] = config['preload'] || 'auto';
     embed['autoplay'] = config['autoplay'] ? TRUE : FALSE;
     embed['loop'] = config['loop'] ? TRUE : FALSE;
-    embed['src'] = config['dir'] + config['name'] + '.' + config['suffix'][0][0];
+    embed['src'] = config['dir'] +
+        config['name'] + '.' + config['suffix'][0][0];
 
     return embed;
-};
+}
+/* }; */
+/* Global['Embed']['supportcheck'] = embedSupportCheck; */
 function embedSupportCheck(config) {
     if (!win['HTML' + config['type'] + 'Element']) {
         return FALSE;
@@ -34,4 +38,3 @@ function embedSupportCheck(config) {
 
     return support;
 }
-Global['Embed']['supportcheck'] = embedSupportCheck;

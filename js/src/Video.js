@@ -4,7 +4,7 @@ Global['Video'] = function(config) {
 
     config['suffix'] = Global['Video']['support'];
 
-    return new Global['Embed'](config);
+    return Embed(config);
 };
 Global['Video']['support'] = embedSupportCheck({
     'type': 'Video',

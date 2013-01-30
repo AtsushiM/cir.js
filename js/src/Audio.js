@@ -4,7 +4,7 @@ Global['Audio'] = function(config) {
 
     config['suffix'] = Global['Audio']['support'];
 
-    return Global['Embed'](config);
+    return Embed(config);
 };
 Global['Audio']['support'] = embedSupportCheck({
     'type': 'Audio',

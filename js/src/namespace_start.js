@@ -17,17 +17,6 @@ var win = window,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
-function klassExtend(kls, init, properties) {
-    return Global['klass']({
-        'extend': kls,
-        'init': init,
-        'properties': properties
-    });
-}
-function klassExtendBase(init, properties) {
-    return klassExtend(Global['Base'], init, properties);
-}
-
 function checkCSSAnimTranCheck(propnames, event_key) {
     var prop = propnames,
         el = create('p'),

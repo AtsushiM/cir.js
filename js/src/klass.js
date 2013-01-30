@@ -14,3 +14,14 @@ Global['klass'] = function(config) {
 
     return init;
 };
+
+function klassExtend(kls, init, properties) {
+    return Global['klass']({
+        'extend': kls,
+        'init': init,
+        'properties': properties
+    });
+}
+function klassExtendBase(init, properties) {
+    return klassExtend(Global['Base'], init, properties);
+}

@@ -17,17 +17,6 @@ var win = window,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
-function klassExtend(kls, init, properties) {
-    return Global['klass']({
-        'extend': kls,
-        'init': init,
-        'properties': properties
-    });
-}
-function klassExtendBase(init, properties) {
-    return klassExtend(Global['Base'], init, properties);
-}
-
 function checkCSSAnimTranCheck(propnames, event_key) {
     var prop = propnames,
         el = create('p'),
@@ -442,6 +431,17 @@ Global['klass'] = function(config) {
 
     return init;
 };
+
+function klassExtend(kls, init, properties) {
+    return Global['klass']({
+        'extend': kls,
+        'init': init,
+        'properties': properties
+    });
+}
+function klassExtendBase(init, properties) {
+    return klassExtend(Global['Base'], init, properties);
+}
 /* Test: "../../spec/_src/src/extend/test.js" */
 Global['extend'] = function(child, _super) {
     'use strict';
@@ -1403,17 +1403,21 @@ Global['HashQuery'] = klassExtendBase(UNDEFINED,
     }
 });
 /* Test: "../../spec/_src/src/Embed/test.js" */
-Global['Embed'] = function(config) {
+/* Global.Embed = function(config) { */
+function Embed(config) {
     var embed = create(config['type'].toLowerCase());
 
     embed['controls'] = config['controls'] ? TRUE : FALSE;
     embed['preload'] = config['preload'] || 'auto';
     embed['autoplay'] = config['autoplay'] ? TRUE : FALSE;
     embed['loop'] = config['loop'] ? TRUE : FALSE;
-    embed['src'] = config['dir'] + config['name'] + '.' + config['suffix'][0][0];
+    embed['src'] = config['dir'] +
+        config['name'] + '.' + config['suffix'][0][0];
 
     return embed;
-};
+}
+/* }; */
+/* Global['Embed']['supportcheck'] = embedSupportCheck; */
 function embedSupportCheck(config) {
     if (!win['HTML' + config['type'] + 'Element']) {
         return FALSE;
@@ -1438,9 +1442,9 @@ function embedSupportCheck(config) {
 
     return support;
 }
-Global['Embed']['supportcheck'] = embedSupportCheck;
 /* Test: "../../spec/_src/src/Media/test.js" */
-Global['Media'] = klassExtendBase(function(config) {
+/* Global.Media = klassExtendBase(function(config) { */
+var Media = klassExtendBase(function(config) {
     this['_super']();
 
     var mine = this,
@@ -1532,14 +1536,14 @@ Global['Media'] = klassExtendBase(function(config) {
         this['pause']();
     }
 });
-Global['Media']['supportcheck'] = embedSupportCheck;
+/* Global['Media']['supportcheck'] = embedSupportCheck; */
 /* Test: "../../spec/_src/src/Audio/test.js" */
 Global['Audio'] = function(config) {
     config['type'] = 'Audio';
 
     config['suffix'] = Global['Audio']['support'];
 
-    return Global['Embed'](config);
+    return Embed(config);
 };
 Global['Audio']['support'] = embedSupportCheck({
     'type': 'Audio',
@@ -1553,7 +1557,7 @@ Global['Audio']['support'] = embedSupportCheck({
 /* Test: "../../spec/_src/src/Sound/test.js" */
 Global['Sound'] = function(config) {
     config['type'] = 'Audio';
-    return new Global['Media'](config);
+    return new Media(config);
 };
 Global['Sound']['support'] = Global['Audio']['support'];
 /* Test: "../../spec/_src/src/Video/test.js" */
@@ -1562,7 +1566,7 @@ Global['Video'] = function(config) {
 
     config['suffix'] = Global['Video']['support'];
 
-    return new Global['Embed'](config);
+    return Embed(config);
 };
 Global['Video']['support'] = embedSupportCheck({
     'type': 'Video',
@@ -1575,7 +1579,7 @@ Global['Video']['support'] = embedSupportCheck({
 /* Test: "../../spec/_src/src/Movie/test.js" */
 Global['Movie'] = function(config) {
     config['type'] = 'Video';
-    return new Global['Media'](config);
+    return new Media(config);
 };
 Global['Movie']['support'] = Global['Video']['support'];
 /* Test: "../../spec/_src/src/Ajax/test.js" */
@@ -1810,83 +1814,83 @@ Global[DataStoreName] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
-var WebStorageName = 'WebStorage';
-Global[WebStorageName] = klassExtendBase(function(config) {
-    this['_super'](config);
+var WebStorageName = 'WebStorage',
+    WebStorage = klassExtendBase(function(config) {
+        this['_super'](config);
 
-    var key = 'Storage',
-        klassname = config['type'] + key;
+        var key = 'Storage',
+            klassname = config['type'] + key;
 
-    this._n = config['namespace'] ? config['namespace'] + '-' : '';
-    this._storage = win[config['type'].toLowerCase() + key];
+        this._n = config['namespace'] ? config['namespace'] + '-' : '';
+        this._storage = win[config['type'].toLowerCase() + key];
 
-    return this.singleAct(WebStorageName);
-}, {
-    'set': function(key, val) {
-        this._storage.setItem(this._n + key, jsonStringify(val));
-        return TRUE;
-    },
-    'get': function(key) {
-        var mine = this,
-            ret = {},
-            i;
+        return this.singleAct(WebStorageName);
+    }, {
+        'set': function(key, val) {
+            this._storage.setItem(this._n + key, jsonStringify(val));
+            return TRUE;
+        },
+        'get': function(key) {
+            var mine = this,
+                ret = {},
+                i;
 
-        if (key) {
-            return jsonParse(mine._storage.getItem(mine._n + key));
-        }
-
-        for (i in mine._storage) {
-            if (!this._n) {
-                ret[i] = jsonParse(mine._storage[i]);
+            if (key) {
+                return jsonParse(mine._storage.getItem(mine._n + key));
             }
-            else {
-                key = i.split(this._n)[1];
-                if (key) {
-                    ret[key] = jsonParse(mine._storage[i]);
+
+            for (i in mine._storage) {
+                if (!this._n) {
+                    ret[i] = jsonParse(mine._storage[i]);
+                }
+                else {
+                    key = i.split(this._n)[1];
+                    if (key) {
+                        ret[key] = jsonParse(mine._storage[i]);
+                    }
                 }
             }
-        }
 
-        return ret;
-    },
-    'remove': function(key) {
-        key = this._n + key;
+            return ret;
+        },
+        'remove': function(key) {
+            key = this._n + key;
 
-        if (!this._storage.getItem(key)) {
-            return FALSE;
-        }
+            if (!this._storage.getItem(key)) {
+                return FALSE;
+            }
 
-        this._storage.removeItem(key);
-
-        return TRUE;
-    },
-    'reset': function() {
-        if (!this._n) {
-            this._storage.clear();
+            this._storage.removeItem(key);
 
             return TRUE;
-        }
+        },
+        'reset': function() {
+            if (!this._n) {
+                this._storage.clear();
 
-        var i;
+                return TRUE;
+            }
 
-        for (i in this._storage) {
-            this.remove(i);
+            var i;
+
+            for (i in this._storage) {
+                this.remove(i);
+            }
         }
-    }
-});
+    });
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
 Global['LocalStorage'] = function(config) {
     config = config || {};
 
     config['type'] = 'Local';
-    return new Global['WebStorage'](config);
+    return new WebStorage(config);
 };
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
 Global['SessionStorage'] = function(config) {
     config = config || {};
 
     config['type'] = 'Session';
-    return new Global['WebStorage'](config);
+    return new WebStorage(config);
 };
 /* Test: "../../spec/_src/src/Deferred/test.js" */
 Global['Deferred'] = klassExtendBase(function() {
