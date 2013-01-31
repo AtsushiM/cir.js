@@ -189,16 +189,15 @@ function isTouchDevice() {
     return 'ontouchstart' in win;
 }
 function nullFunction() {
-    return NULL;
 }
 function eventPrevent(e) {
     e.preventDefault();
     return FALSE;
 }
 function checkUserAgent(pattern, ua) {
-    ua = ua ? ua : navigator.userAgent;
+    ua = ua || navigator.userAgent;
 
-    return ua.match(pattern) ? TRUE : FALSE;
+    return !!ua.match(pattern);
 }
 
 Global['utility'] = {
@@ -272,8 +271,6 @@ function addClass(element, cls) {
     }
 
     element.className = orgcls + between + cls;
-
-    return TRUE;
 }
 
 function removeClass(element, cls) {
@@ -470,58 +467,55 @@ Global['extend'] = function(child, _super) {
     };
 };
 /* Test: "../../spec/_src/src/Base/test.js" */
-Global['Base'] = Global['klass']({
-    'init': function(config) {
-        config = config || {};
-        this._dispose = {};
-        this._single = config['single'];
-    },
-    'properties': {
-        _disid: 0,
-        singleAct: function(name) {
-            if (this._single) {
-                if (Global[name].instance) {
-                    return Global[name].instance;
-                }
-
-                Global[name].instance = this;
+Global['Base'] = klassExtend(UNDEFINED, function(config) {
+    config = config || {};
+    this._dispose = {};
+    this._single = config['single'];
+}, {
+    _disid: 0,
+    singleAct: function(name) {
+        if (this._single) {
+            if (Global[name].instance) {
+                return Global[name].instance;
             }
 
-            return this;
-        },
-        'dispose': function() {
-            var i;
-
-            if (this._dispose) {
-                for (i in this._dispose) {
-                    off.apply(NULL, this._dispose[i]);
-                }
-            }
-
-            for (i in this) {
-                delete this[i];
-            }
-
-            this.__proto__ = NULL;
-            return NULL;
-        },
-        'contract': function(element, e, handler) {
-            on(element, e, handler);
-            this._disid++;
-            this._dispose[this._disid] = [element, e, handler];
-
-            return this._disid;
-        },
-        'uncontract': function(id) {
-            var arg = this._dispose[id];
-
-            delete this._dispose[id];
-
-            off(arg[0], arg[1], arg[2]);
-        },
-        _orgdis: function() {
-            this.__proto__.__proto__['dispose'].call(this);
+            Global[name].instance = this;
         }
+
+        return this;
+    },
+    'dispose': function() {
+        var i;
+
+        if (this._dispose) {
+            for (i in this._dispose) {
+                off.apply(NULL, this._dispose[i]);
+            }
+        }
+
+        for (i in this) {
+            delete this[i];
+        }
+
+        this.__proto__ = NULL;
+        return NULL;
+    },
+    'contract': function(element, e, handler) {
+        on(element, e, handler);
+        this._disid++;
+        this._dispose[this._disid] = [element, e, handler];
+
+        return this._disid;
+    },
+    'uncontract': function(id) {
+        var arg = this._dispose[id];
+
+        delete this._dispose[id];
+
+        off(arg[0], arg[1], arg[2]);
+    },
+    _orgdis: function() {
+        this.__proto__.__proto__['dispose'].call(this);
     }
 });
 /* Test: "../../spec/_src/src/Event/test.js" */
@@ -1359,7 +1353,7 @@ Global['HashQuery'] = klassExtendBase(UNDEFINED,
     },
     'setHash': function(vars) {
         location.hash = this['makeHash'](vars);
-        return TRUE;
+        /* return TRUE; */
     },
     'parseHash': function(hashvars) {
         var hash,
@@ -1405,7 +1399,8 @@ Global['HashQuery'] = klassExtendBase(UNDEFINED,
 /* Test: "../../spec/_src/src/Embed/test.js" */
 /* Global.Embed = function(config) { */
 function Embed(config) {
-    var embed = create(config['type'].toLowerCase());
+    /* var embed = create(config['type'].toLowerCase()); */
+    var embed = create(config['type']);
 
     embed['controls'] = config['controls'] ? TRUE : FALSE;
     embed['preload'] = config['preload'] || 'auto';
@@ -1418,14 +1413,13 @@ function Embed(config) {
 }
 /* }; */
 /* Global['Embed']['supportcheck'] = embedSupportCheck; */
-function embedSupportCheck(config) {
-    if (!win['HTML' + config['type'] + 'Element']) {
+function embedSupportCheck(type, suffix) {
+    if (!win['HTML' + type + 'Element']) {
         return FALSE;
     }
 
-    var type = config['type'].toLowerCase(),
+    var type = type.toLowerCase(),
         embed = create(type),
-        suffix = config['suffix'],
         support = [],
         i = 0,
         len = suffix.length;
@@ -1539,21 +1533,16 @@ var Media = klassExtendBase(function(config) {
 /* Global['Media']['supportcheck'] = embedSupportCheck; */
 /* Test: "../../spec/_src/src/Audio/test.js" */
 Global['Audio'] = function(config) {
-    config['type'] = 'Audio';
-
+    config['type'] = 'audio';
     config['suffix'] = Global['Audio']['support'];
-
     return Embed(config);
 };
-Global['Audio']['support'] = embedSupportCheck({
-    'type': 'Audio',
-    'suffix': [
-        ['mp3', 'mpeg'],
-        ['wav', 'wav'],
-        ['ogg', 'ogg'],
-        ['m4a', 'mp4']
-    ]
-});
+Global['Audio']['support'] = embedSupportCheck('Audio', [
+    ['mp3', 'mpeg'],
+    ['wav', 'wav'],
+    ['ogg', 'ogg'],
+    ['m4a', 'mp4']
+]);
 /* Test: "../../spec/_src/src/Sound/test.js" */
 Global['Sound'] = function(config) {
     config['type'] = 'Audio';
@@ -1562,20 +1551,15 @@ Global['Sound'] = function(config) {
 Global['Sound']['support'] = Global['Audio']['support'];
 /* Test: "../../spec/_src/src/Video/test.js" */
 Global['Video'] = function(config) {
-    config['type'] = 'Video';
-
+    config['type'] = 'video';
     config['suffix'] = Global['Video']['support'];
-
     return Embed(config);
 };
-Global['Video']['support'] = embedSupportCheck({
-    'type': 'Video',
-    'suffix': [
-        ['webm', 'webm'],
-        ['mp4', 'mp4'],
-        ['ogv', 'ogg']
-    ]
-});
+Global['Video']['support'] = embedSupportCheck('Video', [
+    ['webm', 'webm'],
+    ['mp4', 'mp4'],
+    ['ogv', 'ogg']
+]);
 /* Test: "../../spec/_src/src/Movie/test.js" */
 Global['Movie'] = function(config) {
     config['type'] = 'Video';
@@ -2145,7 +2129,6 @@ Global['ExternalInterface']['IOS'] = klassExtend(Global['HashQuery'], function(c
                 func(hash['vars']);
                 return TRUE;
             }
-            return FALSE;
         };
         on(win, ev_hashchange, mine.ios[name]);
     },
@@ -2541,7 +2524,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
                 }
             };
 
-        return mine._shaker['attach'](wraphandle);
+        mine._shaker['attach'](wraphandle);
     },
     'detach': function() {
         this._shaker['detach']();

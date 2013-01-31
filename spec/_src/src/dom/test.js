@@ -111,8 +111,7 @@ describe('domは', function() {
             baseCls = $body.className;
 
         expect(el.hasClass($body, 'test')).toBeFalsy();
-        expect(el.addClass($body, 'test')).toBeTruthy();
-        expect(el.addClass($body, 'test')).toBeFalsy();
+        el.addClass($body, 'test');
         expect(el.hasClass($body, 'test')).toBeTruthy();
 
         $body.className = baseCls;

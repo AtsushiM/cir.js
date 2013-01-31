@@ -120,16 +120,15 @@ function isTouchDevice() {
     return 'ontouchstart' in win;
 }
 function nullFunction() {
-    return NULL;
 }
 function eventPrevent(e) {
     e.preventDefault();
     return FALSE;
 }
 function checkUserAgent(pattern, ua) {
-    ua = ua ? ua : navigator.userAgent;
+    ua = ua || navigator.userAgent;
 
-    return ua.match(pattern) ? TRUE : FALSE;
+    return !!ua.match(pattern);
 }
 
 Global['utility'] = {

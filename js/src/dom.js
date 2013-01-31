@@ -47,8 +47,6 @@ function addClass(element, cls) {
     }
 
     element.className = orgcls + between + cls;
-
-    return TRUE;
 }
 
 function removeClass(element, cls) {

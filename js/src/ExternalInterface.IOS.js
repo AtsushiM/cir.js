@@ -22,7 +22,6 @@ Global['ExternalInterface']['IOS'] = klassExtend(Global['HashQuery'], function(c
                 func(hash['vars']);
                 return TRUE;
             }
-            return FALSE;
         };
         on(win, ev_hashchange, mine.ios[name]);
     },

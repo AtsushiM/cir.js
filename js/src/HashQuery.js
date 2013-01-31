@@ -33,7 +33,7 @@ Global['HashQuery'] = klassExtendBase(UNDEFINED,
     },
     'setHash': function(vars) {
         location.hash = this['makeHash'](vars);
-        return TRUE;
+        /* return TRUE; */
     },
     'parseHash': function(hashvars) {
         var hash,

@@ -1,7 +1,8 @@
 /* Test: "../../spec/_src/src/Embed/test.js" */
 /* Global.Embed = function(config) { */
 function Embed(config) {
-    var embed = create(config['type'].toLowerCase());
+    /* var embed = create(config['type'].toLowerCase()); */
+    var embed = create(config['type']);
 
     embed['controls'] = config['controls'] ? TRUE : FALSE;
     embed['preload'] = config['preload'] || 'auto';
@@ -14,14 +15,13 @@ function Embed(config) {
 }
 /* }; */
 /* Global['Embed']['supportcheck'] = embedSupportCheck; */
-function embedSupportCheck(config) {
-    if (!win['HTML' + config['type'] + 'Element']) {
+function embedSupportCheck(type, suffix) {
+    if (!win['HTML' + type + 'Element']) {
         return FALSE;
     }
 
-    var type = config['type'].toLowerCase(),
+    var type = type.toLowerCase(),
         embed = create(type),
-        suffix = config['suffix'],
         support = [],
         i = 0,
         len = suffix.length;

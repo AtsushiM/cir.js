@@ -63,7 +63,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
                 }
             };
 
-        return mine._shaker['attach'](wraphandle);
+        mine._shaker['attach'](wraphandle);
     },
     'detach': function() {
         this._shaker['detach']();
