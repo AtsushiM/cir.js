@@ -12,7 +12,8 @@ describe('ExternalInterface.IOSは', function() {
 
     beforeEach(function() {
         // init
-        external = new c.ExternalInterface.IOS();
+        /* external = new c.ExternalInterface.IOS(); */
+        external = new c.ExternalInterface();
     });
     afterEach(function() {
         // clear

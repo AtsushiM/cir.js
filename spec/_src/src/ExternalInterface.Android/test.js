@@ -16,9 +16,9 @@ describe('ExternalInterface.Androidは', function() {
     beforeEach(function() {
         // init
         c.EXTERNAL_ANDROID = {};
-        external = new c.ExternalInterface.Android({
+        /* external = new c.ExternalInterface.Android({ */
+        external = new c.ExternalInterface({
             android: androidMethod,
-            // option
             externalObj: c.EXTERNAL_ANDROID
         });
     });

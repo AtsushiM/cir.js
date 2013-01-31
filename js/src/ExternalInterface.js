@@ -10,10 +10,10 @@ Global['ExternalInterface'] = function(config) {
     }
 
     if (config['android']) {
-        external = new Mine['Android'](config);
+        external = new ExternalAndroid(config);
     }
     else {
-        external = new Mine['IOS'](config);
+        external = new ExternalIOS(config);
     }
 
     if (config['single']) {

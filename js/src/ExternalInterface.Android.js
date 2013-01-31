@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-Global['ExternalInterface']['Android'] = klassExtend(Global['HashQuery'], function(config) {
+var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
     config = config || {};
 
     this.android = config['android'];

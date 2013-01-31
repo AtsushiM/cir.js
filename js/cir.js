@@ -2072,10 +2072,10 @@ Global['ExternalInterface'] = function(config) {
     }
 
     if (config['android']) {
-        external = new Mine['Android'](config);
+        external = new ExternalAndroid(config);
     }
     else {
-        external = new Mine['IOS'](config);
+        external = new ExternalIOS(config);
     }
 
     if (config['single']) {
@@ -2085,7 +2085,7 @@ Global['ExternalInterface'] = function(config) {
     return external;
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-Global['ExternalInterface']['Android'] = klassExtend(Global['HashQuery'], function(config) {
+var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
     config = config || {};
 
     this.android = config['android'];
@@ -2106,7 +2106,7 @@ Global['ExternalInterface']['Android'] = klassExtend(Global['HashQuery'], functi
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-Global['ExternalInterface']['IOS'] = klassExtend(Global['HashQuery'], function(config) {
+var ExternalIOS = klassExtend(Global['HashQuery'], function(config) {
     this.ios = {};
 }, {
     'dispose': function() {
