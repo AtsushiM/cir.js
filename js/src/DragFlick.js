@@ -17,8 +17,8 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             startY,
             dragflg = FALSE;
 
-        this['contract'](vars['element'], ev['switchdown'], start);
-        this['contract'](win, ev['switchup'], end);
+        this['contract'](vars['element'], ev['SWITCHDOWN'], start);
+        this['contract'](win, ev['SWITCHUP'], end);
 
         function start(e) {
             var changed = mine._t(e);
@@ -103,7 +103,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             });
         }
 
-        eventProxy(element, ev['switchdown'], function(_e) {
+        eventProxy(element, ev['SWITCHDOWN'], function(_e) {
             flg = TRUE;
 
             startX = _e.pageX;
@@ -117,7 +117,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
                 }
             });
         });
-        eventProxy(doc, ev['switchmove'], function(_e) {
+        eventProxy(doc, ev['SWITCHMOVE'], function(_e) {
             if (flg) {
                 move({
                     'e': _e,
@@ -128,7 +128,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
                 });
             }
         });
-        eventProxy(doc, ev['switchup'], function(_e) {
+        eventProxy(doc, ev['SWITCHUP'], function(_e) {
             if (flg) {
                 end({
                     'e': _e,

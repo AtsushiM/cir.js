@@ -526,27 +526,27 @@ ev = klassExtendBase(function(config) {
     // singleton
     return this.singleAct(EventName);
 }, {
-    'switchclick': isTouch ? 'touchstart' : 'click',
-    'switchdown': isTouch ? 'touchstart' : 'mousedown',
-    'switchmove': isTouch ? 'touchmove' : 'mousemove',
-    'switchup': isTouch ? 'touchend' : 'mouseup',
-    'switchover': isTouch ? 'touchstart' : 'mouseover',
-    'switchout': isTouch ? 'touchend' : 'mouseout',
-    'load': 'load',
-    'change': 'change',
-    'click': 'click',
-    'mousedown': 'mousedown',
-    'mousemove': 'mousemove',
-    'mouseup': 'mouseup',
-    'mouseover': 'mouseover',
-    'mouseout': 'mouseout',
-    'touchstart': 'touchstart',
-    'touchmove': 'touchmove',
-    'touchend': 'touchend',
-    'resize': 'resize'
+    'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
+    'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
+    'SWITCHMOVE': isTouch ? 'touchmove' : 'mousemove',
+    'SWITCHUP': isTouch ? 'touchend' : 'mouseup',
+    'SWITCHOVER': isTouch ? 'touchstart' : 'mouseover',
+    'SWITCHOUT': isTouch ? 'touchend' : 'mouseout',
+    'LOAD': 'load',
+    'CHANGE': 'change',
+    'CLICK': 'click',
+    'MOUSEDOWN': 'mousedown',
+    'MOUSEMOVE': 'mousemove',
+    'MOUSEUP': 'mouseup',
+    'MOUSEOVER': 'mouseover',
+    'MOUSEOUT': 'mouseout',
+    'TOUCHSTART': 'touchstart',
+    'TOUCHMOVE': 'touchmove',
+    'TOUCHEND': 'touchend',
+    'RESIZE': 'resize'
 });
 Global[EventName] = ev;
-ev = Global['event'] = new ev();
+ev = Global['e'] = new ev();
 /* Test: "../../spec/_src/src/ease/test.js" */
 Global['ease'] = {
     'linear': function(time, from, dist, duration) {
@@ -1926,8 +1926,8 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             startY,
             dragflg = FALSE;
 
-        this['contract'](vars['element'], ev['switchdown'], start);
-        this['contract'](win, ev['switchup'], end);
+        this['contract'](vars['element'], ev['SWITCHDOWN'], start);
+        this['contract'](win, ev['SWITCHUP'], end);
 
         function start(e) {
             var changed = mine._t(e);
@@ -2012,7 +2012,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             });
         }
 
-        eventProxy(element, ev['switchdown'], function(_e) {
+        eventProxy(element, ev['SWITCHDOWN'], function(_e) {
             flg = TRUE;
 
             startX = _e.pageX;
@@ -2026,7 +2026,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
                 }
             });
         });
-        eventProxy(doc, ev['switchmove'], function(_e) {
+        eventProxy(doc, ev['SWITCHMOVE'], function(_e) {
             if (flg) {
                 move({
                     'e': _e,
@@ -2037,7 +2037,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
                 });
             }
         });
-        eventProxy(doc, ev['switchup'], function(_e) {
+        eventProxy(doc, ev['SWITCHUP'], function(_e) {
             if (flg) {
                 end({
                     'e': _e,
@@ -2262,7 +2262,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
             img = create('img');
             img.src = mine.srcs[i];
 
-            mine.disposeid.push(mine['contract'](img, ev['load'], countup));
+            mine.disposeid.push(mine['contract'](img, ev['LOAD'], countup));
             mine.loadedsrcs.push(img);
         }
 
@@ -2290,7 +2290,7 @@ Global['WindowLoad'] = klassExtendBase(function(config) {
                 func();
             };
 
-        disposeid = this['contract'](win, ev['load'], loaded);
+        disposeid = this['contract'](win, ev['LOAD'], loaded);
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
@@ -2328,7 +2328,7 @@ Global['Mobile'] = klassExtendBase(function() {
         if (!isNoTop) {
             pageTop();
         }
-        this.killscrollid = this['contract'](doc, ev['touchmove'], eventPrevent);
+        this.killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
     },
     'revivalScroll': function(isNoTop) {
         if (!this.killscrollid) {
@@ -2342,7 +2342,7 @@ Global['Mobile'] = klassExtendBase(function() {
         delete this.killscrollid;
     },
     'hideAddress': function() {
-        this['contract'](win, ev['load'], hideAddressHandler, FALSE);
+        this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
         this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
 
         function doScroll() {
@@ -2394,9 +2394,9 @@ Global['Mobile'] = klassExtendBase(function() {
         };
 
         function add(handler) {
-            disposeid.push(mine['contract'](win, ev['load'], handler));
+            disposeid.push(mine['contract'](win, ev['LOAD'], handler));
             disposeid.push(mine['contract'](win, ev_orientationchange, handler));
-            disposeid.push(mine['contract'](win, ev['resize'], handler));
+            disposeid.push(mine['contract'](win, ev['RESIZE'], handler));
         }
         function remove(handler) {
             var i = disposeid.length;
@@ -2764,7 +2764,7 @@ Global['ScriptLoad'] = klassExtendBase(function() {
         mine.els.push(script);
 
         if (vars['callback']) {
-            disposeid = mine['contract'](script, ev['load'], function() {
+            disposeid = mine['contract'](script, ev['LOAD'], function() {
                 mine['uncontract'](disposeid);
                 vars['callback'].apply(this, arguments);
             });

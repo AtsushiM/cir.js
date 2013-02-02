@@ -33,7 +33,7 @@ Global['Mobile'] = klassExtendBase(function() {
         if (!isNoTop) {
             pageTop();
         }
-        this.killscrollid = this['contract'](doc, ev['touchmove'], eventPrevent);
+        this.killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
     },
     'revivalScroll': function(isNoTop) {
         if (!this.killscrollid) {
@@ -47,7 +47,7 @@ Global['Mobile'] = klassExtendBase(function() {
         delete this.killscrollid;
     },
     'hideAddress': function() {
-        this['contract'](win, ev['load'], hideAddressHandler, FALSE);
+        this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
         this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
 
         function doScroll() {
@@ -99,9 +99,9 @@ Global['Mobile'] = klassExtendBase(function() {
         };
 
         function add(handler) {
-            disposeid.push(mine['contract'](win, ev['load'], handler));
+            disposeid.push(mine['contract'](win, ev['LOAD'], handler));
             disposeid.push(mine['contract'](win, ev_orientationchange, handler));
-            disposeid.push(mine['contract'](win, ev['resize'], handler));
+            disposeid.push(mine['contract'](win, ev['RESIZE'], handler));
         }
         function remove(handler) {
             var i = disposeid.length;

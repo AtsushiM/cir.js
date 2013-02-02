@@ -14,6 +14,6 @@ Global['WindowLoad'] = klassExtendBase(function(config) {
                 func();
             };
 
-        disposeid = this['contract'](win, ev['load'], loaded);
+        disposeid = this['contract'](win, ev['LOAD'], loaded);
     }
 });

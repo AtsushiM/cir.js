@@ -42,7 +42,7 @@ Global['ScriptLoad'] = klassExtendBase(function() {
         mine.els.push(script);
 
         if (vars['callback']) {
-            disposeid = mine['contract'](script, ev['load'], function() {
+            disposeid = mine['contract'](script, ev['LOAD'], function() {
                 mine['uncontract'](disposeid);
                 vars['callback'].apply(this, arguments);
             });

@@ -48,7 +48,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
             img = create('img');
             img.src = mine.srcs[i];
 
-            mine.disposeid.push(mine['contract'](img, ev['load'], countup));
+            mine.disposeid.push(mine['contract'](img, ev['LOAD'], countup));
             mine.loadedsrcs.push(img);
         }
 

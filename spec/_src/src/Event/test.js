@@ -26,8 +26,8 @@ describe('Eventは', function() {
         expect(0).toEqual(0);
     });
 
-    it('初期化時にC.eventにインスタンスを生成する', function() {
-        expect(c.event).toBeDefined();
+    it('初期化時にC.eにインスタンスを生成する', function() {
+        expect(c.e).toBeDefined();
     });
 });
 /*

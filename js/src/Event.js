@@ -6,24 +6,24 @@ ev = klassExtendBase(function(config) {
     // singleton
     return this.singleAct(EventName);
 }, {
-    'switchclick': isTouch ? 'touchstart' : 'click',
-    'switchdown': isTouch ? 'touchstart' : 'mousedown',
-    'switchmove': isTouch ? 'touchmove' : 'mousemove',
-    'switchup': isTouch ? 'touchend' : 'mouseup',
-    'switchover': isTouch ? 'touchstart' : 'mouseover',
-    'switchout': isTouch ? 'touchend' : 'mouseout',
-    'load': 'load',
-    'change': 'change',
-    'click': 'click',
-    'mousedown': 'mousedown',
-    'mousemove': 'mousemove',
-    'mouseup': 'mouseup',
-    'mouseover': 'mouseover',
-    'mouseout': 'mouseout',
-    'touchstart': 'touchstart',
-    'touchmove': 'touchmove',
-    'touchend': 'touchend',
-    'resize': 'resize'
+    'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
+    'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
+    'SWITCHMOVE': isTouch ? 'touchmove' : 'mousemove',
+    'SWITCHUP': isTouch ? 'touchend' : 'mouseup',
+    'SWITCHOVER': isTouch ? 'touchstart' : 'mouseover',
+    'SWITCHOUT': isTouch ? 'touchend' : 'mouseout',
+    'LOAD': 'load',
+    'CHANGE': 'change',
+    'CLICK': 'click',
+    'MOUSEDOWN': 'mousedown',
+    'MOUSEMOVE': 'mousemove',
+    'MOUSEUP': 'mouseup',
+    'MOUSEOVER': 'mouseover',
+    'MOUSEOUT': 'mouseout',
+    'TOUCHSTART': 'touchstart',
+    'TOUCHMOVE': 'touchmove',
+    'TOUCHEND': 'touchend',
+    'RESIZE': 'resize'
 });
 Global[EventName] = ev;
-ev = Global['event'] = new ev();
+ev = Global['e'] = new ev();
