@@ -130,6 +130,11 @@ function checkUserAgent(pattern, ua) {
 
     return !!ua.match(pattern);
 }
+function bind(target, func) {
+    return function() {
+        func.apply(target, arguments);
+    };
+}
 
 Global['utility'] = {
     'win': win,
@@ -151,5 +156,6 @@ Global['utility'] = {
     'isTouchDevice': isTouchDevice,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,
-    'checkUserAgent': checkUserAgent
+    'checkUserAgent': checkUserAgent,
+    'bind': bind
 };

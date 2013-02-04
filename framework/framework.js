@@ -1,5 +1,5 @@
 (function() {
-    var Surveillance = C.klass({
+    var Model = C.klass({
         extend: C.Base,
         init: function(config) {
             var i
@@ -23,18 +23,14 @@
                 this._orgdis();
             },
             set: function(key, val) {
-                var before = this._store.get(key),
-                    ret = this._store.set(key, val);
+                this._prev = this._store.get();
+                this._store.set(key, val);
 
-                if (val !== before) {
-                    this._observer.fire(key, {
-                        key: key,
-                        before: before,
-                        after: val
-                    });
-                }
-
-                return ret;
+                this._observer.fire(ev['CHANGE'], this._store.get());
+                this._observer.fire(ev['CHANGE'] + ':' + key, val);
+            },
+            getPrev: function() {
+                return this._prev;
             },
             get: function(key) {
                 return this._store.get(key);
@@ -56,26 +52,4 @@
             }
         }
     });
-
-    var surve = new Surveillance({
-            store: {
-                test1: 0,
-                test2: 1
-            },
-            on: {
-                test1: function(e) {
-                    console.log(e);
-                },
-                test2: function(e) {
-                    console.log(e);
-                }
-            }
-        });
-
-    // surve.on('ontest', function(e) {
-    //     console.log(e);
-    // });
-    surve.set('test1', 1);
-    surve.set('test1', 1);
-    surve.set('test2', 2);
 }());

@@ -13,6 +13,7 @@ var win = window,
     ev_orientationchange = 'orientationchange',
     ev_canplay = 'canplay',
     ev_ended = 'ended',
+    csseaseOutExpo = 'cubic-bezier(0.190, 1.000, 0.220, 1.000)',
     easebackrate = 1.70158,
     /* Global = win['C'] = {}; */
     Global = C = {};
@@ -199,6 +200,11 @@ function checkUserAgent(pattern, ua) {
 
     return !!ua.match(pattern);
 }
+function bind(target, func) {
+    return function() {
+        func.apply(target, arguments);
+    };
+}
 
 Global['utility'] = {
     'win': win,
@@ -220,7 +226,8 @@ Global['utility'] = {
     'isTouchDevice': isTouchDevice,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,
-    'checkUserAgent': checkUserAgent
+    'checkUserAgent': checkUserAgent,
+    'bind': bind
 };
 /* Test: "../../spec/_src/src/dom/test.js" */
 function $(selector) {
@@ -715,7 +722,8 @@ Mine = Global['Animation'] =
     this._id = 'ciranim' + Mine['id'];
 
     var duration = option['duration'] || Mine['duration'],
-        ease = option['ease'] || 'ease',
+        // easeOutExpo
+        ease = option['ease'] || csseaseOutExpo,
         i,
         prop = {};
 
@@ -848,7 +856,8 @@ Mine = Global['Transition'] =
         animeProp = override({}, property),
         i,
         duration = option['duration'] || Mine['duration'],
-        ease = option['ease'] || 'ease';
+        // easeOutExpo
+        ease = option['ease'] || csseaseOutExpo;
 
     if (!isArray(ease)) {
         ease = [ease];

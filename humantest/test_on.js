@@ -1,6 +1,6 @@
 (function() {
-    C.$('#box').on(C.event.click, function() {
-        console.log(C.event.click);
+    C.$('#box').on(C.e.CLICK, function() {
+        console.log(C.e.CLICK);
     });
-    C.$('#box').off(C.event.click);
+    C.$('#box').off(C.e.CLICK);
 }());

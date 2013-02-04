@@ -21,3 +21,13 @@
 
     console.log(Date.now() - start);
 }());
+
+var test = {
+    prop: '1'
+};
+var testfunc = function() {
+    console.log(this.prop);
+};
+testfunc();
+var ret = C.utility.bind(test, testfunc);
+ret();

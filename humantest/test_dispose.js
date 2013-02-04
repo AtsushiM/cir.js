@@ -5,7 +5,7 @@ var $ = C.$,
     i = 0,
     len = 10000;
 
-$('#start').on(C.event.click, function() {
+$('#start').on(C.e.CLICK, function() {
     if (!flg) {
         for (i = 0; i < len; i++) {
             binds[i] = new C.Bind({
@@ -28,7 +28,7 @@ $('#start').on(C.event.click, function() {
     }
 });
 
-$('#dispose').on(C.event.click, function() {
+$('#dispose').on(C.e.CLICK, function() {
     if (flg) {
         for (i = 0; i < len; i++) {
             binds[i].dispose();

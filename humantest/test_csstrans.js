@@ -11,7 +11,7 @@
         backgroundColor: '#0F0'
     });
 
-    $cssanime.on(C.event.click, function() {
+    $cssanime.on(C.e.CLICK, function() {
         var mine = this,
             anime = new C.Transition(mine, {
                 '-webkit-transform': 'rotate(180deg)',

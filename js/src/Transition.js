@@ -26,7 +26,8 @@ Mine = Global['Transition'] =
         animeProp = override({}, property),
         i,
         duration = option['duration'] || Mine['duration'],
-        ease = option['ease'] || 'ease';
+        // easeOutExpo
+        ease = option['ease'] || csseaseOutExpo;
 
     if (!isArray(ease)) {
         ease = [ease];

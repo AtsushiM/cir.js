@@ -26,7 +26,8 @@ Mine = Global['Animation'] =
     this._id = 'ciranim' + Mine['id'];
 
     var duration = option['duration'] || Mine['duration'],
-        ease = option['ease'] || 'ease',
+        // easeOutExpo
+        ease = option['ease'] || csseaseOutExpo,
         i,
         prop = {};
 
