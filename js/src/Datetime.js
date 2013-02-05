@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/Datetime/test.js" */
 Global['Datetime'] = function(str) {
-    if (isNumber(str)) {
+    if (!str || isNumber(str)) {
         return new Date(str);
     }
 
