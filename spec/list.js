@@ -6,6 +6,7 @@ src/Audio/\n\
 src/Base/\n\
 src/Brush/\n\
 src/DataStore/\n\
+src/Datetime/\n\
 src/Deferred/\n\
 src/DeviceAction/\n\
 src/DeviceMotion/\n\
@@ -61,6 +62,7 @@ src/utility/\n\
 ../../js/src/Base.js\n\
 ../../js/src/Brush.js\n\
 ../../js/src/DataStore.js\n\
+../../js/src/Datetime.js\n\
 ../../js/src/Deferred.js\n\
 ../../js/src/DeviceAction.js\n\
 ../../js/src/DeviceMotion.js\n\
@@ -116,6 +118,7 @@ src/utility/\n\
 ../_src/src/Base/test.js\n\
 ../_src/src/Brush/test.js\n\
 ../_src/src/DataStore/test.js\n\
+../_src/src/Datetime/test.js\n\
 ../_src/src/Deferred/test.js\n\
 ../_src/src/DeviceAction/test.js\n\
 ../_src/src/DeviceMotion/test.js\n\
