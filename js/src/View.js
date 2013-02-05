@@ -1,36 +1,62 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/View/test.js" */
 Global['View'] = klassExtendBase(function(config) {
-    this.el = config['el'] || create('div');
+    var i;
 
+    for (i in config) {
+        if (isFunction(config[i])) {
+            config[i] = bind(this, config[i]);
+        }
+    }
+
+    override(this, config);
+
+    this['el'] = Global['$'](config['el'] || create('div'));
+
+    this['attach']();
+    if (config['init']) {
+        this['init']();
+    }
 }, {
-});
-
-/*
-var view = C.klass({
-    extend: C.View,
-    init: function() {
-        // this.opt1 = config.opt1;
-        this.model = config.model;
-        this.model.on('change', this.render);
-        this.model.on('destroy', this.remove);
+    'dispose': function() {
+        this['detach']();
+        this._orgdis();
     },
-    properties: {
-        el: C.$('#test')[0],
-        events: {
-            // 'click': 'update'
-            'click': {
-                '.submit': 'update'
+    'attach': function() {
+        var i,
+            j,
+            $el,
+            events = this['events'];
+
+        for (i in events) {
+            if (i === 'mine') {
+                $el = this['el'];
             }
-        },
-        update: function() {
-            this.model.set('test', 123); // fire change & change:test
-        },
-        render: function(vars) {
-            $(this.el).html(JSON.stringify(vars));
-        },
-        remove: function() {
-            $(this.el).remove();
+            else {
+                $el = this['el'].find(i);
+            }
+
+            for (j in events[i]) {
+                $el['on'](j, this[events[i][j]]);
+            }
+        }
+    },
+    'detach': function() {
+        var i,
+            j,
+            $el,
+            events = this['events'];
+
+        for (i in events) {
+            if (i === 'mine') {
+                $el = this['el'];
+            }
+            else {
+                $el = this['el'].find(i);
+            }
+
+            for (j in events[i]) {
+                $el['off'](j, this[events[i][j]]);
+            }
         }
     }
 });
-*/

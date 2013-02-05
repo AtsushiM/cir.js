@@ -1,55 +1,39 @@
-(function() {
-    var Model = C.klass({
-        extend: C.Base,
-        init: function(config) {
-            var i
-                store = config.store,
-                on = config.on;
-
-            this._store = new C.DataStore();
-            this._observer = new C.Observer();
-
-            for (i in store) {
-                this._store.set(i, store[i]);
+(function view() {
+    var model = new C.Model({
+            store: {
+                test: 1,
+                test2: 'test'
+            },
+            validate: {
+                test: function(vars) {
+                    if (C.utility.isNumber(vars)) {
+                        return true;
+                    }
+                    return false;
+                }
             }
-            for (i in on) {
-                this._observer.on(i, on[i]);
+        }),
+        view = new C.View({
+            el: '#test',
+            model: model,
+            events: {
+                'mine': {
+                    'click': 'click'
+                }
+            },
+            init: function() {
+                this.render();
+                this.model.on('change:test', this.render);
+            },
+            render: function() {
+                this.el.find('.test').html('count: ' + this.model.get('test'));
+            },
+            click: function(e) {
+                this.model.set('test', this.model.get('test') + 1);
+            },
+            clickLower: function(e) {
+                console.log('click lower.');
+                /* C.utility.eventStop(e); */
             }
-        },
-        properties: {
-            dispose: function() {
-                this._store.dispose();
-                this._observer.dispose();
-                this._orgdis();
-            },
-            set: function(key, val) {
-                this._prev = this._store.get();
-                this._store.set(key, val);
-
-                this._observer.fire(ev['CHANGE'], this._store.get());
-                this._observer.fire(ev['CHANGE'] + ':' + key, val);
-            },
-            getPrev: function() {
-                return this._prev;
-            },
-            get: function(key) {
-                return this._store.get(key);
-            },
-            // remove: function(key) {
-            //     return store.remove(key);
-            // },
-            // reset: function() {
-            //     return store.reset();
-            // },
-            on: function(key, func) {
-                this._observer.on(key, func);
-            },
-            off: function(key, func) {
-                return this._observer.off(key, func);
-            },
-            fire: function(key, vars) {
-                return this._observer.fire(key, vars);
-            }
-        }
-    });
+        });
 }());

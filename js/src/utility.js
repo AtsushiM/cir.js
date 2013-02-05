@@ -125,6 +125,10 @@ function eventPrevent(e) {
     e.preventDefault();
     return FALSE;
 }
+function eventStop(e) {
+    e.stopPropagation();
+    return FALSE;
+}
 function checkUserAgent(pattern, ua) {
     ua = ua || navigator.userAgent;
 
@@ -156,6 +160,7 @@ Global['utility'] = {
     'isTouchDevice': isTouchDevice,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,
+    'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
     'bind': bind
 };

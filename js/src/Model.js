@@ -1,50 +1,82 @@
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Model/test.js" */
 Global['Model'] = klassExtendBase(function(config) {
     var i,
-        store = config.store,
-        on = config.on;
+        store = config['store'] || {},
+        on = config['on'];
 
-    this._store = new C.DataStore();
-    this._observer = new C.Observer();
+    this._validate = config['validate'];
+    this._store = new C['DataStore']();
+    this._observer = new C['Observer']();
 
     for (i in store) {
-        this._store.set(i, store[i]);
+        this['set'](i, store[i]);
     }
     for (i in on) {
-        this._observer.on(i, on[i]);
+        this['on'](i, on[i]);
     }
 }, {
-    dispose: function() {
-        this._store.dispose();
-        this._observer.dispose();
+    notice: function(eventname, key, val) {
+        this._observer['fire'](eventname, this._store['get']());
+
+        if (key) {
+            this._observer['fire'](eventname + ':' + key, val);
+        }
+    },
+    'dispose': function() {
+        this._store['dispose']();
+        this._observer['dispose']();
         this._orgdis();
     },
-    set: function(key, val) {
-        this._prev = this._store.get();
-        this._store.set(key, val);
+    'set': function(key, val) {
+        if (
+            this._validate[key] &&
+            !this._validate[key](val)
+        ) {
+            throw new Error('cir-framework: Model / Validate Error.');
+        }
 
-        this._observer.fire(ev['CHANGE'], this._store.get());
-        this._observer.fire(ev['CHANGE'] + ':' + key, val);
+        this._prev = this._store['get']();
+        this._store['set'](key, val);
+
+        this.notice(ev['CHANGE'], key, val);
+
+        return true;
     },
-    getPrev: function() {
-        return this._prev;
+    'prev': function(key) {
+        if (!key) {
+            return this._prev;
+        }
+        return this._prev[key];
     },
-    get: function(key) {
-        return this._store.get(key);
+    'get': function(key) {
+        return this._store['get'](key);
     },
-    // remove: function(key) {
-    //     return store.remove(key);
-    // },
-    // reset: function() {
-    //     return store.reset();
-    // },
-    on: function(key, func) {
-        this._observer.on(key, func);
+    'remove': function(key) {
+        if (!key) {
+            return false;
+        }
+
+        var get = this._store['get'](key),
+            ret = this._store['remove'](key);
+
+        this.notice('remove', key, get);
+
+        return ret;
     },
-    off: function(key, func) {
-        return this._observer.off(key, func);
+    'reset': function() {
+        var ret = this._store['reset']();
+
+        this.notice('reset');
+
+        return ret;
     },
-    fire: function(key, vars) {
-        return this._observer.fire(key, vars);
+    'on': function(key, func) {
+        this._observer['on'](key, bind(this, func));
+    },
+    'off': function(key, func) {
+        return this._observer['off'](key, func);
+    },
+    'fire': function(key, vars) {
+        return this._observer['fire'](key, vars);
     }
 });

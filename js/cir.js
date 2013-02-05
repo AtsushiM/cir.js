@@ -195,6 +195,10 @@ function eventPrevent(e) {
     e.preventDefault();
     return FALSE;
 }
+function eventStop(e) {
+    e.stopPropagation();
+    return FALSE;
+}
 function checkUserAgent(pattern, ua) {
     ua = ua || navigator.userAgent;
 
@@ -226,6 +230,7 @@ Global['utility'] = {
     'isTouchDevice': isTouchDevice,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,
+    'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
     'bind': bind
 };
@@ -3126,6 +3131,150 @@ Global['XML'] = klassExtendBase(function(config) {
     },
     '$$': function(selector) {
         return $$child(selector, this.el);
+    }
+});
+/* Test: "../../spec/_src/src/View/test.js" */
+Global['View'] = klassExtendBase(function(config) {
+    var i;
+
+    for (i in config) {
+        if (isFunction(config[i])) {
+            config[i] = bind(this, config[i]);
+        }
+    }
+
+    override(this, config);
+
+    this['el'] = Global['$'](config['el'] || create('div'));
+
+    this['attach']();
+    if (config['init']) {
+        this['init']();
+    }
+}, {
+    'dispose': function() {
+        this['detach']();
+        this._orgdis();
+    },
+    'attach': function() {
+        var i,
+            j,
+            $el,
+            events = this['events'];
+
+        for (i in events) {
+            if (i === 'mine') {
+                $el = this['el'];
+            }
+            else {
+                $el = this['el'].find(i);
+            }
+
+            for (j in events[i]) {
+                $el['on'](j, this[events[i][j]]);
+            }
+        }
+    },
+    'detach': function() {
+        var i,
+            j,
+            $el,
+            events = this['events'];
+
+        for (i in events) {
+            if (i === 'mine') {
+                $el = this['el'];
+            }
+            else {
+                $el = this['el'].find(i);
+            }
+
+            for (j in events[i]) {
+                $el['off'](j, this[events[i][j]]);
+            }
+        }
+    }
+});
+/* Test: "../../spec/_src/src/Model/test.js" */
+Global['Model'] = klassExtendBase(function(config) {
+    var i,
+        store = config['store'] || {},
+        on = config['on'];
+
+    this._validate = config['validate'];
+    this._store = new C['DataStore']();
+    this._observer = new C['Observer']();
+
+    for (i in store) {
+        this['set'](i, store[i]);
+    }
+    for (i in on) {
+        this['on'](i, on[i]);
+    }
+}, {
+    notice: function(eventname, key, val) {
+        this._observer['fire'](eventname, this._store['get']());
+
+        if (key) {
+            this._observer['fire'](eventname + ':' + key, val);
+        }
+    },
+    'dispose': function() {
+        this._store['dispose']();
+        this._observer['dispose']();
+        this._orgdis();
+    },
+    'set': function(key, val) {
+        if (
+            this._validate[key] &&
+            !this._validate[key](val)
+        ) {
+            throw new Error('cir-framework: Model / Validate Error.');
+        }
+
+        this._prev = this._store['get']();
+        this._store['set'](key, val);
+
+        this.notice(ev['CHANGE'], key, val);
+
+        return true;
+    },
+    'prev': function(key) {
+        if (!key) {
+            return this._prev;
+        }
+        return this._prev[key];
+    },
+    'get': function(key) {
+        return this._store['get'](key);
+    },
+    'remove': function(key) {
+        if (!key) {
+            return false;
+        }
+
+        var get = this._store['get'](key),
+            ret = this._store['remove'](key);
+
+        this.notice('remove', key, get);
+
+        return ret;
+    },
+    'reset': function() {
+        var ret = this._store['reset']();
+
+        this.notice('reset');
+
+        return ret;
+    },
+    'on': function(key, func) {
+        this._observer['on'](key, bind(this, func));
+    },
+    'off': function(key, func) {
+        return this._observer['off'](key, func);
+    },
+    'fire': function(key, vars) {
+        return this._observer['fire'](key, vars);
     }
 });
 }());

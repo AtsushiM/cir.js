@@ -27,6 +27,7 @@ src/ImgLoad/\n\
 src/LocalStorage/\n\
 src/Media/\n\
 src/Mobile/\n\
+src/Model/\n\
 src/Movie/\n\
 src/Observer/\n\
 src/PreRender/\n\
@@ -42,6 +43,7 @@ src/Transition/\n\
 src/Tweener/\n\
 src/Twitter/\n\
 src/Video/\n\
+src/View/\n\
 src/WebStorage/\n\
 src/WindowLoad/\n\
 src/XML/\n\
@@ -83,6 +85,7 @@ src/utility/\n\
 ../../js/src/LocalStorage.js\n\
 ../../js/src/Media.js\n\
 ../../js/src/Mobile.js\n\
+../../js/src/Model.js\n\
 ../../js/src/Movie.js\n\
 ../../js/src/Observer.js\n\
 ../../js/src/PreRender.js\n\
@@ -98,6 +101,7 @@ src/utility/\n\
 ../../js/src/Tweener.js\n\
 ../../js/src/Twitter.js\n\
 ../../js/src/Video.js\n\
+../../js/src/View.js\n\
 ../../js/src/WebStorage.js\n\
 ../../js/src/WindowLoad.js\n\
 ../../js/src/XML.js\n\
@@ -139,6 +143,7 @@ src/utility/\n\
 ../_src/src/LocalStorage/test.js\n\
 ../_src/src/Media/test.js\n\
 ../_src/src/Mobile/test.js\n\
+../_src/src/Model/test.js\n\
 ../_src/src/Movie/test.js\n\
 ../_src/src/Observer/test.js\n\
 ../_src/src/PreRender/test.js\n\
@@ -154,6 +159,7 @@ src/utility/\n\
 ../_src/src/Tweener/test.js\n\
 ../_src/src/Twitter/test.js\n\
 ../_src/src/Video/test.js\n\
+../_src/src/View/test.js\n\
 ../_src/src/WebStorage/test.js\n\
 ../_src/src/WindowLoad/test.js\n\
 ../_src/src/XML/test.js\n\
