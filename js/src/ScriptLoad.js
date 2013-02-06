@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global['ScriptLoad'] = klassExtendBase(function() {
-    this['_super']();
+    /* this['_super'](); */
     this.els = [];
 }, {
     'requests': function(varary, callback) {

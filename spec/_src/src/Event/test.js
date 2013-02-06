@@ -11,17 +11,6 @@ describe('Eventは', function() {
         // clear
     });
 
-    it('singleオプションでsingletonになる', function() {
-        var e1 = new c.Event({
-                single: true
-            }),
-            e2 = new c.Event({
-                single: true
-            });
-
-        expect(e1).toBe(e2);
-    });
-
     it('PCとスマートフォンでイベントを切り替える', function() {
         expect(0).toEqual(0);
     });

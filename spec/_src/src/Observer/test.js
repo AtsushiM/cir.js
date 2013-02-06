@@ -16,17 +16,6 @@ describe('Observerは', function() {
         expect(observer).toEqual({});
     });
 
-    it('singleオプションでsingletonになる', function() {
-        var observer1 = new c.Observer({
-                single: true
-            }),
-            observer2 = new c.Observer({
-                single: true
-            });
-
-        expect(observer1).toBe(observer2);
-    });
-
     it('on()でイベントを登録する', function() {
         var count = 0,
             dammy = function() {

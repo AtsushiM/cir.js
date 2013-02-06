@@ -2,20 +2,8 @@
 Global['Base'] = klassExtend(UNDEFINED, function(config) {
     config = config || {};
     this._dispose = {};
-    this._single = config['single'];
 }, {
     _disid: 0,
-    singleAct: function(name) {
-        if (this._single) {
-            if (Global[name].instance) {
-                return Global[name].instance;
-            }
-
-            Global[name].instance = this;
-        }
-
-        return this;
-    },
     'dispose': function() {
         var i;
 

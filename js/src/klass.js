@@ -3,25 +3,48 @@ Global['klass'] = function(config) {
     'use strict';
 
     var init = config['init'] || function() {},
-        properties = config['properties'],
+        wrap = function() {
+            var proto = this.__proto__,
+                inits = [],
+                i = TRUE;
+
+            while (i) {
+                if (proto.__proto__ && proto.__proto__.__init__) {
+                    proto = proto.__proto__;
+
+                    inits.push(proto.__init__);
+                }
+                else {
+                    i = FALSE;
+                }
+            }
+
+            inits.unshift(init);
+
+            for (i = inits.length; i--;) {
+                inits[i].apply(this, arguments);
+            }
+        },
+        prop = config['prop'],
         extend = config['extend'];
 
     if (extend) {
-        Global['extend'](init, extend);
+        Global['extend'](wrap, extend);
     }
+    wrap.prototype.__init__ = init;
 
-    override(init.prototype, properties);
+    override(wrap.prototype, prop);
 
-    return init;
+    return wrap;
 };
 
-function klassExtend(kls, init, properties) {
+function klassExtend(kls, init, prop) {
     return Global['klass']({
         'extend': kls,
         'init': init,
-        'properties': properties
+        'prop': prop
     });
 }
-function klassExtendBase(init, properties) {
-    return klassExtend(Global['Base'], init, properties);
+function klassExtendBase(init, prop) {
+    return klassExtend(Global['Base'], init, prop);
 }

@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 Global['Mobile'] = klassExtendBase(function() {
-    this['_super']();
+    /* this['_super'](); */
 }, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;

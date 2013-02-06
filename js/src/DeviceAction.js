@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
 Global.DeviceAction = klassExtendBase(function(config) {
-    this['_super']();
+    /* this['_super'](); */
 
     this._e = config['e'];
 

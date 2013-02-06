@@ -8,7 +8,6 @@ describe('FPSは', function() {
     beforeEach(function() {
         // init
         fps = new c.FPS({
-            single: true,
             enterframe: function() {
             }
         });
@@ -25,22 +24,6 @@ describe('FPSは', function() {
         fps.dispose();
         expect(fps).toEqual({});
         waits(10);
-    });
-
-    it('singleオプションでsingletonになる', function() {
-        var dammy = {
-                enterframe: function() {}
-            };
-
-        fps = new c.FPS({
-            single: true,
-            enterframe: dammy.enterframe
-        });
-
-        expect(fps).toBe(new c.FPS({
-            single: true,
-            enterframe: dammy.enterframe
-        }));
     });
 
     it('getCriterion()で目標FPSを取得する', function() {

@@ -16,21 +16,6 @@ describe('DataStoreは', function() {
         store = new c.DataStore();
     });
 
-    it('singleオプションでsingletonになる', function() {
-        var store1 = new c.DataStore({
-                single: true
-            }),
-            store2 = new c.DataStore({
-                single: true
-            }),
-            store3 = new c.DataStore({
-                single: false
-            });
-
-        expect(store1).toBe(store2);
-        expect(store1).not.toBe(store3);
-    });
-
     it('set(key, val)でデータを保存する', function() {
         store.set('test', 'test');
 

@@ -17,8 +17,7 @@ describe('Routeは', function() {
                     // write code.
                 }
             },
-            manual: true,
-            single: false
+            manual: true
         });
     });
     afterEach(function() {
@@ -60,19 +59,6 @@ describe('Routeは', function() {
         });
 
         expect(count).toEqual(3);
-    });
-
-    it('singleオプションでシングルトンになる', function() {
-        var route1 = new c.Route({
-                single: true,
-                manual: true
-            }),
-            route2 = new c.Route({
-                single: true,
-                manual: true
-            });
-
-        expect(route1).toEqual(route2);
     });
 
     it('noregexオプションで正規表現を使用せずルーティングする', function() {

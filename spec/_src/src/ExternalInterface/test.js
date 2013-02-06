@@ -22,21 +22,6 @@ describe('ExternalInterfaceは', function() {
         // clear
     });
 
-    it('singleオプションでsingletonになる', function() {
-        var e1 = new c.ExternalInterface({
-                single: true
-            }),
-            e2 = new c.ExternalInterface({
-                single: true
-            }),
-            e3 = new c.ExternalInterface({
-                single: false
-            });
-
-        expect(e1).toBe(e2);
-        expect(e1).not.toBe(e3);
-    });
-
     it('iOSとAndroid端末で、メソッドの動作を変更する', function() {
         // それぞれ同じメソッドを持つことを確認する
         expect(extAndroid.call).toBeDefined();

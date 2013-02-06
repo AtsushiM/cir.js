@@ -1,11 +1,6 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
 var EventName = 'Event';
-ev = klassExtendBase(function(config) {
-    this['_super'](config);
-
-    // singleton
-    return this.singleAct(EventName);
-}, {
+ev = klassExtendBase(UNDEFINED, {
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
     'SWITCHMOVE': isTouch ? 'touchmove' : 'mousemove',

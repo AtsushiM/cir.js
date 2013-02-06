@@ -1,15 +1,11 @@
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
 var WebStorageName = 'WebStorage',
     WebStorage = klassExtendBase(function(config) {
-        this['_super'](config);
-
         var key = 'Storage',
             klassname = config['type'] + key;
 
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
         this._storage = win[config['type'].toLowerCase() + key];
-
-        return this.singleAct(WebStorageName);
     }, {
         'set': function(key, val) {
             this._storage.setItem(this._n + key, jsonStringify(val));

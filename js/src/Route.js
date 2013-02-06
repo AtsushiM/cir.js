@@ -1,8 +1,6 @@
 /* Test: "../../spec/_src/src/Route/test.js" */
 var RouteName = 'Route';
 Global[RouteName] = klassExtendBase(function(config) {
-    this['_super'](config);
-
     this._target = config['target'] || EMPTY;
     this._noregex = config['noregex'];
     this._action = config['action'];
@@ -10,8 +8,6 @@ Global[RouteName] = klassExtendBase(function(config) {
     if (!config['manual']) {
         this['start']();
     }
-
-    return this.singleAct(RouteName);
 }, {
     'start': function() {
         this['fire'](this._target);

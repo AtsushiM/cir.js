@@ -1,8 +1,6 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
 var FPSName = 'FPS';
 Global[FPSName] = klassExtendBase(function(config) {
-    this['_super'](config);
-
     this.criterion = config['criterion'] || 20,
     this.surver = this.criterion,
     this.enterframe = config['enterframe'],
@@ -14,8 +12,6 @@ Global[FPSName] = klassExtendBase(function(config) {
     if (!config['manual']) {
         this['start']();
     }
-
-    return this.singleAct(FPSName);
 }, {
     'disposeInternal': function() {
         this['stop']();

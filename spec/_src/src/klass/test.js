@@ -3,14 +3,14 @@ describe('klassは', function() {
     var c = window.C ? C : Global,
         _super = c.klass({
             init: function() {},
-            properties: {
+            prop: {
                 test1: function() {},
             }
         }),
         klass = c.klass({
             extend: _super,
             init: function() {},
-            properties: {
+            prop: {
                 test2: function() {},
                 test3: function() {}
             }

@@ -3,7 +3,6 @@ Global['extend'] = function(child, _super) {
     'use strict';
 
     function ctor() {
-        this['init'] = child;
     }
 
     ctor.prototype = _super.prototype;

@@ -19,7 +19,7 @@ var Shake,
 /* } */
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
-    this['_super']();
+    /* this['_super'](); */
     this._shaker = new Shake();
     this._limit = config['limit'];
     this._waittime = config['waittime'];

@@ -2,23 +2,9 @@
 Global['ExternalInterface'] = function(config) {
     config = config || {};
 
-    var Mine = Global['ExternalInterface'],
-        external;
-
-    if (config['single'] && Mine.instance) {
-        return Mine.instance;
-    }
-
     if (config['android']) {
-        external = new ExternalAndroid(config);
-    }
-    else {
-        external = new ExternalIOS(config);
+        return new ExternalAndroid(config);
     }
 
-    if (config['single']) {
-        Mine.instance = external;
-    }
-
-    return external;
+    return new ExternalIOS(config);
 };

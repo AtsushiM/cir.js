@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global['ImgLoad'] = klassExtendBase(function(config) {
-    this['_super']();
+    /* this['_super'](); */
 
     this.srcs = config['srcs'],
     this.srccount = this.srcs.length,

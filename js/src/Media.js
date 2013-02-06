@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Media/test.js" */
 /* Global.Media = klassExtendBase(function(config) { */
 var Media = klassExtendBase(function(config) {
-    this['_super']();
+    /* this['_super'](); */
 
     var mine = this,
         autoplay = config['autoplay'],

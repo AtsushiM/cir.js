@@ -1,11 +1,7 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
 var ObserverName = 'Observer';
 Global[ObserverName] = klassExtendBase(function(config) {
-    this['_super'](config);
-
     this.observed = {};
-
-    return this.singleAct(ObserverName);
 }, {
     'on': function(key, func) {
         var observed = this.observed;

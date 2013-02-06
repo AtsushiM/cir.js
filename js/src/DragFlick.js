@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global['DragFlick'] = klassExtendBase(function(config) {
-    this['_super']();
+    /* this['_super'](); */
 
     if (config) {
         this['attach'](config);
