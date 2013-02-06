@@ -1,15 +1,15 @@
 /* Test: "../../spec/_src/src/Model/test.js" */
 Global['Model'] = klassExtendBase(function(config) {
     var i,
-        store = config['store'] || {},
+        defaults = config['defaults'] || {},
         on = config['on'];
 
     this._validate = config['validate'];
     this._store = new C['DataStore']();
     this._observer = new C['Observer']();
 
-    for (i in store) {
-        this['set'](i, store[i]);
+    for (i in defaults) {
+        this['set'](i, defaults[i]);
     }
     for (i in on) {
         this['on'](i, on[i]);

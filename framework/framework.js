@@ -1,6 +1,6 @@
 (function view() {
     var model = new C.Model({
-            store: {
+            defaults: {
                 test: 1,
                 test2: 'test'
             },
