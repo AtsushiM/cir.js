@@ -113,6 +113,15 @@ function typeCast(str) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
+function template(templatetxt, replaceobj) {
+    var i;
+
+    for (i in replaceobj) {
+        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', replaceobj[i]);
+    }
+
+    return templatetxt;
+}
 function windowOpen(url, windowname, option) {
     var i,
         option_ary = [];
@@ -204,7 +213,7 @@ function checkUserAgent(pattern, ua) {
 }
 function bind(target, func) {
     return function() {
-        func.apply(target, arguments);
+        return func.apply(target, arguments);
     };
 }
 
@@ -214,6 +223,7 @@ Global['util'] = {
     'pageTop': pageTop,
     'override': override,
     'replaceAll': replaceAll,
+    'template': template,
     'windowOpen': windowOpen,
     'typeCast': typeCast,
     'makeQueryString': makeQueryString,

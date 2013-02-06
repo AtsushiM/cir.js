@@ -49,6 +49,16 @@ describe('utilは', function() {
         expect(text).toEqual('ZBCDEZFGHIZ');
     });
 
+    it('template(templatetxt, replaceobj)はtemplatetxt中の"<%= key %>"をreplaceobjの値で置換する', function() {
+        var text = 'before <%= template %> after';
+
+        text = util.template(text, {
+            'template': 'Cool is Right.'
+        });
+
+        expect(text).toEqual('before Cool is Right. after');
+    });
+
     it('windowOpen(url, windowname)で新規ウィンドウを開く', function() {
         var test = util.windowOpen('.', 'newwindow');
 
@@ -134,9 +144,52 @@ describe('utilは', function() {
         expect(util.isArray([1,2,3])).toBeTruthy();
         expect(util.isArray({})).toBeFalsy();
     });
+    it('isTouchDevice()でブラウザがタッチイベントに対応しているかどうかチェックする', function() {
+        expect(util.isTouchDevice()).toBeDefined();
+    });
 
     it('nullFunction()はnullを返す', function() {
         expect(util.nullFunction()).toEqual(null);
+    });
+
+    it('eventPrevent(e)はe.preventDefault()を実行する', function() {
+        var dammy = {
+                preventDefault: function() {
+                }
+            };
+
+        spyOn(dammy, 'preventDefault').andCallThrough();
+
+        util.eventPrevent(dammy);
+
+        expect(dammy.preventDefault).toHaveBeenCalled();
+    });
+
+    it('eventStop(e)はe.stopPropagation()を実行する', function() {
+        var dammy = {
+                stopPropagation: function() {
+                }
+            };
+
+        spyOn(dammy, 'stopPropagation').andCallThrough();
+
+        util.eventStop(dammy);
+
+        expect(dammy.stopPropagation).toHaveBeenCalled();
+    });
+
+    it('checkUserAgent(pattern)でユーザーエージェントに対してpatternで正規表現を行う', function() {
+        expect(util.checkUserAgent('webkit')).toBeDefined();
+    });
+
+    it('bind(target, func)でthisをtargetにしたfuncを実行する関数を返す', function() {
+        var target = {test: 1},
+            func = function() {
+                return this.test;
+            },
+            bindfunc = util.bind(target, func);
+
+        expect(bindfunc()).toEqual(1);
     });
 });
 /*
