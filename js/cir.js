@@ -6,6 +6,7 @@ var win = window,
     TRUE = true,
     FALSE = false,
     NULL = null,
+    EMPTY = '',
     UNDEFINED = undefined,
     isTouch = isTouchDevice(),
     ev,
@@ -23,7 +24,7 @@ function checkCSSAnimTranCheck(propnames, event_key) {
         el = create('p'),
         support = FALSE,
         prefix,
-        css_prefix = '',
+        css_prefix = EMPTY,
         i = prop.length,
         style,
         sheet,
@@ -68,7 +69,7 @@ function jsonParse(json) {
 function jsonStringify(text) {
     return win['JSON']['stringify'](text);
 }
-/* Test: "../../spec/_src/src/utility/test.js" */
+/* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function now() {
         return +(new Date);
@@ -92,18 +93,18 @@ function override(target, vars) {
     return target;
 }
 function typeCast(str) {
-    var matchstr = '' + str;
+    var matchstr = EMPTY + str;
 
     if (matchstr.match('^{.*}$')) {
         return jsonParse(matchstr);
     }
-    else if (matchstr.match('^[0-9\.]+$')) {
+    if (matchstr.match('^[0-9\.]+$')) {
         return matchstr * 1;
     }
-    else if (matchstr === 'true') {
+    if (matchstr === 'true') {
         return TRUE;
     }
-    else if (matchstr === 'false') {
+    if (matchstr === 'false') {
         return FALSE;
     }
 
@@ -118,13 +119,11 @@ function windowOpen(url, windowname, option) {
 
     for (i in option) {
         if (isBoolean(option[i])) {
-            switch (option[i]) {
-                case TRUE:
-                    option[i] = 'yes';
-                    break;
-                case FALSE:
-                    option[i] = 'no';
-                    break;
+            if (option[i] === TRUE) {
+                option[i] = 'yes';
+            }
+            else if (option[i] === FALSE) {
+                option[i] = 'no';
             }
         }
         option_ary.push(i + '=' + option[i]);
@@ -133,8 +132,8 @@ function windowOpen(url, windowname, option) {
     return win.open(url, windowname, option_ary.join(','));
 }
 function makeQueryString(vars) {
-    var sign = '',
-        query = '',
+    var sign = EMPTY,
+        query = EMPTY,
         i;
 
     for (i in vars) {
@@ -148,8 +147,7 @@ function makeQueryString(vars) {
 }
 function parseQueryString(query) {
     query = query
-        .replace(/^\#/, '')
-        .replace(/^\?/, '');
+        .replace(/^[\#\?]/, EMPTY);
 
     var params = query.split('&'),
         i = params.length,
@@ -210,7 +208,7 @@ function bind(target, func) {
     };
 }
 
-Global['utility'] = {
+Global['util'] = {
     'win': win,
     'doc': doc,
     'pageTop': pageTop,
@@ -271,7 +269,7 @@ function hasClass(element, cls) {
 }
 
 function addClass(element, cls) {
-    var between = '',
+    var between = EMPTY,
         orgcls = element.className;
 
     if (hasClass(element, cls)) {
@@ -327,7 +325,7 @@ function attr(element, vars, value) {
         return TRUE;
     }
 
-    if (value || value === '') {
+    if (value || value === EMPTY) {
         return element.setAttribute(vars, value);
     }
 
@@ -499,6 +497,10 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
     'dispose': function() {
         var i;
 
+        if (this['disposeInternal']) {
+            this['disposeInternal']();
+        }
+
         if (this._dispose) {
             for (i in this._dispose) {
                 off.apply(NULL, this._dispose[i]);
@@ -506,6 +508,9 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
         }
 
         for (i in this) {
+            if (this[i] && isFunction(this[i]['dispose'])) {
+                this[i]['dispose']();
+            }
             delete this[i];
         }
 
@@ -525,9 +530,6 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
         delete this._dispose[id];
 
         off(arg[0], arg[1], arg[2]);
-    },
-    _orgdis: function() {
-        this.__proto__.__proto__['dispose'].call(this);
     }
 });
 /* Test: "../../spec/_src/src/Event/test.js" */
@@ -742,7 +744,7 @@ Mine = Global['Animation'] =
     this.property = prop;
 
     prop = replaceAll(
-        replaceAll(jsonStringify(prop), '"', ''),
+        replaceAll(jsonStringify(prop), '"', EMPTY),
         ',',
         ';'
     );
@@ -765,9 +767,8 @@ Mine = Global['Animation'] =
         off(this.el, event_key + 'End', this.end);
         off(this.el, 'animationend', this.end);
     },
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     'start': function() {
         var mine = this;
@@ -789,7 +790,7 @@ Mine = Global['Animation'] =
             if (prefix === 'webkit') {
                 for (; len--;) {
                     name = rule[len].name ||
-                        ('' + rule[len].selectorText).split('.')[1];
+                        (EMPTY + rule[len].selectorText).split('.')[1];
 
                     if (name === mine._id) {
                         sheet.deleteRule(len);
@@ -815,7 +816,7 @@ Mine = Global['Animation'] =
 function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
         len = eases.length,
-        rule = '';
+        rule = EMPTY;
 
     for (; i < len; i++) {
         rule += css_prefix + 'animation:' +
@@ -882,9 +883,8 @@ Mine = Global['Transition'] =
         this['start']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     'start': function() {
         var mine = this;
@@ -912,7 +912,7 @@ Mine = Global['Transition'] =
 
         for (; len--;) {
             name = rule[len].name ||
-                ('' + rule[len].selectorText).split('.')[1];
+                (EMPTY + rule[len].selectorText).split('.')[1];
 
             if (name === this._id) {
                 sheet.deleteRule(len);
@@ -925,7 +925,7 @@ Mine = Global['Transition'] =
 function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
         len = eases.length,
-        rule = '';
+        rule = EMPTY;
 
     rule +=
         css_prefix + 'transition-property:' + transProp.join(' ') + ';' +
@@ -960,7 +960,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         prop['name'] = name;
 
         prop.distance = prop['to'] - prop['from'];
-        prop['prefix'] = prop['prefix'] || '';
+        prop['prefix'] = prop['prefix'] || EMPTY;
         prop['suffix'] = prop['suffix'] || 'px';
 
         this.property.push(prop);
@@ -974,9 +974,8 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         this['start']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     // easeOutExpo
     _ease: function(time, from, dist, duration) {
@@ -1108,7 +1107,7 @@ Global['$'] = function(query, _parent) {
     }
     else {
         $elements = [query];
-        query = '';
+        query = EMPTY;
     }
     len = $elements.length;
 
@@ -1326,8 +1325,8 @@ function convertTweenerParam(element, params) {
     return retobj;
 }
 function splitSuffix(value) {
-    value = value || '';
-    value = '' + value;
+    value = value || EMPTY;
+    value = EMPTY + value;
 
     return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
@@ -1502,9 +1501,8 @@ var Media = klassExtendBase(function(config) {
 
     append(_parent, media);
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         remove(this._el);
-        this._orgdis();
     },
     'getElement': function() {
         return this._el;
@@ -1597,7 +1595,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
             callback = vars['callback'] || nullFunction,
             error = vars['error'] || nullFunction,
             type = vars['type'] || 'GET',
-            query = '',
+            query = EMPTY,
             xhr;
 
         xhr = this.xhr = new XMLHttpRequest();
@@ -1639,7 +1637,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
             }
             url += query;
 
-            query = '';
+            query = EMPTY;
         }
 
         xhr.open(type, url);
@@ -1676,9 +1674,8 @@ Global['Handle'] = klassExtendBase(function(config) {
     this.handler = config;
     this['attach']();
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['detach']();
-        this._orgdis();
     },
     'attach': function() {
         this._e(TRUE);
@@ -1842,7 +1839,7 @@ var WebStorageName = 'WebStorage',
         var key = 'Storage',
             klassname = config['type'] + key;
 
-        this._n = config['namespace'] ? config['namespace'] + '-' : '';
+        this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
         this._storage = win[config['type'].toLowerCase() + key];
 
         return this.singleAct(WebStorageName);
@@ -2146,13 +2143,12 @@ var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
 var ExternalIOS = klassExtend(Global['HashQuery'], function(config) {
     this.ios = {};
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         var i;
 
         for (i in this.ios) {
             this['removeCallback'](i);
         }
-        this._orgdis();
     },
     'call': function(conf) {
         this['setHash'](conf);
@@ -2212,9 +2208,8 @@ Global[FPSName] = klassExtendBase(function(config) {
 
     return this.singleAct(FPSName);
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     'getCriterion': function() {
         return this.criterion;
@@ -2532,10 +2527,6 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         'y': 'beta',
         'z': 'alpha'
     },
-    'dispose': function() {
-        this._shaker['dispose']();
-        this._orgdis();
-    },
     'attach': function(direction, callback) {
         direction = this.convertName[direction];
 
@@ -2575,12 +2566,12 @@ Global['DeviceShake']['support'] = Shake ? TRUE : FALSE;
 Global['FontImg'] = klassExtendBase(function(config) {
     config = config || {};
 
-    this.type = config['type'] ? config['type'] + '_' : '';
+    this.type = config['type'] ? config['type'] + '_' : EMPTY;
     this.tag = config['tag'] || 'span';
 }, {
     'make': function(x) {
-        var aryX = ('' + x).split(''),
-            tags = '',
+        var aryX = (EMPTY + x).split(EMPTY),
+            tags = EMPTY,
             i = aryX.length;
 
         for (; i--;) {
@@ -2688,9 +2679,8 @@ Global['PreRender'] = klassExtendBase(function(config) {
         this['start']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         clearInterval(this.loopid);
-        this._orgdis();
     },
     'start': function() {
         var i,
@@ -2730,7 +2720,7 @@ var RouteName = 'Route';
 Global[RouteName] = klassExtendBase(function(config) {
     this['_super'](config);
 
-    this._target = config['target'] || '';
+    this._target = config['target'] || EMPTY;
     this._noregex = config['noregex'];
     this._action = config['action'];
 
@@ -2886,9 +2876,8 @@ Global['Surrogate'] = klassExtendBase(function(config) {
     // this.args = NULL;
     // this.waitid = NULL;
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['clear']();
-        this._orgdis();
     },
     'request': function(arg) {
         this.args = arg;
@@ -2912,9 +2901,8 @@ Global['Throttle'] = klassExtendBase(function(config) {
     // this.waitid = NULL;
     // this.waitarg = NULL;
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['unlock']();
-        this._orgdis();
     },
     'request': function(vars) {
         var mine = this;
@@ -3035,7 +3023,7 @@ Global['Timer'] = function(config) {
     }
 
     function adaptDigit(vars) {
-        var num = '' + vars.num,
+        var num = EMPTY + vars.num,
             digit = vars.digit,
             isFew = vars.isFew,
             deff = digit - num.length;
@@ -3056,9 +3044,9 @@ Global['Timer'] = function(config) {
     }
 
     function makeFill(digit, num) {
-        var ret = '';
+        var ret = EMPTY;
 
-        num = '' + num;
+        num = EMPTY + num;
 
         while (digit > 0) {
             ret += num;
@@ -3069,10 +3057,10 @@ Global['Timer'] = function(config) {
     }
 
     function parseNum(num) {
-        num = ('' + num).split('.');
+        num = (EMPTY + num).split('.');
 
         var integer = num[0],
-            few = num[1] ? num[1] : '';
+            few = num[1] ? num[1] : EMPTY;
 
         return {
             integer: integer,
@@ -3094,13 +3082,13 @@ Global['Timer'] = function(config) {
 Global['Twitter'] = klassExtendBase(UNDEFINED,
 {
     'shareURL': function(vars) {
-        var caption = vars['caption'] || '',
+        var caption = vars['caption'] || EMPTY,
             name = vars['name'],
             hash = vars['hash'],
             url = 'https://twitter.com/intent/tweet?';
 
-        name = name ? ' 「' + name + '」' : '';
-        hash = hash ? ' ' + hash : '';
+        name = name ? ' 「' + name + '」' : EMPTY;
+        hash = hash ? ' ' + hash : EMPTY;
 
         url += makeQueryString({
             'url': vars['redirect_uri'],
@@ -3152,47 +3140,40 @@ Global['View'] = klassExtendBase(function(config) {
         this['init']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['detach']();
-        this._orgdis();
+    },
+    _e: function(flg) {
+        var i,
+            j,
+            $el,
+            events = this['events'];
+
+        for (i in events) {
+            if (i === 'me') {
+                $el = this['el'];
+            }
+            else {
+                $el = this['el'].find(i);
+            }
+
+            if (flg) {
+                for (j in events[i]) {
+                    $el['on'](j, this[events[i][j]]);
+                }
+            }
+            else {
+                for (j in events[i]) {
+                    $el['off'](j, this[events[i][j]]);
+                }
+            }
+        }
     },
     'attach': function() {
-        var i,
-            j,
-            $el,
-            events = this['events'];
-
-        for (i in events) {
-            if (i === 'mine') {
-                $el = this['el'];
-            }
-            else {
-                $el = this['el'].find(i);
-            }
-
-            for (j in events[i]) {
-                $el['on'](j, this[events[i][j]]);
-            }
-        }
+        this._e(TRUE);
     },
     'detach': function() {
-        var i,
-            j,
-            $el,
-            events = this['events'];
-
-        for (i in events) {
-            if (i === 'mine') {
-                $el = this['el'];
-            }
-            else {
-                $el = this['el'].find(i);
-            }
-
-            for (j in events[i]) {
-                $el['off'](j, this[events[i][j]]);
-            }
-        }
+        this._e(FALSE);
     }
 });
 /* Test: "../../spec/_src/src/Model/test.js" */
@@ -3218,11 +3199,6 @@ Global['Model'] = klassExtendBase(function(config) {
         if (key) {
             this._observer['fire'](eventname + ':' + key, val);
         }
-    },
-    'dispose': function() {
-        this._store['dispose']();
-        this._observer['dispose']();
-        this._orgdis();
     },
     'set': function(key, val) {
         if (

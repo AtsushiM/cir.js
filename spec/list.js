@@ -55,7 +55,7 @@ src/klass/\n\
 src/selector/\n\
 src/selector.methods/\n\
 src/selector.methods.animate/\n\
-src/utility/\n\
+src/util/\n\
 </script>\
 <script type="text/template" id="jasmineClassList">\
 ../../js/src/Ajax.js\n\
@@ -113,7 +113,7 @@ src/utility/\n\
 ../../js/src/selector.js\n\
 ../../js/src/selector.methods.js\n\
 ../../js/src/selector.methods.animate.js\n\
-../../js/src/utility.js\n\
+../../js/src/util.js\n\
 </script>\
 <script type="text/template" id="jasmineTestList">\
 ../_src/src/Ajax/test.js\n\
@@ -171,6 +171,6 @@ src/utility/\n\
 ../_src/src/selector/test.js\n\
 ../_src/src/selector.methods/test.js\n\
 ../_src/src/selector.methods.animate/test.js\n\
-../_src/src/utility/test.js\n\
+../_src/src/util/test.js\n\
 </script>\
 ');

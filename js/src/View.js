@@ -17,46 +17,39 @@ Global['View'] = klassExtendBase(function(config) {
         this['init']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['detach']();
-        this._orgdis();
+    },
+    _e: function(flg) {
+        var i,
+            j,
+            $el,
+            events = this['events'];
+
+        for (i in events) {
+            if (i === 'me') {
+                $el = this['el'];
+            }
+            else {
+                $el = this['el'].find(i);
+            }
+
+            if (flg) {
+                for (j in events[i]) {
+                    $el['on'](j, this[events[i][j]]);
+                }
+            }
+            else {
+                for (j in events[i]) {
+                    $el['off'](j, this[events[i][j]]);
+                }
+            }
+        }
     },
     'attach': function() {
-        var i,
-            j,
-            $el,
-            events = this['events'];
-
-        for (i in events) {
-            if (i === 'mine') {
-                $el = this['el'];
-            }
-            else {
-                $el = this['el'].find(i);
-            }
-
-            for (j in events[i]) {
-                $el['on'](j, this[events[i][j]]);
-            }
-        }
+        this._e(TRUE);
     },
     'detach': function() {
-        var i,
-            j,
-            $el,
-            events = this['events'];
-
-        for (i in events) {
-            if (i === 'mine') {
-                $el = this['el'];
-            }
-            else {
-                $el = this['el'].find(i);
-            }
-
-            for (j in events[i]) {
-                $el['off'](j, this[events[i][j]]);
-            }
-        }
+        this._e(FALSE);
     }
 });

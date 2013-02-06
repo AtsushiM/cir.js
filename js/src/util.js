@@ -1,4 +1,4 @@
-/* Test: "../../spec/_src/src/utility/test.js" */
+/* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function now() {
         return +(new Date);
@@ -22,18 +22,18 @@ function override(target, vars) {
     return target;
 }
 function typeCast(str) {
-    var matchstr = '' + str;
+    var matchstr = EMPTY + str;
 
     if (matchstr.match('^{.*}$')) {
         return jsonParse(matchstr);
     }
-    else if (matchstr.match('^[0-9\.]+$')) {
+    if (matchstr.match('^[0-9\.]+$')) {
         return matchstr * 1;
     }
-    else if (matchstr === 'true') {
+    if (matchstr === 'true') {
         return TRUE;
     }
-    else if (matchstr === 'false') {
+    if (matchstr === 'false') {
         return FALSE;
     }
 
@@ -48,13 +48,11 @@ function windowOpen(url, windowname, option) {
 
     for (i in option) {
         if (isBoolean(option[i])) {
-            switch (option[i]) {
-                case TRUE:
-                    option[i] = 'yes';
-                    break;
-                case FALSE:
-                    option[i] = 'no';
-                    break;
+            if (option[i] === TRUE) {
+                option[i] = 'yes';
+            }
+            else if (option[i] === FALSE) {
+                option[i] = 'no';
             }
         }
         option_ary.push(i + '=' + option[i]);
@@ -63,8 +61,8 @@ function windowOpen(url, windowname, option) {
     return win.open(url, windowname, option_ary.join(','));
 }
 function makeQueryString(vars) {
-    var sign = '',
-        query = '',
+    var sign = EMPTY,
+        query = EMPTY,
         i;
 
     for (i in vars) {
@@ -78,8 +76,7 @@ function makeQueryString(vars) {
 }
 function parseQueryString(query) {
     query = query
-        .replace(/^\#/, '')
-        .replace(/^\?/, '');
+        .replace(/^[\#\?]/, EMPTY);
 
     var params = query.split('&'),
         i = params.length,
@@ -140,7 +137,7 @@ function bind(target, func) {
     };
 }
 
-Global['utility'] = {
+Global['util'] = {
     'win': win,
     'doc': doc,
     'pageTop': pageTop,

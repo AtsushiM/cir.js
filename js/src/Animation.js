@@ -41,7 +41,7 @@ Mine = Global['Animation'] =
     this.property = prop;
 
     prop = replaceAll(
-        replaceAll(jsonStringify(prop), '"', ''),
+        replaceAll(jsonStringify(prop), '"', EMPTY),
         ',',
         ';'
     );
@@ -64,9 +64,8 @@ Mine = Global['Animation'] =
         off(this.el, event_key + 'End', this.end);
         off(this.el, 'animationend', this.end);
     },
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     'start': function() {
         var mine = this;
@@ -88,7 +87,7 @@ Mine = Global['Animation'] =
             if (prefix === 'webkit') {
                 for (; len--;) {
                     name = rule[len].name ||
-                        ('' + rule[len].selectorText).split('.')[1];
+                        (EMPTY + rule[len].selectorText).split('.')[1];
 
                     if (name === mine._id) {
                         sheet.deleteRule(len);
@@ -114,7 +113,7 @@ Mine = Global['Animation'] =
 function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
         len = eases.length,
-        rule = '';
+        rule = EMPTY;
 
     for (; i < len; i++) {
         rule += css_prefix + 'animation:' +

@@ -17,9 +17,8 @@ Global[FPSName] = klassExtendBase(function(config) {
 
     return this.singleAct(FPSName);
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     'getCriterion': function() {
         return this.criterion;

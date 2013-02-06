@@ -1,10 +1,10 @@
-/* Class: "../../../../js/src/utility.js" */
-describe('utilityは', function() {
+/* Class: "../../../../js/src/util.js" */
+describe('utilは', function() {
     var util;
 
     beforeEach(function() {
         // init
-        util = window.C ? C.utility : Global.utility;
+        util = window.C ? C.util: Global.util;
     });
     afterEach(function() {
         // clear

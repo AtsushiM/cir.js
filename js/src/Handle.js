@@ -3,9 +3,8 @@ Global['Handle'] = klassExtendBase(function(config) {
     this.handler = config;
     this['attach']();
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['detach']();
-        this._orgdis();
     },
     'attach': function() {
         this._e(TRUE);

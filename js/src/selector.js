@@ -14,7 +14,7 @@ Global['$'] = function(query, _parent) {
     }
     else {
         $elements = [query];
-        query = '';
+        query = EMPTY;
     }
     len = $elements.length;
 

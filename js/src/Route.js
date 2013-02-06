@@ -3,7 +3,7 @@ var RouteName = 'Route';
 Global[RouteName] = klassExtendBase(function(config) {
     this['_super'](config);
 
-    this._target = config['target'] || '';
+    this._target = config['target'] || EMPTY;
     this._noregex = config['noregex'];
     this._action = config['action'];
 

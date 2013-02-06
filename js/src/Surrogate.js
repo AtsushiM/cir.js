@@ -5,9 +5,8 @@ Global['Surrogate'] = klassExtendBase(function(config) {
     // this.args = NULL;
     // this.waitid = NULL;
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['clear']();
-        this._orgdis();
     },
     'request': function(arg) {
         this.args = arg;

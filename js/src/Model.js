@@ -22,11 +22,6 @@ Global['Model'] = klassExtendBase(function(config) {
             this._observer['fire'](eventname + ':' + key, val);
         }
     },
-    'dispose': function() {
-        this._store['dispose']();
-        this._observer['dispose']();
-        this._orgdis();
-    },
     'set': function(key, val) {
         if (
             this._validate[key] &&

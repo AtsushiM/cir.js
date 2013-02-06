@@ -6,9 +6,8 @@ Global['Throttle'] = klassExtendBase(function(config) {
     // this.waitid = NULL;
     // this.waitarg = NULL;
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['unlock']();
-        this._orgdis();
     },
     'request': function(vars) {
         var mine = this;

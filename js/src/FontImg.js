@@ -2,12 +2,12 @@
 Global['FontImg'] = klassExtendBase(function(config) {
     config = config || {};
 
-    this.type = config['type'] ? config['type'] + '_' : '';
+    this.type = config['type'] ? config['type'] + '_' : EMPTY;
     this.tag = config['tag'] || 'span';
 }, {
     'make': function(x) {
-        var aryX = ('' + x).split(''),
-            tags = '',
+        var aryX = (EMPTY + x).split(EMPTY),
+            tags = EMPTY,
             i = aryX.length;
 
         for (; i--;) {

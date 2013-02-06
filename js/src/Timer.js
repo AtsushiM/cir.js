@@ -88,7 +88,7 @@ Global['Timer'] = function(config) {
     }
 
     function adaptDigit(vars) {
-        var num = '' + vars.num,
+        var num = EMPTY + vars.num,
             digit = vars.digit,
             isFew = vars.isFew,
             deff = digit - num.length;
@@ -109,9 +109,9 @@ Global['Timer'] = function(config) {
     }
 
     function makeFill(digit, num) {
-        var ret = '';
+        var ret = EMPTY;
 
-        num = '' + num;
+        num = EMPTY + num;
 
         while (digit > 0) {
             ret += num;
@@ -122,10 +122,10 @@ Global['Timer'] = function(config) {
     }
 
     function parseNum(num) {
-        num = ('' + num).split('.');
+        num = (EMPTY + num).split('.');
 
         var integer = num[0],
-            few = num[1] ? num[1] : '';
+            few = num[1] ? num[1] : EMPTY;
 
         return {
             integer: integer,

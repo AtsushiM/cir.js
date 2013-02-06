@@ -6,7 +6,7 @@ var WebStorageName = 'WebStorage',
         var key = 'Storage',
             klassname = config['type'] + key;
 
-        this._n = config['namespace'] ? config['namespace'] + '-' : '';
+        this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
         this._storage = win[config['type'].toLowerCase() + key];
 
         return this.singleAct(WebStorageName);

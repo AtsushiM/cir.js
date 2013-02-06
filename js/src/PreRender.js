@@ -17,9 +17,8 @@ Global['PreRender'] = klassExtendBase(function(config) {
         this['start']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         clearInterval(this.loopid);
-        this._orgdis();
     },
     'start': function() {
         var i,

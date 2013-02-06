@@ -14,7 +14,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         prop['name'] = name;
 
         prop.distance = prop['to'] - prop['from'];
-        prop['prefix'] = prop['prefix'] || '';
+        prop['prefix'] = prop['prefix'] || EMPTY;
         prop['suffix'] = prop['suffix'] || 'px';
 
         this.property.push(prop);
@@ -28,9 +28,8 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         this['start']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     // easeOutExpo
     _ease: function(time, from, dist, duration) {

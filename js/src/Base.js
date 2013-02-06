@@ -19,6 +19,10 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
     'dispose': function() {
         var i;
 
+        if (this['disposeInternal']) {
+            this['disposeInternal']();
+        }
+
         if (this._dispose) {
             for (i in this._dispose) {
                 off.apply(NULL, this._dispose[i]);
@@ -26,6 +30,9 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
         }
 
         for (i in this) {
+            if (this[i] && isFunction(this[i]['dispose'])) {
+                this[i]['dispose']();
+            }
             delete this[i];
         }
 
@@ -45,8 +52,5 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
         delete this._dispose[id];
 
         off(arg[0], arg[1], arg[2]);
-    },
-    _orgdis: function() {
-        this.__proto__.__proto__['dispose'].call(this);
     }
 });

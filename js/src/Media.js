@@ -50,9 +50,8 @@ var Media = klassExtendBase(function(config) {
 
     append(_parent, media);
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         remove(this._el);
-        this._orgdis();
     },
     'getElement': function() {
         return this._el;

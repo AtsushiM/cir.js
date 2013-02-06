@@ -2,13 +2,12 @@
 var ExternalIOS = klassExtend(Global['HashQuery'], function(config) {
     this.ios = {};
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         var i;
 
         for (i in this.ios) {
             this['removeCallback'](i);
         }
-        this._orgdis();
     },
     'call': function(conf) {
         this['setHash'](conf);

@@ -6,7 +6,7 @@
             },
             validate: {
                 test: function(vars) {
-                    if (C.utility.isNumber(vars)) {
+                    if (C.util.isNumber(vars)) {
                         return true;
                     }
                     return false;
@@ -17,7 +17,7 @@
             el: '#test',
             model: model,
             events: {
-                'mine': {
+                'me': {
                     'click': 'click'
                 }
             },

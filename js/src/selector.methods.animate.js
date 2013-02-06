@@ -106,8 +106,8 @@ function convertTweenerParam(element, params) {
     return retobj;
 }
 function splitSuffix(value) {
-    value = value || '';
-    value = '' + value;
+    value = value || EMPTY;
+    value = EMPTY + value;
 
     return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }

@@ -35,7 +35,7 @@ function hasClass(element, cls) {
 }
 
 function addClass(element, cls) {
-    var between = '',
+    var between = EMPTY,
         orgcls = element.className;
 
     if (hasClass(element, cls)) {
@@ -91,7 +91,7 @@ function attr(element, vars, value) {
         return TRUE;
     }
 
-    if (value || value === '') {
+    if (value || value === EMPTY) {
         return element.setAttribute(vars, value);
     }
 

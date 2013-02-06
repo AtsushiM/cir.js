@@ -34,10 +34,6 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         'y': 'beta',
         'z': 'alpha'
     },
-    'dispose': function() {
-        this._shaker['dispose']();
-        this._orgdis();
-    },
     'attach': function(direction, callback) {
         direction = this.convertName[direction];
 

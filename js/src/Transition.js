@@ -47,9 +47,8 @@ Mine = Global['Transition'] =
         this['start']();
     }
 }, {
-    'dispose': function() {
+    'disposeInternal': function() {
         this['stop']();
-        this._orgdis();
     },
     'start': function() {
         var mine = this;
@@ -77,7 +76,7 @@ Mine = Global['Transition'] =
 
         for (; len--;) {
             name = rule[len].name ||
-                ('' + rule[len].selectorText).split('.')[1];
+                (EMPTY + rule[len].selectorText).split('.')[1];
 
             if (name === this._id) {
                 sheet.deleteRule(len);
@@ -90,7 +89,7 @@ Mine = Global['Transition'] =
 function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
         len = eases.length,
-        rule = '';
+        rule = EMPTY;
 
     rule +=
         css_prefix + 'transition-property:' + transProp.join(' ') + ';' +

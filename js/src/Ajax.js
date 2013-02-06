@@ -15,7 +15,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
             callback = vars['callback'] || nullFunction,
             error = vars['error'] || nullFunction,
             type = vars['type'] || 'GET',
-            query = '',
+            query = EMPTY,
             xhr;
 
         xhr = this.xhr = new XMLHttpRequest();
@@ -57,7 +57,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
             }
             url += query;
 
-            query = '';
+            query = EMPTY;
         }
 
         xhr.open(type, url);
