@@ -1,17 +1,49 @@
 /* Class: "../../../../js/src/View.js" */
 describe('Viewは', function() {
-    var view;
+    var c = window.C ? C : Global,
+        view;
 
     beforeEach(function() {
         // init
-        view = new Global.View();
+        view = new c.View({
+            el: 'body',
+            events: {
+                'me': {
+                    'click': 'click'
+                }
+            },
+            init: function() {
+            },
+            render: function() {
+            },
+            click: function(e) {
+                view.ret = true;
+            }
+        });
     });
     afterEach(function() {
         // clear
+        if (view.detach) {
+            view.detach();
+        }
     });
 
-    it('zzzである', function() {
-        expect(0).toEqual(1);
+    it('イベントを登録する', function() {
+        document.body.click();
+        expect(view.ret).toBeTruthy();
+    });
+
+    it('detach()でイベントを破棄する', function() {
+        view.detach();
+        document.body.click();
+        expect(view.ret).not.toBeDefined();
+    });
+
+    it('attach()でイベントを登録する', function() {
+        view.detach();
+        view.attach();
+        document.body.click();
+        expect(view.ret).toBeTruthy();
     });
 });
 /*

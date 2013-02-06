@@ -66,7 +66,10 @@ Global['Model'] = klassExtendBase(function(config) {
         return ret;
     },
     'on': function(key, func) {
-        this._observer['on'](key, bind(this, func));
+        var bindfunc = bind(this, func);
+        this._observer['on'](key, bindfunc);
+
+        return bindfunc;
     },
     'off': function(key, func) {
         return this._observer['off'](key, func);

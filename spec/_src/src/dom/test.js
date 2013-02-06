@@ -222,6 +222,55 @@ describe('domは', function() {
         el.remove($make);
     });
 
+    it('before(element, addelement)でelementの前にaddelementを追加する', function() {
+        var $body = el.$('body'),
+            $make1 = el.create('div', {
+                'class': 'beforetest'
+            }),
+            $make2 = el.create('div', {
+                'class': 'beforetest'
+            });
+
+        el.append($body, $make1);
+        el.before($make1, $make2);
+
+        var befores = el.$$('.beforetest');
+        expect(befores[0]).toEqual($make2);
+        expect(befores[1]).toEqual($make1);
+
+        el.remove($make1);
+        el.remove($make2);
+    });
+
+    it('after(element, addelement)でelementの前にaddelementを追加する', function() {
+        var $body = el.$('body'),
+            $make1 = el.create('div', {
+                'class': 'aftertest',
+                'data-name': 1
+            }),
+            $make2 = el.create('div', {
+                'class': 'aftertest',
+                'data-name': 2
+            }),
+            $make3 = el.create('div', {
+                'class': 'aftertest',
+                'data-name': 3
+            });
+
+        el.append($body, $make1);
+        el.append($body, $make3);
+        el.after($make1, $make2);
+
+        var afters = el.$$('.aftertest');
+        expect(afters[0]).toEqual($make1);
+        expect(afters[1]).toEqual($make2);
+        expect(afters[2]).toEqual($make3);
+
+        el.remove($make1);
+        el.remove($make2);
+        el.remove($make3);
+    });
+
     it('remove(element)でelementを削除する', function() {
         var $body = el.$('body'),
             $make = el.create('div');

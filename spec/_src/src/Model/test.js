@@ -1,17 +1,121 @@
 /* Class: "../../../../js/src/Model.js" */
 describe('Modelは', function() {
-    var model;
+    var c = window.C ? C : Global,
+        model;
 
     beforeEach(function() {
         // init
-        model = new Global.Model();
+        model = new c.Model({
+            defaults: {
+                test: 1,
+                test2: 'test'
+            },
+            validate: {
+                test: function(vars) {
+                    if (C.util.isNumber(vars)) {
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            on: {
+                'change': function(vars) {
+                },
+                'change:test': function(vars) {
+                },
+                'remove': function(vars) {
+                },
+                'remove:test2': function(vars) {
+                },
+                'reset': function(vars) {
+                }
+            }
+        });
     });
     afterEach(function() {
         // clear
+        if (model.dispose) {
+            model = model.dispose();
+        }
     });
 
-    it('zzzである', function() {
-        expect(0).toEqual(1);
+    it('set(key, val)で値を設定し、changeイベントを発火する', function() {
+        var ret = 0;
+
+        model.on('change:settest', function() {
+            ret = 1;
+        });
+        model.set('settest', 1);
+
+        expect(ret).toEqual(1);
+    });
+
+    it('prev(key)で一つ前の状態の値を返す', function() {
+        model.set('settest', 1);
+        expect(model.prev().settest).toEqual(undefined);
+        expect(model.prev('settest')).toEqual(undefined);
+    });
+
+    it('get(key)で値を返す', function() {
+        expect(model.get('test')).toEqual(1);
+    });
+
+    it('remove(key)で値を削除し、removeイベントを発火する', function() {
+        var ret = 0;
+
+        model.on('remove:test', function() {
+            ret = 1;
+        });
+        model.remove('test');
+        expect(ret).toEqual(1);
+        expect(model.get('test')).not.toBeDefined();
+    });
+
+    it('reset()で値を全て削除する', function() {
+        var ret = 0;
+
+        model.on('reset', function() {
+            ret = 1;
+        });
+        model.reset();
+
+        expect(ret).toEqual(1);
+    });
+
+    it('on(key, func)でイベントを登録する', function() {
+        var ret = 0;
+
+        model.on('change', function() {
+            ret = 1;
+        });
+
+        model.fire('change');
+        expect(ret).toEqual(1);
+    });
+
+    it('off(key, func)でイベントを削除する', function() {
+        var ret = 0,
+            func = function() {
+                ret = 1;
+            };
+
+        var bindfunc = model.on('change', func);
+        model.off('change', bindfunc);
+
+        model.fire('change');
+        expect(ret).toEqual(0);
+    });
+
+    it('fire(key, value)でイベントを発火する', function() {
+        var ret = 0,
+            func = function() {
+                ret = 1;
+            };
+
+        model.on('change', func);
+
+        model.fire('change');
+        expect(ret).toEqual(1);
     });
 });
 /*

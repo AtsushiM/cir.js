@@ -5,7 +5,7 @@ describe('selector.methodsは', function() {
     }
 
     var selector = Global.$('body'),
-        el = Global.element;
+        el = C.dom;
 
     beforeEach(function() {
         // init
@@ -26,7 +26,7 @@ describe('selector.methodsは', function() {
         expect($body.parent()[0]).toEqual(document.body.parentNode);
     });
 
-    it('$(selector).on(eventname, handler)でGlobal.element.onを実行する', function() {
+    it('$(selector).on(eventname, handler)でC.dom.onを実行する', function() {
         var count = 0,
             func = function() {
                 count++;
@@ -41,7 +41,7 @@ describe('selector.methodsは', function() {
         selector.off('click', func);
     });
 
-    it('$(selector).off(eventname, handler)でGlobal.element.offを実行する', function() {
+    it('$(selector).off(eventname, handler)でC.dom.offを実行する', function() {
         var count = 0,
             func = function() {
                 count++;
@@ -56,13 +56,13 @@ describe('selector.methodsは', function() {
         expect(count).toEqual(0);
     });
 
-    it('$(selector).show()でGlobal.element.showを実行する', function() {
+    it('$(selector).show()でC.dom.showを実行する', function() {
         selector.show();
 
         expect(document.body.style.display).toEqual('block');
     });
 
-    it('$(selector).hide()でGlobal.element.hideを実行する', function() {
+    it('$(selector).hide()でC.dom.hideを実行する', function() {
         selector.hide();
         expect(document.body.style.display).toEqual('none');
         selector.show();
@@ -74,33 +74,33 @@ describe('selector.methodsは', function() {
         selector.opacity(1);
     });
 
-    it('$(selector).hasClass(value)でGlobal.element.hasClassを実行する', function() {
+    it('$(selector).hasClass(value)でC.dom.hasClassを実行する', function() {
         document.body.className = 'test';
         expect(selector.hasClass('test')).toBeTruthy();
         document.body.className = '';
         expect(selector.hasClass('test')).toBeFalsy();
     });
 
-    it('$(selector).addClass(value)でGlobal.element.addClassを実行する', function() {
+    it('$(selector).addClass(value)でC.dom.addClassを実行する', function() {
         selector.addClass('test');
         expect(selector.hasClass('test')).toBeTruthy();
         document.body.className = '';
     });
 
-    it('$(selector).removeClass(value)でGlobal.element.removeClassを実行する', function() {
+    it('$(selector).removeClass(value)でC.dom.removeClassを実行する', function() {
         selector.addClass('test');
         selector.removeClass('test');
         expect(selector.hasClass('test')).toBeFalsy();
     });
 
-    it('$(selector).toggleClass(value)でGlobal.element.toggleClassを実行する', function() {
+    it('$(selector).toggleClass(value)でC.dom.toggleClassを実行する', function() {
         selector.toggleClass('test');
         expect(selector.hasClass('test')).toBeTruthy();
         selector.removeClass('test');
         expect(selector.hasClass('test')).toBeFalsy();
     });
 
-    it('$(selector).css(object)でGlobal.element.cssを実行する', function() {
+    it('$(selector).css(object)でC.dom.cssを実行する', function() {
         selector.css({
             padding: 10
         });
@@ -110,7 +110,7 @@ describe('selector.methodsは', function() {
         });
     });
 
-    it('$(selector).append(element)でGlobal.element.appendを実行する', function() {
+    it('$(selector).append(element)でC.dom.appendを実行する', function() {
         var div = document.createElement('div');
 
         div.className = 'appendTest';
@@ -119,7 +119,55 @@ describe('selector.methodsは', function() {
         expect(document.querySelector('.appendTest')).toBeDefined();
     });
 
-    it('$(selector).remove(element)でGlobal.element.removeを実行する', function() {
+    it('$(selector).before(element)でC.dom.beforeを実行する', function() {
+        var $make1 = el.create('div', {
+                'class': 'beforetest',
+                'id': 'before1'
+            }),
+            $make2 = el.create('div', {
+                'class': 'beforetest'
+            });
+
+        selector.append($make1);
+        C.$('#before1').before($make2);
+
+        var befores = C.dom.$$('.beforetest');
+        expect(befores[0]).toEqual($make2);
+        expect(befores[1]).toEqual($make1);
+
+        el.remove($make1);
+        el.remove($make2);
+    });
+
+    it('$(selector).after(element)でC.dom.afterを実行する', function() {
+        var $make1 = el.create('div', {
+                'class': 'aftertest',
+                'id': 'after1'
+            }),
+            $make2 = el.create('div', {
+                'class': 'aftertest',
+                'id': 'after2'
+            }),
+            $make3 = el.create('div', {
+                'class': 'aftertest',
+                'id': 'after3'
+            });
+
+        selector.append($make1);
+        selector.append($make3);
+        C.$('#after1').after($make2);
+
+        var afters = C.dom.$$('.aftertest');
+        expect(afters[0]).toEqual($make1);
+        expect(afters[1]).toEqual($make2);
+        expect(afters[2]).toEqual($make3);
+
+        C.dom.remove($make1);
+        C.dom.remove($make2);
+        C.dom.remove($make3);
+    });
+
+    it('$(selector).remove(element)でC.dom.removeを実行する', function() {
         var div = document.createElement('div');
 
         div.className = 'appendTest';
@@ -132,7 +180,7 @@ describe('selector.methodsは', function() {
         expect(document.querySelector('.appendTest')).toBeNull();
     });
 
-    it('$(selector).html(value)でGlobal.element.htmlを実行する', function() {
+    it('$(selector).html(value)でC.dom.htmlを実行する', function() {
         var div = document.createElement('div');
 
         div.className = 'selectorTestInnerHTML';
@@ -143,11 +191,11 @@ describe('selector.methodsは', function() {
         expect($div.html()).toEqual('test');
     });
 
-    it('$(selector).attr(value)でGlobal.element.attrを実行する', function() {
+    it('$(selector).attr(value)でC.dom.attrを実行する', function() {
         expect(selector.attr('style')).toBeDefined();
     });
 
-    it('$(selector).removeAttr(value)でGlobal.element.removeAttrを実行する', function() {
+    it('$(selector).removeAttr(value)でC.dom.removeAttrを実行する', function() {
         selector.addClass('test');
         selector.removeAttr('class');
         expect(document.body.className).toEqual('');

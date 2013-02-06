@@ -146,11 +146,20 @@ function css(element, addstyle) {
 function computedStyle(element) {
     return doc.defaultView.getComputedStyle(element, NULL);
 }
+function parent(element) {
+    return element['parentNode'];
+}
 function append(element, addelement) {
     return element['appendChild'](addelement);
 }
-function parent(element) {
-    return element['parentNode'];
+function beforeafter(element, addelement, target) {
+    return parent(element).insertBefore(addelement, target);
+}
+function before(element, addelement) {
+    return beforeafter(element, addelement, element);
+}
+function after(element, addelement) {
+    return beforeafter(element, addelement, element.nextSibling);
 }
 function remove(element) {
     return parent(element).removeChild(element);
@@ -183,6 +192,8 @@ Global['dom'] = {
     'computedStyle': computedStyle,
     'append': append,
     'parent': parent,
+    'before': before,
+    'after': after,
     'remove': remove,
     'attr': attr,
     'removeAttr': removeAttr,

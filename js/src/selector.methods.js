@@ -84,6 +84,12 @@ Global['$'].methods = {
     'append': function() {
         return forExe(this, append, arguments);
     },
+    'before': function() {
+        return exe(this, before, arguments);
+    },
+    'after': function() {
+        return exe(this, after, arguments);
+    },
     'remove': function() {
         return forExe(this, remove, arguments);
     }
