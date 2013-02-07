@@ -8,7 +8,7 @@ Global['View'] = klassExtendBase(function(config) {
         for (i in this.__proto__) {
             if (
                 this.__proto__.hasOwnProperty(i) &&
-                i.indexOf('_') !== 0 &&
+                /* i.indexOf('_') !== 0 && */
                 isFunction(this.__proto__[i])
             ) {
                 config[i] = this.__proto__[i];

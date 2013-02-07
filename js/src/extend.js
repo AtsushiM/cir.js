@@ -2,8 +2,7 @@
 Global['extend'] = function(child, _super) {
     'use strict';
 
-    function ctor() {
-    }
+    function ctor() {}
 
     ctor.prototype = _super.prototype;
     child.prototype = new ctor();

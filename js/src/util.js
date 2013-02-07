@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function now() {
-        return +(new Date);
+        return new Date * 1;
     };
 }
 

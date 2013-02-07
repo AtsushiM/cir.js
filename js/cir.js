@@ -72,7 +72,7 @@ function jsonStringify(text) {
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function now() {
-        return +(new Date);
+        return new Date * 1;
     };
 }
 
@@ -503,8 +503,7 @@ function klassExtendBase(init, prop) {
 Global['extend'] = function(child, _super) {
     'use strict';
 
-    function ctor() {
-    }
+    function ctor() {}
 
     ctor.prototype = _super.prototype;
     child.prototype = new ctor();
@@ -1811,7 +1810,7 @@ Global['Brush']['support'] = !!win['HTMLCanvasElement'];
 /* Test: "../../spec/_src/src/Datetime/test.js" */
 Global['Datetime'] = function(str) {
     if (!str || isNumber(str)) {
-        return new Date(str);
+        return Date(str);
     }
 
     str = str.split(/[T:\-\+\/\s]/);
@@ -1822,7 +1821,7 @@ Global['Datetime'] = function(str) {
         str[5] = 0;
     }
 
-    return new Date(
+    return Date(
         str[0] * 1,
         str[1] * 1 - 1,
         str[2] * 1,
@@ -2492,14 +2491,14 @@ Global.DeviceAction = klassExtendBase(function(config) {
 Global['DeviceOrientation'] = function(config) {
     config = config || {};
     config['e'] = 'deviceorientation';
-    return new Global.DeviceAction(config);
+    return Global.DeviceAction(config);
 };
 Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
 /* Test: "../../spec/_src/src/DeviceMotion/test.js" */
 Global['DeviceMotion'] = function(config) {
     config = config || {};
     config['e'] = 'devicemotion';
-    return new Global.DeviceAction(config);
+    return Global.DeviceAction(config);
 };
 Global['DeviceMotion']['support'] = 'ondevicemotion' in win;
 /* Test: "../../spec/_src/src/DeviceShake/test.js" */
@@ -2825,7 +2824,7 @@ Global['ServerMeta'] = klassExtendBase(function(config) {
 }, {
     'date': function(callback) {
         return getHeader(function(xhr) {
-            var time = new Date(xhr.getResponseHeader('Date'));
+            var time = new Global['Datetime'](xhr.getResponseHeader('Date'));
             callback(time);
         });
     },
@@ -3134,7 +3133,7 @@ Global['View'] = klassExtendBase(function(config) {
         for (i in this.__proto__) {
             if (
                 this.__proto__.hasOwnProperty(i) &&
-                i.indexOf('_') !== 0 &&
+                /* i.indexOf('_') !== 0 && */
                 isFunction(this.__proto__[i])
             ) {
                 config[i] = this.__proto__[i];

@@ -2,6 +2,6 @@
 Global['DeviceMotion'] = function(config) {
     config = config || {};
     config['e'] = 'devicemotion';
-    return new Global.DeviceAction(config);
+    return Global.DeviceAction(config);
 };
 Global['DeviceMotion']['support'] = 'ondevicemotion' in win;

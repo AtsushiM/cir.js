@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Datetime/test.js" */
 Global['Datetime'] = function(str) {
     if (!str || isNumber(str)) {
-        return new Date(str);
+        return Date(str);
     }
 
     str = str.split(/[T:\-\+\/\s]/);
@@ -12,7 +12,7 @@ Global['Datetime'] = function(str) {
         str[5] = 0;
     }
 
-    return new Date(
+    return Date(
         str[0] * 1,
         str[1] * 1 - 1,
         str[2] * 1,
