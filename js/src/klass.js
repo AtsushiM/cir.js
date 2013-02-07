@@ -23,7 +23,26 @@ Global['klass'] = function(config) {
 
     return wrap;
 };
+Global['klass']['ancestors'] = ancestors;
 
+function ancestors(obj, propname) {
+    var props = [],
+        flg = TRUE;
+
+    while (flg) {
+        if (obj[propname] && props[props.length - 1] !== obj[propname]) {
+            props.push(obj[propname]);
+        }
+        if (obj['_superclass'] && obj['_superclass'].prototype) {
+            obj = obj['_superclass'].prototype;
+        }
+        else {
+            flg = FALSE;
+        }
+    }
+
+    return props;
+}
 function klassExtend(kls, init, prop) {
     return Global['klass']({
         'extend': kls,

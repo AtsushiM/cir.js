@@ -216,25 +216,6 @@ function bind(target, func) {
         return func.apply(target, arguments);
     };
 }
-function ancestors(obj, propname) {
-    var props = [],
-        flg = TRUE;
-
-    while (flg) {
-        if (obj.__proto__) {
-            obj = obj.__proto__;
-
-            if (obj[propname] && props[props.length - 1] !== obj[propname]) {
-                props.push(obj[propname]);
-            }
-        }
-        else {
-            flg = FALSE;
-        }
-    }
-
-    return props;
-}
 
 Global['util'] = {
     'win': win,
@@ -259,8 +240,7 @@ Global['util'] = {
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
-    'bind': bind,
-    'ancestors': ancestors
+    'bind': bind
 };
 /* Test: "../../spec/_src/src/dom/test.js" */
 function $(selector) {
@@ -488,7 +468,26 @@ Global['klass'] = function(config) {
 
     return wrap;
 };
+Global['klass']['ancestors'] = ancestors;
 
+function ancestors(obj, propname) {
+    var props = [],
+        flg = TRUE;
+
+    while (flg) {
+        if (obj[propname] && props[props.length - 1] !== obj[propname]) {
+            props.push(obj[propname]);
+        }
+        if (obj['_superclass'] && obj['_superclass'].prototype) {
+            obj = obj['_superclass'].prototype;
+        }
+        else {
+            flg = FALSE;
+        }
+    }
+
+    return props;
+}
 function klassExtend(kls, init, prop) {
     return Global['klass']({
         'extend': kls,

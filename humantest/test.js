@@ -29,5 +29,5 @@ var testfunc = function() {
     console.log(this.prop);
 };
 testfunc();
-var ret = C.utility.bind(test, testfunc);
+var ret = C.util.bind(test, testfunc);
 ret();
