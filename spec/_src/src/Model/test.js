@@ -11,7 +11,7 @@ describe('Modelは', function() {
                 test2: 'test'
             },
             validate: {
-                test: function(vars) {
+                test: function(key, vars) {
                     if (C.util.isNumber(vars)) {
                         return true;
                     }

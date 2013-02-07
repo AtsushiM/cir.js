@@ -42,6 +42,7 @@ src/Timer/\n\
 src/Transition/\n\
 src/Tweener/\n\
 src/Twitter/\n\
+src/Validate/\n\
 src/Video/\n\
 src/View/\n\
 src/WebStorage/\n\
@@ -100,6 +101,7 @@ src/util/\n\
 ../../js/src/Transition.js\n\
 ../../js/src/Tweener.js\n\
 ../../js/src/Twitter.js\n\
+../../js/src/Validate.js\n\
 ../../js/src/Video.js\n\
 ../../js/src/View.js\n\
 ../../js/src/WebStorage.js\n\
@@ -158,6 +160,7 @@ src/util/\n\
 ../_src/src/Transition/test.js\n\
 ../_src/src/Tweener/test.js\n\
 ../_src/src/Twitter/test.js\n\
+../_src/src/Validate/test.js\n\
 ../_src/src/Video/test.js\n\
 ../_src/src/View/test.js\n\
 ../_src/src/WebStorage/test.js\n\

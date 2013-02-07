@@ -12,7 +12,7 @@ Global['Datetime'] = function(str) {
         str[5] = 0;
     }
 
-    return Date(
+    return new Date(
         str[0] * 1,
         str[1] * 1 - 1,
         str[2] * 1,

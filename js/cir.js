@@ -1820,7 +1820,7 @@ Global['Datetime'] = function(str) {
         str[5] = 0;
     }
 
-    return Date(
+    return new Date(
         str[0] * 1,
         str[1] * 1 - 1,
         str[2] * 1,
@@ -2823,8 +2823,7 @@ Global['ServerMeta'] = klassExtendBase(function(config) {
 }, {
     'date': function(callback) {
         return getHeader(function(xhr) {
-            var time = new Global['Datetime'](xhr.getResponseHeader('Date'));
-            callback(time);
+            callback(new Date(xhr.getResponseHeader('Date')));
         });
     },
     'connection': function() {
@@ -3122,6 +3121,88 @@ Global['XML'] = klassExtendBase(function(config) {
         return $$child(selector, this.el);
     }
 });
+/* Test: "../../spec/_src/src/Model/test.js" */
+Global['Model'] = klassExtendBase(function(config) {
+    config = config || {};
+
+    var i,
+        defaults = config['defaults'] || this['defaults'] || {},
+        events = config['events'] || this['events'];
+
+    this._validate = config['validate'] || this['validate'];
+    this._store = config['store'] || this['store'] || new C['DataStore']();
+    this._observer = new C['Observer']();
+
+    for (i in defaults) {
+        this['set'](i, defaults[i]);
+    }
+    for (i in events) {
+        this['on'](i, events[i]);
+    }
+}, {
+    notice: function(eventname, key, val) {
+        this._observer['fire'](eventname, this._store['get']());
+
+        if (key) {
+            this._observer['fire'](eventname + ':' + key, val);
+        }
+    },
+    'set': function(key, val) {
+        if (
+            this._validate[key] &&
+            !this._validate[key](key, val)
+        ) {
+            return this.notice('fail', key, val);
+        }
+
+        this._prev = this._store['get']();
+        this._store['set'](key, val);
+
+        this.notice(ev['CHANGE'], key, val);
+
+        return TRUE;
+    },
+    'prev': function(key) {
+        if (!key) {
+            return this._prev;
+        }
+        return this._prev[key];
+    },
+    'get': function(key) {
+        return this._store['get'](key);
+    },
+    'remove': function(key) {
+        if (!key) {
+            return FALSE;
+        }
+
+        var get = this._store['get'](key),
+            ret = this._store['remove'](key);
+
+        this.notice('remove', key, get);
+
+        return ret;
+    },
+    'reset': function() {
+        var ret = this._store['reset']();
+
+        this.notice('reset');
+
+        return ret;
+    },
+    'on': function(key, func) {
+        var bindfunc = bind(this, func);
+        this._observer['on'](key, bindfunc);
+
+        return bindfunc;
+    },
+    'off': function(key, func) {
+        return this._observer['off'](key, func);
+    },
+    'fire': function(key, vars) {
+        return this._observer['fire'](key, vars);
+    }
+});
 /* Test: "../../spec/_src/src/View/test.js" */
 Global['View'] = klassExtendBase(function(config) {
     var i;
@@ -3184,86 +3265,47 @@ Global['View'] = klassExtendBase(function(config) {
         this._e('off');
     }
 });
-/* Test: "../../spec/_src/src/Model/test.js" */
-Global['Model'] = klassExtendBase(function(config) {
-    config = config || {};
-
-    var i,
-        defaults = config['defaults'] || this['defaults'] || {},
-        events = config['events'] || this['events'];
-
-    this._validate = config['validate'] || this['validate'];
-    this._store = new C['DataStore']();
-    this._observer = new C['Observer']();
-
-    for (i in defaults) {
-        this['set'](i, defaults[i]);
-    }
-    for (i in events) {
-        this['on'](i, events[i]);
-    }
-}, {
-    notice: function(eventname, key, val) {
-        this._observer['fire'](eventname, this._store['get']());
-
-        if (key) {
-            this._observer['fire'](eventname + ':' + key, val);
+/* Test: "../../spec/_src/src/Validate/test.js" */
+Global['Validate'] = klassExtendBase(UNDEFINED, {
+    'isObject': function(key, value) {
+        if (isObject(value)) {
+            return TRUE;
         }
+        consoleError(key + ' is Object');
     },
-    'set': function(key, val) {
-        if (
-            this._validate[key] &&
-            !this._validate[key](val)
-        ) {
-            throw new Error('cir-framework: Model / Validate Error.');
+    'isNumber': function(key, value) {
+        if (isNumber(value)) {
+            return TRUE;
         }
-
-        this._prev = this._store['get']();
-        this._store['set'](key, val);
-
-        this.notice(ev['CHANGE'], key, val);
-
-        return true;
+        consoleError(key + ' is Number');
     },
-    'prev': function(key) {
-        if (!key) {
-            return this._prev;
+    'isString': function(key, value) {
+        if (isString(value)) {
+            return TRUE;
         }
-        return this._prev[key];
+        consoleError(key + ' is String');
     },
-    'get': function(key) {
-        return this._store['get'](key);
-    },
-    'remove': function(key) {
-        if (!key) {
-            return false;
+    'isFunction': function(key, value) {
+        if (isFunction(value)) {
+            return TRUE;
         }
-
-        var get = this._store['get'](key),
-            ret = this._store['remove'](key);
-
-        this.notice('remove', key, get);
-
-        return ret;
+        consoleError(key + ' is Function');
     },
-    'reset': function() {
-        var ret = this._store['reset']();
-
-        this.notice('reset');
-
-        return ret;
+    'isBoolean': function(key, value) {
+        if (isBoolean(value)) {
+            return TRUE;
+        }
+        consoleError(key + ' is Boolean');
     },
-    'on': function(key, func) {
-        var bindfunc = bind(this, func);
-        this._observer['on'](key, bindfunc);
-
-        return bindfunc;
-    },
-    'off': function(key, func) {
-        return this._observer['off'](key, func);
-    },
-    'fire': function(key, vars) {
-        return this._observer['fire'](key, vars);
+    'isArray': function(key, value) {
+        if (isArray(value)) {
+            return TRUE;
+        }
+        consoleError(key + ' is Array');
     }
 });
+function consoleError(txt) {
+    console.log('Validate Error: ' + txt + '.');
+}
+Global['validate'] = new Global['Validate']();
 }());

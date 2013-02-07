@@ -22,8 +22,7 @@ Global['ServerMeta'] = klassExtendBase(function(config) {
 }, {
     'date': function(callback) {
         return getHeader(function(xhr) {
-            var time = new Global['Datetime'](xhr.getResponseHeader('Date'));
-            callback(time);
+            callback(new Date(xhr.getResponseHeader('Date')));
         });
     },
     'connection': function() {

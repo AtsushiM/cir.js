@@ -2,17 +2,13 @@
     var CustomModel = C.klass({
             extend: C.Model,
             prop: {
+                store: new C.SessionStorage(),
                 defaults: {
-                    test1: 1,
+                    /* test1: 0, */
                     test2: 'test'
                 },
                 validate: {
-                    test1: function(value) {
-                        if (C.util.isNumber(value)) {
-                            return true;
-                        }
-                        return false;
-                    }
+                    test1: C.validate.isNumber
                 },
                 events: {
                     'change': function(value) {
@@ -20,6 +16,12 @@
                     },
                     'change:test1': function(value) {
                         console.log('change:test1: ' + value);
+                    },
+                    // 'fail': function(value) {
+                    //     throw new Error('fail.');
+                    // },
+                    'fail:test1': function(value) {
+                        throw new Error('fail test1.');
                     }
                 }
             }
@@ -50,6 +52,8 @@
             }
         }),
         view = new CustomView();
+
+    model.set('test1', 'test');
 
     // var model = new C.Model({
     //         defaults: {

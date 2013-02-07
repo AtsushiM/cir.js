@@ -7,7 +7,7 @@ Global['Model'] = klassExtendBase(function(config) {
         events = config['events'] || this['events'];
 
     this._validate = config['validate'] || this['validate'];
-    this._store = new C['DataStore']();
+    this._store = config['store'] || this['store'] || new C['DataStore']();
     this._observer = new C['Observer']();
 
     for (i in defaults) {
@@ -27,9 +27,9 @@ Global['Model'] = klassExtendBase(function(config) {
     'set': function(key, val) {
         if (
             this._validate[key] &&
-            !this._validate[key](val)
+            !this._validate[key](key, val)
         ) {
-            throw new Error('cir-framework: Model / Validate Error.');
+            return this.notice('fail', key, val);
         }
 
         this._prev = this._store['get']();
@@ -37,7 +37,7 @@ Global['Model'] = klassExtendBase(function(config) {
 
         this.notice(ev['CHANGE'], key, val);
 
-        return true;
+        return TRUE;
     },
     'prev': function(key) {
         if (!key) {
@@ -50,7 +50,7 @@ Global['Model'] = klassExtendBase(function(config) {
     },
     'remove': function(key) {
         if (!key) {
-            return false;
+            return FALSE;
         }
 
         var get = this._store['get'](key),
