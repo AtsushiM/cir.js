@@ -216,6 +216,25 @@ function bind(target, func) {
         return func.apply(target, arguments);
     };
 }
+function ancestors(obj, propname) {
+    var props = [],
+        flg = TRUE;
+
+    while (flg) {
+        if (obj.__proto__) {
+            obj = obj.__proto__;
+
+            if (obj[propname] && props[props.length - 1] !== obj[propname]) {
+                props.push(obj[propname]);
+            }
+        }
+        else {
+            flg = FALSE;
+        }
+    }
+
+    return props;
+}
 
 Global['util'] = {
     'win': win,
@@ -240,7 +259,8 @@ Global['util'] = {
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
-    'bind': bind
+    'bind': bind,
+    'ancestors': ancestors
 };
 /* Test: "../../spec/_src/src/dom/test.js" */
 function $(selector) {
@@ -449,22 +469,10 @@ Global['klass'] = function(config) {
 
     var init = config['init'] || function() {},
         wrap = function() {
-            var proto = this,
-                inits = [],
-                i = TRUE;
+            var inits = ancestors(this, '__init__'),
+                i = inits.length;
 
-            while (i) {
-                if (proto.__proto__ && proto.__proto__.__init__) {
-                    proto = proto.__proto__;
-
-                    inits.push(proto.__init__);
-                }
-                else {
-                    i = FALSE;
-                }
-            }
-
-            for (i = inits.length; i--;) {
+            for (; i--;) {
                 inits[i].apply(this, arguments);
             }
         },
@@ -474,7 +482,7 @@ Global['klass'] = function(config) {
     if (extend) {
         Global['extend'](wrap, extend);
     }
-    wrap.prototype.__init__ = init;
+    wrap.prototype['__init__'] = init;
 
     override(wrap.prototype, prop);
 
@@ -524,25 +532,11 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
 }, {
     _disid: 0,
     'dispose': function() {
-        var proto = this,
-            internal = [],
-            i = TRUE,
-            len;
+        var internal = ancestors(this, 'disposeInternal'),
+            i = 0,
+            len = internal.length;
 
-        while (i) {
-            if (proto.__proto__) {
-                proto = proto.__proto__;
-
-                if (proto['disposeInternal'] && internal[internal.length - 1] !== proto['disposeInternal']) {
-                    internal.push(proto['disposeInternal']);
-                }
-            }
-            else {
-                i = FALSE;
-            }
-        }
-
-        for (i = 0, len = internal.length; i < len; i++) {
+        for (; i < len; i++) {
             internal[i].call(this);
         }
 
@@ -1722,14 +1716,13 @@ Global['Handle'] = klassExtendBase(function(config) {
         this['detach']();
     },
     'attach': function() {
-        this._e(TRUE);
+        this._e(on);
     },
     'detach': function() {
-        this._e(FALSE);
+        this._e(off);
     },
-    _e: function(isBind) {
-        var onoff = isBind ? on : off,
-            i;
+    _e: function(onoff) {
+        var i;
 
         for (i in this.handler['events']) {
             onoff(
@@ -3135,6 +3128,20 @@ Global['XML'] = klassExtendBase(function(config) {
 Global['View'] = klassExtendBase(function(config) {
     var i;
 
+    if (!config) {
+        config = {};
+
+        for (i in this.__proto__) {
+            if (
+                this.__proto__.hasOwnProperty(i) &&
+                i.indexOf('_') !== 0 &&
+                isFunction(this.__proto__[i])
+            ) {
+                config[i] = this.__proto__[i];
+            }
+        }
+    }
+
     for (i in config) {
         if (isFunction(config[i])) {
             config[i] = bind(this, config[i]);
@@ -3143,7 +3150,7 @@ Global['View'] = klassExtendBase(function(config) {
 
     override(this, config);
 
-    this['el'] = Global['$'](config['el'] || create('div'));
+    this['el'] = Global['$'](config['el'] || this['el'] || create('div'));
 
     this['attach']();
     if (config['init']) {
@@ -3153,7 +3160,7 @@ Global['View'] = klassExtendBase(function(config) {
     'disposeInternal': function() {
         this['detach']();
     },
-    _e: function(flg) {
+    _e: function(methodname) {
         var i,
             j,
             $el,
@@ -3167,40 +3174,35 @@ Global['View'] = klassExtendBase(function(config) {
                 $el = this['el'].find(i);
             }
 
-            if (flg) {
-                for (j in events[i]) {
-                    $el['on'](j, this[events[i][j]]);
-                }
-            }
-            else {
-                for (j in events[i]) {
-                    $el['off'](j, this[events[i][j]]);
-                }
+            for (j in events[i]) {
+                $el[methodname](j, this[events[i][j]]);
             }
         }
     },
     'attach': function() {
-        this._e(TRUE);
+        this._e('on');
     },
     'detach': function() {
-        this._e(FALSE);
+        this._e('off');
     }
 });
 /* Test: "../../spec/_src/src/Model/test.js" */
 Global['Model'] = klassExtendBase(function(config) {
-    var i,
-        defaults = config['defaults'] || {},
-        on = config['on'];
+    config = config || {};
 
-    this._validate = config['validate'];
+    var i,
+        defaults = config['defaults'] || this['defaults'] || {},
+        events = config['events'] || this['events'];
+
+    this._validate = config['validate'] || this['validate'];
     this._store = new C['DataStore']();
     this._observer = new C['Observer']();
 
     for (i in defaults) {
         this['set'](i, defaults[i]);
     }
-    for (i in on) {
-        this['on'](i, on[i]);
+    for (i in events) {
+        this['on'](i, events[i]);
     }
 }, {
     notice: function(eventname, key, val) {

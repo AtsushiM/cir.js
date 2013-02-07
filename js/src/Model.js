@@ -1,18 +1,20 @@
 /* Test: "../../spec/_src/src/Model/test.js" */
 Global['Model'] = klassExtendBase(function(config) {
-    var i,
-        defaults = config['defaults'] || {},
-        on = config['on'];
+    config = config || {};
 
-    this._validate = config['validate'];
+    var i,
+        defaults = config['defaults'] || this['defaults'] || {},
+        events = config['events'] || this['events'];
+
+    this._validate = config['validate'] || this['validate'];
     this._store = new C['DataStore']();
     this._observer = new C['Observer']();
 
     for (i in defaults) {
         this['set'](i, defaults[i]);
     }
-    for (i in on) {
-        this['on'](i, on[i]);
+    for (i in events) {
+        this['on'](i, events[i]);
     }
 }, {
     notice: function(eventname, key, val) {

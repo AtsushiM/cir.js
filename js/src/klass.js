@@ -4,22 +4,10 @@ Global['klass'] = function(config) {
 
     var init = config['init'] || function() {},
         wrap = function() {
-            var proto = this,
-                inits = [],
-                i = TRUE;
+            var inits = ancestors(this, '__init__'),
+                i = inits.length;
 
-            while (i) {
-                if (proto.__proto__ && proto.__proto__.__init__) {
-                    proto = proto.__proto__;
-
-                    inits.push(proto.__init__);
-                }
-                else {
-                    i = FALSE;
-                }
-            }
-
-            for (i = inits.length; i--;) {
+            for (; i--;) {
                 inits[i].apply(this, arguments);
             }
         },
@@ -29,7 +17,7 @@ Global['klass'] = function(config) {
     if (extend) {
         Global['extend'](wrap, extend);
     }
-    wrap.prototype.__init__ = init;
+    wrap.prototype['__init__'] = init;
 
     override(wrap.prototype, prop);
 

@@ -7,14 +7,13 @@ Global['Handle'] = klassExtendBase(function(config) {
         this['detach']();
     },
     'attach': function() {
-        this._e(TRUE);
+        this._e(on);
     },
     'detach': function() {
-        this._e(FALSE);
+        this._e(off);
     },
-    _e: function(isBind) {
-        var onoff = isBind ? on : off,
-            i;
+    _e: function(onoff) {
+        var i;
 
         for (i in this.handler['events']) {
             onoff(

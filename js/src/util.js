@@ -145,6 +145,25 @@ function bind(target, func) {
         return func.apply(target, arguments);
     };
 }
+function ancestors(obj, propname) {
+    var props = [],
+        flg = TRUE;
+
+    while (flg) {
+        if (obj.__proto__) {
+            obj = obj.__proto__;
+
+            if (obj[propname] && props[props.length - 1] !== obj[propname]) {
+                props.push(obj[propname]);
+            }
+        }
+        else {
+            flg = FALSE;
+        }
+    }
+
+    return props;
+}
 
 Global['util'] = {
     'win': win,
@@ -169,5 +188,6 @@ Global['util'] = {
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
-    'bind': bind
+    'bind': bind,
+    'ancestors': ancestors
 };

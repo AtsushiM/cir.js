@@ -5,25 +5,11 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
 }, {
     _disid: 0,
     'dispose': function() {
-        var proto = this,
-            internal = [],
-            i = TRUE,
-            len;
+        var internal = ancestors(this, 'disposeInternal'),
+            i = 0,
+            len = internal.length;
 
-        while (i) {
-            if (proto.__proto__) {
-                proto = proto.__proto__;
-
-                if (proto['disposeInternal'] && internal[internal.length - 1] !== proto['disposeInternal']) {
-                    internal.push(proto['disposeInternal']);
-                }
-            }
-            else {
-                i = FALSE;
-            }
-        }
-
-        for (i = 0, len = internal.length; i < len; i++) {
+        for (; i < len; i++) {
             internal[i].call(this);
         }
 
