@@ -449,7 +449,7 @@ Global['klass'] = function(config) {
 
     var init = config['init'] || function() {},
         wrap = function() {
-            var proto = this.__proto__,
+            var proto = this,
                 inits = [],
                 i = TRUE;
 
@@ -463,8 +463,6 @@ Global['klass'] = function(config) {
                     i = FALSE;
                 }
             }
-
-            inits.unshift(init);
 
             for (i = inits.length; i--;) {
                 inits[i].apply(this, arguments);
@@ -526,16 +524,30 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
 }, {
     _disid: 0,
     'dispose': function() {
-        var i;
+        var proto = this,
+            internal = [],
+            i = TRUE,
+            len;
 
-        if (this['disposeInternal']) {
-            this['disposeInternal']();
+        while (i) {
+            if (proto.__proto__) {
+                proto = proto.__proto__;
+
+                if (proto['disposeInternal'] && internal[internal.length - 1] !== proto['disposeInternal']) {
+                    internal.push(proto['disposeInternal']);
+                }
+            }
+            else {
+                i = FALSE;
+            }
         }
 
-        if (this._dispose) {
-            for (i in this._dispose) {
-                off.apply(NULL, this._dispose[i]);
-            }
+        for (i = 0, len = internal.length; i < len; i++) {
+            internal[i].call(this);
+        }
+
+        for (i in this._dispose) {
+            off.apply(NULL, this._dispose[i]);
         }
 
         for (i in this) {

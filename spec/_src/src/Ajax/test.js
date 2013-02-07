@@ -35,6 +35,7 @@ describe('Ajaxは', function() {
         ajax.request({
             url: '/spec/common/test.xml',
             callback: function(d) {
+                console.log(d);
                 data = d;
             }
         });

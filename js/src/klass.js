@@ -4,7 +4,7 @@ Global['klass'] = function(config) {
 
     var init = config['init'] || function() {},
         wrap = function() {
-            var proto = this.__proto__,
+            var proto = this,
                 inits = [],
                 i = TRUE;
 
@@ -18,8 +18,6 @@ Global['klass'] = function(config) {
                     i = FALSE;
                 }
             }
-
-            inits.unshift(init);
 
             for (i = inits.length; i--;) {
                 inits[i].apply(this, arguments);

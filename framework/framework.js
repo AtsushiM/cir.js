@@ -1,36 +1,62 @@
 var Test1 = C.klass({
         extend: C.Base,
         init: function() {
-            this.no1 = 1;
+            this.no = 1;
+        },
+        prop: {
+            disposeInternal: function() {
+                console.log(this.no);
+            }
         }
     }),
     Test2 = C.klass({
         extend: Test1,
         init: function() {
-            this.no2 = 2;
+            this.no = 2;
+        },
+        prop: {
+            disposeInternal: function() {
+                console.log(this.no);
+            }
         }
     }),
     Test3 = C.klass({
         extend: Test2,
         init: function() {
-            this.no3 = 3;
+            this.no = 3;
+        },
+        prop: {
+            disposeInternal: function() {
+                console.log(this.no);
+            }
         }
     }),
     Test4 = C.klass({
         extend: Test3,
         init: function() {
-            this.no4 = 4;
+            this.no = 4;
+        },
+        prop: {
+            disposeInternal: function() {
+                console.log(this.no);
+            }
         }
     }),
     Test5 = C.klass({
         extend: Test4,
         init: function() {
-            this.no5 = 5;
+            this.no = 5;
+        },
+        prop: {
+            disposeInternal: function() {
+                console.log(this.no);
+            }
         }
     }),
     test5 = new Test5();
 
 console.log(test5);
+test5.dispose();
 
 (function view() {
     var model = new C.Model({
