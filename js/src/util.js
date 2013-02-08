@@ -122,7 +122,7 @@ function isBoolean(vars) {
 function isArray(vars) {
     return is('Array', vars);
 }
-function isTouchDevice() {
+function isTouchable() {
     return 'ontouchstart' in win;
 }
 function nullFunction() {
@@ -178,7 +178,7 @@ Global['util'] = {
     'isFunction': isFunction,
     'isBoolean': isBoolean,
     'isArray': isArray,
-    'isTouchDevice': isTouchDevice,
+    'isTouchable': isTouchable,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,

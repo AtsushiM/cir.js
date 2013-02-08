@@ -8,7 +8,7 @@ var win = window,
     NULL = null,
     EMPTY = '',
     UNDEFINED = undefined,
-    isTouch = isTouchDevice(),
+    isTouch = isTouchable(),
     ev,
     ev_hashchange = 'hashchange',
     ev_orientationchange = 'orientationchange',
@@ -193,7 +193,7 @@ function isBoolean(vars) {
 function isArray(vars) {
     return is('Array', vars);
 }
-function isTouchDevice() {
+function isTouchable() {
     return 'ontouchstart' in win;
 }
 function nullFunction() {
@@ -249,7 +249,7 @@ Global['util'] = {
     'isFunction': isFunction,
     'isBoolean': isBoolean,
     'isArray': isArray,
-    'isTouchDevice': isTouchDevice,
+    'isTouchable': isTouchable,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,

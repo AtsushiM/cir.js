@@ -144,8 +144,8 @@ describe('utilは', function() {
         expect(util.isArray([1,2,3])).toBeTruthy();
         expect(util.isArray({})).toBeFalsy();
     });
-    it('isTouchDevice()でブラウザがタッチイベントに対応しているかどうかチェックする', function() {
-        expect(util.isTouchDevice()).toBeDefined();
+    it('isTouchable()でブラウザがタッチイベントに対応しているかどうかチェックする', function() {
+        expect(util.isTouchable()).toBeDefined();
     });
 
     it('nullFunction()はnullを返す', function() {
