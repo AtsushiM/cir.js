@@ -26,7 +26,7 @@ describe('ServerMetaは', function() {
 
     it('date()はサーバ時間を取得する', function() {
         var after = function(date) {
-                expect(date.getFullYear()).toBeDefined();
+                expect(date).toBeDefined();
             };
 
         expect(servermeta.date(after)).toBeDefined();
