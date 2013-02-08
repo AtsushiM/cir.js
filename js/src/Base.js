@@ -21,10 +21,14 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
             if (this[i] && isFunction(this[i]['dispose'])) {
                 this[i]['dispose']();
             }
-            delete this[i];
         }
 
         this.__proto__ = NULL;
+
+        for (i in this) {
+            delete this[i];
+        }
+
         return NULL;
     },
     'contract': function(element, e, handler) {

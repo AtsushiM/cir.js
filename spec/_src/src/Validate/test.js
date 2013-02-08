@@ -5,7 +5,10 @@ describe('Validateは', function() {
 
     beforeEach(function() {
         // init
-        validate = new c.Validate();
+        validate = new c.Validate({
+            level: ''
+            // default: 'warn' | 'console', 'warn', 'error', 'off'
+        });
     });
     afterEach(function() {
         // clear

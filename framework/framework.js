@@ -2,9 +2,9 @@
     var CustomModel = C.klass({
             extend: C.Model,
             prop: {
-                store: new C.SessionStorage(),
+                /* store: new C.SessionStorage(), */
                 defaults: {
-                    /* test1: 0, */
+                    test1: 0,
                     test2: 'test'
                 },
                 validate: {
@@ -20,9 +20,9 @@
                     // 'fail': function(value) {
                     //     throw new Error('fail.');
                     // },
-                    'fail:test1': function(value) {
-                        throw new Error('fail test1.');
-                    }
+                    // 'fail:test1': function(value) {
+                    //     throw new Error('fail test1.');
+                    // }
                 }
             }
         }),

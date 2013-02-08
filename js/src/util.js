@@ -145,6 +145,20 @@ function bind(target, func) {
         return func.apply(target, arguments);
     };
 }
+function owner(ownerObj, methods, overrideObj) {
+    methods = methods || ownerObj;
+    overrideObj = overrideObj || methods;
+
+    for (i in methods) {
+        if (isFunction(methods[i])) {
+            overrideObj[i] = bind(ownerObj, methods[i]);
+        }
+    }
+
+    override(ownerObj, overrideObj);
+
+    return overrideObj;
+}
 
 Global['util'] = {
     'win': win,
@@ -169,5 +183,6 @@ Global['util'] = {
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
-    'bind': bind
+    'bind': bind,
+    'owner': owner
 };

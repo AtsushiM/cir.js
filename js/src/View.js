@@ -3,26 +3,11 @@ Global['View'] = klassExtendBase(function(config) {
     var i;
 
     if (!config) {
-        config = {};
-
-        for (i in this.__proto__) {
-            if (
-                this.__proto__.hasOwnProperty(i) &&
-                /* i.indexOf('_') !== 0 && */
-                isFunction(this.__proto__[i])
-            ) {
-                config[i] = this.__proto__[i];
-            }
-        }
+        config = owner(this, this, {});
     }
-
-    for (i in config) {
-        if (isFunction(config[i])) {
-            config[i] = bind(this, config[i]);
-        }
+    else {
+        config = owner(this, config);
     }
-
-    override(this, config);
 
     this['el'] = Global['$'](config['el'] || this['el'] || create('div'));
 

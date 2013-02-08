@@ -29,6 +29,7 @@ describe('Viewは', function() {
     });
 
     it('イベントを登録する', function() {
+        console.log(view);
         document.body.click();
         expect(view.ret).toBeTruthy();
     });

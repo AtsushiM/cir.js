@@ -1,43 +1,64 @@
 /* Test: "../../spec/_src/src/Validate/test.js" */
-Global['Validate'] = klassExtendBase(UNDEFINED, {
+Global['Validate'] = klassExtendBase(function(config) {
+    config = config || {};
+
+    this['level'] = config['level'] || 'warn';
+
+    owner(this, this, config);
+}, {
+    'displayError': function displayError(key, text) {
+        text = 'Validate Error: ' + key + ' is ' + text + '.';
+
+        switch (this['level']) {
+            case 'log':
+                console.log(text);
+                return FALSE;
+            case 'error':
+                throw new Error(text);
+            case 'off':
+                return FALSE;
+            /* case 'warn': */
+            default:
+                console.warn(text);
+                return FALSE;
+        }
+    },
     'isObject': function(key, value) {
         if (isObject(value)) {
             return TRUE;
         }
-        consoleError(key + ' is Object');
+        this['displayError'](key, 'Object');
     },
     'isNumber': function(key, value) {
         if (isNumber(value)) {
             return TRUE;
         }
-        consoleError(key + ' is Number');
+        this['displayError'](key, 'Number');
     },
     'isString': function(key, value) {
         if (isString(value)) {
             return TRUE;
         }
-        consoleError(key + ' is String');
+        this['displayError'](key, 'String');
     },
     'isFunction': function(key, value) {
         if (isFunction(value)) {
             return TRUE;
         }
-        consoleError(key + ' is Function');
+        this['displayError'](key, 'Function');
     },
     'isBoolean': function(key, value) {
         if (isBoolean(value)) {
             return TRUE;
         }
-        consoleError(key + ' is Boolean');
+        this['displayError'](key, 'Boolean');
     },
     'isArray': function(key, value) {
         if (isArray(value)) {
             return TRUE;
         }
-        consoleError(key + ' is Array');
+        this['displayError'](key, 'Array');
     }
 });
-function consoleError(txt) {
-    console.log('Validate Error: ' + txt + '.');
-}
+
 Global['validate'] = new Global['Validate']();
