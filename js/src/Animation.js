@@ -14,13 +14,13 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = Global['Animation'] =
-    klassExtendBase(function(element, property, option) {
+    klassExtendBase(function(el, property, option) {
 
-    option = option || {};
+    option = option || NULLOBJ;
 
     this.onComplete = option['onComplete'] || nullFunction;
 
-    this.el = element;
+    this.el = el;
 
     Mine['id']++;
     this._id = 'ciranim' + Mine['id'];

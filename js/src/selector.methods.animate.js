@@ -35,8 +35,8 @@ methods['stop'] = function() {
     return this;
 }
 
-function animate(element, params, duration, ease, callback) {
-    var style = element.style,
+function animate(el, params, duration, ease, callback) {
+    var style = el.style,
         anime,
         option;
 
@@ -61,15 +61,15 @@ function animate(element, params, duration, ease, callback) {
 
     if (csssupport) {
         anime = new Animation(
-            element,
+            el,
             params,
             option
         );
     }
     else {
         anime = new Global['Tweener'](
-            element.style,
-            convertTweenerParam(element, params),
+            el.style,
+            convertTweenerParam(el, params),
             option
         );
     }
@@ -77,9 +77,9 @@ function animate(element, params, duration, ease, callback) {
     this._animate.push(anime);
 }
 
-function convertTweenerParam(element, params) {
+function convertTweenerParam(el, params) {
     var name,
-        styled = computedStyle(element),
+        styled = computedStyle(el),
         tosplit,
         from,
         retobj = {};

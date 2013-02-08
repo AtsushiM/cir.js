@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-var DataStoreName = 'DataStore';
-Global[DataStoreName] = klassExtendBase(function(config) {
+Global['DataStore'] = klassExtendBase(function() {
     this.data = {};
 }, {
     'set': function(key, val) {

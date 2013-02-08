@@ -16,9 +16,9 @@ describe('DragFlickは', function() {
         expect(dragflick).toEqual({});
     });
 
-    it('amount({element, callback})でelementがフリックされた際、callbackに移動量を{x,y}の形式で渡す', function() {
+    it('amount({el, callback})でelがフリックされた際、callbackに移動量を{x,y}の形式で渡す', function() {
         dragflick.amount({
-            element: document.body,
+            el: document.body,
             callback: function(amount) {
                 expect(amount.x).toBeDefined();
                 expect(amount.y).toBeDefined();
@@ -28,9 +28,9 @@ describe('DragFlickは', function() {
         expect(0).toEqual(0);
     });
 
-    it('direction({element, boundary, callback})でelementがフリックされた際、boundaryで指定した移動量以上フリックされたらcallbackに移動方向を渡す', function() {
+    it('direction({el, boundary, callback})でelがフリックされた際、boundaryで指定した移動量以上フリックされたらcallbackに移動方向を渡す', function() {
         dragflick.direction({
-            element: document.body,
+            el: document.body,
             boundary: 0,
             callback: function(direction) {
                 expect(direction.top).toBeDefined();
@@ -44,9 +44,9 @@ describe('DragFlickは', function() {
         expect(0).toEqual(0);
     });
 
-    it('attach({element, boundary, direction, start, move, end})でelementに対してdirectionメソッドを実行し、touchstart,touchmove,touchendにそれぞれをバインドする', function() {
+    it('attach({el, boundary, direction, start, move, end})でelに対してdirectionメソッドを実行し、touchstart,touchmove,touchendにそれぞれをバインドする', function() {
         dragflick.attach({
-            element: document.body,
+            el: document.body,
             boundary: 0,
             direction: function(direction) {
                 expect(direction.top).toBeDefined();

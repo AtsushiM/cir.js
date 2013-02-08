@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
 var ObserverName = 'Observer';
-Global[ObserverName] = klassExtendBase(function(config) {
+Global[ObserverName] = klassExtendBase(function() {
     this.observed = {};
 }, {
     'on': function(key, func) {

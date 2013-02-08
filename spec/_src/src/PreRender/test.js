@@ -7,7 +7,7 @@ describe('PreRenderは', function() {
     beforeEach(function() {
         // init
         prerender = new c.PreRender({
-            elements: [$body],
+            els: [$body],
             guesslimit: 10,
             looptime: 10,
             loopblur: 5,
@@ -24,7 +24,7 @@ describe('PreRenderは', function() {
         expect(prerender).toEqual({});
     });
 
-    it('start()でelementsで指定したエレメントのプリレンダリングを開始する', function() {
+    it('start()でelsで指定したエレメントのプリレンダリングを開始する', function() {
         prerender.start();
         expect(0).toEqual(0);
     });

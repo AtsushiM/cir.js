@@ -7,6 +7,7 @@ var win = window,
     FALSE = false,
     NULL = null,
     EMPTY = '',
+    NULLOBJ = {},
     UNDEFINED = undefined,
     isTouch = isTouchable(),
     ev,
@@ -264,11 +265,11 @@ function $(selector) {
 function $$(selector) {
     return $$child(selector, doc);
 }
-function $child(selector, element) {
-    return element.querySelector(selector);
+function $child(selector, el) {
+    return el.querySelector(selector);
 }
-function $$child(selector, element) {
-    var eles = element.querySelectorAll(selector),
+function $$child(selector, el) {
+    var eles = el.querySelectorAll(selector),
         ary = [];
 
     ary.push.apply(ary, eles);
@@ -279,8 +280,8 @@ function $id(id) {
     return doc.getElementById(id);
 }
 
-function hasClass(element, cls) {
-    var clsName = element.className,
+function hasClass(el, cls) {
+    var clsName = el.className,
         addedcls = clsName ? clsName.split(' ') : [],
         i = addedcls.length;
 
@@ -293,11 +294,11 @@ function hasClass(element, cls) {
     return FALSE;
 }
 
-function addClass(element, cls) {
+function addClass(el, cls) {
     var between = EMPTY,
-        orgcls = element.className;
+        orgcls = el.className;
 
-    if (hasClass(element, cls)) {
+    if (hasClass(el, cls)) {
         return FALSE;
     }
 
@@ -305,20 +306,20 @@ function addClass(element, cls) {
         between = ' ';
     }
 
-    element.className = orgcls + between + cls;
+    el.className = orgcls + between + cls;
 }
 
-function removeClass(element, cls) {
+function removeClass(el, cls) {
     var addedcls,
         attachcls = [],
         i,
         len;
 
-    if (!hasClass(element, cls)) {
+    if (!hasClass(el, cls)) {
         return FALSE;
     }
 
-    addedcls = element.className.split(' ');
+    addedcls = el.className.split(' ');
     i = addedcls.length;
 
     for (; i--;) {
@@ -327,66 +328,66 @@ function removeClass(element, cls) {
         }
     }
 
-    element.className = attachcls.join(' ');
+    el.className = attachcls.join(' ');
 
     return TRUE;
 }
-function toggleClass(element, cls) {
-    if (hasClass(element, cls)) {
-        return removeClass(element, cls);
+function toggleClass(el, cls) {
+    if (hasClass(el, cls)) {
+        return removeClass(el, cls);
     }
 
-    return addClass(element, cls);
+    return addClass(el, cls);
 }
 
-function attr(element, vars, value) {
+function attr(el, vars, value) {
     var i;
 
     if (isObject(vars)) {
         for (i in vars) {
-            element.setAttribute(i, vars[i]);
+            el.setAttribute(i, vars[i]);
         }
 
         return TRUE;
     }
 
     if (value || value === EMPTY) {
-        return element.setAttribute(vars, value);
+        return el.setAttribute(vars, value);
     }
 
-    return element.getAttribute(vars);
+    return el.getAttribute(vars);
 }
-function removeAttr(element, key) {
-    element.removeAttribute(key);
+function removeAttr(el, key) {
+    el.removeAttribute(key);
 }
 
 function create(tagname, attribute) {
-    var element = doc.createElement(tagname);
+    var el= doc.createElement(tagname);
 
     if (attribute) {
-        attr(element, attribute);
+        attr(el, attribute);
     }
 
-    return element;
+    return el;
 }
 
-function on(element, eventname, handler) {
-    element.addEventListener(eventname, handler, FALSE);
+function on(el, eventname, handler) {
+    el.addEventListener(eventname, handler, FALSE);
 }
-function off(element, eventname, handler) {
-    element.removeEventListener(eventname, handler, FALSE);
+function off(el, eventname, handler) {
+    el.removeEventListener(eventname, handler, FALSE);
 }
-function show(element) {
-    element.style.display = 'block';
+function show(el) {
+    el.style.display = 'block';
 }
-function hide(element) {
-    element.style.display = 'none';
+function hide(el) {
+    el.style.display = 'none';
 }
-function opacity(element, value) {
-    element.style.opacity = value;
+function opacity(el, value) {
+    el.style.opacity = value;
 }
-function css(element, addstyle) {
-    var style = element.style,
+function css(el, addstyle) {
+    var style = el.style,
         i,
         key,
         value;
@@ -402,33 +403,33 @@ function css(element, addstyle) {
         style[key] = value;
     }
 }
-function computedStyle(element) {
-    return doc.defaultView.getComputedStyle(element, NULL);
+function computedStyle(el) {
+    return doc.defaultView.getComputedStyle(el, NULL);
 }
-function parent(element) {
-    return element['parentNode'];
+function parent(el) {
+    return el['parentNode'];
 }
-function append(element, addelement) {
-    return element['appendChild'](addelement);
+function append(el, addel) {
+    return el['appendChild'](addel);
 }
-function beforeafter(element, addelement, target) {
-    return parent(element).insertBefore(addelement, target);
+function beforeafter(el, addel, target) {
+    return parent(el).insertBefore(addel, target);
 }
-function before(element, addelement) {
-    return beforeafter(element, addelement, element);
+function before(el, addel) {
+    return beforeafter(el, addel, el);
 }
-function after(element, addelement) {
-    return beforeafter(element, addelement, element.nextSibling);
+function after(el, addel) {
+    return beforeafter(el, addel, el.nextSibling);
 }
-function remove(element) {
-    return parent(element).removeChild(element);
+function remove(el) {
+    return parent(el).removeChild(el);
 }
-function html(element, text) {
+function html(el, text) {
     if (!text) {
-        return element.innerHTML;
+        return el.innerHTML;
     }
 
-    element.innerHTML = text;
+    el.innerHTML = text;
 }
 
 Global['dom'] = {
@@ -539,8 +540,7 @@ Global['extend'] = function(child, _super) {
     };
 };
 /* Test: "../../spec/_src/src/Base/test.js" */
-Global['Base'] = klassExtend(UNDEFINED, function(config) {
-    config = config || {};
+Global['Base'] = klassExtend(UNDEFINED, function() {
     this._dispose = {};
 }, {
     _disid: 0,
@@ -571,10 +571,10 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
 
         return NULL;
     },
-    'contract': function(element, e, handler) {
-        on(element, e, handler);
+    'contract': function(el, e, handler) {
+        on(el, e, handler);
         this._disid++;
-        this._dispose[this._disid] = [element, e, handler];
+        this._dispose[this._disid] = [el, e, handler];
 
         return this._disid;
     },
@@ -766,13 +766,13 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = Global['Animation'] =
-    klassExtendBase(function(element, property, option) {
+    klassExtendBase(function(el, property, option) {
 
-    option = option || {};
+    option = option || NULLOBJ;
 
     this.onComplete = option['onComplete'] || nullFunction;
 
-    this.el = element;
+    this.el = el;
 
     Mine['id']++;
     this._id = 'ciranim' + Mine['id'];
@@ -899,7 +899,7 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = Global['Transition'] =
-    klassExtendBase(function(element, property, option) {
+    klassExtendBase(function(el, property, option) {
 
     option = option || {};
     option['onComplete'] = option['onComplete'] || nullFunction;
@@ -924,7 +924,7 @@ Mine = Global['Transition'] =
 
     addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-    this.el = element;
+    this.el = el;
     this.property = property;
     this.option = option;
 
@@ -1144,7 +1144,7 @@ Mine['duration'] = 500;
 Global['$'] = function(query, _parent) {
     'use strict';
 
-    var $elements,
+    var $el,
         base,
         instance,
         len;
@@ -1152,13 +1152,13 @@ Global['$'] = function(query, _parent) {
     _parent = _parent || doc;
 
     if (isString(query)) {
-        $elements = _parent.querySelectorAll(query);
+        $el = _parent.querySelectorAll(query);
     }
     else {
-        $elements = [query];
+        $el = [query];
         query = EMPTY;
     }
-    len = $elements.length;
+    len = $el.length;
 
     base = function() {};
     base.prototype = Global['$'].methods;
@@ -1170,15 +1170,13 @@ Global['$'] = function(query, _parent) {
 
     /* for (; i < len; i++) { */
     for (;len--;) {
-        instance[len] = $elements[len];
+        instance[len] = $el[len];
     }
 
     return instance;
 };
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
-var el = Global['element'];
-
 function forExe(_this, func, arg) {
     var i = _this.length,
         ary = makeAry(arg);
@@ -1309,8 +1307,8 @@ methods['stop'] = function() {
     return this;
 }
 
-function animate(element, params, duration, ease, callback) {
-    var style = element.style,
+function animate(el, params, duration, ease, callback) {
+    var style = el.style,
         anime,
         option;
 
@@ -1335,15 +1333,15 @@ function animate(element, params, duration, ease, callback) {
 
     if (csssupport) {
         anime = new Animation(
-            element,
+            el,
             params,
             option
         );
     }
     else {
         anime = new Global['Tweener'](
-            element.style,
-            convertTweenerParam(element, params),
+            el.style,
+            convertTweenerParam(el, params),
             option
         );
     }
@@ -1351,9 +1349,9 @@ function animate(element, params, duration, ease, callback) {
     this._animate.push(anime);
 }
 
-function convertTweenerParam(element, params) {
+function convertTweenerParam(el, params) {
     var name,
-        styled = computedStyle(element),
+        styled = computedStyle(el),
         tosplit,
         from,
         retobj = {};
@@ -1514,7 +1512,7 @@ var Media = klassExtendBase(function(config) {
         loop = config['loop'],
         media,
         ev_canplay = 'canplay',
-        _parent = config['element'] || doc.body;
+        _parent = config['el'] || doc.body;
 
     config['preload'] = 'auto';
     config['autoplay'] =
@@ -1743,7 +1741,7 @@ Global['Handle'] = klassExtendBase(function(config) {
 
         for (i in this.handler['events']) {
             onoff(
-                this.handler['element'],
+                this.handler['el'],
                 i,
                 this.handler['events'][i]
             );
@@ -1828,7 +1826,7 @@ Global['Brush']['support'] = !!win['HTMLCanvasElement'];
 /* Test: "../../spec/_src/src/Datetime/test.js" */
 Global['Datetime'] = function(str) {
     if (!str || isNumber(str)) {
-        return Date(str);
+        return new Date(str);
     }
 
     str = str.split(/[T:\-\+\/\s]/);
@@ -1849,8 +1847,7 @@ Global['Datetime'] = function(str) {
     );
 };
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-var DataStoreName = 'DataStore';
-Global[DataStoreName] = klassExtendBase(function(config) {
+Global['DataStore'] = klassExtendBase(function() {
     this.data = {};
 }, {
     'set': function(key, val) {
@@ -1989,8 +1986,6 @@ Global['Deferred'] = klassExtendBase(function() {
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global['DragFlick'] = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
     if (config) {
         this['attach'](config);
     }
@@ -2006,7 +2001,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             startY,
             dragflg = FALSE;
 
-        this['contract'](vars['element'], ev['SWITCHDOWN'], start);
+        this['contract'](vars['el'], ev['SWITCHDOWN'], start);
         this['contract'](win, ev['SWITCHUP'], end);
 
         function start(e) {
@@ -2035,7 +2030,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     },
     'direction': function(vars) {
         this['amount']({
-            'element': vars['element'],
+            'el': vars['el'],
             'callback': function(amount) {
                 var boundary = vars['boundary'] || 0,
                     direction = {
@@ -2075,8 +2070,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     },
     'attach': function(vars) {
         var mine = this,
-            element = vars['element'],
-            el = Global['element'],
+            el = vars['el'],
             start = vars['start'] || nullFunction,
             move = vars['move'] || nullFunction,
             end = vars['end'] || nullFunction,
@@ -2086,13 +2080,13 @@ Global['DragFlick'] = klassExtendBase(function(config) {
 
         if (vars['direction']) {
             mine['direction']({
-                'element': element,
+                'el': el,
                 'boundary': vars['boundary'],
                 'callback': vars['direction']
             });
         }
 
-        eventProxy(element, ev['SWITCHDOWN'], function(_e) {
+        eventProxy(el, ev['SWITCHDOWN'], function(_e) {
             flg = TRUE;
 
             startX = _e.pageX;
@@ -2131,18 +2125,18 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         });
 
-        function eventProxy(element, ev, callback) {
+        function eventProxy(el, ev, callback) {
             var handler = function(e) {
                     var changed = mine._t(e);
                     callback(changed);
                 };
-            mine['contract'](element, ev, handler);
+            mine['contract'](el, ev, handler);
         }
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
 Global['ExternalInterface'] = function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
     if (config['android']) {
         return new ExternalAndroid(config);
@@ -2152,8 +2146,6 @@ Global['ExternalInterface'] = function(config) {
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
 var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
-    config = config || {};
-
     this.android = config['android'];
     this.externalObj = config['externalObj'];
 }, {
@@ -2161,18 +2153,17 @@ var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
         this.android[conf['mode']](this['makeHash'](conf));
     },
     'addCallback': function(name, func) {
-        var mine = this;
-        mine.externalObj[name] = function(vars) {
-            var objs = mine['parseHash'](vars);
+        this.externalObj[name] = bind(this, function(vars) {
+            var objs = this['parseHash'](vars);
             return func(objs['vars']);
-        };
+        });
     },
     'removeCallback': function(name) {
         delete this.externalObj[name];
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-var ExternalIOS = klassExtend(Global['HashQuery'], function(config) {
+var ExternalIOS = klassExtend(Global['HashQuery'], function() {
     this.ios = {};
 }, {
     'disposeInternal': function() {
@@ -2336,19 +2327,16 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
 Global['WindowLoad'] = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
     if (config) {
         this.onload(config['onload']);
     }
 }, {
     onload: function(func) {
-        var mine = this,
-            disposeid,
-            loaded = function() {
-                mine['uncontract'](disposeid);
+        var disposeid,
+            loaded = bind(this, function() {
+                this['uncontract'](disposeid);
                 func();
-            };
+            });
 
         disposeid = this['contract'](win, ev['LOAD'], loaded);
     }
@@ -2592,7 +2580,7 @@ Global['DeviceShake']['support'] = Shake ? TRUE : FALSE;
 }());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
 Global['FontImg'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
     this.type = config['type'] ? config['type'] + '_' : EMPTY;
     this.tag = config['tag'] || 'span';
@@ -2613,7 +2601,7 @@ Global['FontImg'] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
 var ObserverName = 'Observer';
-Global[ObserverName] = klassExtendBase(function(config) {
+Global[ObserverName] = klassExtendBase(function() {
     this.observed = {};
 }, {
     'on': function(key, func) {
@@ -2686,17 +2674,13 @@ Global[ObserverName] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 Global['PreRender'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
-    if (!config['loopblur']) {
-        config['loopblur'] = 20;
-    }
-
-    this.els = config['elements'] || [];
+    this.els = config['els'] || [];
     this.guesslimit = config['guesslimit'] || 30;
     this.onrendered = config['onrendered'] || nullFunction;
     this.looptime = config['looptime'] || 100;
-    this.loopblur = this.looptime + config['loopblur'];
+    this.loopblur = this.looptime + (config['loopblur'] || 20);
     /* this.loopid = this.prevtime = NULL; */
 
     if (!config['manual']) {
@@ -2826,7 +2810,7 @@ var xhr,
     isLoaded = FALSE;
 
 Global['ServerMeta'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
     var callback = config['callback'] || nullFunction;
 
@@ -3142,7 +3126,7 @@ Global['XML'] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/Model/test.js" */
 Global['Model'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
     var i,
         defaults = config['defaults'] || this['defaults'] || {},

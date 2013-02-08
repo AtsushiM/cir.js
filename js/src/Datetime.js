@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Datetime/test.js" */
 Global['Datetime'] = function(str) {
     if (!str || isNumber(str)) {
-        return Date(str);
+        return new Date(str);
     }
 
     str = str.split(/[T:\-\+\/\s]/);

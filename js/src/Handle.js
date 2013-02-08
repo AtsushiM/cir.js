@@ -17,7 +17,7 @@ Global['Handle'] = klassExtendBase(function(config) {
 
         for (i in this.handler['events']) {
             onoff(
-                this.handler['element'],
+                this.handler['el'],
                 i,
                 this.handler['events'][i]
             );

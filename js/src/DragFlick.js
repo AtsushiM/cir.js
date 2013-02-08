@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global['DragFlick'] = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
     if (config) {
         this['attach'](config);
     }
@@ -17,7 +15,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             startY,
             dragflg = FALSE;
 
-        this['contract'](vars['element'], ev['SWITCHDOWN'], start);
+        this['contract'](vars['el'], ev['SWITCHDOWN'], start);
         this['contract'](win, ev['SWITCHUP'], end);
 
         function start(e) {
@@ -46,7 +44,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     },
     'direction': function(vars) {
         this['amount']({
-            'element': vars['element'],
+            'el': vars['el'],
             'callback': function(amount) {
                 var boundary = vars['boundary'] || 0,
                     direction = {
@@ -86,8 +84,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     },
     'attach': function(vars) {
         var mine = this,
-            element = vars['element'],
-            el = Global['element'],
+            el = vars['el'],
             start = vars['start'] || nullFunction,
             move = vars['move'] || nullFunction,
             end = vars['end'] || nullFunction,
@@ -97,13 +94,13 @@ Global['DragFlick'] = klassExtendBase(function(config) {
 
         if (vars['direction']) {
             mine['direction']({
-                'element': element,
+                'el': el,
                 'boundary': vars['boundary'],
                 'callback': vars['direction']
             });
         }
 
-        eventProxy(element, ev['SWITCHDOWN'], function(_e) {
+        eventProxy(el, ev['SWITCHDOWN'], function(_e) {
             flg = TRUE;
 
             startX = _e.pageX;
@@ -142,12 +139,12 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         });
 
-        function eventProxy(element, ev, callback) {
+        function eventProxy(el, ev, callback) {
             var handler = function(e) {
                     var changed = mine._t(e);
                     callback(changed);
                 };
-            mine['contract'](element, ev, handler);
+            mine['contract'](el, ev, handler);
         }
     }
 });

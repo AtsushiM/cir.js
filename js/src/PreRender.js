@@ -1,16 +1,12 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 Global['PreRender'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
-    if (!config['loopblur']) {
-        config['loopblur'] = 20;
-    }
-
-    this.els = config['elements'] || [];
+    this.els = config['els'] || [];
     this.guesslimit = config['guesslimit'] || 30;
     this.onrendered = config['onrendered'] || nullFunction;
     this.looptime = config['looptime'] || 100;
-    this.loopblur = this.looptime + config['loopblur'];
+    this.loopblur = this.looptime + (config['loopblur'] || 20);
     /* this.loopid = this.prevtime = NULL; */
 
     if (!config['manual']) {

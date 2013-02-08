@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/FontImg/test.js" */
 Global['FontImg'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
     this.type = config['type'] ? config['type'] + '_' : EMPTY;
     this.tag = config['tag'] || 'span';

@@ -9,7 +9,7 @@ $('#start').on(C.e.CLICK, function() {
     if (!flg) {
         for (i = 0; i < len; i++) {
             binds[i] = new C.Bind({
-                element: $test[0],
+                el: $test[0],
                 events: {
                     click: function() {
                         console.log('click');

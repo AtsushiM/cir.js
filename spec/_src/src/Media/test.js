@@ -18,7 +18,7 @@ describe('Mediaは', function() {
         //     name: 'testmovie',
         //     autoplay: false,
         //     loop: false,
-        //     element: document.body,
+        //     el: document.body,
         //     oncanplay: function(e) {
         //         // write code.
         //     },
@@ -35,7 +35,7 @@ describe('Mediaは', function() {
         //     name: 'tm2_door000',
         //     autoplay: false,
         //     loop: false,
-        //     element: document.body,
+        //     el: document.body,
         //     oncanplay: function(e) {
         //         // write code.
         //     },

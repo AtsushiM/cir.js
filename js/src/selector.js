@@ -2,7 +2,7 @@
 Global['$'] = function(query, _parent) {
     'use strict';
 
-    var $elements,
+    var $el,
         base,
         instance,
         len;
@@ -10,13 +10,13 @@ Global['$'] = function(query, _parent) {
     _parent = _parent || doc;
 
     if (isString(query)) {
-        $elements = _parent.querySelectorAll(query);
+        $el = _parent.querySelectorAll(query);
     }
     else {
-        $elements = [query];
+        $el = [query];
         query = EMPTY;
     }
-    len = $elements.length;
+    len = $el.length;
 
     base = function() {};
     base.prototype = Global['$'].methods;
@@ -28,7 +28,7 @@ Global['$'] = function(query, _parent) {
 
     /* for (; i < len; i++) { */
     for (;len--;) {
-        instance[len] = $elements[len];
+        instance[len] = $el[len];
     }
 
     return instance;

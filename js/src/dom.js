@@ -5,11 +5,11 @@ function $(selector) {
 function $$(selector) {
     return $$child(selector, doc);
 }
-function $child(selector, element) {
-    return element.querySelector(selector);
+function $child(selector, el) {
+    return el.querySelector(selector);
 }
-function $$child(selector, element) {
-    var eles = element.querySelectorAll(selector),
+function $$child(selector, el) {
+    var eles = el.querySelectorAll(selector),
         ary = [];
 
     ary.push.apply(ary, eles);
@@ -20,8 +20,8 @@ function $id(id) {
     return doc.getElementById(id);
 }
 
-function hasClass(element, cls) {
-    var clsName = element.className,
+function hasClass(el, cls) {
+    var clsName = el.className,
         addedcls = clsName ? clsName.split(' ') : [],
         i = addedcls.length;
 
@@ -34,11 +34,11 @@ function hasClass(element, cls) {
     return FALSE;
 }
 
-function addClass(element, cls) {
+function addClass(el, cls) {
     var between = EMPTY,
-        orgcls = element.className;
+        orgcls = el.className;
 
-    if (hasClass(element, cls)) {
+    if (hasClass(el, cls)) {
         return FALSE;
     }
 
@@ -46,20 +46,20 @@ function addClass(element, cls) {
         between = ' ';
     }
 
-    element.className = orgcls + between + cls;
+    el.className = orgcls + between + cls;
 }
 
-function removeClass(element, cls) {
+function removeClass(el, cls) {
     var addedcls,
         attachcls = [],
         i,
         len;
 
-    if (!hasClass(element, cls)) {
+    if (!hasClass(el, cls)) {
         return FALSE;
     }
 
-    addedcls = element.className.split(' ');
+    addedcls = el.className.split(' ');
     i = addedcls.length;
 
     for (; i--;) {
@@ -68,66 +68,66 @@ function removeClass(element, cls) {
         }
     }
 
-    element.className = attachcls.join(' ');
+    el.className = attachcls.join(' ');
 
     return TRUE;
 }
-function toggleClass(element, cls) {
-    if (hasClass(element, cls)) {
-        return removeClass(element, cls);
+function toggleClass(el, cls) {
+    if (hasClass(el, cls)) {
+        return removeClass(el, cls);
     }
 
-    return addClass(element, cls);
+    return addClass(el, cls);
 }
 
-function attr(element, vars, value) {
+function attr(el, vars, value) {
     var i;
 
     if (isObject(vars)) {
         for (i in vars) {
-            element.setAttribute(i, vars[i]);
+            el.setAttribute(i, vars[i]);
         }
 
         return TRUE;
     }
 
     if (value || value === EMPTY) {
-        return element.setAttribute(vars, value);
+        return el.setAttribute(vars, value);
     }
 
-    return element.getAttribute(vars);
+    return el.getAttribute(vars);
 }
-function removeAttr(element, key) {
-    element.removeAttribute(key);
+function removeAttr(el, key) {
+    el.removeAttribute(key);
 }
 
 function create(tagname, attribute) {
-    var element = doc.createElement(tagname);
+    var el= doc.createElement(tagname);
 
     if (attribute) {
-        attr(element, attribute);
+        attr(el, attribute);
     }
 
-    return element;
+    return el;
 }
 
-function on(element, eventname, handler) {
-    element.addEventListener(eventname, handler, FALSE);
+function on(el, eventname, handler) {
+    el.addEventListener(eventname, handler, FALSE);
 }
-function off(element, eventname, handler) {
-    element.removeEventListener(eventname, handler, FALSE);
+function off(el, eventname, handler) {
+    el.removeEventListener(eventname, handler, FALSE);
 }
-function show(element) {
-    element.style.display = 'block';
+function show(el) {
+    el.style.display = 'block';
 }
-function hide(element) {
-    element.style.display = 'none';
+function hide(el) {
+    el.style.display = 'none';
 }
-function opacity(element, value) {
-    element.style.opacity = value;
+function opacity(el, value) {
+    el.style.opacity = value;
 }
-function css(element, addstyle) {
-    var style = element.style,
+function css(el, addstyle) {
+    var style = el.style,
         i,
         key,
         value;
@@ -143,33 +143,33 @@ function css(element, addstyle) {
         style[key] = value;
     }
 }
-function computedStyle(element) {
-    return doc.defaultView.getComputedStyle(element, NULL);
+function computedStyle(el) {
+    return doc.defaultView.getComputedStyle(el, NULL);
 }
-function parent(element) {
-    return element['parentNode'];
+function parent(el) {
+    return el['parentNode'];
 }
-function append(element, addelement) {
-    return element['appendChild'](addelement);
+function append(el, addel) {
+    return el['appendChild'](addel);
 }
-function beforeafter(element, addelement, target) {
-    return parent(element).insertBefore(addelement, target);
+function beforeafter(el, addel, target) {
+    return parent(el).insertBefore(addel, target);
 }
-function before(element, addelement) {
-    return beforeafter(element, addelement, element);
+function before(el, addel) {
+    return beforeafter(el, addel, el);
 }
-function after(element, addelement) {
-    return beforeafter(element, addelement, element.nextSibling);
+function after(el, addel) {
+    return beforeafter(el, addel, el.nextSibling);
 }
-function remove(element) {
-    return parent(element).removeChild(element);
+function remove(el) {
+    return parent(el).removeChild(el);
 }
-function html(element, text) {
+function html(el, text) {
     if (!text) {
-        return element.innerHTML;
+        return el.innerHTML;
     }
 
-    element.innerHTML = text;
+    el.innerHTML = text;
 }
 
 Global['dom'] = {

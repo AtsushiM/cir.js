@@ -6,7 +6,7 @@ var xhr,
     isLoaded = FALSE;
 
 Global['ServerMeta'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
     var callback = config['callback'] || nullFunction;
 

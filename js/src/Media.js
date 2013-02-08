@@ -8,7 +8,7 @@ var Media = klassExtendBase(function(config) {
         loop = config['loop'],
         media,
         ev_canplay = 'canplay',
-        _parent = config['element'] || doc.body;
+        _parent = config['el'] || doc.body;
 
     config['preload'] = 'auto';
     config['autoplay'] =

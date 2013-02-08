@@ -7,7 +7,7 @@ describe('Handleは', function() {
     beforeEach(function() {
         // init
         eventHandeler = {
-            element: document.body,
+            el: document.body,
             events: {
                 click: function(str) {
                     eventHandeler.clicktest = true;
@@ -28,7 +28,7 @@ describe('Handleは', function() {
         expect(handle).toEqual({});
     });
 
-    it('初期化時に{element: element, events: {event: function}}に合わせてイベントを追加する', function() {
+    it('初期化時に{el: element, events: {event: function}}に合わせてイベントを追加する', function() {
         document.body.click();
         expect(eventHandeler.clicktest).toBeTruthy();
     });

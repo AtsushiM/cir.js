@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-var ExternalIOS = klassExtend(Global['HashQuery'], function(config) {
+var ExternalIOS = klassExtend(Global['HashQuery'], function() {
     this.ios = {};
 }, {
     'disposeInternal': function() {

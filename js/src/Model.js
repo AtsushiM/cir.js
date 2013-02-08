@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/Model/test.js" */
 Global['Model'] = klassExtendBase(function(config) {
-    config = config || {};
+    config = config || NULLOBJ;
 
     var i,
         defaults = config['defaults'] || this['defaults'] || {},

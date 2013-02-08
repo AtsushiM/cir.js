@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Base/test.js" */
-Global['Base'] = klassExtend(UNDEFINED, function(config) {
-    config = config || {};
+Global['Base'] = klassExtend(UNDEFINED, function() {
     this._dispose = {};
 }, {
     _disid: 0,
@@ -31,10 +30,10 @@ Global['Base'] = klassExtend(UNDEFINED, function(config) {
 
         return NULL;
     },
-    'contract': function(element, e, handler) {
-        on(element, e, handler);
+    'contract': function(el, e, handler) {
+        on(el, e, handler);
         this._disid++;
-        this._dispose[this._disid] = [element, e, handler];
+        this._dispose[this._disid] = [el, e, handler];
 
         return this._disid;
     },

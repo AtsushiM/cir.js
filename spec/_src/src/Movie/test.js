@@ -17,7 +17,7 @@ describe('Movieは', function() {
             name: 'testmovie',
             autoplay: false,
             loop: false,
-            element: document.body,
+            el: document.body,
             oncanplay: function(e) {
                 // write code.
             },

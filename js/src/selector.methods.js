@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 (function() {
-var el = Global['element'];
-
 function forExe(_this, func, arg) {
     var i = _this.length,
         ary = makeAry(arg);

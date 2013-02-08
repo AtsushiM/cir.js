@@ -14,7 +14,7 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = Global['Transition'] =
-    klassExtendBase(function(element, property, option) {
+    klassExtendBase(function(el, property, option) {
 
     option = option || {};
     option['onComplete'] = option['onComplete'] || nullFunction;
@@ -39,7 +39,7 @@ Mine = Global['Transition'] =
 
     addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-    this.el = element;
+    this.el = el;
     this.property = property;
     this.option = option;
 
