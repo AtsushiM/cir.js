@@ -1,6 +1,5 @@
 // Cool is Right.
 (function() {
-'use strict';
 var win = window,
     doc = document,
     TRUE = true,
@@ -15,11 +14,14 @@ var win = window,
     ev_orientationchange = 'orientationchange',
     ev_canplay = 'canplay',
     ev_ended = 'ended',
-    csseaseOutExpo = 'cubic-bezier(0.190, 1.000, 0.220, 1.000)',
+    csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
     easebackrate = 1.70158,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
+function cssCubicBezierFormat(text) {
+    return 'cubic-bezier(' + text + ')';
+}
 function checkCSSAnimTranCheck(propnames, event_key) {
     var prop = propnames,
         el = create('p'),
@@ -69,4 +71,11 @@ function jsonParse(json) {
 }
 function jsonStringify(text) {
     return win['JSON']['stringify'](text);
+}
+
+function splitSuffix(value) {
+    value = value || EMPTY;
+    value = EMPTY + value;
+
+    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }

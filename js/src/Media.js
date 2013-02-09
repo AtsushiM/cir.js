@@ -1,8 +1,6 @@
 /* Test: "../../spec/_src/src/Media/test.js" */
 /* Global.Media = klassExtendBase(function(config) { */
 var Media = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
     var mine = this,
         autoplay = config['autoplay'],
         loop = config['loop'],
@@ -18,37 +16,35 @@ var Media = klassExtendBase(function(config) {
         case 'Audio':
             media = Global['Audio'](config);
             break;
-        case 'Video':
+        /* case 'Video': */
+        default:
             media = Global['Video'](config);
-            break;
     }
     mine._el = media;
 
-    if (!media) {
-        return FALSE;
-    }
+    if (media) {
+        if (autoplay) {
+            var autoplayid;
+            autoplay = function() {
+                mine['uncontract'](autoplayid);
+                mine['play']();
+            };
 
-    if (autoplay) {
-        var autoplayid;
-        autoplay = function() {
-            mine['uncontract'](autoplayid);
-            mine['play']();
-        };
+            autoplayid = this['contract'](media, ev_canplay, autoplay);
+        }
+        if (loop) {
+            this['loop'](TRUE);
+        }
 
-        autoplayid = this['contract'](media, ev_canplay, autoplay);
-    }
-    if (loop) {
-        this['loop'](TRUE);
-    }
+        if (config['oncanplay']) {
+            this['contract'](media, ev_canplay, config['oncanplay']);
+        }
+        if (config['onended']) {
+            this['contract'](media, ev_ended, config['onended']);
+        }
 
-    if (config['oncanplay']) {
-        this['contract'](media, ev_canplay, config['oncanplay']);
+        append(_parent, media);
     }
-    if (config['onended']) {
-        this['contract'](media, ev_ended, config['onended']);
-    }
-
-    append(_parent, media);
 }, {
     'disposeInternal': function() {
         remove(this._el);

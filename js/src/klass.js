@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/klass/test.js" */
 Global['klass'] = function(config) {
-    'use strict';
-
     var init = config['init'] || function() {},
         wrap = function() {
             var inits = ancestors(this, '__init__'),

@@ -2,6 +2,6 @@
 Global['DeviceOrientation'] = function(config) {
     config = config || {};
     config['e'] = 'deviceorientation';
-    return Global.DeviceAction(config);
+    return DeviceAction(config);
 };
 Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;

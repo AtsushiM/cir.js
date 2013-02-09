@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
-'use strict';
-
 var ret = checkCSSAnimTranCheck([
         'animation',
         'webkitAnimation'
@@ -61,8 +59,8 @@ Mine = Global['Animation'] =
     }
 }, {
     _off: function() {
-        off(this.el, event_key + 'End', this.end);
-        off(this.el, 'animationend', this.end);
+        off(this.el, event_key + 'End', this._end);
+        off(this.el, 'animationend', this._end);
     },
     'disposeInternal': function() {
         this['stop']();
@@ -70,7 +68,7 @@ Mine = Global['Animation'] =
     'start': function() {
         var mine = this;
 
-        mine.end = endaction;
+        mine._end = endaction;
         on(mine.el, event_key + 'End', endaction);
         on(mine.el, 'animationend', endaction);
 

@@ -5,9 +5,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     }
 }, {
     _t: function(e) {
-        var changed = e.changedTouches ? e.changedTouches[0] : e;
-
-        return changed;
+        return e.changedTouches ? e.changedTouches[0] : e;
     },
     'amount': function(vars) {
         var mine = this,

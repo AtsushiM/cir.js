@@ -1,57 +1,17 @@
-/* Class: "../../../../js/src/FontImg.js" */
-describe('FontImgは', function() {
-    var c = window.C ? C : Global,
-        numimg,
-        args = {
-            type: 'white',
-            tag: 'p' // default: span
-        };
+/* Class: "../../../../js/src/PC.js" */
+describe('PCは', function() {
+    var pc;
 
     beforeEach(function() {
         // init
-        numimg = new c.FontImg(args);
+        pc = new Global.PC();
     });
     afterEach(function() {
         // clear
     });
 
-    function expectedMakeAction(i) {
-        return '<p class="font_' + args.type + '_' + i + '"></p>';
-    }
-
-    it('dispose()でインスタンスを解放する', function() {
-        numimg.dispose();
-        expect(numimg).toEqual({});
-    });
-
-    it('make(x)で数値xのimgタグを返す', function() {
-        // 0 ~ 9
-        for (var i = 0, len = 10; i < len; i++) {
-            expect(numimg.make(i)).toEqual(expectedMakeAction(i));
-        }
-
-        // 10 ~ 19
-        for (var i = 10, len = 20; i < len; i++) {
-            var j =  ('' + i).split('');
-            expect(numimg.make(i)).toEqual(
-                expectedMakeAction(j[0]) +
-                expectedMakeAction(j[1])
-            );
-        }
-
-        // 000
-        expect(numimg.make('000')).toEqual(
-            expectedMakeAction(0) +
-            expectedMakeAction(0) +
-            expectedMakeAction(0)
-        );
-        // 9999
-        expect(numimg.make('9999')).toEqual(
-            expectedMakeAction(9) +
-            expectedMakeAction(9) +
-            expectedMakeAction(9) +
-            expectedMakeAction(9)
-        );
+    it('zzzである', function() {
+        expect(0).toEqual(1);
     });
 });
 /*

@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
 var FPSName = 'FPS';
 Global[FPSName] = klassExtendBase(function(config) {
-    this.criterion = config['criterion'] || 20,
-    this.surver = this.criterion,
-    this.enterframe = config['enterframe'],
+    this.criterion =
+    this.surver = config['criterion'],
     this.msecFrame = this._getFrame(this.criterion),
+    this.enterframe = config['enterframe'],
     this.prevtime =
     this.nowtime =
     this.loopid = 0;

@@ -54,6 +54,8 @@
         view = new CustomView();
 
     model.set('test1', 'test');
+    view.detach();
+    view.attach();
 
     // var model = new C.Model({
     //         defaults: {

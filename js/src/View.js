@@ -17,7 +17,7 @@ Global['View'] = klassExtendBase(function(config) {
     }
 }, {
     'disposeInternal': function() {
-        this['detach']();
+        this._e('off');
     },
     _e: function(methodname) {
         var i,

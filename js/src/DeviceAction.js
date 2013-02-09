@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
-Global.DeviceAction = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
+var DeviceAction = klassExtendBase(function(config) {
     this._e = config['e'];
 
     if (config['callback']) {
@@ -13,8 +11,6 @@ Global.DeviceAction = klassExtendBase(function(config) {
         this._attachid = this['contract'](win, this._e, func);
     },
     'detach': function() {
-        if (this._attachid) {
-            this['uncontract'](this._attachid);
-        }
+        this['uncontract'](this._attachid);
     }
 });

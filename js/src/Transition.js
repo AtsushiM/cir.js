@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/Transition/test.js" */
 (function() {
-'use strict';
-
 var ret = checkCSSAnimTranCheck([
         'transitionProperty',
         'webkitTransitionProperty'
@@ -16,8 +14,7 @@ var ret = checkCSSAnimTranCheck([
 Mine = Global['Transition'] =
     klassExtendBase(function(el, property, option) {
 
-    option = option || {};
-    option['onComplete'] = option['onComplete'] || nullFunction;
+    option = option || NULLOBJ;
 
     Mine['id']++;
     this._id = 'cirtrans' + Mine['id'];
@@ -41,7 +38,7 @@ Mine = Global['Transition'] =
 
     this.el = el;
     this.property = property;
-    this.option = option;
+    this.onComplete = option['onComplete'] || nullFunction;
 
     if (!option['manual']) {
         this['start']();
@@ -56,7 +53,7 @@ Mine = Global['Transition'] =
         mine._endfunc = function(e) {
             mine['stop']();
             setTimeout(function() {
-                mine.option['onComplete'](e);
+                mine.onComplete(e);
             }, 1);
         };
 

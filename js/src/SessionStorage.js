@@ -2,6 +2,6 @@
 Global['SessionStorage'] = function(config) {
     config = config || {};
 
-    config['type'] = 'Session';
+    config['type'] = 'session';
     return new WebStorage(config);
 };

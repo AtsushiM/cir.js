@@ -25,28 +25,23 @@ Global[ObserverName] = klassExtendBase(function() {
         var observed = this.observed;
 
         if (!func) {
-            delete observed[key];
-
-            return TRUE;
+            return delete observed[key];
         }
 
         var target = observed[key],
             i;
 
-        if (!target) {
-            return FALSE;
-        }
+        if (target) {
+            for (i = target.length; i--;) {
+                if (func === target[i]) {
+                    target.splice(i, 1);
 
+                    if (target.length === 0) {
+                        delete observed[key];
+                    }
 
-        for (i = target.length; i--;) {
-            if (func === target[i]) {
-                target.splice(i, 1);
-
-                if (target.length === 0) {
-                    delete observed[key];
+                    return TRUE;
                 }
-
-                return TRUE;
             }
         }
 
@@ -57,17 +52,13 @@ Global[ObserverName] = klassExtendBase(function() {
             func,
             i;
 
-        if (!target) {
-            return FALSE;
-        }
-
-        for (i = target.length; i--;) {
-            func = target[i];
-            if (func) {
-                func(vars);
+        if (target) {
+            for (i = target.length; i--;) {
+                func = target[i];
+                if (func) {
+                    func(vars);
+                }
             }
         }
-
-        return TRUE;
     }
 });

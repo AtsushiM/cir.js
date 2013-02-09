@@ -1,7 +1,6 @@
 /* Test: "../../spec/_src/src/Deferred/test.js" */
 Global['Deferred'] = klassExtendBase(function() {
     this.queue = [];
-    /* this.data = NULL; */
 }, {
     'isResolve': function() {
         return !this.queue;

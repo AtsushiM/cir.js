@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
-'use strict';
-
 var methods = Global['$'].methods,
     Animation = Global['Animation'] || {},
     csssupport = Animation['support'],
@@ -104,11 +102,5 @@ function convertTweenerParam(el, params) {
     }
 
     return retobj;
-}
-function splitSuffix(value) {
-    value = value || EMPTY;
-    value = EMPTY + value;
-
-    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 }());

@@ -1,15 +1,11 @@
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
 var WebStorageName = 'WebStorage',
     WebStorage = klassExtendBase(function(config) {
-        var key = 'Storage',
-            klassname = config['type'] + key;
-
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
-        this._storage = win[config['type'].toLowerCase() + key];
+        this._storage = win[config['type'] + 'Storage'];
     }, {
         'set': function(key, val) {
             this._storage.setItem(this._n + key, jsonStringify(val));
-            return TRUE;
         },
         'get': function(key) {
             var mine = this,
@@ -37,19 +33,13 @@ var WebStorageName = 'WebStorage',
         'remove': function(key) {
             key = this._n + key;
 
-            if (!this._storage.getItem(key)) {
-                return FALSE;
+            if (isDefined(this._storage.getItem(key))) {
+                this._storage.removeItem(key);
             }
-
-            this._storage.removeItem(key);
-
-            return TRUE;
         },
         'reset': function() {
             if (!this._n) {
-                this._storage.clear();
-
-                return TRUE;
+                return this._storage.clear();
             }
 
             var i;

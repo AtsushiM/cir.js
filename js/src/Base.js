@@ -38,10 +38,12 @@ Global['Base'] = klassExtend(UNDEFINED, function() {
         return this._disid;
     },
     'uncontract': function(id) {
-        var arg = this._dispose[id];
+        if (id) {
+            var arg = this._dispose[id];
 
-        delete this._dispose[id];
+            delete this._dispose[id];
 
-        off(arg[0], arg[1], arg[2]);
+            off(arg[0], arg[1], arg[2]);
+        }
     }
 });

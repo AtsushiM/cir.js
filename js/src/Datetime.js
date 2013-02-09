@@ -7,14 +7,12 @@ Global['Datetime'] = function(str) {
     str = str.split(/[T:\-\+\/\s]/);
 
     if (str.length === 3) {
-        str[3] = 0;
-        str[4] = 0;
-        str[5] = 0;
+        str = str.concat([0, 0, 0]);
     }
 
     return new Date(
         str[0] * 1,
-        str[1] * 1 - 1,
+        str[1] - 1,
         str[2] * 1,
         str[3] * 1,
         str[4] * 1,

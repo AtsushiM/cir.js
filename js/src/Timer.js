@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/Timer/test.js" */
 Global['Timer'] = function(config) {
-    'use strict';
-
     var limit = config['limit'],
         limitx1000 = limit * 1000,
         interval = config['interval'] * 1000,
@@ -61,11 +59,10 @@ Global['Timer'] = function(config) {
         if (nowtime > endtime) {
             instance['stop']();
             ontimeup();
-            return TRUE;
+            return;
         }
 
         loop();
-        return FALSE;
     }
 
     function getTime() {

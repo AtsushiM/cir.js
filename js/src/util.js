@@ -122,6 +122,9 @@ function isBoolean(vars) {
 function isArray(vars) {
     return is('Array', vars);
 }
+function isDefined(vars) {
+    return !is('Undefind', vars);
+}
 function isTouchable() {
     return 'ontouchstart' in win;
 }
@@ -178,6 +181,7 @@ Global['util'] = {
     'isFunction': isFunction,
     'isBoolean': isBoolean,
     'isArray': isArray,
+    'isDefined': isDefined,
     'isTouchable': isTouchable,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,

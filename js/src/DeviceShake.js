@@ -19,8 +19,7 @@ var Shake,
 /* } */
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
-    /* this['_super'](); */
-    this._shaker = new Shake();
+    /* this._shaker = new Shake(); */
     this._limit = config['limit'];
     this._waittime = config['waittime'];
     /* this._callback = config['callback']; */
@@ -29,6 +28,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         this['attach'](config['direction'], config['callback']);
     }
 }, {
+    _shaker: new Shake(),
     convertName: {
         'x': 'gamma',
         'y': 'beta',

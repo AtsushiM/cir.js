@@ -14,7 +14,7 @@ Global['Throttle'] = klassExtendBase(function(config) {
 
         if (mine.locked) {
             mine.waitarg = vars;
-            return FALSE;
+            return;
         }
 
         mine.callback(vars);

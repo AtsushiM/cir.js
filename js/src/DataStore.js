@@ -1,32 +1,30 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 Global['DataStore'] = klassExtendBase(function() {
-    this.data = {};
+    this._data = {};
 }, {
     'set': function(key, val) {
-        this.data[key] = val;
+        this._data[key] = val;
     },
     'get': function(key) {
+        if (key) {
+            return this._data[key];
+        }
+
         var ret = {},
             i;
 
-        if (key) {
-            return this.data[key];
-        }
-
-        for (i in this.data) {
-            ret[i] = this.data[i];
+        for (i in this._data) {
+            ret[i] = this._data[i];
         }
 
         return ret;
     },
     'remove': function(key) {
-        if (!this.data[key]) {
-            return FALSE;
+        if (isDefined(this._data[key])) {
+            delete this._data[key];
         }
-
-        delete this.data[key];
     },
     'reset': function() {
-        this.data = {};
+        this._data = {};
     }
 });

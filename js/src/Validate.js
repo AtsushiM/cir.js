@@ -2,14 +2,15 @@
 Global['Validate'] = klassExtendBase(function(config) {
     config = config || {};
 
-    this['level'] = config['level'] || 'warn';
+    /* this._level = config['level'] || 'warn'; */
+    this._level = config['level'];
 
     owner(this, this, config);
 }, {
-    'displayError': function displayError(key, text) {
-        text = 'Validate Error: ' + key + ' is ' + text + '.';
+    displayError: function(key, text) {
+        text = 'Validate Error:' + key + ' is ' + text + '.';
 
-        switch (this['level']) {
+        switch (this.level) {
             case 'log':
                 console.log(text);
                 return FALSE;
@@ -27,37 +28,37 @@ Global['Validate'] = klassExtendBase(function(config) {
         if (isObject(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Object');
+        this.displayError(key, 'Object');
     },
     'isNumber': function(key, value) {
         if (isNumber(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Number');
+        this.displayError(key, 'Number');
     },
     'isString': function(key, value) {
         if (isString(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'String');
+        this.displayError(key, 'String');
     },
     'isFunction': function(key, value) {
         if (isFunction(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Function');
+        this.displayError(key, 'Function');
     },
     'isBoolean': function(key, value) {
         if (isBoolean(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Boolean');
+        this.displayError(key, 'Boolean');
     },
     'isArray': function(key, value) {
         if (isArray(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Array');
+        this.displayError(key, 'Array');
     }
 });
 

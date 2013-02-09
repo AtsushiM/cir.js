@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
-'use strict';
-
 var xhr,
     isLoaded = FALSE;
 

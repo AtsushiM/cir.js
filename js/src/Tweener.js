@@ -113,7 +113,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
                 mine.loop();
             });
 
-            return TRUE;
+            return;
         }
 
         this['stop']();

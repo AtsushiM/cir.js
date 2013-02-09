@@ -1,6 +1,5 @@
 // Cool is Right.
 (function() {
-'use strict';
 var win = window,
     doc = document,
     TRUE = true,
@@ -15,11 +14,14 @@ var win = window,
     ev_orientationchange = 'orientationchange',
     ev_canplay = 'canplay',
     ev_ended = 'ended',
-    csseaseOutExpo = 'cubic-bezier(0.190, 1.000, 0.220, 1.000)',
+    csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
     easebackrate = 1.70158,
     /* Global = win['C'] = {}; */
     Global = C = {};
 
+function cssCubicBezierFormat(text) {
+    return 'cubic-bezier(' + text + ')';
+}
 function checkCSSAnimTranCheck(propnames, event_key) {
     var prop = propnames,
         el = create('p'),
@@ -69,6 +71,13 @@ function jsonParse(json) {
 }
 function jsonStringify(text) {
     return win['JSON']['stringify'](text);
+}
+
+function splitSuffix(value) {
+    value = value || EMPTY;
+    value = EMPTY + value;
+
+    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
@@ -194,6 +203,9 @@ function isBoolean(vars) {
 function isArray(vars) {
     return is('Array', vars);
 }
+function isDefined(vars) {
+    return !is('Undefind', vars);
+}
 function isTouchable() {
     return 'ontouchstart' in win;
 }
@@ -250,6 +262,7 @@ Global['util'] = {
     'isFunction': isFunction,
     'isBoolean': isBoolean,
     'isArray': isArray,
+    'isDefined': isDefined,
     'isTouchable': isTouchable,
     'nullFunction': nullFunction,
     'eventPrevent': eventPrevent,
@@ -295,49 +308,43 @@ function hasClass(el, cls) {
 }
 
 function addClass(el, cls) {
-    var between = EMPTY,
-        orgcls = el.className;
+    if (!hasClass(el, cls)) {
+        var between = EMPTY,
+            orgcls = el.className;
 
-    if (hasClass(el, cls)) {
-        return FALSE;
+        if (orgcls) {
+            between = ' ';
+        }
+
+        el.className = orgcls + between + cls;
     }
-
-    if (orgcls) {
-        between = ' ';
-    }
-
-    el.className = orgcls + between + cls;
 }
 
 function removeClass(el, cls) {
-    var addedcls,
-        attachcls = [],
-        i,
-        len;
+    if (hasClass(el, cls)) {
+        var addedcls,
+            attachcls = [],
+            i,
+            len;
 
-    if (!hasClass(el, cls)) {
-        return FALSE;
-    }
+        addedcls = el.className.split(' ');
+        i = addedcls.length;
 
-    addedcls = el.className.split(' ');
-    i = addedcls.length;
-
-    for (; i--;) {
-        if (cls !== addedcls[i]) {
-            attachcls.push(addedcls[i]);
+        for (; i--;) {
+            if (cls !== addedcls[i]) {
+                attachcls.push(addedcls[i]);
+            }
         }
+
+        el.className = attachcls.join(' ');
     }
-
-    el.className = attachcls.join(' ');
-
-    return TRUE;
 }
 function toggleClass(el, cls) {
     if (hasClass(el, cls)) {
         return removeClass(el, cls);
     }
 
-    return addClass(el, cls);
+    addClass(el, cls);
 }
 
 function attr(el, vars, value) {
@@ -461,8 +468,6 @@ Global['dom'] = {
 };
 /* Test: "../../spec/_src/src/klass/test.js" */
 Global['klass'] = function(config) {
-    'use strict';
-
     var init = config['init'] || function() {},
         wrap = function() {
             var inits = ancestors(this, '__init__'),
@@ -516,8 +521,6 @@ function klassExtendBase(init, prop) {
 }
 /* Test: "../../spec/_src/src/extend/test.js" */
 Global['extend'] = function(child, _super) {
-    'use strict';
-
     function ctor() {}
 
     ctor.prototype = _super.prototype;
@@ -530,7 +533,7 @@ Global['extend'] = function(child, _super) {
         var prev = this._prevctor;
 
         if (prev) {
-            prev = prev.prototype._superclass;
+            prev = prev.prototype['_superclass'];
         }
         else {
             prev = this._prevctor = _super;
@@ -579,11 +582,13 @@ Global['Base'] = klassExtend(UNDEFINED, function() {
         return this._disid;
     },
     'uncontract': function(id) {
-        var arg = this._dispose[id];
+        if (id) {
+            var arg = this._dispose[id];
 
-        delete this._dispose[id];
+            delete this._dispose[id];
 
-        off(arg[0], arg[1], arg[2]);
+            off(arg[0], arg[1], arg[2]);
+        }
     }
 });
 /* Test: "../../spec/_src/src/Event/test.js" */
@@ -718,42 +723,40 @@ Global['ease'] = {
 Global['cssease'] = {
     'linear': 'linear',
 
-    'inCubic': 'cubic-bezier(0.550, 0.055, 0.675, 0.190)',
-    'outCubic': 'cubic-bezier(0.215, 0.610, 0.355, 1.000)',
-    'inOutCubic': 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
+    'inCubic': cssCubicBezierFormat('0.55,0.055,0.675,0.19'),
+    'outCubic': cssCubicBezierFormat('0.215,0.61,0.355,1'),
+    'inOutCubic': cssCubicBezierFormat('0.645,0.045,0.355,1'),
 
-    'inQuart': 'cubic-bezier(0.895, 0.030, 0.685, 0.220)',
-    'outQuart': 'cubic-bezier(0.165, 0.840, 0.440, 1.000)',
-    'inOutQuart': 'cubic-bezier(0.770, 0.000, 0.175, 1.000)',
+    'inQuart': cssCubicBezierFormat('0.895,0.03,0.685,0.22'),
+    'outQuart': cssCubicBezierFormat('0.165,0.84,0.44,1'),
+    'inOutQuart': cssCubicBezierFormat('0.77,0,0.175,1'),
 
-    'inQuint': 'cubic-bezier(0.755, 0.050, 0.855, 0.060)',
-    'outQuint': 'cubic-bezier(0.230, 1.000, 0.320, 1.000)',
-    'inOutQuint': 'cubic-bezier(0.860, 0.000, 0.070, 1.000)',
+    'inQuint': cssCubicBezierFormat('0.755,0.05,0.855,0.06'),
+    'outQuint': cssCubicBezierFormat('0.23,1,0.32,1'),
+    'inOutQuint': cssCubicBezierFormat('0.86,0,0.07,1'),
 
-    'inSine': 'cubic-bezier(0.470, 0.000, 0.745, 0.715)',
-    'outSine': 'cubic-bezier(0.390, 0.575, 0.565, 1.000)',
-    'inOutSine': 'cubic-bezier(0.445, 0.050, 0.550, 0.950)',
+    'inSine': cssCubicBezierFormat('0.47,0,0.745,0.715'),
+    'outSine': cssCubicBezierFormat('0.39,0.575,0.565,1'),
+    'inOutSine': cssCubicBezierFormat('0.445,0.05,0.55,0.95'),
 
-    'inExpo': 'cubic-bezier(0.950, 0.050, 0.795, 0.035)',
-    'outExpo': 'cubic-bezier(0.190, 1.000, 0.220, 1.000)',
-    'inOutExpo': 'cubic-bezier(1.000, 0.000, 0.000, 1.000)',
+    'inExpo': cssCubicBezierFormat('0.95,0.05,0.795,0.035'),
+    'outExpo': cssCubicBezierFormat('0.19,1,0.22,1'),
+    'inOutExpo': cssCubicBezierFormat('1,0,0,1'),
 
-    'inCirc': 'cubic-bezier(0.600, 0.040, 0.980, 0.335)',
-    'outCirc': 'cubic-bezier(0.075, 0.820, 0.165, 1.000)',
-    'inOutCirc': 'cubic-bezier(0.785, 0.135, 0.150, 0.860)',
+    'inCirc': cssCubicBezierFormat('0.6,0.04,0.98,0.335'),
+    'outCirc': cssCubicBezierFormat('0.075,0.82,0.165,1'),
+    'inOutCirc': cssCubicBezierFormat('0.785,0.135,0.15,0.86'),
 
-    'inQuad': 'cubic-bezier(0.550, 0.085, 0.680, 0.530)',
-    'outQuad': 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    'inOutQuad': 'cubic-bezier(0.455, 0.030, 0.515, 0.955)',
+    'inQuad': cssCubicBezierFormat('0.55,0.085,0.68,0.53'),
+    'outQuad': cssCubicBezierFormat('0.25,0.46,0.45,0.94'),
+    'inOutQuad': cssCubicBezierFormat('0.455,0.03,0.515,0.955'),
 
-    'inBack': ['cubic-bezier(0.600, 0, 0.735, 0.045)', 'cubic-bezier(0.600, -0.280, 0.735, 0.045)'],
-    'outBack': ['cubic-bezier(0.175, 0.885, 0.320, 1)', 'cubic-bezier(0.175, 0.885, 0.320, 1.275)'],
-    'inOutBack': ['cubic-bezier(0.680, 0, 0.265, 1)', 'cubic-bezier(0.680, -0.550, 0.265, 1.550)']
+    'inBack': [cssCubicBezierFormat('0.6,0,0.735,0.045'),cssCubicBezierFormat('0.6,-0.28,0.735,0.045')],
+    'outBack': [cssCubicBezierFormat('0.175,0.885,0.32,1'),cssCubicBezierFormat('0.175,0.885,0.32,1.275')],
+    'inOutBack': [cssCubicBezierFormat('0.68,0,0.265,1'),cssCubicBezierFormat('0.68,-0.55,0.265,1.55')]
 };
 /* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
-'use strict';
-
 var ret = checkCSSAnimTranCheck([
         'animation',
         'webkitAnimation'
@@ -813,8 +816,8 @@ Mine = Global['Animation'] =
     }
 }, {
     _off: function() {
-        off(this.el, event_key + 'End', this.end);
-        off(this.el, 'animationend', this.end);
+        off(this.el, event_key + 'End', this._end);
+        off(this.el, 'animationend', this._end);
     },
     'disposeInternal': function() {
         this['stop']();
@@ -822,7 +825,7 @@ Mine = Global['Animation'] =
     'start': function() {
         var mine = this;
 
-        mine.end = endaction;
+        mine._end = endaction;
         on(mine.el, event_key + 'End', endaction);
         on(mine.el, 'animationend', endaction);
 
@@ -885,8 +888,6 @@ Mine['support'] = support;
 }());
 /* Test: "../../spec/_src/src/Transition/test.js" */
 (function() {
-'use strict';
-
 var ret = checkCSSAnimTranCheck([
         'transitionProperty',
         'webkitTransitionProperty'
@@ -901,8 +902,7 @@ var ret = checkCSSAnimTranCheck([
 Mine = Global['Transition'] =
     klassExtendBase(function(el, property, option) {
 
-    option = option || {};
-    option['onComplete'] = option['onComplete'] || nullFunction;
+    option = option || NULLOBJ;
 
     Mine['id']++;
     this._id = 'cirtrans' + Mine['id'];
@@ -926,7 +926,7 @@ Mine = Global['Transition'] =
 
     this.el = el;
     this.property = property;
-    this.option = option;
+    this.onComplete = option['onComplete'] || nullFunction;
 
     if (!option['manual']) {
         this['start']();
@@ -941,7 +941,7 @@ Mine = Global['Transition'] =
         mine._endfunc = function(e) {
             mine['stop']();
             setTimeout(function() {
-                mine.option['onComplete'](e);
+                mine.onComplete(e);
             }, 1);
         };
 
@@ -1108,7 +1108,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
                 mine.loop();
             });
 
-            return TRUE;
+            return;
         }
 
         this['stop']();
@@ -1141,17 +1141,20 @@ Mine['fps'] = 30;
 Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/selector/test.js" */
-Global['$'] = function(query, _parent) {
-    'use strict';
+Global['$'] = function(query, _parent /* varless */, $el, instance, len) {
+    // var $el,
+    //     base,
+    //     instance,
+    //     len;
 
-    var $el,
-        base,
-        instance,
-        len;
+    function base() {
+    }
+    base.prototype = Global['$'].methods;
 
-    _parent = _parent || doc;
+    /* _parent = _parent || doc; */
 
     if (isString(query)) {
+        _parent = _parent || doc;
         $el = _parent.querySelectorAll(query);
     }
     else {
@@ -1159,14 +1162,11 @@ Global['$'] = function(query, _parent) {
         query = EMPTY;
     }
     len = $el.length;
-
-    base = function() {};
-    base.prototype = Global['$'].methods;
     instance = new base();
 
     instance.length = len;
     /* instance._selector = query; */
-    instance._parent = _parent;
+    /* instance._parent = _parent; */
 
     /* for (; i < len; i++) { */
     for (;len--;) {
@@ -1272,8 +1272,6 @@ Global['$'].methods = {
 }());
 /* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
-'use strict';
-
 var methods = Global['$'].methods,
     Animation = Global['Animation'] || {},
     csssupport = Animation['support'],
@@ -1376,12 +1374,6 @@ function convertTweenerParam(el, params) {
     }
 
     return retobj;
-}
-function splitSuffix(value) {
-    value = value || EMPTY;
-    value = EMPTY + value;
-
-    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 }());
 /* Test: "../../spec/_src/src/HashQuery/test.js" */
@@ -1496,17 +1488,14 @@ function embedSupportCheck(type, suffix) {
         }
     }
 
-    if (!support.length) {
-        return FALSE;
+    if (support.length) {
+        return support;
     }
-
-    return support;
+    return FALSE;
 }
 /* Test: "../../spec/_src/src/Media/test.js" */
 /* Global.Media = klassExtendBase(function(config) { */
 var Media = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
     var mine = this,
         autoplay = config['autoplay'],
         loop = config['loop'],
@@ -1522,37 +1511,35 @@ var Media = klassExtendBase(function(config) {
         case 'Audio':
             media = Global['Audio'](config);
             break;
-        case 'Video':
+        /* case 'Video': */
+        default:
             media = Global['Video'](config);
-            break;
     }
     mine._el = media;
 
-    if (!media) {
-        return FALSE;
-    }
+    if (media) {
+        if (autoplay) {
+            var autoplayid;
+            autoplay = function() {
+                mine['uncontract'](autoplayid);
+                mine['play']();
+            };
 
-    if (autoplay) {
-        var autoplayid;
-        autoplay = function() {
-            mine['uncontract'](autoplayid);
-            mine['play']();
-        };
+            autoplayid = this['contract'](media, ev_canplay, autoplay);
+        }
+        if (loop) {
+            this['loop'](TRUE);
+        }
 
-        autoplayid = this['contract'](media, ev_canplay, autoplay);
-    }
-    if (loop) {
-        this['loop'](TRUE);
-    }
+        if (config['oncanplay']) {
+            this['contract'](media, ev_canplay, config['oncanplay']);
+        }
+        if (config['onended']) {
+            this['contract'](media, ev_ended, config['onended']);
+        }
 
-    if (config['oncanplay']) {
-        this['contract'](media, ev_canplay, config['oncanplay']);
+        append(_parent, media);
     }
-    if (config['onended']) {
-        this['contract'](media, ev_ended, config['onended']);
-    }
-
-    append(_parent, media);
 }, {
     'disposeInternal': function() {
         remove(this._el);
@@ -1649,9 +1636,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
             error = vars['error'] || nullFunction,
             type = vars['type'] || 'GET',
             query = EMPTY,
-            xhr;
-
-        xhr = this.xhr = new XMLHttpRequest();
+            xhr = this.xhr = new XMLHttpRequest();
 
         if (!vars['cash']) {
             if (!vars['query']) {
@@ -1664,21 +1649,20 @@ Global['Ajax'] = klassExtendBase(function(config) {
             query = vars['query'];
 
             if (isObject(query)) {
-                query = makeQueryString(query);
-                query = encodeURI(query);
+                query = encodeURI(makeQueryString(query));
             }
         }
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState != 4) {
-                return FALSE;
+                return;
             }
 
             if (xhr.status == 200) {
                 return callback(xhr.responseText, xhr);
             }
 
-            return error(xhr);
+            error(xhr);
         }
 
         if (type === 'GET') {
@@ -1832,14 +1816,12 @@ Global['Datetime'] = function(str) {
     str = str.split(/[T:\-\+\/\s]/);
 
     if (str.length === 3) {
-        str[3] = 0;
-        str[4] = 0;
-        str[5] = 0;
+        str = str.concat([0, 0, 0]);
     }
 
     return new Date(
         str[0] * 1,
-        str[1] * 1 - 1,
+        str[1] - 1,
         str[2] * 1,
         str[3] * 1,
         str[4] * 1,
@@ -1848,48 +1830,42 @@ Global['Datetime'] = function(str) {
 };
 /* Test: "../../spec/_src/src/DataStore/test.js" */
 Global['DataStore'] = klassExtendBase(function() {
-    this.data = {};
+    this._data = {};
 }, {
     'set': function(key, val) {
-        this.data[key] = val;
+        this._data[key] = val;
     },
     'get': function(key) {
+        if (key) {
+            return this._data[key];
+        }
+
         var ret = {},
             i;
 
-        if (key) {
-            return this.data[key];
-        }
-
-        for (i in this.data) {
-            ret[i] = this.data[i];
+        for (i in this._data) {
+            ret[i] = this._data[i];
         }
 
         return ret;
     },
     'remove': function(key) {
-        if (!this.data[key]) {
-            return FALSE;
+        if (isDefined(this._data[key])) {
+            delete this._data[key];
         }
-
-        delete this.data[key];
     },
     'reset': function() {
-        this.data = {};
+        this._data = {};
     }
 });
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
 var WebStorageName = 'WebStorage',
     WebStorage = klassExtendBase(function(config) {
-        var key = 'Storage',
-            klassname = config['type'] + key;
-
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
-        this._storage = win[config['type'].toLowerCase() + key];
+        this._storage = win[config['type'] + 'Storage'];
     }, {
         'set': function(key, val) {
             this._storage.setItem(this._n + key, jsonStringify(val));
-            return TRUE;
         },
         'get': function(key) {
             var mine = this,
@@ -1917,19 +1893,13 @@ var WebStorageName = 'WebStorage',
         'remove': function(key) {
             key = this._n + key;
 
-            if (!this._storage.getItem(key)) {
-                return FALSE;
+            if (isDefined(this._storage.getItem(key))) {
+                this._storage.removeItem(key);
             }
-
-            this._storage.removeItem(key);
-
-            return TRUE;
         },
         'reset': function() {
             if (!this._n) {
-                this._storage.clear();
-
-                return TRUE;
+                return this._storage.clear();
             }
 
             var i;
@@ -1943,20 +1913,19 @@ var WebStorageName = 'WebStorage',
 Global['LocalStorage'] = function(config) {
     config = config || {};
 
-    config['type'] = 'Local';
+    config['type'] = 'local';
     return new WebStorage(config);
 };
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
 Global['SessionStorage'] = function(config) {
     config = config || {};
 
-    config['type'] = 'Session';
+    config['type'] = 'session';
     return new WebStorage(config);
 };
 /* Test: "../../spec/_src/src/Deferred/test.js" */
 Global['Deferred'] = klassExtendBase(function() {
     this.queue = [];
-    /* this.data = NULL; */
 }, {
     'isResolve': function() {
         return !this.queue;
@@ -1991,9 +1960,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     }
 }, {
     _t: function(e) {
-        var changed = e.changedTouches ? e.changedTouches[0] : e;
-
-        return changed;
+        return e.changedTouches ? e.changedTouches[0] : e;
     },
     'amount': function(vars) {
         var mine = this,
@@ -2153,10 +2120,11 @@ var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
         this.android[conf['mode']](this['makeHash'](conf));
     },
     'addCallback': function(name, func) {
-        this.externalObj[name] = bind(this, function(vars) {
-            var objs = this['parseHash'](vars);
-            return func(objs['vars']);
-        });
+        var mine = this;
+
+        mine.externalObj[name] = function(vars) {
+            func(mine['parseHash'](vars)['vars']);
+        };
     },
     'removeCallback': function(name) {
         delete this.externalObj[name];
@@ -2183,7 +2151,6 @@ var ExternalIOS = klassExtend(Global['HashQuery'], function() {
 
             if (hash['mode'] === name) {
                 func(hash['vars']);
-                return TRUE;
             }
         };
         on(win, ev_hashchange, mine.ios[name]);
@@ -2197,28 +2164,25 @@ var ExternalIOS = klassExtend(Global['HashQuery'], function() {
 Global['Facebook'] = klassExtendBase(UNDEFINED,
 {
     'shareURL': function(vars) {
-        var url = 'https://www.facebook.com/dialog/feed?' +
-                'app_id=' + vars['app_id'] + '&' +
-                'redirect_uri=' + vars['redirect_uri'];
-
-        url += makeQueryString({
+        return 'https://www.facebook.com/dialog/feed?' +
+        'app_id=' + vars['app_id'] + '&' +
+        'redirect_uri=' + vars['redirect_uri'] +
+        makeQueryString({
             'link': vars['link'],
             'picture': vars['picture'],
             'name': vars['name'],
             'caption': vars['caption'],
             'description': vars['description']
         });
-
-        return url;
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
 var FPSName = 'FPS';
 Global[FPSName] = klassExtendBase(function(config) {
-    this.criterion = config['criterion'] || 20,
-    this.surver = this.criterion,
-    this.enterframe = config['enterframe'],
+    this.criterion =
+    this.surver = config['criterion'],
     this.msecFrame = this._getFrame(this.criterion),
+    this.enterframe = config['enterframe'],
     this.prevtime =
     this.nowtime =
     this.loopid = 0;
@@ -2265,22 +2229,21 @@ Global[FPSName] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global['ImgLoad'] = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
-    this.srcs = config['srcs'],
-    this.srccount = this.srcs.length,
+    this.srcs = config['srcs'];
+    this.srccount = this.srcs.length;
     this.loadedsrcs = [];
     this.disposeid = [];
-    this._onload = config['onload'] || nullFunction,
-    this._onprogress = config['onprogress'] || nullFunction,
-    this.loadcount = 0;
-    this.progress = 0;
-    this.started = FALSE;
+    this._onload = config['onload'] || nullFunction;
+    this._onprogress = config['onprogress'] || nullFunction;
+    // this.loadcount = 0;
+    // this.progress = 0;
 
     if (!config['manual']) {
         this['start']();
     }
 }, {
+    loadcount: 0,
+    progress: 0,
     _c: function() {
         this.loadcount++;
 
@@ -2300,7 +2263,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
     },
     'start': function() {
         if (this.started) {
-            return FALSE;
+            return;
         }
 
         this.started = TRUE;
@@ -2342,9 +2305,7 @@ Global['WindowLoad'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global['Mobile'] = klassExtendBase(function() {
-    /* this['_super'](); */
-}, {
+Global['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -2369,25 +2330,21 @@ Global['Mobile'] = klassExtendBase(function() {
         );
     },
     'killScroll': function(isNoTop) {
-        if (this.killscrollid) {
-            return FALSE;
+        if (!this.killscrollid) {
+            if (!isNoTop) {
+                pageTop();
+            }
+            this.killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
         }
-
-        if (!isNoTop) {
-            pageTop();
-        }
-        this.killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
     },
     'revivalScroll': function(isNoTop) {
-        if (!this.killscrollid) {
-            return FALSE;
+        if (this.killscrollid) {
+            if (!isNoTop) {
+                pageTop();
+            }
+            this['uncontract'](this.killscrollid);
+            delete this.killscrollid;
         }
-
-        if (!isNoTop) {
-            pageTop();
-        }
-        this['uncontract'](this.killscrollid);
-        delete this.killscrollid;
     },
     'hideAddress': function() {
         this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
@@ -2463,8 +2420,7 @@ Global['Mobile'] = klassExtendBase(function() {
             if (
                 mine['getOrientation']()['portrait']
             ) {
-                vars['portrait']();
-                return TRUE;
+                return vars['portrait']();
             }
             vars['landscape']();
         }
@@ -2473,10 +2429,134 @@ Global['Mobile'] = klassExtendBase(function() {
     }
 });
 Global['mobile'] = new Global['Mobile']();
-/* Test: "../../spec/_src/src/DeviceAction/test.js" */
-Global.DeviceAction = klassExtendBase(function(config) {
-    /* this['_super'](); */
+/* Test: "../../spec/_src/src/PC/test.js" */
+Global['PC'] = klassExtendBase(UNDEFINED, {
+    _scroll: function(isNoTop, overflow) {
+        if (!isNoTop) {
+            pageTop();
+        }
 
+        css(doc.body, {
+            'overflow': overflow
+        });
+    },
+    'killScroll': function(isNoTop) {
+        this._scroll(isNoTop, 'hidden');
+    },
+    'revivalScroll': function(isNoTop) {
+        this._scroll(isNoTop, 'auto');
+    }
+});
+/* Test: "%JASMINE_TEST_PATH%" */
+Global['Modal'] = klassExtendBase(function(config) {
+    config = config || NULLOBJ;
+
+    this._html = config['html'];
+    this._overlayClose = config['overlayClose'];
+    this._closeSelector = config['closeSelector'];
+
+    this._contractid = [];
+
+    this._bg = create('div', {
+        'class': 'cir-modal-bg'
+    });
+    css(this._bg, {
+        'display': 'none',
+        'position': 'absolute',
+        'z-index': 10000,
+        'top': 0,
+        'left': 0,
+        'width': '100%',
+        'height': '100%'
+    });
+    append(doc.body, this._bg);
+
+    this._inner = create('div', {
+        'class': 'cir-modal-content'
+    });
+    css(this._inner, {
+        'display': 'none',
+        'position': 'absolute',
+        'z-index': 10001,
+        'top': '50%',
+        'left': '50%'
+    });
+    append(doc.body, this._inner);
+
+    if (!config['manual']) {
+        this['open'](config['html']);
+    }
+}, {
+    _scroll: new Global[(isTouch ? 'Mobile' : 'PC')](),
+    _closeDetach: function() {
+        var i = this._contractid.length;
+
+        for (; i--;) {
+            this['uncontract'](this._contractid[i]);
+        }
+
+        this._contractid = [];
+    },
+    'disposeInternal': function() {
+        this['close']();
+        remove(this._bg);
+        remove(this._inner);
+    },
+    'open': function(text) {
+        this._scroll['killScroll'](true);
+        css(this._bg, {
+            'top': doc.body.scrollTop
+        });
+
+        show(this._bg);
+
+        this['inner'](text);
+    },
+    'close': function() {
+        this._closeDetach();
+
+        html(this._inner, '');
+        hide(this._inner);
+        hide(this._bg);
+
+        this._scroll['revivalScroll'](true);
+    },
+    'inner': function(text) {
+        this._closeDetach();
+
+        text = text || this._html;
+
+        html(this._inner, text);
+        show(this._inner);
+
+        var computed = computedStyle(this._inner);
+
+        css(this._inner, {
+            'margin-top':
+            doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
+            'margin-left': -(splitSuffix(computed.width)[2] / 2)
+        });
+
+        if (this._overlayClose) {
+            this['contract'](this._bg, ev['CLICK'], bind(this, this['close']));
+        }
+
+        if (this._closeSelector) {
+            var close = $$child(this._closeSelector, this._inner),
+                i = close.length;
+
+            for (; i--;) {
+                this._contractid.push(
+                    this['contract'](close[i],
+                    ev['CLICK'],
+                    bind(this, this['close']))
+                );
+            }
+        }
+    }
+});
+/* Test: "../../spec/_src/src/DeviceAction/test.js" */
+var DeviceAction = klassExtendBase(function(config) {
     this._e = config['e'];
 
     if (config['callback']) {
@@ -2488,23 +2568,21 @@ Global.DeviceAction = klassExtendBase(function(config) {
         this._attachid = this['contract'](win, this._e, func);
     },
     'detach': function() {
-        if (this._attachid) {
-            this['uncontract'](this._attachid);
-        }
+        this['uncontract'](this._attachid);
     }
 });
 /* Test: "../../spec/_src/src/DeviceOrientation/test.js" */
 Global['DeviceOrientation'] = function(config) {
     config = config || {};
     config['e'] = 'deviceorientation';
-    return Global.DeviceAction(config);
+    return DeviceAction(config);
 };
 Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
 /* Test: "../../spec/_src/src/DeviceMotion/test.js" */
 Global['DeviceMotion'] = function(config) {
     config = config || {};
     config['e'] = 'devicemotion';
-    return Global.DeviceAction(config);
+    return DeviceAction(config);
 };
 Global['DeviceMotion']['support'] = 'ondevicemotion' in win;
 /* Test: "../../spec/_src/src/DeviceShake/test.js" */
@@ -2528,8 +2606,7 @@ var Shake,
 /* } */
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
-    /* this['_super'](); */
-    this._shaker = new Shake();
+    /* this._shaker = new Shake(); */
     this._limit = config['limit'];
     this._waittime = config['waittime'];
     /* this._callback = config['callback']; */
@@ -2538,6 +2615,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         this['attach'](config['direction'], config['callback']);
     }
 }, {
+    _shaker: new Shake(),
     convertName: {
         'x': 'gamma',
         'y': 'beta',
@@ -2582,8 +2660,8 @@ Global['DeviceShake']['support'] = Shake ? TRUE : FALSE;
 Global['FontImg'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
 
-    this.type = config['type'] ? config['type'] + '_' : EMPTY;
-    this.tag = config['tag'] || 'span';
+    this._type = config['type'] ? config['type'] + '_' : EMPTY;
+    this._tag = config['tag'] || 'span';
 }, {
     'make': function(x) {
         var aryX = (EMPTY + x).split(EMPTY),
@@ -2591,9 +2669,9 @@ Global['FontImg'] = klassExtendBase(function(config) {
             i = aryX.length;
 
         for (; i--;) {
-            tags = '<' + this.tag +
-                ' class="font_' + this.type + aryX[i] +
-                '">&nbsp;</' + this.tag + '>' + tags;
+            tags = '<' + this._tag +
+                ' class="font_' + this._type + aryX[i] +
+                '"></' + this._tag + '>' + tags;
         }
 
         return tags;
@@ -2626,28 +2704,23 @@ Global[ObserverName] = klassExtendBase(function() {
         var observed = this.observed;
 
         if (!func) {
-            delete observed[key];
-
-            return TRUE;
+            return delete observed[key];
         }
 
         var target = observed[key],
             i;
 
-        if (!target) {
-            return FALSE;
-        }
+        if (target) {
+            for (i = target.length; i--;) {
+                if (func === target[i]) {
+                    target.splice(i, 1);
 
+                    if (target.length === 0) {
+                        delete observed[key];
+                    }
 
-        for (i = target.length; i--;) {
-            if (func === target[i]) {
-                target.splice(i, 1);
-
-                if (target.length === 0) {
-                    delete observed[key];
+                    return TRUE;
                 }
-
-                return TRUE;
             }
         }
 
@@ -2658,18 +2731,14 @@ Global[ObserverName] = klassExtendBase(function() {
             func,
             i;
 
-        if (!target) {
-            return FALSE;
-        }
-
-        for (i = target.length; i--;) {
-            func = target[i];
-            if (func) {
-                func(vars);
+        if (target) {
+            for (i = target.length; i--;) {
+                func = target[i];
+                if (func) {
+                    func(vars);
+                }
             }
         }
-
-        return TRUE;
     }
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
@@ -2753,7 +2822,6 @@ Global[RouteName] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 Global['ScriptLoad'] = klassExtendBase(function() {
-    /* this['_super'](); */
     this.els = [];
 }, {
     'requests': function(varary, callback) {
@@ -2804,8 +2872,6 @@ Global['ScriptLoad'] = klassExtendBase(function() {
 });
 /* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
-'use strict';
-
 var xhr,
     isLoaded = FALSE;
 
@@ -2912,7 +2978,7 @@ Global['Throttle'] = klassExtendBase(function(config) {
 
         if (mine.locked) {
             mine.waitarg = vars;
-            return FALSE;
+            return;
         }
 
         mine.callback(vars);
@@ -2938,8 +3004,6 @@ Global['Throttle'] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/Timer/test.js" */
 Global['Timer'] = function(config) {
-    'use strict';
-
     var limit = config['limit'],
         limitx1000 = limit * 1000,
         interval = config['interval'] * 1000,
@@ -2999,11 +3063,10 @@ Global['Timer'] = function(config) {
         if (nowtime > endtime) {
             instance['stop']();
             ontimeup();
-            return TRUE;
+            return;
         }
 
         loop();
-        return FALSE;
     }
 
     function getTime() {
@@ -3085,20 +3148,16 @@ Global['Timer'] = function(config) {
 Global['Twitter'] = klassExtendBase(UNDEFINED,
 {
     'shareURL': function(vars) {
-        var caption = vars['caption'] || EMPTY,
-            name = vars['name'],
-            hash = vars['hash'],
-            url = 'https://twitter.com/intent/tweet?';
+        var name = vars['name'],
+            hash = vars['hash'];
 
         name = name ? ' 「' + name + '」' : EMPTY;
         hash = hash ? ' ' + hash : EMPTY;
 
-        url += makeQueryString({
+        return 'https://twitter.com/intent/tweet?' + makeQueryString({
             'url': vars['redirect_uri'],
-            'text': caption + name + hash
+            'text': (vars['caption'] || EMPTY) + name + hash
         });
-
-        return url;
     }
 });
 /* Test: "../../spec/_src/src/XML/test.js" */
@@ -3162,8 +3221,6 @@ Global['Model'] = klassExtendBase(function(config) {
         this._store['set'](key, val);
 
         this.notice(ev['CHANGE'], key, val);
-
-        return TRUE;
     },
     'prev': function(key) {
         if (!key) {
@@ -3175,23 +3232,19 @@ Global['Model'] = klassExtendBase(function(config) {
         return this._store['get'](key);
     },
     'remove': function(key) {
-        if (!key) {
-            return FALSE;
+        if (key) {
+            var get = this._store['get'](key),
+                ret = this._store['remove'](key);
+
+            this.notice('remove', key, get);
+
+            return ret;
         }
-
-        var get = this._store['get'](key),
-            ret = this._store['remove'](key);
-
-        this.notice('remove', key, get);
-
-        return ret;
     },
     'reset': function() {
         var ret = this._store['reset']();
 
         this.notice('reset');
-
-        return ret;
     },
     'on': function(key, func) {
         var bindfunc = bind(this, func);
@@ -3200,7 +3253,7 @@ Global['Model'] = klassExtendBase(function(config) {
         return bindfunc;
     },
     'off': function(key, func) {
-        return this._observer['off'](key, func);
+        this._observer['off'](key, func);
     },
     'fire': function(key, vars) {
         return this._observer['fire'](key, vars);
@@ -3225,7 +3278,7 @@ Global['View'] = klassExtendBase(function(config) {
     }
 }, {
     'disposeInternal': function() {
-        this['detach']();
+        this._e('off');
     },
     _e: function(methodname) {
         var i,
@@ -3257,14 +3310,15 @@ Global['View'] = klassExtendBase(function(config) {
 Global['Validate'] = klassExtendBase(function(config) {
     config = config || {};
 
-    this['level'] = config['level'] || 'warn';
+    /* this._level = config['level'] || 'warn'; */
+    this._level = config['level'];
 
     owner(this, this, config);
 }, {
-    'displayError': function displayError(key, text) {
-        text = 'Validate Error: ' + key + ' is ' + text + '.';
+    displayError: function(key, text) {
+        text = 'Validate Error:' + key + ' is ' + text + '.';
 
-        switch (this['level']) {
+        switch (this.level) {
             case 'log':
                 console.log(text);
                 return FALSE;
@@ -3282,37 +3336,37 @@ Global['Validate'] = klassExtendBase(function(config) {
         if (isObject(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Object');
+        this.displayError(key, 'Object');
     },
     'isNumber': function(key, value) {
         if (isNumber(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Number');
+        this.displayError(key, 'Number');
     },
     'isString': function(key, value) {
         if (isString(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'String');
+        this.displayError(key, 'String');
     },
     'isFunction': function(key, value) {
         if (isFunction(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Function');
+        this.displayError(key, 'Function');
     },
     'isBoolean': function(key, value) {
         if (isBoolean(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Boolean');
+        this.displayError(key, 'Boolean');
     },
     'isArray': function(key, value) {
         if (isArray(value)) {
             return TRUE;
         }
-        this['displayError'](key, 'Array');
+        this.displayError(key, 'Array');
     }
 });
 

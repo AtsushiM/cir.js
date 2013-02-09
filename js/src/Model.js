@@ -36,8 +36,6 @@ Global['Model'] = klassExtendBase(function(config) {
         this._store['set'](key, val);
 
         this.notice(ev['CHANGE'], key, val);
-
-        return TRUE;
     },
     'prev': function(key) {
         if (!key) {
@@ -49,23 +47,19 @@ Global['Model'] = klassExtendBase(function(config) {
         return this._store['get'](key);
     },
     'remove': function(key) {
-        if (!key) {
-            return FALSE;
+        if (key) {
+            var get = this._store['get'](key),
+                ret = this._store['remove'](key);
+
+            this.notice('remove', key, get);
+
+            return ret;
         }
-
-        var get = this._store['get'](key),
-            ret = this._store['remove'](key);
-
-        this.notice('remove', key, get);
-
-        return ret;
     },
     'reset': function() {
         var ret = this._store['reset']();
 
         this.notice('reset');
-
-        return ret;
     },
     'on': function(key, func) {
         var bindfunc = bind(this, func);
@@ -74,7 +68,7 @@ Global['Model'] = klassExtendBase(function(config) {
         return bindfunc;
     },
     'off': function(key, func) {
-        return this._observer['off'](key, func);
+        this._observer['off'](key, func);
     },
     'fire': function(key, vars) {
         return this._observer['fire'](key, vars);

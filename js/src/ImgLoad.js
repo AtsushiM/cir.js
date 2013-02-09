@@ -1,21 +1,20 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 Global['ImgLoad'] = klassExtendBase(function(config) {
-    /* this['_super'](); */
-
-    this.srcs = config['srcs'],
-    this.srccount = this.srcs.length,
+    this.srcs = config['srcs'];
+    this.srccount = this.srcs.length;
     this.loadedsrcs = [];
     this.disposeid = [];
-    this._onload = config['onload'] || nullFunction,
-    this._onprogress = config['onprogress'] || nullFunction,
-    this.loadcount = 0;
-    this.progress = 0;
-    this.started = FALSE;
+    this._onload = config['onload'] || nullFunction;
+    this._onprogress = config['onprogress'] || nullFunction;
+    // this.loadcount = 0;
+    // this.progress = 0;
 
     if (!config['manual']) {
         this['start']();
     }
 }, {
+    loadcount: 0,
+    progress: 0,
     _c: function() {
         this.loadcount++;
 
@@ -35,7 +34,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
     },
     'start': function() {
         if (this.started) {
-            return FALSE;
+            return;
         }
 
         this.started = TRUE;

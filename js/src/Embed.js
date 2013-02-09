@@ -32,9 +32,8 @@ function embedSupportCheck(type, suffix) {
         }
     }
 
-    if (!support.length) {
-        return FALSE;
+    if (support.length) {
+        return support;
     }
-
-    return support;
+    return FALSE;
 }

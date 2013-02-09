@@ -2,19 +2,15 @@
 Global['Twitter'] = klassExtendBase(UNDEFINED,
 {
     'shareURL': function(vars) {
-        var caption = vars['caption'] || EMPTY,
-            name = vars['name'],
-            hash = vars['hash'],
-            url = 'https://twitter.com/intent/tweet?';
+        var name = vars['name'],
+            hash = vars['hash'];
 
         name = name ? ' 「' + name + '」' : EMPTY;
         hash = hash ? ' ' + hash : EMPTY;
 
-        url += makeQueryString({
+        return 'https://twitter.com/intent/tweet?' + makeQueryString({
             'url': vars['redirect_uri'],
-            'text': caption + name + hash
+            'text': (vars['caption'] || EMPTY) + name + hash
         });
-
-        return url;
     }
 });

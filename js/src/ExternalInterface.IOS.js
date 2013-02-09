@@ -19,7 +19,6 @@ var ExternalIOS = klassExtend(Global['HashQuery'], function() {
 
             if (hash['mode'] === name) {
                 func(hash['vars']);
-                return TRUE;
             }
         };
         on(win, ev_hashchange, mine.ios[name]);

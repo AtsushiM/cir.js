@@ -16,9 +16,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
             error = vars['error'] || nullFunction,
             type = vars['type'] || 'GET',
             query = EMPTY,
-            xhr;
-
-        xhr = this.xhr = new XMLHttpRequest();
+            xhr = this.xhr = new XMLHttpRequest();
 
         if (!vars['cash']) {
             if (!vars['query']) {
@@ -31,21 +29,20 @@ Global['Ajax'] = klassExtendBase(function(config) {
             query = vars['query'];
 
             if (isObject(query)) {
-                query = makeQueryString(query);
-                query = encodeURI(query);
+                query = encodeURI(makeQueryString(query));
             }
         }
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState != 4) {
-                return FALSE;
+                return;
             }
 
             if (xhr.status == 200) {
                 return callback(xhr.responseText, xhr);
             }
 
-            return error(xhr);
+            error(xhr);
         }
 
         if (type === 'GET') {

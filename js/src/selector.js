@@ -1,15 +1,18 @@
 /* Test: "../../spec/_src/src/selector/test.js" */
-Global['$'] = function(query, _parent) {
-    'use strict';
+Global['$'] = function(query, _parent /* varless */, $el, instance, len) {
+    // var $el,
+    //     base,
+    //     instance,
+    //     len;
 
-    var $el,
-        base,
-        instance,
-        len;
+    function base() {
+    }
+    base.prototype = Global['$'].methods;
 
-    _parent = _parent || doc;
+    /* _parent = _parent || doc; */
 
     if (isString(query)) {
+        _parent = _parent || doc;
         $el = _parent.querySelectorAll(query);
     }
     else {
@@ -17,14 +20,11 @@ Global['$'] = function(query, _parent) {
         query = EMPTY;
     }
     len = $el.length;
-
-    base = function() {};
-    base.prototype = Global['$'].methods;
     instance = new base();
 
     instance.length = len;
     /* instance._selector = query; */
-    instance._parent = _parent;
+    /* instance._parent = _parent; */
 
     /* for (; i < len; i++) { */
     for (;len--;) {

@@ -2,6 +2,6 @@
 Global['LocalStorage'] = function(config) {
     config = config || {};
 
-    config['type'] = 'Local';
+    config['type'] = 'local';
     return new WebStorage(config);
 };

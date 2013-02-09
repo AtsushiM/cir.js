@@ -7,10 +7,11 @@ var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
         this.android[conf['mode']](this['makeHash'](conf));
     },
     'addCallback': function(name, func) {
-        this.externalObj[name] = bind(this, function(vars) {
-            var objs = this['parseHash'](vars);
-            return func(objs['vars']);
-        });
+        var mine = this;
+
+        mine.externalObj[name] = function(vars) {
+            func(mine['parseHash'](vars)['vars']);
+        };
     },
     'removeCallback': function(name) {
         delete this.externalObj[name];

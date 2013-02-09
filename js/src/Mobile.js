@@ -1,7 +1,5 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global['Mobile'] = klassExtendBase(function() {
-    /* this['_super'](); */
-}, {
+Global['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -26,25 +24,21 @@ Global['Mobile'] = klassExtendBase(function() {
         );
     },
     'killScroll': function(isNoTop) {
-        if (this.killscrollid) {
-            return FALSE;
+        if (!this.killscrollid) {
+            if (!isNoTop) {
+                pageTop();
+            }
+            this.killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
         }
-
-        if (!isNoTop) {
-            pageTop();
-        }
-        this.killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
     },
     'revivalScroll': function(isNoTop) {
-        if (!this.killscrollid) {
-            return FALSE;
+        if (this.killscrollid) {
+            if (!isNoTop) {
+                pageTop();
+            }
+            this['uncontract'](this.killscrollid);
+            delete this.killscrollid;
         }
-
-        if (!isNoTop) {
-            pageTop();
-        }
-        this['uncontract'](this.killscrollid);
-        delete this.killscrollid;
     },
     'hideAddress': function() {
         this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
@@ -120,8 +114,7 @@ Global['Mobile'] = klassExtendBase(function() {
             if (
                 mine['getOrientation']()['portrait']
             ) {
-                vars['portrait']();
-                return TRUE;
+                return vars['portrait']();
             }
             vars['landscape']();
         }

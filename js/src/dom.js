@@ -35,49 +35,43 @@ function hasClass(el, cls) {
 }
 
 function addClass(el, cls) {
-    var between = EMPTY,
-        orgcls = el.className;
+    if (!hasClass(el, cls)) {
+        var between = EMPTY,
+            orgcls = el.className;
 
-    if (hasClass(el, cls)) {
-        return FALSE;
+        if (orgcls) {
+            between = ' ';
+        }
+
+        el.className = orgcls + between + cls;
     }
-
-    if (orgcls) {
-        between = ' ';
-    }
-
-    el.className = orgcls + between + cls;
 }
 
 function removeClass(el, cls) {
-    var addedcls,
-        attachcls = [],
-        i,
-        len;
+    if (hasClass(el, cls)) {
+        var addedcls,
+            attachcls = [],
+            i,
+            len;
 
-    if (!hasClass(el, cls)) {
-        return FALSE;
-    }
+        addedcls = el.className.split(' ');
+        i = addedcls.length;
 
-    addedcls = el.className.split(' ');
-    i = addedcls.length;
-
-    for (; i--;) {
-        if (cls !== addedcls[i]) {
-            attachcls.push(addedcls[i]);
+        for (; i--;) {
+            if (cls !== addedcls[i]) {
+                attachcls.push(addedcls[i]);
+            }
         }
+
+        el.className = attachcls.join(' ');
     }
-
-    el.className = attachcls.join(' ');
-
-    return TRUE;
 }
 function toggleClass(el, cls) {
     if (hasClass(el, cls)) {
         return removeClass(el, cls);
     }
 
-    return addClass(el, cls);
+    addClass(el, cls);
 }
 
 function attr(el, vars, value) {
