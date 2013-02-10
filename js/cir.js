@@ -2447,7 +2447,7 @@ Global['PC'] = klassExtendBase(UNDEFINED, {
         this._scroll(isNoTop, 'auto');
     }
 });
-/* Test: "%JASMINE_TEST_PATH%" */
+/* Test: "../../spec/_src/src/Modal/test.js" */
 Global['Modal'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
 
@@ -2467,7 +2467,7 @@ Global['Modal'] = klassExtendBase(function(config) {
         'top': 0,
         'left': 0,
         'width': '100%',
-        'height': '100%'
+        'height': '300%'
     });
     append(doc.body, this._bg);
 

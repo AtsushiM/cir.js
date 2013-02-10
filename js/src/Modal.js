@@ -18,7 +18,7 @@ Global['Modal'] = klassExtendBase(function(config) {
         'top': 0,
         'left': 0,
         'width': '100%',
-        'height': '100%'
+        'height': '300%'
     });
     append(doc.body, this._bg);
 
