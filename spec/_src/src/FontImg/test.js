@@ -13,6 +13,9 @@ describe('FontImgは', function() {
     });
     afterEach(function() {
         // clear
+        if (numimg.dispose) {
+            numimg.dispose();
+        }
     });
 
     function expectedMakeAction(i) {

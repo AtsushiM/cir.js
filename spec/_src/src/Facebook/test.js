@@ -9,6 +9,9 @@ describe('Facebookは', function() {
     });
     afterEach(function() {
         // clear
+        if (facebook.dispose) {
+            facebook.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

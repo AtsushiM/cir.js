@@ -16,6 +16,9 @@ describe('Brushは', function() {
     });
     afterEach(function() {
         // clear
+        if (brush.dispose) {
+            brush.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

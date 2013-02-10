@@ -8,6 +8,9 @@ describe('DataStoreは', function() {
     });
     afterEach(function() {
         store.reset();
+        if (store.dispose) {
+            store.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

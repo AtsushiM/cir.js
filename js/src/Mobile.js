@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global['Mobile'] = klassExtendBase(UNDEFINED, {
+var mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -122,4 +122,4 @@ Global['Mobile'] = klassExtendBase(UNDEFINED, {
         return ret_remove;
     }
 });
-Global['mobile'] = new Global['Mobile']();
+Global['mobile'] = new mb();

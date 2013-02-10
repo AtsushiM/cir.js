@@ -20,6 +20,12 @@ describe('ExternalInterfaceは', function() {
     });
     afterEach(function() {
         // clear
+        if (extAndroid.dispose) {
+            extAndroid.dispose();
+        }
+        if (extIOS.dispose) {
+            extIOS.dispose();
+        }
     });
 
     it('iOSとAndroid端末で、メソッドの動作を変更する', function() {

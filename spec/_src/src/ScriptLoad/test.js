@@ -13,6 +13,9 @@ describe('ScriptLoadは', function() {
     });
     afterEach(function() {
         // clear
+        if (scriptload.dispose) {
+            scriptload.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

@@ -19,6 +19,9 @@ describe('Surrogateは', function() {
     });
     afterEach(function() {
         // clear
+        if (surrogate.dispose) {
+            surrogate.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

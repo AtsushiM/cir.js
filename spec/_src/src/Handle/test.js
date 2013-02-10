@@ -18,8 +18,8 @@ describe('Handleは', function() {
         handle = new c.Handle(eventHandeler);
     });
     afterEach(function() {
-        if (handle.detach) {
-            handle.detach();
+        if (handle.dispose) {
+            handle.dispose();
         }
     });
 

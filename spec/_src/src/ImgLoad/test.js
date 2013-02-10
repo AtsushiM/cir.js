@@ -26,6 +26,9 @@ describe('ImgLoadは', function() {
         // clear
         progresscount = 0;
         loadend = false;
+        if (imgload.dispose) {
+            imgload.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

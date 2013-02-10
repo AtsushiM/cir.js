@@ -8,6 +8,9 @@ describe('Ajaxは', function() {
     });
     afterEach(function() {
         // clear
+        if (ajax.dispose) {
+            ajax.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

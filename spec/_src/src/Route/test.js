@@ -22,6 +22,9 @@ describe('Routeは', function() {
     });
     afterEach(function() {
         // clear
+        if (route.dispose) {
+            route.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

@@ -10,8 +10,9 @@ describe('Tweenerは', function() {
     afterEach(function() {
         // clear
         element.removeAttribute('style');
-        if (tweener.stop) {
+        if (tweener.dispose) {
             tweener.stop();
+            tweener.dispose();
         }
     });
 

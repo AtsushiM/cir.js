@@ -9,6 +9,9 @@ describe('Mobileは', function() {
     });
     afterEach(function() {
         // clear
+        if (mb.dispose) {
+            mb.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

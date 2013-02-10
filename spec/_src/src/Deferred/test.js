@@ -9,6 +9,9 @@ describe('Deferredは', function() {
     });
     afterEach(function() {
         // clear
+        if (deferred.dispose) {
+            deferred.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

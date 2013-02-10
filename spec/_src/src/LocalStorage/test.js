@@ -15,6 +15,9 @@ describe('LocalStorageは', function() {
     afterEach(function() {
         // clear
         LS.clear();
+        if (storage.dispose) {
+            storage.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

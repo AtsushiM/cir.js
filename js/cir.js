@@ -2105,11 +2105,13 @@ Global['DragFlick'] = klassExtendBase(function(config) {
 Global['ExternalInterface'] = function(config) {
     config = config || NULLOBJ;
 
+    var ext = ExternalIOS;
+
     if (config['android']) {
-        return new ExternalAndroid(config);
+        ext = ExternalAndroid;
     }
 
-    return new ExternalIOS(config);
+    return new ext(config);
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
 var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
@@ -2305,7 +2307,7 @@ Global['WindowLoad'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-Global['Mobile'] = klassExtendBase(UNDEFINED, {
+var mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -2428,9 +2430,9 @@ Global['Mobile'] = klassExtendBase(UNDEFINED, {
         return ret_remove;
     }
 });
-Global['mobile'] = new Global['Mobile']();
+Global['mobile'] = new mb();
 /* Test: "../../spec/_src/src/PC/test.js" */
-Global['PC'] = klassExtendBase(UNDEFINED, {
+var pc = Global['PC'] = klassExtendBase(UNDEFINED, {
     _scroll: function(isNoTop, overflow) {
         if (!isNoTop) {
             pageTop();
@@ -2447,6 +2449,7 @@ Global['PC'] = klassExtendBase(UNDEFINED, {
         this._scroll(isNoTop, 'auto');
     }
 });
+Global['pc'] = new pc();
 /* Test: "../../spec/_src/src/Modal/test.js" */
 Global['Modal'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
@@ -2454,6 +2457,8 @@ Global['Modal'] = klassExtendBase(function(config) {
     this._html = config['html'];
     this._overlayClose = config['overlayClose'];
     this._closeSelector = config['closeSelector'];
+
+    this._scroll = new (isTouch ? mb : pc)();
 
     this._contractid = [];
 
@@ -2463,7 +2468,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     css(this._bg, {
         'display': 'none',
         'position': 'absolute',
-        'z-index': 10000,
+        'zIndex': 10000,
         'top': 0,
         'left': 0,
         'width': '100%',
@@ -2477,7 +2482,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     css(this._inner, {
         'display': 'none',
         'position': 'absolute',
-        'z-index': 10001,
+        'zindex': 10001,
         'top': '50%',
         'left': '50%'
     });
@@ -2487,7 +2492,6 @@ Global['Modal'] = klassExtendBase(function(config) {
         this['open'](config['html']);
     }
 }, {
-    _scroll: new Global[(isTouch ? 'Mobile' : 'PC')](),
     _closeDetach: function() {
         var i = this._contractid.length;
 

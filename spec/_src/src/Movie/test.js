@@ -8,7 +8,9 @@ describe('Movieは', function() {
     });
     afterEach(function() {
         // clear
-        delete movie;
+        if (movie.dispose) {
+            movie.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

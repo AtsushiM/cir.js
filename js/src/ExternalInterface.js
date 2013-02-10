@@ -2,9 +2,11 @@
 Global['ExternalInterface'] = function(config) {
     config = config || NULLOBJ;
 
+    var ext = ExternalIOS;
+
     if (config['android']) {
-        return new ExternalAndroid(config);
+        ext = ExternalAndroid;
     }
 
-    return new ExternalIOS(config);
+    return new ext(config);
 };

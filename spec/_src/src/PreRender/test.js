@@ -17,6 +17,9 @@ describe('PreRenderは', function() {
         });
     });
     afterEach(function() {
+        if (prerender.dispose) {
+            prerender.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

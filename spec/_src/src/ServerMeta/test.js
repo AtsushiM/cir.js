@@ -9,6 +9,9 @@ describe('ServerMetaは', function() {
     });
     afterEach(function() {
         // clear
+        if (servermeta.dispose) {
+            servermeta.dispose();
+        }
     });
 
     it('初期化完了時にcallbackを実行する', function() {

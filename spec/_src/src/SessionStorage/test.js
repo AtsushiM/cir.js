@@ -15,6 +15,9 @@ describe('SessionStorageは', function() {
     afterEach(function() {
         // clear
         SS.clear();
+        if (storage.dispose) {
+            storage.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

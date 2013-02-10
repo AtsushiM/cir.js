@@ -18,6 +18,9 @@ describe('ExternalInterface.IOSは', function() {
     afterEach(function() {
         // clear
         location.hash = orgHash;
+        if (external.dispose) {
+            external.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

@@ -9,6 +9,9 @@ describe('Eventは', function() {
     });
     afterEach(function() {
         // clear
+        if (e.dispose) {
+            e.dispose();
+        }
     });
 
     it('PCとスマートフォンでイベントを切り替える', function() {

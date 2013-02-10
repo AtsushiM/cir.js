@@ -6,6 +6,8 @@ Global['Modal'] = klassExtendBase(function(config) {
     this._overlayClose = config['overlayClose'];
     this._closeSelector = config['closeSelector'];
 
+    this._scroll = new (isTouch ? mb : pc)();
+
     this._contractid = [];
 
     this._bg = create('div', {
@@ -14,7 +16,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     css(this._bg, {
         'display': 'none',
         'position': 'absolute',
-        'z-index': 10000,
+        'zIndex': 10000,
         'top': 0,
         'left': 0,
         'width': '100%',
@@ -28,7 +30,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     css(this._inner, {
         'display': 'none',
         'position': 'absolute',
-        'z-index': 10001,
+        'zindex': 10001,
         'top': '50%',
         'left': '50%'
     });
@@ -38,7 +40,6 @@ Global['Modal'] = klassExtendBase(function(config) {
         this['open'](config['html']);
     }
 }, {
-    _scroll: new Global[(isTouch ? 'Mobile' : 'PC')](),
     _closeDetach: function() {
         var i = this._contractid.length;
 

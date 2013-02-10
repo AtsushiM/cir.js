@@ -9,6 +9,9 @@ describe('Observerは', function() {
     });
     afterEach(function() {
         // clear
+        if (observer.dispose) {
+            observer.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

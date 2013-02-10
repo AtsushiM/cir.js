@@ -9,6 +9,9 @@ describe('DragFlickは', function() {
     });
     afterEach(function() {
         // clear
+        if (dragflick.dispose) {
+            dragflick.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

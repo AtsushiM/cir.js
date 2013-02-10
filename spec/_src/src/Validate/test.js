@@ -12,6 +12,14 @@ describe('Validateは', function() {
     });
     afterEach(function() {
         // clear
+        if (validate.dispose) {
+            validate.dispose();
+        }
+    });
+
+    it('dispose()でインスタンスを解放する', function() {
+        validate.dispose();
+        expect(validate).toEqual({});
     });
 
     it('isObject(key, value)でvalueがObjectの場合true、そうでない場合はconsole.logにエラーを表示する', function() {

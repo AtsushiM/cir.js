@@ -26,6 +26,9 @@ describe('ExternalInterface.Androidは', function() {
         // clear
         location.hash = orgHash;
         delete c.EXTERNAL_ANDROID;
+        if (external.dispose) {
+            external.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

@@ -12,6 +12,9 @@ describe('XMLは', function() {
     });
     afterEach(function() {
         // clear
+        if (xml.dispose) {
+            xml.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

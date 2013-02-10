@@ -9,6 +9,9 @@ describe('Baseは', function() {
     });
     afterEach(function() {
         // clear
+        if (base.dispose) {
+            base.dispose();
+        }
     });
 
     it('dispose()でプロパティとメソッドを破棄し、メモリーを解放する', function() {

@@ -10,6 +10,9 @@ describe('HashQueryは', function() {
     });
     afterEach(function() {
         location.hash = orgHash;
+        if (hashquery.dispose) {
+            hashquery.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

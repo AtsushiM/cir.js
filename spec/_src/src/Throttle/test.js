@@ -17,6 +17,9 @@ describe('Throttleは', function() {
     afterEach(function() {
         // clear
         retarg = null;
+        if (throttle.dispose) {
+            throttle.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

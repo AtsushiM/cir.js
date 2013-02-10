@@ -14,9 +14,9 @@ describe('FPSは', function() {
     });
     afterEach(function() {
         // clear
-        if (fps.stop) {
+        if (fps.dispose) {
             fps.stop();
-            fps = null;
+            fps.dispose();
         }
     });
 

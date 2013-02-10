@@ -9,6 +9,9 @@ describe('Soundは', function() {
     afterEach(function() {
         // clear
         delete sound;
+        if (sound.dispose) {
+            sound.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

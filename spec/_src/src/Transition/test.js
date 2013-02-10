@@ -13,6 +13,9 @@ describe('Transitionは', function() {
         // clear
         div.removeAttribute('style');
         c.dom.remove(div);
+        if (transition.dispose) {
+            transition.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

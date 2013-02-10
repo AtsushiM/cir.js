@@ -23,9 +23,14 @@ describe('Viewは', function() {
     });
     afterEach(function() {
         // clear
-        if (view.detach) {
-            view.detach();
+        if (view.dispose) {
+            view.dispose();
         }
+    });
+
+    it('dispose()でインスタンスを解放する', function() {
+        view.dispose();
+        expect(view).toEqual({});
     });
 
     it('イベントを登録する', function() {

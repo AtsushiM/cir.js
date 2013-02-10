@@ -9,6 +9,9 @@ describe('Twitterは', function() {
     });
     afterEach(function() {
         // clear
+        if (twitter.dispose) {
+            twitter.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

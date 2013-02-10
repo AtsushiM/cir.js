@@ -1,17 +1,34 @@
 /* Class: "../../../../js/src/PC.js" */
 describe('PCは', function() {
-    var pc;
+    var c = window.C ? C : Global,
+        pc;
 
     beforeEach(function() {
         // init
-        pc = new Global.PC();
+        pc = new c.PC();
     });
     afterEach(function() {
         // clear
+        if (pc.dispose) {
+            pc.dispose();
+        }
     });
 
-    it('zzzである', function() {
-        expect(0).toEqual(1);
+    it('dispose()でインスタンスを解放する', function() {
+        pc.dispose();
+        expect(pc).toEqual({});
+    });
+
+    it('killScroll()でスクロールを禁止する', function() {
+        pc.killScroll(true);
+        pc.killScroll();
+        expect(0).toEqual(0);
+    });
+
+    it('revivalScroll()でスクロールを復活する', function() {
+        pc.revivalScroll(true);
+        pc.revivalScroll();
+        expect(0).toEqual(0);
     });
 });
 /*

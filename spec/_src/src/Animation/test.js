@@ -12,6 +12,9 @@ describe('Animationは', function() {
     afterEach(function() {
         // clear
         c.dom.remove(div);
+        if (animation.dispose) {
+            animation.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {

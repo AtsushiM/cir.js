@@ -39,6 +39,11 @@ describe('Modelは', function() {
         }
     });
 
+    it('dispose()でインスタンスを解放する', function() {
+        model.dispose();
+        expect(model).toEqual({});
+    });
+
     it('set(key, val)で値を設定し、changeイベントを発火する', function() {
         var ret = 0;
 

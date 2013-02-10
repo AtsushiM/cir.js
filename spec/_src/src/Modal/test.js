@@ -1,17 +1,38 @@
 /* Class: "../../../../js/src/Modal.js" */
 describe('Modalは', function() {
-    var modal;
+    var c = window.C ? C : Global,
+        modal;
 
     beforeEach(function() {
         // init
-        modal = new Global.Modal();
+        modal = new c.Modal({
+            html: 'test',
+            overlayClose: true,
+            closeSelector: '.close',
+            manual: false
+        });
     });
     afterEach(function() {
-        // clear
+        if (modal.close) {
+            modal.dispose();
+        }
     });
 
-    it('zzzである', function() {
-        expect(0).toEqual(1);
+    it('dispose()でインスタンスを解放する', function() {
+        modal.dispose();
+        expect(modal).toEqual({});
+    });
+
+    it('manual: trueでmodal.openを呼び出さない', function() {
+        modal.dispose();
+        modal = new c.Modal({
+            html: 'test',
+            manual: true
+        });
+        waits(10);
+        runs(function() {
+            expect(C.dom.$('.cir-modal-bg').style.display).toEqual('none');
+        });
     });
 });
 /*
