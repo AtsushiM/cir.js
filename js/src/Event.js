@@ -1,5 +1,4 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
-var EventName = 'Event';
 ev = klassExtendBase(UNDEFINED, {
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
@@ -20,5 +19,5 @@ ev = klassExtendBase(UNDEFINED, {
     'TOUCHEND': 'touchend',
     'RESIZE': 'resize'
 });
-Global[EventName] = ev;
+Global['Event'] = ev;
 ev = Global['e'] = new ev();

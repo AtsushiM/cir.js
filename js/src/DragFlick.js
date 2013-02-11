@@ -1,20 +1,26 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global['DragFlick'] = klassExtendBase(function(config) {
-    if (config) {
-        this['attach'](config);
+    this._contractid = [];
+    this.config = config;
+
+    config = config || NULLOBJ;
+    if (!config['manual']) {
+        this['attach']();
     }
 }, {
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
     },
-    'amount': function(vars) {
+    _amount: function(vars) {
         var mine = this,
             startX,
             startY,
             dragflg = FALSE;
 
-        this['contract'](vars['el'], ev['SWITCHDOWN'], start);
-        this['contract'](win, ev['SWITCHUP'], end);
+        this._contractid.push(
+            this['contract'](vars['el'], ev['SWITCHDOWN'], start),
+            this['contract'](win, ev['SWITCHUP'], end)
+        );
 
         function start(e) {
             var changed = mine._t(e);
@@ -40,8 +46,8 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         }
     },
-    'direction': function(vars) {
-        this['amount']({
+    _direction: function(vars) {
+        this._amount({
             'el': vars['el'],
             'callback': function(amount) {
                 var boundary = vars['boundary'] || 0,
@@ -80,8 +86,9 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         });
     },
-    'attach': function(vars) {
+    'attach': function() {
         var mine = this,
+            vars = this.config,
             el = vars['el'],
             start = vars['start'] || nullFunction,
             move = vars['move'] || nullFunction,
@@ -91,7 +98,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             startY = 0;
 
         if (vars['direction']) {
-            mine['direction']({
+            mine._direction({
                 'el': el,
                 'boundary': vars['boundary'],
                 'callback': vars['direction']
@@ -142,7 +149,19 @@ Global['DragFlick'] = klassExtendBase(function(config) {
                     var changed = mine._t(e);
                     callback(changed);
                 };
-            mine['contract'](el, ev, handler);
+
+            mine._contractid.push(
+                mine['contract'](el, ev, handler)
+            );
         }
+    },
+    'detach': function() {
+        var i = this._contractid.length;
+
+        for (; i--;) {
+            this['uncontract'](this._contractid[i]);
+        }
+
+        this._contractid = [];
     }
 });

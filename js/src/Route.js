@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Route/test.js" */
-var RouteName = 'Route';
-Global[RouteName] = klassExtendBase(function(config) {
+Global['Route'] = klassExtendBase(function(config) {
     this._target = config['target'] || EMPTY;
     this._noregex = config['noregex'];
     this._action = config['action'];

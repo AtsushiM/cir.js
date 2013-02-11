@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-var mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
+mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -93,9 +93,11 @@ var mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
         };
 
         function add(handler) {
-            disposeid.push(mine['contract'](win, ev['LOAD'], handler));
-            disposeid.push(mine['contract'](win, ev_orientationchange, handler));
-            disposeid.push(mine['contract'](win, ev['RESIZE'], handler));
+            disposeid.push(
+                mine['contract'](win, ev['LOAD'], handler),
+                mine['contract'](win, ev_orientationchange, handler),
+                mine['contract'](win, ev['RESIZE'], handler)
+            );
         }
         function remove(handler) {
             var i = disposeid.length;

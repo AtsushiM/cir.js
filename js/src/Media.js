@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Media/test.js" */
-/* Global.Media = klassExtendBase(function(config) { */
-var Media = klassExtendBase(function(config) {
+Media = klassExtendBase(function(config) {
     var mine = this,
         autoplay = config['autoplay'],
         loop = config['loop'],
@@ -87,4 +86,3 @@ var Media = klassExtendBase(function(config) {
         this['pause']();
     }
 });
-/* Global['Media']['supportcheck'] = embedSupportCheck; */

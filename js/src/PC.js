@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/PC/test.js" */
-var pc = Global['PC'] = klassExtendBase(UNDEFINED, {
+pc = Global['PC'] = klassExtendBase(UNDEFINED, {
     _scroll: function(isNoTop, overflow) {
         if (!isNoTop) {
             pageTop();

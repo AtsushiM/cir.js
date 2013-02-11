@@ -1,18 +1,20 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
-var FPSName = 'FPS';
-Global[FPSName] = klassExtendBase(function(config) {
+Global['FPS'] = klassExtendBase(function(config) {
     this.criterion =
-    this.surver = config['criterion'],
-    this.msecFrame = this._getFrame(this.criterion),
-    this.enterframe = config['enterframe'],
-    this.prevtime =
-    this.nowtime =
-    this.loopid = 0;
+    this.surver = config['criterion'];
+    this.msecFrame = this._getFrame(this.criterion);
+    this.enterframe = config['enterframe'];
+    // this.prevtime =
+    // this.nowtime =
+    // this.loopid = 0;
 
     if (!config['manual']) {
         this['start']();
     }
 }, {
+    prevtime: 0,
+    nowtime: 0,
+    loopid: 0,
     'disposeInternal': function() {
         this['stop']();
     },

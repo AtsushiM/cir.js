@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-(function() {
-var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option) {
+Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option) {
     var name,
         prop;
 
@@ -20,7 +19,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         this.property.push(prop);
     }
 
-    this._duration = option['duration'] || Mine['duration'];
+    this._duration = option['duration'] || Tweener['duration'];
     this.ease = option['ease'] || this._ease;
     this.onComplete = option['onComplete'];
 
@@ -63,12 +62,12 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         }
 
         return function(callback) {
-            setTimeout(callback, 1000 / Mine.fps);
+            setTimeout(callback, 1000 / Tweener.fps);
         };
     }()),
     loop: function() {
         var mine = this,
-            items = Mine.Items,
+            items = Tweener.Items,
             item,
             now = dateNow(),
             time,
@@ -87,7 +86,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
                 for (; i--;) {
                     prop = item.property[i];
 
-                    Mine._setProp(item._target, prop, item.ease(
+                    Tweener._setProp(item._target, prop, item.ease(
                         time,
                         prop['from'],
                         prop.distance,
@@ -99,7 +98,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
                 for (; i--;) {
                     prop = item.property[i];
 
-                    Mine._setProp(item._target, prop, prop['to']);
+                    Tweener._setProp(item._target, prop, prop['to']);
                 }
                 if (item.onComplete) {
                     item.onComplete();
@@ -123,25 +122,24 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
 
         mine.begin = dateNow();
 
-        Mine.Items.push(mine);
-        if (!Mine.timerId) {
-            Mine.timerId = 1;
+        Tweener.Items.push(mine);
+        if (!Tweener.timerId) {
+            Tweener.timerId = 1;
             mine._requestAnimationFrame(function() {
                 mine.loop();
             });
         }
     },
     'stop': function() {
-        Mine.Items = [];
-        clearInterval(Mine.timerId);
-        Mine.timerId = NULL;
+        Tweener.Items = [];
+        clearInterval(Tweener.timerId);
+        Tweener.timerId = NULL;
     }
 });
-Mine._setProp = function(target, prop, point) {
+Tweener._setProp = function(target, prop, point) {
     target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
-/* Mine.timerId = NULL; */
-Mine.Items = [];
-Mine['fps'] = 30;
-Mine['duration'] = 500;
-}());
+/* Tweener.timerId = NULL; */
+Tweener.Items = [];
+Tweener['fps'] = 30;
+Tweener['duration'] = 500;

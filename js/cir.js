@@ -16,8 +16,16 @@ var win = window,
     ev_ended = 'ended',
     csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
     easebackrate = 1.70158,
-    /* Global = win['C'] = {}; */
-    Global = C = {};
+    /* Global = win['C'] = {}, */
+    Global = C = {},
+    DeviceAction,
+    ExternalAndroid,
+    ExternalIOS,
+    Media,
+    Tweener,
+    WebStorage,
+    mb,
+    pc;
 
 function cssCubicBezierFormat(text) {
     return 'cubic-bezier(' + text + ')';
@@ -592,7 +600,6 @@ Global['Base'] = klassExtend(UNDEFINED, function() {
     }
 });
 /* Test: "../../spec/_src/src/Event/test.js" */
-var EventName = 'Event';
 ev = klassExtendBase(UNDEFINED, {
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
@@ -613,7 +620,7 @@ ev = klassExtendBase(UNDEFINED, {
     'TOUCHEND': 'touchend',
     'RESIZE': 'resize'
 });
-Global[EventName] = ev;
+Global['Event'] = ev;
 ev = Global['e'] = new ev();
 /* Test: "../../spec/_src/src/ease/test.js" */
 Global['ease'] = {
@@ -994,8 +1001,7 @@ Mine['support'] = support;
 Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-(function() {
-var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option) {
+Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option) {
     var name,
         prop;
 
@@ -1015,7 +1021,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         this.property.push(prop);
     }
 
-    this._duration = option['duration'] || Mine['duration'];
+    this._duration = option['duration'] || Tweener['duration'];
     this.ease = option['ease'] || this._ease;
     this.onComplete = option['onComplete'];
 
@@ -1058,12 +1064,12 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
         }
 
         return function(callback) {
-            setTimeout(callback, 1000 / Mine.fps);
+            setTimeout(callback, 1000 / Tweener.fps);
         };
     }()),
     loop: function() {
         var mine = this,
-            items = Mine.Items,
+            items = Tweener.Items,
             item,
             now = dateNow(),
             time,
@@ -1082,7 +1088,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
                 for (; i--;) {
                     prop = item.property[i];
 
-                    Mine._setProp(item._target, prop, item.ease(
+                    Tweener._setProp(item._target, prop, item.ease(
                         time,
                         prop['from'],
                         prop.distance,
@@ -1094,7 +1100,7 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
                 for (; i--;) {
                     prop = item.property[i];
 
-                    Mine._setProp(item._target, prop, prop['to']);
+                    Tweener._setProp(item._target, prop, prop['to']);
                 }
                 if (item.onComplete) {
                     item.onComplete();
@@ -1118,28 +1124,27 @@ var Mine = Global['Tweener'] = klassExtendBase(function(target, property, option
 
         mine.begin = dateNow();
 
-        Mine.Items.push(mine);
-        if (!Mine.timerId) {
-            Mine.timerId = 1;
+        Tweener.Items.push(mine);
+        if (!Tweener.timerId) {
+            Tweener.timerId = 1;
             mine._requestAnimationFrame(function() {
                 mine.loop();
             });
         }
     },
     'stop': function() {
-        Mine.Items = [];
-        clearInterval(Mine.timerId);
-        Mine.timerId = NULL;
+        Tweener.Items = [];
+        clearInterval(Tweener.timerId);
+        Tweener.timerId = NULL;
     }
 });
-Mine._setProp = function(target, prop, point) {
+Tweener._setProp = function(target, prop, point) {
     target[prop['name']] = prop['prefix'] + point + prop['suffix'];
 };
-/* Mine.timerId = NULL; */
-Mine.Items = [];
-Mine['fps'] = 30;
-Mine['duration'] = 500;
-}());
+/* Tweener.timerId = NULL; */
+Tweener.Items = [];
+Tweener['fps'] = 30;
+Tweener['duration'] = 500;
 /* Test: "../../spec/_src/src/selector/test.js" */
 Global['$'] = function(query, _parent /* varless */, $el, instance, len) {
     // var $el,
@@ -1494,8 +1499,7 @@ function embedSupportCheck(type, suffix) {
     return FALSE;
 }
 /* Test: "../../spec/_src/src/Media/test.js" */
-/* Global.Media = klassExtendBase(function(config) { */
-var Media = klassExtendBase(function(config) {
+Media = klassExtendBase(function(config) {
     var mine = this,
         autoplay = config['autoplay'],
         loop = config['loop'],
@@ -1582,7 +1586,6 @@ var Media = klassExtendBase(function(config) {
         this['pause']();
     }
 });
-/* Global['Media']['supportcheck'] = embedSupportCheck; */
 /* Test: "../../spec/_src/src/Audio/test.js" */
 Global['Audio'] = function(config) {
     config['type'] = 'audio';
@@ -1708,7 +1711,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/Handle/test.js" */
 Global['Handle'] = klassExtendBase(function(config) {
-    this.handler = config;
+    this.config = config;
     this['attach']();
 }, {
     'disposeInternal': function() {
@@ -1723,11 +1726,11 @@ Global['Handle'] = klassExtendBase(function(config) {
     _e: function(onoff) {
         var i;
 
-        for (i in this.handler['events']) {
+        for (i in this.config['events']) {
             onoff(
-                this.handler['el'],
+                this.config['el'],
                 i,
-                this.handler['events'][i]
+                this.config['events'][i]
             );
         }
     }
@@ -1735,7 +1738,7 @@ Global['Handle'] = klassExtendBase(function(config) {
 /* Test: "../../spec/_src/src/Brush/test.js" */
 Global['Brush'] = klassExtendBase(function(config) {
     this._canvas = config['canvas'];
-    this.ctx = this._canvas.getContext('2d');
+    this._ctx = this._canvas.getContext('2d');
 
     this['setSize'](config);
 }, {
@@ -1798,11 +1801,11 @@ Global['Brush'] = klassExtendBase(function(config) {
     'draw': function(layer) {
         var i = 0, len = layer.length, item;
 
-        this.ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
         for (; i < len; i++) {
             item = layer[i];
-            this.ctx.drawImage(item['image'], item['x'], item['y']);
+            this._ctx.drawImage(item['image'], item['x'], item['y']);
         }
     }
 });
@@ -1859,56 +1862,55 @@ Global['DataStore'] = klassExtendBase(function() {
     }
 });
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
-var WebStorageName = 'WebStorage',
-    WebStorage = klassExtendBase(function(config) {
-        this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
-        this._storage = win[config['type'] + 'Storage'];
-    }, {
-        'set': function(key, val) {
-            this._storage.setItem(this._n + key, jsonStringify(val));
-        },
-        'get': function(key) {
-            var mine = this,
-                ret = {},
-                i;
+WebStorage = klassExtendBase(function(config) {
+    this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
+    this._storage = win[config['type'] + 'Storage'];
+}, {
+    'set': function(key, val) {
+        this._storage.setItem(this._n + key, jsonStringify(val));
+    },
+    'get': function(key) {
+        var mine = this,
+            ret = {},
+            i;
 
-            if (key) {
-                return jsonParse(mine._storage.getItem(mine._n + key));
-            }
+        if (key) {
+            return jsonParse(mine._storage.getItem(mine._n + key));
+        }
 
-            for (i in mine._storage) {
-                if (!this._n) {
-                    ret[i] = jsonParse(mine._storage[i]);
-                }
-                else {
-                    key = i.split(this._n)[1];
-                    if (key) {
-                        ret[key] = jsonParse(mine._storage[i]);
-                    }
-                }
-            }
-
-            return ret;
-        },
-        'remove': function(key) {
-            key = this._n + key;
-
-            if (isDefined(this._storage.getItem(key))) {
-                this._storage.removeItem(key);
-            }
-        },
-        'reset': function() {
+        for (i in mine._storage) {
             if (!this._n) {
-                return this._storage.clear();
+                ret[i] = jsonParse(mine._storage[i]);
             }
-
-            var i;
-
-            for (i in this._storage) {
-                this.remove(i);
+            else {
+                key = i.split(this._n)[1];
+                if (key) {
+                    ret[key] = jsonParse(mine._storage[i]);
+                }
             }
         }
-    });
+
+        return ret;
+    },
+    'remove': function(key) {
+        key = this._n + key;
+
+        if (isDefined(this._storage.getItem(key))) {
+            this._storage.removeItem(key);
+        }
+    },
+    'reset': function() {
+        if (!this._n) {
+            return this._storage.clear();
+        }
+
+        var i;
+
+        for (i in this._storage) {
+            this.remove(i);
+        }
+    }
+});
 /* Test: "../../spec/_src/src/LocalStorage/test.js" */
 Global['LocalStorage'] = function(config) {
     config = config || {};
@@ -1955,21 +1957,27 @@ Global['Deferred'] = klassExtendBase(function() {
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
 Global['DragFlick'] = klassExtendBase(function(config) {
-    if (config) {
-        this['attach'](config);
+    this._contractid = [];
+    this.config = config;
+
+    config = config || NULLOBJ;
+    if (!config['manual']) {
+        this['attach']();
     }
 }, {
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
     },
-    'amount': function(vars) {
+    _amount: function(vars) {
         var mine = this,
             startX,
             startY,
             dragflg = FALSE;
 
-        this['contract'](vars['el'], ev['SWITCHDOWN'], start);
-        this['contract'](win, ev['SWITCHUP'], end);
+        this._contractid.push(
+            this['contract'](vars['el'], ev['SWITCHDOWN'], start),
+            this['contract'](win, ev['SWITCHUP'], end)
+        );
 
         function start(e) {
             var changed = mine._t(e);
@@ -1995,8 +2003,8 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         }
     },
-    'direction': function(vars) {
-        this['amount']({
+    _direction: function(vars) {
+        this._amount({
             'el': vars['el'],
             'callback': function(amount) {
                 var boundary = vars['boundary'] || 0,
@@ -2035,8 +2043,9 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             }
         });
     },
-    'attach': function(vars) {
+    'attach': function() {
         var mine = this,
+            vars = this.config,
             el = vars['el'],
             start = vars['start'] || nullFunction,
             move = vars['move'] || nullFunction,
@@ -2046,7 +2055,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
             startY = 0;
 
         if (vars['direction']) {
-            mine['direction']({
+            mine._direction({
                 'el': el,
                 'boundary': vars['boundary'],
                 'callback': vars['direction']
@@ -2097,8 +2106,20 @@ Global['DragFlick'] = klassExtendBase(function(config) {
                     var changed = mine._t(e);
                     callback(changed);
                 };
-            mine['contract'](el, ev, handler);
+
+            mine._contractid.push(
+                mine['contract'](el, ev, handler)
+            );
         }
+    },
+    'detach': function() {
+        var i = this._contractid.length;
+
+        for (; i--;) {
+            this['uncontract'](this._contractid[i]);
+        }
+
+        this._contractid = [];
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
@@ -2114,7 +2135,7 @@ Global['ExternalInterface'] = function(config) {
     return new ext(config);
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
+ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
     this.android = config['android'];
     this.externalObj = config['externalObj'];
 }, {
@@ -2133,7 +2154,7 @@ var ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-var ExternalIOS = klassExtend(Global['HashQuery'], function() {
+ExternalIOS = klassExtend(Global['HashQuery'], function() {
     this.ios = {};
 }, {
     'disposeInternal': function() {
@@ -2179,20 +2200,22 @@ Global['Facebook'] = klassExtendBase(UNDEFINED,
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
-var FPSName = 'FPS';
-Global[FPSName] = klassExtendBase(function(config) {
+Global['FPS'] = klassExtendBase(function(config) {
     this.criterion =
-    this.surver = config['criterion'],
-    this.msecFrame = this._getFrame(this.criterion),
-    this.enterframe = config['enterframe'],
-    this.prevtime =
-    this.nowtime =
-    this.loopid = 0;
+    this.surver = config['criterion'];
+    this.msecFrame = this._getFrame(this.criterion);
+    this.enterframe = config['enterframe'];
+    // this.prevtime =
+    // this.nowtime =
+    // this.loopid = 0;
 
     if (!config['manual']) {
         this['start']();
     }
 }, {
+    prevtime: 0,
+    nowtime: 0,
+    loopid: 0,
     'disposeInternal': function() {
         this['stop']();
     },
@@ -2234,7 +2257,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
     this.srcs = config['srcs'];
     this.srccount = this.srcs.length;
     this.loadedsrcs = [];
-    this.disposeid = [];
+    this._contractid = [];
     this._onload = config['onload'] || nullFunction;
     this._onprogress = config['onprogress'] || nullFunction;
     // this.loadcount = 0;
@@ -2253,12 +2276,12 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
         this._onprogress(this.progress);
 
         if (this.loadcount >= this.srccount) {
-            var i = this.disposeid.length;
+            var i = this._contractid.length;
 
             for (; i--;) {
-                this['uncontract'](this.disposeid[i]);
+                this['uncontract'](this._contractid[i]);
             }
-            this.disposeid = [];
+            this._contractid = [];
 
             this._onload(this.loadedsrcs);
         }
@@ -2278,7 +2301,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
             img = create('img');
             img.src = mine.srcs[i];
 
-            mine.disposeid.push(mine['contract'](img, ev['LOAD'], countup));
+            mine._contractid.push(mine['contract'](img, ev['LOAD'], countup));
             mine.loadedsrcs.push(img);
         }
 
@@ -2307,7 +2330,7 @@ Global['WindowLoad'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-var mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
+mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -2401,9 +2424,11 @@ var mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
         };
 
         function add(handler) {
-            disposeid.push(mine['contract'](win, ev['LOAD'], handler));
-            disposeid.push(mine['contract'](win, ev_orientationchange, handler));
-            disposeid.push(mine['contract'](win, ev['RESIZE'], handler));
+            disposeid.push(
+                mine['contract'](win, ev['LOAD'], handler),
+                mine['contract'](win, ev_orientationchange, handler),
+                mine['contract'](win, ev['RESIZE'], handler)
+            );
         }
         function remove(handler) {
             var i = disposeid.length;
@@ -2432,7 +2457,7 @@ var mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
 });
 Global['mobile'] = new mb();
 /* Test: "../../spec/_src/src/PC/test.js" */
-var pc = Global['PC'] = klassExtendBase(UNDEFINED, {
+pc = Global['PC'] = klassExtendBase(UNDEFINED, {
     _scroll: function(isNoTop, overflow) {
         if (!isNoTop) {
             pageTop();
@@ -2560,7 +2585,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
-var DeviceAction = klassExtendBase(function(config) {
+DeviceAction = klassExtendBase(function(config) {
     this._e = config['e'];
 
     if (config['callback']) {
@@ -2610,7 +2635,7 @@ var Shake,
 /* } */
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
-    /* this._shaker = new Shake(); */
+    this._shaker = new Shake();
     this._limit = config['limit'];
     this._waittime = config['waittime'];
     /* this._callback = config['callback']; */
@@ -2619,7 +2644,6 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         this['attach'](config['direction'], config['callback']);
     }
 }, {
-    _shaker: new Shake(),
     convertName: {
         'x': 'gamma',
         'y': 'beta',
@@ -2682,8 +2706,7 @@ Global['FontImg'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
-var ObserverName = 'Observer';
-Global[ObserverName] = klassExtendBase(function() {
+Global['Observer'] = klassExtendBase(function() {
     this.observed = {};
 }, {
     'on': function(key, func) {
@@ -2797,8 +2820,7 @@ Global['PreRender'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
-var RouteName = 'Route';
-Global[RouteName] = klassExtendBase(function(config) {
+Global['Route'] = klassExtendBase(function(config) {
     this._target = config['target'] || EMPTY;
     this._noregex = config['noregex'];
     this._action = config['action'];
@@ -3319,7 +3341,7 @@ Global['Validate'] = klassExtendBase(function(config) {
 
     owner(this, this, config);
 }, {
-    displayError: function(key, text) {
+    'displayError': function(key, text) {
         text = 'Validate Error:' + key + ' is ' + text + '.';
 
         switch (this.level) {
@@ -3340,37 +3362,37 @@ Global['Validate'] = klassExtendBase(function(config) {
         if (isObject(value)) {
             return TRUE;
         }
-        this.displayError(key, 'Object');
+        this['displayError'](key, 'Object');
     },
     'isNumber': function(key, value) {
         if (isNumber(value)) {
             return TRUE;
         }
-        this.displayError(key, 'Number');
+        this['displayError'](key, 'Number');
     },
     'isString': function(key, value) {
         if (isString(value)) {
             return TRUE;
         }
-        this.displayError(key, 'String');
+        this['displayError'](key, 'String');
     },
     'isFunction': function(key, value) {
         if (isFunction(value)) {
             return TRUE;
         }
-        this.displayError(key, 'Function');
+        this['displayError'](key, 'Function');
     },
     'isBoolean': function(key, value) {
         if (isBoolean(value)) {
             return TRUE;
         }
-        this.displayError(key, 'Boolean');
+        this['displayError'](key, 'Boolean');
     },
     'isArray': function(key, value) {
         if (isArray(value)) {
             return TRUE;
         }
-        this.displayError(key, 'Array');
+        this['displayError'](key, 'Array');
     }
 });
 

@@ -3,7 +3,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
     this.srcs = config['srcs'];
     this.srccount = this.srcs.length;
     this.loadedsrcs = [];
-    this.disposeid = [];
+    this._contractid = [];
     this._onload = config['onload'] || nullFunction;
     this._onprogress = config['onprogress'] || nullFunction;
     // this.loadcount = 0;
@@ -22,12 +22,12 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
         this._onprogress(this.progress);
 
         if (this.loadcount >= this.srccount) {
-            var i = this.disposeid.length;
+            var i = this._contractid.length;
 
             for (; i--;) {
-                this['uncontract'](this.disposeid[i]);
+                this['uncontract'](this._contractid[i]);
             }
-            this.disposeid = [];
+            this._contractid = [];
 
             this._onload(this.loadedsrcs);
         }
@@ -47,7 +47,7 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
             img = create('img');
             img.src = mine.srcs[i];
 
-            mine.disposeid.push(mine['contract'](img, ev['LOAD'], countup));
+            mine._contractid.push(mine['contract'](img, ev['LOAD'], countup));
             mine.loadedsrcs.push(img);
         }
 

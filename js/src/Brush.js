@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Brush/test.js" */
 Global['Brush'] = klassExtendBase(function(config) {
     this._canvas = config['canvas'];
-    this.ctx = this._canvas.getContext('2d');
+    this._ctx = this._canvas.getContext('2d');
 
     this['setSize'](config);
 }, {
@@ -64,11 +64,11 @@ Global['Brush'] = klassExtendBase(function(config) {
     'draw': function(layer) {
         var i = 0, len = layer.length, item;
 
-        this.ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
         for (; i < len; i++) {
             item = layer[i];
-            this.ctx.drawImage(item['image'], item['x'], item['y']);
+            this._ctx.drawImage(item['image'], item['x'], item['y']);
         }
     }
 });
