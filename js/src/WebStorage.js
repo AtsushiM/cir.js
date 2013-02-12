@@ -7,22 +7,21 @@ WebStorage = klassExtendBase(function(config) {
         this._storage.setItem(this._n + key, jsonStringify(val));
     },
     'get': function(key) {
-        var mine = this,
-            ret = {},
+        var ret = {},
             i;
 
         if (key) {
-            return jsonParse(mine._storage.getItem(mine._n + key));
+            return jsonParse(this._storage.getItem(this._n + key));
         }
 
-        for (i in mine._storage) {
+        for (i in this._storage) {
             if (!this._n) {
-                ret[i] = jsonParse(mine._storage[i]);
+                ret[i] = jsonParse(this._storage[i]);
             }
             else {
                 key = i.split(this._n)[1];
                 if (key) {
-                    ret[key] = jsonParse(mine._storage[i]);
+                    ret[key] = jsonParse(this._storage[i]);
                 }
             }
         }

@@ -143,7 +143,7 @@ function checkUserAgent(pattern, ua) {
 
     return !!ua.match(pattern);
 }
-function bind(target, func) {
+function proxy(target, func) {
     return function() {
         return func.apply(target, arguments);
     };
@@ -154,7 +154,7 @@ function owner(ownerObj, methods, overrideObj) {
 
     for (i in methods) {
         if (isFunction(methods[i])) {
-            overrideObj[i] = bind(ownerObj, methods[i]);
+            overrideObj[i] = proxy(ownerObj, methods[i]);
         }
     }
 
@@ -187,6 +187,6 @@ Global['util'] = {
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
-    'bind': bind,
+    'proxy': proxy,
     'owner': owner
 };

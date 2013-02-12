@@ -5,12 +5,13 @@ Global['WindowLoad'] = klassExtendBase(function(config) {
     }
 }, {
     onload: function(func) {
-        var disposeid,
-            loaded = bind(this, function() {
-                this['uncontract'](disposeid);
+        var mine = this,
+            disposeid,
+            loaded = function() {
+                mine['uncontract'](disposeid);
                 func();
-            });
+            };
 
-        disposeid = this['contract'](win, ev['LOAD'], loaded);
+        disposeid = mine['contract'](win, ev['LOAD'], loaded);
     }
 });

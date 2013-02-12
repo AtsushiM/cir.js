@@ -6,7 +6,7 @@ Global['Model'] = klassExtendBase(function(config) {
         defaults = config['defaults'] || this['defaults'] || {},
         events = config['events'] || this['events'];
 
-    this._validate = config['validate'] || this['validate'];
+    this._validate = config['validate'] || this['validate'] || {};
     this._store = config['store'] || this['store'] || new C['DataStore']();
     this._observer = new C['Observer']();
 
@@ -62,10 +62,10 @@ Global['Model'] = klassExtendBase(function(config) {
         this.notice('reset');
     },
     'on': function(key, func) {
-        var bindfunc = bind(this, func);
-        this._observer['on'](key, bindfunc);
+        var proxyfunc = proxy(this, func);
+        this._observer['on'](key, proxyfunc);
 
-        return bindfunc;
+        return proxyfunc;
     },
     'off': function(key, func) {
         this._observer['off'](key, func);

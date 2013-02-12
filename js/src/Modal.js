@@ -90,7 +90,7 @@ Global['Modal'] = klassExtendBase(function(config) {
         });
 
         if (this._overlayClose) {
-            this['contract'](this._bg, ev['CLICK'], bind(this, this['close']));
+            this['contract'](this._bg, ev['CLICK'], proxy(this, this['close']));
         }
 
         if (this._closeSelector) {
@@ -101,7 +101,7 @@ Global['Modal'] = klassExtendBase(function(config) {
                 this._contractid.push(
                     this['contract'](close[i],
                     ev['CLICK'],
-                    bind(this, this['close']))
+                    proxy(this, this['close']))
                 );
             }
         }

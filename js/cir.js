@@ -232,7 +232,7 @@ function checkUserAgent(pattern, ua) {
 
     return !!ua.match(pattern);
 }
-function bind(target, func) {
+function proxy(target, func) {
     return function() {
         return func.apply(target, arguments);
     };
@@ -243,7 +243,7 @@ function owner(ownerObj, methods, overrideObj) {
 
     for (i in methods) {
         if (isFunction(methods[i])) {
-            overrideObj[i] = bind(ownerObj, methods[i]);
+            overrideObj[i] = proxy(ownerObj, methods[i]);
         }
     }
 
@@ -276,7 +276,7 @@ Global['util'] = {
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
-    'bind': bind,
+    'proxy': proxy,
     'owner': owner
 };
 /* Test: "../../spec/_src/src/dom/test.js" */
@@ -1819,7 +1819,7 @@ Global['Datetime'] = function(str) {
     str = str.split(/[T:\-\+\/\s]/);
 
     if (str.length === 3) {
-        str = str.concat([0, 0, 0]);
+        str.push(0, 0, 0);
     }
 
     return new Date(
@@ -1870,22 +1870,21 @@ WebStorage = klassExtendBase(function(config) {
         this._storage.setItem(this._n + key, jsonStringify(val));
     },
     'get': function(key) {
-        var mine = this,
-            ret = {},
+        var ret = {},
             i;
 
         if (key) {
-            return jsonParse(mine._storage.getItem(mine._n + key));
+            return jsonParse(this._storage.getItem(this._n + key));
         }
 
-        for (i in mine._storage) {
+        for (i in this._storage) {
             if (!this._n) {
-                ret[i] = jsonParse(mine._storage[i]);
+                ret[i] = jsonParse(this._storage[i]);
             }
             else {
                 key = i.split(this._n)[1];
                 if (key) {
-                    ret[key] = jsonParse(mine._storage[i]);
+                    ret[key] = jsonParse(this._storage[i]);
                 }
             }
         }
@@ -2320,13 +2319,14 @@ Global['WindowLoad'] = klassExtendBase(function(config) {
     }
 }, {
     onload: function(func) {
-        var disposeid,
-            loaded = bind(this, function() {
-                this['uncontract'](disposeid);
+        var mine = this,
+            disposeid,
+            loaded = function() {
+                mine['uncontract'](disposeid);
                 func();
-            });
+            };
 
-        disposeid = this['contract'](win, ev['LOAD'], loaded);
+        disposeid = mine['contract'](win, ev['LOAD'], loaded);
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
@@ -2567,7 +2567,7 @@ Global['Modal'] = klassExtendBase(function(config) {
         });
 
         if (this._overlayClose) {
-            this['contract'](this._bg, ev['CLICK'], bind(this, this['close']));
+            this['contract'](this._bg, ev['CLICK'], proxy(this, this['close']));
         }
 
         if (this._closeSelector) {
@@ -2578,7 +2578,7 @@ Global['Modal'] = klassExtendBase(function(config) {
                 this._contractid.push(
                     this['contract'](close[i],
                     ev['CLICK'],
-                    bind(this, this['close']))
+                    proxy(this, this['close']))
                 );
             }
         }
@@ -3217,7 +3217,7 @@ Global['Model'] = klassExtendBase(function(config) {
         defaults = config['defaults'] || this['defaults'] || {},
         events = config['events'] || this['events'];
 
-    this._validate = config['validate'] || this['validate'];
+    this._validate = config['validate'] || this['validate'] || {};
     this._store = config['store'] || this['store'] || new C['DataStore']();
     this._observer = new C['Observer']();
 
@@ -3273,16 +3273,38 @@ Global['Model'] = klassExtendBase(function(config) {
         this.notice('reset');
     },
     'on': function(key, func) {
-        var bindfunc = bind(this, func);
-        this._observer['on'](key, bindfunc);
+        var proxyfunc = proxy(this, func);
+        this._observer['on'](key, proxyfunc);
 
-        return bindfunc;
+        return proxyfunc;
     },
     'off': function(key, func) {
         this._observer['off'](key, func);
     },
     'fire': function(key, vars) {
         return this._observer['fire'](key, vars);
+    }
+});
+/* Test: "%JASMINE_TEST_PATH%" */
+Global['Collection'] = klassExtend(Global['Model'], UNDEFINED, {
+    'each': function(func) {
+        var data = this.get(),
+            i;
+
+        for (i in data) {
+            func.call(this, data[i], i, data);
+        }
+    },
+    'filter': function(filterfunc, func) {
+        var data = this.get(),
+            i,
+            ret = [];
+
+        for (i in data) {
+            if (filterfunc.call(this, data[i])) {
+                func.call(this, data[i], i, data);
+            }
+        }
     }
 });
 /* Test: "../../spec/_src/src/View/test.js" */

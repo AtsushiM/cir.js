@@ -182,14 +182,14 @@ describe('utilは', function() {
         expect(util.checkUserAgent('webkit')).toBeDefined();
     });
 
-    it('bind(target, func)でthisをtargetにしたfuncを実行する関数を返す', function() {
+    it('proxy(target, func)でthisをtargetにしたfuncを実行する関数を返す', function() {
         var target = {test: 1},
             func = function() {
                 return this.test;
             },
-            bindfunc = util.bind(target, func);
+            proxyfunc = util.proxy(target, func);
 
-        expect(bindfunc()).toEqual(1);
+        expect(proxyfunc()).toEqual(1);
     });
 });
 /*
