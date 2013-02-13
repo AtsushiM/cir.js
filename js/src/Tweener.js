@@ -3,7 +3,7 @@ Tweener = C['Tweener'] = klassExtendBase(function(target, property, option) {
     var name,
         prop;
 
-    option = option || {};
+    option = option || NULLOBJ;
 
     this._target = target;
     this._property = [];
