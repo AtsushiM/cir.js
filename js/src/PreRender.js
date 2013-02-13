@@ -1,10 +1,8 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 Global['PreRender'] = klassExtendBase(function(config) {
-    config = config || NULLOBJ;
-
-    this.els = config['els'] || [];
+    this.els = config['els'];
     this.guesslimit = config['guesslimit'] || 30;
-    this.onrendered = config['onrendered'] || nullFunction;
+    this.onrendered = config['onrendered'];
     this.looptime = config['looptime'] || 100;
     this.loopblur = this.looptime + (config['loopblur'] || 20);
     /* this.loopid = this.prevtime = NULL; */

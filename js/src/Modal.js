@@ -2,9 +2,15 @@
 Global['Modal'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
 
-    this._html = config['html'];
-    this._overlayClose = config['overlayClose'];
-    this._closeSelector = config['closeSelector'];
+    // this._html = config['html'];
+    // this._bgClose = config['bgClose'];
+    // this._closeSelector = config['closeSelector'];
+    this.config = config;
+
+    var commoncss = {
+        'display': 'none',
+        'position': 'absolute'
+    };
 
     this._scroll = new (isTouch ? mb : pc)();
 
@@ -13,31 +19,27 @@ Global['Modal'] = klassExtendBase(function(config) {
     this._bg = create('div', {
         'class': 'cir-modal-bg'
     });
-    css(this._bg, {
-        'display': 'none',
-        'position': 'absolute',
-        'zIndex': 10000,
+    css(this._bg, override({
+        'zIndex': 9998,
         'top': 0,
         'left': 0,
         'width': '100%',
         'height': '300%'
-    });
+    }, commoncss));
     append(doc.body, this._bg);
 
     this._inner = create('div', {
         'class': 'cir-modal-content'
     });
-    css(this._inner, {
-        'display': 'none',
-        'position': 'absolute',
-        'zindex': 10001,
+    css(this._inner, override({
+        'zindex': 9999,
         'top': '50%',
         'left': '50%'
-    });
+    }, commoncss));
     append(doc.body, this._inner);
 
     if (!config['manual']) {
-        this['open'](config['html']);
+        this['open']();
     }
 }, {
     _closeDetach: function() {
@@ -76,7 +78,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     'inner': function(text) {
         this._closeDetach();
 
-        text = text || this._html;
+        text = text || this.config['html'];
 
         html(this._inner, text);
         show(this._inner);
@@ -89,12 +91,12 @@ Global['Modal'] = klassExtendBase(function(config) {
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
-        if (this._overlayClose) {
+        if (this.config['bgClose']) {
             this['contract'](this._bg, ev['CLICK'], proxy(this, this['close']));
         }
 
-        if (this._closeSelector) {
-            var close = $$child(this._closeSelector, this._inner),
+        if (this.config['closeSelector']) {
+            var close = $$child(this.config['closeSelector'], this._inner),
                 i = close.length;
 
             for (; i--;) {

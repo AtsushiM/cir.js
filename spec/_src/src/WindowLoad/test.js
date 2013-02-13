@@ -15,24 +15,20 @@ describe('WindowLoadは', function() {
                 }
             }
         },
-        loading_after = new c.WindowLoad(),
         loading_before = new c.WindowLoad({
             onload: dammy.before.onload
         });
-
-    loading_after.onload(dammy.after.onload);
-
-    it('dispose()でインスタンスを解放する', function() {
-        loading_after.dispose();
-        expect(loading_after).toEqual({});
-    });
 
     it('ページ読み込み時にローディング処理を実行する', function() {
         waits(100);
         runs(function() {
             expect(dammy.before.onloadret).toBeTruthy();
-            expect(dammy.after.onloadret).toBeTruthy();
         });
+    });
+
+    it('dispose()でインスタンスを解放する', function() {
+        loading_before.dispose();
+        expect(loading_before).toEqual({});
     });
 });
 /*

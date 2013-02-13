@@ -7,7 +7,7 @@ describe('Modalは', function() {
         // init
         modal = new c.Modal({
             html: 'test',
-            overlayClose: true,
+            bgClose: true,
             closeSelector: '.close',
             manual: false
         });

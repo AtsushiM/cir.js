@@ -20,25 +20,26 @@ var Shake,
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
     this._shaker = new Shake();
-    this._limit = config['limit'];
-    this._waittime = config['waittime'];
-    /* this._callback = config['callback']; */
+    // this._limit = config['limit'];
+    // this._waittime = config['waittime'];
+    // this._direction = config['direction'];
+    // this._callback = config['callback'];
+    this.config = config;
 
-    if (config['callback'] && config['direction']) {
-        this['attach'](config['direction'], config['callback']);
-    }
+    /* if (config['callback'] && config['direction']) { */
+        this['attach']();
+    /* } */
 }, {
     convertName: {
         'x': 'gamma',
         'y': 'beta',
         'z': 'alpha'
     },
-    'attach': function(direction, callback) {
-        direction = this.convertName[direction];
-
+    'attach': function() {
         var mine = this,
             base_e,
             shaked = FALSE,
+            direction = mine.convertName[mine.config['direction']],
             wraphandle = function(e) {
                 e = convert(e);
 
@@ -46,15 +47,15 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
                     base_e = e;
                 }
 
-                if (Math.abs(e[direction] - base_e[direction]) > mine._limit) {
+                if (Math.abs(e[direction] - base_e[direction]) > mine.config['limit']) {
                     shaked = TRUE;
                     base_e = NULL;
 
-                    callback(e);
+                    mine.config['callback'](e);
 
                     setTimeout(function() {
                         shaked = FALSE;
-                    }, mine._waittime);
+                    }, mine.config['waittime']);
                 }
             };
 

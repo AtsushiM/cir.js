@@ -1,14 +1,16 @@
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
 DeviceAction = klassExtendBase(function(config) {
-    this._e = config['e'];
+    // this._e = config['e'];
+    // this._callback = config['callback'];
+    this.config = config;
 
-    if (config['callback']) {
-        this['attach'](config['callback']);
-    }
+    /* if (config['callback']) { */
+        this['attach']();
+    /* } */
 }, {
-    'attach': function(func) {
+    'attach': function() {
         this['detach']();
-        this._attachid = this['contract'](win, this._e, func);
+        this._attachid = this['contract'](win, this.config['e'], this.config['callback']);
     },
     'detach': function() {
         this['uncontract'](this._attachid);

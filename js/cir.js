@@ -577,6 +577,7 @@ Global['Base'] = klassExtend(UNDEFINED, function() {
         this.__proto__ = NULL;
 
         for (i in this) {
+            this[i] = NULL;
             delete this[i];
         }
 
@@ -2315,10 +2316,10 @@ Global['ImgLoad'] = klassExtendBase(function(config) {
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
 Global['WindowLoad'] = klassExtendBase(function(config) {
     if (config) {
-        this.onload(config['onload']);
+        this._onload(config['onload']);
     }
 }, {
-    onload: function(func) {
+    _onload: function(func) {
         var mine = this,
             disposeid,
             loaded = function() {
@@ -2479,9 +2480,15 @@ Global['pc'] = new pc();
 Global['Modal'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
 
-    this._html = config['html'];
-    this._overlayClose = config['overlayClose'];
-    this._closeSelector = config['closeSelector'];
+    // this._html = config['html'];
+    // this._bgClose = config['bgClose'];
+    // this._closeSelector = config['closeSelector'];
+    this.config = config;
+
+    var commoncss = {
+        'display': 'none',
+        'position': 'absolute'
+    };
 
     this._scroll = new (isTouch ? mb : pc)();
 
@@ -2490,31 +2497,27 @@ Global['Modal'] = klassExtendBase(function(config) {
     this._bg = create('div', {
         'class': 'cir-modal-bg'
     });
-    css(this._bg, {
-        'display': 'none',
-        'position': 'absolute',
-        'zIndex': 10000,
+    css(this._bg, override({
+        'zIndex': 9998,
         'top': 0,
         'left': 0,
         'width': '100%',
         'height': '300%'
-    });
+    }, commoncss));
     append(doc.body, this._bg);
 
     this._inner = create('div', {
         'class': 'cir-modal-content'
     });
-    css(this._inner, {
-        'display': 'none',
-        'position': 'absolute',
-        'zindex': 10001,
+    css(this._inner, override({
+        'zindex': 9999,
         'top': '50%',
         'left': '50%'
-    });
+    }, commoncss));
     append(doc.body, this._inner);
 
     if (!config['manual']) {
-        this['open'](config['html']);
+        this['open']();
     }
 }, {
     _closeDetach: function() {
@@ -2553,7 +2556,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     'inner': function(text) {
         this._closeDetach();
 
-        text = text || this._html;
+        text = text || this.config['html'];
 
         html(this._inner, text);
         show(this._inner);
@@ -2566,12 +2569,12 @@ Global['Modal'] = klassExtendBase(function(config) {
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
-        if (this._overlayClose) {
+        if (this.config['bgClose']) {
             this['contract'](this._bg, ev['CLICK'], proxy(this, this['close']));
         }
 
-        if (this._closeSelector) {
-            var close = $$child(this._closeSelector, this._inner),
+        if (this.config['closeSelector']) {
+            var close = $$child(this.config['closeSelector'], this._inner),
                 i = close.length;
 
             for (; i--;) {
@@ -2586,15 +2589,17 @@ Global['Modal'] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
 DeviceAction = klassExtendBase(function(config) {
-    this._e = config['e'];
+    // this._e = config['e'];
+    // this._callback = config['callback'];
+    this.config = config;
 
-    if (config['callback']) {
-        this['attach'](config['callback']);
-    }
+    /* if (config['callback']) { */
+        this['attach']();
+    /* } */
 }, {
-    'attach': function(func) {
+    'attach': function() {
         this['detach']();
-        this._attachid = this['contract'](win, this._e, func);
+        this._attachid = this['contract'](win, this.config['e'], this.config['callback']);
     },
     'detach': function() {
         this['uncontract'](this._attachid);
@@ -2602,14 +2607,12 @@ DeviceAction = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/DeviceOrientation/test.js" */
 Global['DeviceOrientation'] = function(config) {
-    config = config || {};
     config['e'] = 'deviceorientation';
     return DeviceAction(config);
 };
 Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
 /* Test: "../../spec/_src/src/DeviceMotion/test.js" */
 Global['DeviceMotion'] = function(config) {
-    config = config || {};
     config['e'] = 'devicemotion';
     return DeviceAction(config);
 };
@@ -2636,25 +2639,26 @@ var Shake,
 
 Global['DeviceShake'] = klassExtendBase(function(config) {
     this._shaker = new Shake();
-    this._limit = config['limit'];
-    this._waittime = config['waittime'];
-    /* this._callback = config['callback']; */
+    // this._limit = config['limit'];
+    // this._waittime = config['waittime'];
+    // this._direction = config['direction'];
+    // this._callback = config['callback'];
+    this.config = config;
 
-    if (config['callback'] && config['direction']) {
-        this['attach'](config['direction'], config['callback']);
-    }
+    /* if (config['callback'] && config['direction']) { */
+        this['attach']();
+    /* } */
 }, {
     convertName: {
         'x': 'gamma',
         'y': 'beta',
         'z': 'alpha'
     },
-    'attach': function(direction, callback) {
-        direction = this.convertName[direction];
-
+    'attach': function() {
         var mine = this,
             base_e,
             shaked = FALSE,
+            direction = mine.convertName[mine.config['direction']],
             wraphandle = function(e) {
                 e = convert(e);
 
@@ -2662,15 +2666,15 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
                     base_e = e;
                 }
 
-                if (Math.abs(e[direction] - base_e[direction]) > mine._limit) {
+                if (Math.abs(e[direction] - base_e[direction]) > mine.config['limit']) {
                     shaked = TRUE;
                     base_e = NULL;
 
-                    callback(e);
+                    mine.config['callback'](e);
 
                     setTimeout(function() {
                         shaked = FALSE;
-                    }, mine._waittime);
+                    }, mine.config['waittime']);
                 }
             };
 
@@ -2770,11 +2774,9 @@ Global['Observer'] = klassExtendBase(function() {
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
 Global['PreRender'] = klassExtendBase(function(config) {
-    config = config || NULLOBJ;
-
-    this.els = config['els'] || [];
+    this.els = config['els'];
     this.guesslimit = config['guesslimit'] || 30;
-    this.onrendered = config['onrendered'] || nullFunction;
+    this.onrendered = config['onrendered'];
     this.looptime = config['looptime'] || 100;
     this.loopblur = this.looptime + (config['loopblur'] || 20);
     /* this.loopid = this.prevtime = NULL; */
@@ -2821,27 +2823,28 @@ Global['PreRender'] = klassExtendBase(function(config) {
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
 Global['Route'] = klassExtendBase(function(config) {
-    this._target = config['target'] || EMPTY;
-    this._noregex = config['noregex'];
-    this._action = config['action'];
+    // this._target = config['target'] || EMPTY;
+    // this._noregex = config['noregex'];
+    // this._action = config['action'];
+    this.config = config;
 
     if (!config['manual']) {
         this['start']();
     }
 }, {
     'start': function() {
-        this['fire'](this._target);
+        this['fire'](this.config['target']);
     },
     'fire': function(action) {
         var i;
 
-        if (this._noregex && this._action[action]) {
-            return this._action[action](action);
+        if (this.config['noregex'] && this.config['action'][action]) {
+            return this.config['action'][action](action);
         }
 
-        for (i in this._action) {
+        for (i in this.config['action']) {
             if (action.match(i)) {
-                this._action[i](i);
+                this.config['action'][i](i);
             }
         }
     }
@@ -3189,19 +3192,8 @@ Global['Twitter'] = klassExtendBase(UNDEFINED,
 /* Test: "../../spec/_src/src/XML/test.js" */
 Global['XML'] = klassExtendBase(function(config) {
     this.el = create('div');
-    this._data = {};
-
-    if (config) {
-        this['setData'](config['data']);
-    }
+    html(this.el, config['data']);
 }, {
-    'getData': function() {
-        return this._data;
-    },
-    'setData': function(d) {
-        this._data = d;
-        html(this.el, d);
-    },
     '$': function(selector) {
         return $child(selector, this.el);
     },
@@ -3283,28 +3275,6 @@ Global['Model'] = klassExtendBase(function(config) {
     },
     'fire': function(key, vars) {
         return this._observer['fire'](key, vars);
-    }
-});
-/* Test: "%JASMINE_TEST_PATH%" */
-Global['Collection'] = klassExtend(Global['Model'], UNDEFINED, {
-    'each': function(func) {
-        var data = this.get(),
-            i;
-
-        for (i in data) {
-            func.call(this, data[i], i, data);
-        }
-    },
-    'filter': function(filterfunc, func) {
-        var data = this.get(),
-            i,
-            ret = [];
-
-        for (i in data) {
-            if (filterfunc.call(this, data[i])) {
-                func.call(this, data[i], i, data);
-            }
-        }
     }
 });
 /* Test: "../../spec/_src/src/View/test.js" */

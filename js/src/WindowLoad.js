@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
 Global['WindowLoad'] = klassExtendBase(function(config) {
     if (config) {
-        this.onload(config['onload']);
+        this._onload(config['onload']);
     }
 }, {
-    onload: function(func) {
+    _onload: function(func) {
         var mine = this,
             disposeid,
             loaded = function() {

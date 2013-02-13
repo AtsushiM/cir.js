@@ -25,6 +25,7 @@ Global['Base'] = klassExtend(UNDEFINED, function() {
         this.__proto__ = NULL;
 
         for (i in this) {
+            this[i] = NULL;
             delete this[i];
         }
 

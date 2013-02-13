@@ -1,26 +1,27 @@
 /* Test: "../../spec/_src/src/Route/test.js" */
 Global['Route'] = klassExtendBase(function(config) {
-    this._target = config['target'] || EMPTY;
-    this._noregex = config['noregex'];
-    this._action = config['action'];
+    // this._target = config['target'] || EMPTY;
+    // this._noregex = config['noregex'];
+    // this._action = config['action'];
+    this.config = config;
 
     if (!config['manual']) {
         this['start']();
     }
 }, {
     'start': function() {
-        this['fire'](this._target);
+        this['fire'](this.config['target']);
     },
     'fire': function(action) {
         var i;
 
-        if (this._noregex && this._action[action]) {
-            return this._action[action](action);
+        if (this.config['noregex'] && this.config['action'][action]) {
+            return this.config['action'][action](action);
         }
 
-        for (i in this._action) {
+        for (i in this.config['action']) {
             if (action.match(i)) {
-                this._action[i](i);
+                this.config['action'][i](i);
             }
         }
     }

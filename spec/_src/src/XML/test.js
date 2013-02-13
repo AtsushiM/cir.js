@@ -22,16 +22,6 @@ describe('XMLは', function() {
         expect(xml).toEqual({});
     });
 
-    it('getData()でXMLのテキストデータを取得する', function() {
-        expect(xml.getData()).toEqual(data);
-    });
-
-    it('setData()でXMLのテキストデータを設定する', function() {
-        xml.setData('dammy');
-
-        expect(xml.getData()).not.toEqual(data);
-    });
-
     it('$(selector)でXMLからelement形式でデータを取得する', function() {
         var data = xml.$('data');
 
