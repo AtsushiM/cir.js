@@ -7,17 +7,17 @@ C['extend'] = function(child, _super) {
 
     var cpt = child.prototype;
 
-    cpt['_superclass'] = _super;
-    cpt['_super'] = function() {
-        var prev = this._prevctor;
+    cpt._superclass = _super;
+    // cpt._super = function() {
+    //     var prev = this._prevctor;
 
-        if (prev) {
-            prev = prev.prototype['_superclass'];
-        }
-        else {
-            prev = this._prevctor = _super;
-        }
+    //     if (prev) {
+    //         prev = prev.prototype._superclass;
+    //     }
+    //     else {
+    //         prev = this._prevctor = _super;
+    //     }
 
-        prev.apply(this, arguments);
-    };
+    //     prev.apply(this, arguments);
+    // };
 };

@@ -474,7 +474,7 @@ C['dom'] = {
 C['klass'] = function(config) {
     var init = config['init'] || function() {},
         wrap = function() {
-            var inits = ancestors(this, '__init__'),
+            var inits = ancestors(this, '_init'),
                 i = inits.length;
 
             for (; i--;) {
@@ -487,7 +487,7 @@ C['klass'] = function(config) {
     if (extend) {
         C['extend'](wrap, extend);
     }
-    wrap.prototype['__init__'] = init;
+    wrap.prototype['_init'] = init;
 
     override(wrap.prototype, prop);
 
@@ -503,8 +503,8 @@ function ancestors(obj, propname) {
         if (obj[propname] && props[props.length - 1] !== obj[propname]) {
             props.push(obj[propname]);
         }
-        if (obj['_superclass'] && obj['_superclass'].prototype) {
-            obj = obj['_superclass'].prototype;
+        if (obj._superclass && obj._superclass.prototype) {
+            obj = obj._superclass.prototype;
         }
         else {
             flg = FALSE;
@@ -532,19 +532,19 @@ C['extend'] = function(child, _super) {
 
     var cpt = child.prototype;
 
-    cpt['_superclass'] = _super;
-    cpt['_super'] = function() {
-        var prev = this._prevctor;
+    cpt._superclass = _super;
+    // cpt._super = function() {
+    //     var prev = this._prevctor;
 
-        if (prev) {
-            prev = prev.prototype['_superclass'];
-        }
-        else {
-            prev = this._prevctor = _super;
-        }
+    //     if (prev) {
+    //         prev = prev.prototype._superclass;
+    //     }
+    //     else {
+    //         prev = this._prevctor = _super;
+    //     }
 
-        prev.apply(this, arguments);
-    };
+    //     prev.apply(this, arguments);
+    // };
 };
 /* Test: "../../spec/_src/src/Base/test.js" */
 C['Base'] = klassExtend(UNDEFINED, function() {

@@ -2,7 +2,7 @@
 C['klass'] = function(config) {
     var init = config['init'] || function() {},
         wrap = function() {
-            var inits = ancestors(this, '__init__'),
+            var inits = ancestors(this, '_init'),
                 i = inits.length;
 
             for (; i--;) {
@@ -15,7 +15,7 @@ C['klass'] = function(config) {
     if (extend) {
         C['extend'](wrap, extend);
     }
-    wrap.prototype['__init__'] = init;
+    wrap.prototype['_init'] = init;
 
     override(wrap.prototype, prop);
 
@@ -31,8 +31,8 @@ function ancestors(obj, propname) {
         if (obj[propname] && props[props.length - 1] !== obj[propname]) {
             props.push(obj[propname]);
         }
-        if (obj['_superclass'] && obj['_superclass'].prototype) {
-            obj = obj['_superclass'].prototype;
+        if (obj._superclass && obj._superclass.prototype) {
+            obj = obj._superclass.prototype;
         }
         else {
             flg = FALSE;
