@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-Global['Throttle'] = klassExtendBase(function(config) {
-    this.waittime = config['waittime'];
-    this.callback = config['callback'];
-    // this.locked = FALSE;
-    // this.waitid = NULL;
-    // this.waitarg = NULL;
+C['Throttle'] = klassExtendBase(function(config) {
+    this._waittime = config['waittime'];
+    this._callback = config['callback'];
+    // this._locked = FALSE;
+    // this._waitid = NULL;
+    // this._args = NULL;
 }, {
     'disposeInternal': function() {
         this['unlock']();
@@ -12,29 +12,29 @@ Global['Throttle'] = klassExtendBase(function(config) {
     'request': function(vars) {
         var mine = this;
 
-        if (mine.locked) {
-            mine.waitarg = vars;
+        if (mine._locked) {
+            mine._args = vars;
             return;
         }
 
-        mine.callback(vars);
+        mine._callback(vars);
         mine['lock']();
-        mine.waitid = setTimeout(function() {
-            if (mine.waitarg) {
-                mine.callback(mine.waitarg);
-                mine.waitarg = NULL;
+        mine._waitid = setTimeout(function() {
+            if (mine._args) {
+                mine._callback(mine._args);
+                mine._args = NULL;
             }
 
             mine['unlock']();
-        }, mine.waittime, mine);
+        }, mine._waittime, mine);
     },
     'lock': function() {
-        this.locked = TRUE;
+        this._locked = TRUE;
     },
     'unlock': function(mine) {
         mine = mine || this;
 
-        mine.locked = FALSE;
-        clearInterval(mine.waitid);
+        mine._locked = FALSE;
+        clearInterval(mine._waitid);
     }
 });

@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-Global['DataStore'] = klassExtendBase(function() {
+C['DataStore'] = klassExtendBase(function() {
     this._data = {};
 }, {
     'set': function(key, val) {

@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
+mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -24,20 +24,20 @@ mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
         );
     },
     'killScroll': function(isNoTop) {
-        if (!this.killscrollid) {
+        if (!this._killscrollid) {
             if (!isNoTop) {
                 pageTop();
             }
-            this.killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
+            this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
     'revivalScroll': function(isNoTop) {
-        if (this.killscrollid) {
+        if (this._killscrollid) {
             if (!isNoTop) {
                 pageTop();
             }
-            this['uncontract'](this.killscrollid);
-            delete this.killscrollid;
+            this['uncontract'](this._killscrollid);
+            delete this._killscrollid;
         }
     },
     'hideAddress': function() {
@@ -124,4 +124,4 @@ mb = Global['Mobile'] = klassExtendBase(UNDEFINED, {
         return ret_remove;
     }
 });
-Global['mobile'] = new mb();
+C['mobile'] = new mb();

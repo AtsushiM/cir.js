@@ -1,11 +1,11 @@
 /* Test: "../../spec/_src/src/Modal/test.js" */
-Global['Modal'] = klassExtendBase(function(config) {
+C['Modal'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
 
     // this._html = config['html'];
     // this._bgClose = config['bgClose'];
     // this._closeSelector = config['closeSelector'];
-    this.config = config;
+    this._config = config;
 
     var commoncss = {
         'display': 'none',
@@ -78,7 +78,7 @@ Global['Modal'] = klassExtendBase(function(config) {
     'inner': function(text) {
         this._closeDetach();
 
-        text = text || this.config['html'];
+        text = text || this._config['html'];
 
         html(this._inner, text);
         show(this._inner);
@@ -91,12 +91,12 @@ Global['Modal'] = klassExtendBase(function(config) {
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
-        if (this.config['bgClose']) {
+        if (this._config['bgClose']) {
             this['contract'](this._bg, ev['CLICK'], proxy(this, this['close']));
         }
 
-        if (this.config['closeSelector']) {
-            var close = $$child(this.config['closeSelector'], this._inner),
+        if (this._config['closeSelector']) {
+            var close = $$child(this._config['closeSelector'], this._inner),
                 i = close.length;
 
             for (; i--;) {

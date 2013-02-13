@@ -3,28 +3,28 @@
 var Shake,
     convert;
 
-/* if (Global['mobile']['isMobile']()) { */
-    if (Global['DeviceOrientation']['support']) {
-        Shake = Global['DeviceOrientation'];
+/* if (C['mobile']['isMobile']()) { */
+    if (C['DeviceOrientation']['support']) {
+        Shake = C['DeviceOrientation'];
         convert = function(e) {
             return e;
         };
     }
-    else if (Global['DeviceMotion']['support']) {
-        Shake = Global['DeviceMotion'];
+    else if (C['DeviceMotion']['support']) {
+        Shake = C['DeviceMotion'];
         convert = function(e) {
             return e['rotationRate'];
         };
     }
 /* } */
 
-Global['DeviceShake'] = klassExtendBase(function(config) {
+C['DeviceShake'] = klassExtendBase(function(config) {
     this._shaker = new Shake();
     // this._limit = config['limit'];
     // this._waittime = config['waittime'];
     // this._direction = config['direction'];
     // this._callback = config['callback'];
-    this.config = config;
+    this._config = config;
 
     /* if (config['callback'] && config['direction']) { */
         this['attach']();
@@ -39,7 +39,7 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
         var mine = this,
             base_e,
             shaked = FALSE,
-            direction = mine.convertName[mine.config['direction']],
+            direction = mine.convertName[mine._config['direction']],
             wraphandle = function(e) {
                 e = convert(e);
 
@@ -47,15 +47,15 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
                     base_e = e;
                 }
 
-                if (Math.abs(e[direction] - base_e[direction]) > mine.config['limit']) {
+                if (Math.abs(e[direction] - base_e[direction]) > mine._config['limit']) {
                     shaked = TRUE;
                     base_e = NULL;
 
-                    mine.config['callback'](e);
+                    mine._config['callback'](e);
 
                     setTimeout(function() {
                         shaked = FALSE;
-                    }, mine.config['waittime']);
+                    }, mine._config['waittime']);
                 }
             };
 
@@ -66,6 +66,6 @@ Global['DeviceShake'] = klassExtendBase(function(config) {
     }
 });
 
-Global['DeviceShake']['support'] = Shake ? TRUE : FALSE;
+C['DeviceShake']['support'] = Shake ? TRUE : FALSE;
 
 }());

@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/cssease/test.js" */
-Global['cssease'] = {
+C['cssease'] = {
     'linear': 'linear',
 
     'inCubic': cssCubicBezierFormat('0.55,0.055,0.675,0.19'),

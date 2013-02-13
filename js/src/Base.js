@@ -1,8 +1,8 @@
 /* Test: "../../spec/_src/src/Base/test.js" */
-Global['Base'] = klassExtend(UNDEFINED, function() {
-    this._dispose = {};
+C['Base'] = klassExtend(UNDEFINED, function() {
+    this._disposestore = {};
 }, {
-    _disid: 0,
+    _disposecountid: 0,
     'dispose': function() {
         var internal = ancestors(this, 'disposeInternal'),
             i = 0,
@@ -12,8 +12,8 @@ Global['Base'] = klassExtend(UNDEFINED, function() {
             internal[i].call(this);
         }
 
-        for (i in this._dispose) {
-            off.apply(NULL, this._dispose[i]);
+        for (i in this._disposestore) {
+            off.apply(NULL, this._disposestore[i]);
         }
 
         for (i in this) {
@@ -33,16 +33,16 @@ Global['Base'] = klassExtend(UNDEFINED, function() {
     },
     'contract': function(el, e, handler) {
         on(el, e, handler);
-        this._disid++;
-        this._dispose[this._disid] = [el, e, handler];
+        this._disposecountid++;
+        this._disposestore[this._disposecountid] = [el, e, handler];
 
-        return this._disid;
+        return this._disposecountid;
     },
     'uncontract': function(id) {
         if (id) {
-            var arg = this._dispose[id];
+            var arg = this._disposestore[id];
 
-            delete this._dispose[id];
+            delete this._disposestore[id];
 
             off(arg[0], arg[1], arg[2]);
         }

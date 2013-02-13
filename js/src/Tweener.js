@@ -1,12 +1,12 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option) {
+Tweener = C['Tweener'] = klassExtendBase(function(target, property, option) {
     var name,
         prop;
 
     option = option || {};
 
     this._target = target;
-    this.property = [];
+    this._property = [];
 
     for (name in property) {
         prop = property[name];
@@ -16,12 +16,12 @@ Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option)
         prop['prefix'] = prop['prefix'] || EMPTY;
         prop['suffix'] = prop['suffix'] || 'px';
 
-        this.property.push(prop);
+        this._property.push(prop);
     }
 
     this._duration = option['duration'] || Tweener['duration'];
-    this.ease = option['ease'] || this._ease;
-    this.onComplete = option['onComplete'];
+    this._ease = option['ease'] || this.__ease;
+    this._onComplete = option['onComplete'];
 
     if (!option['manual']) {
         this['start']();
@@ -31,7 +31,7 @@ Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option)
         this['stop']();
     },
     // easeOutExpo
-    _ease: function(time, from, dist, duration) {
+    __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
     _requestAnimationFrame: (function() {
@@ -65,7 +65,7 @@ Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option)
             setTimeout(callback, 1000 / Tweener.fps);
         };
     }()),
-    loop: function() {
+    _loop: function() {
         var mine = this,
             items = Tweener.Items,
             item,
@@ -79,14 +79,14 @@ Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option)
         while (n--) {
             item = items[n];
             /* len = item.property.length; */
-            i = item.property.length;
+            i = item._property.length;
             time = now - item.begin;
 
             if (time < item._duration) {
                 for (; i--;) {
-                    prop = item.property[i];
+                    prop = item._property[i];
 
-                    Tweener._setProp(item._target, prop, item.ease(
+                    Tweener._setProp(item._target, prop, item._ease(
                         time,
                         prop['from'],
                         prop.distance,
@@ -96,12 +96,12 @@ Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option)
             }
             else {
                 for (; i--;) {
-                    prop = item.property[i];
+                    prop = item._property[i];
 
                     Tweener._setProp(item._target, prop, prop['to']);
                 }
-                if (item.onComplete) {
-                    item.onComplete();
+                if (item._onComplete) {
+                    item._onComplete();
                 }
                 items.splice(n, 1);
             }
@@ -109,7 +109,7 @@ Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option)
 
         if (items.length) {
             mine._requestAnimationFrame(function() {
-                mine.loop();
+                mine._loop();
             });
 
             return;
@@ -126,7 +126,7 @@ Tweener = Global['Tweener'] = klassExtendBase(function(target, property, option)
         if (!Tweener.timerId) {
             Tweener.timerId = 1;
             mine._requestAnimationFrame(function() {
-                mine.loop();
+                mine._loop();
             });
         }
     },

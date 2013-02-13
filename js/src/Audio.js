@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/Audio/test.js" */
-Global['Audio'] = function(config) {
+C['Audio'] = function(config) {
     config['type'] = 'audio';
-    config['suffix'] = Global['Audio']['support'];
+    config['suffix'] = C['Audio']['support'];
     return Embed(config);
 };
-Global['Audio']['support'] = embedSupportCheck('Audio', [
+C['Audio']['support'] = embedSupportCheck('Audio', [
     ['mp3', 'mpeg'],
     ['wav', 'wav'],
     ['ogg', 'ogg'],

@@ -1,15 +1,13 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
-Global['Observer'] = klassExtendBase(function() {
-    this.observed = {};
+C['Observer'] = klassExtendBase(function() {
+    this._observed = {};
 }, {
     'on': function(key, func) {
-        var observed = this.observed;
-
-        if (!observed[key]) {
-            observed[key] = [];
+        if (!this._observed[key]) {
+            this._observed[key] = [];
         }
 
-        observed[key].push(func);
+        this._observed[key].push(func);
     },
     'one': function(key, func) {
         var mine = this,
@@ -21,13 +19,11 @@ Global['Observer'] = klassExtendBase(function() {
         mine['on'](key, wrapfunc);
     },
     'off': function(key, func) {
-        var observed = this.observed;
-
         if (!func) {
-            return delete observed[key];
+            return delete this._observed[key];
         }
 
-        var target = observed[key],
+        var target = this._observed[key],
             i;
 
         if (target) {
@@ -36,7 +32,7 @@ Global['Observer'] = klassExtendBase(function() {
                     target.splice(i, 1);
 
                     if (target.length === 0) {
-                        delete observed[key];
+                        delete this._observed[key];
                     }
 
                     return TRUE;
@@ -47,7 +43,7 @@ Global['Observer'] = klassExtendBase(function() {
         return FALSE;
     },
     'fire': function(key, vars) {
-        var target = this.observed[key],
+        var target = this._observed[key],
             func,
             i;
 

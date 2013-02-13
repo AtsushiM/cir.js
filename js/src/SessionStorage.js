@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/SessionStorage/test.js" */
-Global['SessionStorage'] = function(config) {
+C['SessionStorage'] = function(config) {
     config = config || {};
 
     config['type'] = 'session';

@@ -1,24 +1,24 @@
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-Global['Surrogate'] = klassExtendBase(function(config) {
-    this.delay = config['delay'];
-    this.callback = config['callback'];
-    // this.args = NULL;
-    // this.waitid = NULL;
+C['Surrogate'] = klassExtendBase(function(config) {
+    this._delay = config['delay'];
+    this._callback = config['callback'];
+    // this._args = NULL;
+    // this._waitid = NULL;
 }, {
     'disposeInternal': function() {
         this['clear']();
     },
     'request': function(arg) {
-        this.args = arg;
+        this._args = arg;
         this['clear']();
-        this.waitid = setTimeout(this['flush'], this.delay, this);
+        this._waitid = setTimeout(this['flush'], this._delay, this);
     },
     'flush': function(mine) {
         mine = mine || this;
 
-        mine.callback(mine.args);
+        mine._callback(mine._args);
     },
     'clear': function() {
-        clearInterval(this.waitid);
+        clearInterval(this._waitid);
     }
 });

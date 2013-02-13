@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-Global['Ajax'] = klassExtendBase(function(config) {
+C['Ajax'] = klassExtendBase(function(config) {
     if (config) {
         this['request'](config);
     }
@@ -8,7 +8,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
         if (vars.dataType === 'json') {
             delete vars.dataType;
 
-            return this.json(vars);
+            return this['json'](vars);
         }
 
         var url = vars['url'],
@@ -16,7 +16,7 @@ Global['Ajax'] = klassExtendBase(function(config) {
             error = vars['error'] || nullFunction,
             type = vars['type'] || 'GET',
             query = EMPTY,
-            xhr = this.xhr = new XMLHttpRequest();
+            xhr = this._xhr = new XMLHttpRequest();
 
         if (!vars['cash']) {
             if (!vars['query']) {
@@ -66,8 +66,8 @@ Global['Ajax'] = klassExtendBase(function(config) {
         xhr.send(query);
     },
     'abort': function() {
-        if (this.xhr) {
-            this.xhr.abort();
+        if (this._xhr) {
+            this._xhr.abort();
         }
     },
     'json': function(vars) {

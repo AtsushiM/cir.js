@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Timer/test.js" */
-Global['Timer'] = function(config) {
+C['Timer'] = function(config) {
     var limit = config['limit'],
         limitx1000 = limit * 1000,
         interval = config['interval'] * 1000,

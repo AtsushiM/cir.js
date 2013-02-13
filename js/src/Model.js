@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Model/test.js" */
-Global['Model'] = klassExtendBase(function(config) {
+C['Model'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
 
     var i,

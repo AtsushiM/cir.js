@@ -1,46 +1,46 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
-Global['FPS'] = klassExtendBase(function(config) {
-    this.criterion =
-    this.surver = config['criterion'];
-    this.msecFrame = this._getFrame(this.criterion);
-    this.enterframe = config['enterframe'];
-    // this.prevtime =
-    // this.nowtime =
-    // this.loopid = 0;
+C['FPS'] = klassExtendBase(function(config) {
+    this._criterion =
+    this._surver = config['criterion'];
+    this._msecFrame = this._getFrame(this._criterion);
+    this._enterframe = config['enterframe'];
+    // this._prevtime =
+    // this._nowtime =
+    // this._loopid = 0;
 
     if (!config['manual']) {
         this['start']();
     }
 }, {
-    prevtime: 0,
-    nowtime: 0,
-    loopid: 0,
+    _prevtime: 0,
+    _nowtime: 0,
+    _loopid: 0,
     'disposeInternal': function() {
         this['stop']();
     },
     'getCriterion': function() {
-        return this.criterion;
+        return this._criterion;
     },
     'getSurver': function() {
-        return this.surver;
+        return this._surver;
     },
     'getFrameTime': function() {
-        return this.msecFrame;
+        return this._msecFrame;
     },
     'enter': function() {
-        this.enterframe({
-            'criterion': this.criterion,
-            'surver': this.surver
+        this._enterframe({
+            'criterion': this._criterion,
+            'surver': this._surver
         });
     },
     'start': function() {
-        this.prevtime = dateNow();
-        this.loopid = setInterval(this._loop, this.msecFrame, this);
+        this._prevtime = dateNow();
+        this._loopid = setInterval(this._loop, this._msecFrame, this);
     },
     _loop: function(mine) {
-        mine.nowtime = dateNow();
-        mine.surver = mine._getFrame(mine.nowtime - mine.prevtime);
-        mine.prevtime = mine.nowtime;
+        mine._nowtime = dateNow();
+        mine._surver = mine._getFrame(mine._nowtime - mine._prevtime);
+        mine._prevtime = mine._nowtime;
 
         mine['enter']();
     },
@@ -48,6 +48,6 @@ Global['FPS'] = klassExtendBase(function(config) {
         return Math.round(1000 / time);
     },
     'stop': function() {
-        clearInterval(this.loopid);
+        clearInterval(this._loopid);
     }
 });

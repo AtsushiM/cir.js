@@ -2,7 +2,7 @@
 DeviceAction = klassExtendBase(function(config) {
     // this._e = config['e'];
     // this._callback = config['callback'];
-    this.config = config;
+    this._config = config;
 
     /* if (config['callback']) { */
         this['attach']();
@@ -10,7 +10,7 @@ DeviceAction = klassExtendBase(function(config) {
 }, {
     'attach': function() {
         this['detach']();
-        this._attachid = this['contract'](win, this.config['e'], this.config['callback']);
+        this._attachid = this['contract'](win, this._config['e'], this._config['callback']);
     },
     'detach': function() {
         this['uncontract'](this._attachid);

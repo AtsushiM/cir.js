@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/ease/test.js" */
-Global['ease'] = {
+C['ease'] = {
     'linear': function(time, from, dist, duration) {
         return dist * time / duration + from;
     },

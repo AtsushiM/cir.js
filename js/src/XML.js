@@ -1,12 +1,12 @@
 /* Test: "../../spec/_src/src/XML/test.js" */
-Global['XML'] = klassExtendBase(function(config) {
-    this.el = create('div');
-    html(this.el, config['data']);
+C['XML'] = klassExtendBase(function(config) {
+    this._el = create('div');
+    html(this._el, config['data']);
 }, {
     '$': function(selector) {
-        return $child(selector, this.el);
+        return $child(selector, this._el);
     },
     '$$': function(selector) {
-        return $$child(selector, this.el);
+        return $$child(selector, this._el);
     }
 });

@@ -1,11 +1,11 @@
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-ExternalIOS = klassExtend(Global['HashQuery'], function() {
-    this.ios = {};
+ExternalIOS = klassExtend(C['HashQuery'], function() {
+    this._ios = {};
 }, {
     'disposeInternal': function() {
         var i;
 
-        for (i in this.ios) {
+        for (i in this._ios) {
             this['removeCallback'](i);
         }
     },
@@ -14,17 +14,17 @@ ExternalIOS = klassExtend(Global['HashQuery'], function() {
     },
     'addCallback': function(name, func) {
         var mine = this;
-        mine.ios[name] = function(e) {
+        mine._ios[name] = function(e) {
             var hash = mine['getHash']();
 
             if (hash['mode'] === name) {
                 func(hash['vars']);
             }
         };
-        on(win, ev_hashchange, mine.ios[name]);
+        on(win, ev_hashchange, mine._ios[name]);
     },
     'removeCallback': function(name) {
-        off(win, ev_hashchange, this.ios[name]);
-        delete this.ios[name];
+        off(win, ev_hashchange, this._ios[name]);
+        delete this._ios[name];
     }
 });

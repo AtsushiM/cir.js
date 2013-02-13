@@ -3,7 +3,7 @@
 var xhr,
     isLoaded = FALSE;
 
-Global['ServerMeta'] = klassExtendBase(function(config) {
+C['ServerMeta'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
 
     var callback = config['callback'] || nullFunction;

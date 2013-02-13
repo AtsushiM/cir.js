@@ -1,19 +1,20 @@
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-ExternalAndroid = klassExtend(Global['HashQuery'], function(config) {
-    this.android = config['android'];
-    this.externalObj = config['externalObj'];
+ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
+    // this._android = config['android'];
+    // this._externalObj = config['externalObj'];
+    this._config = config;
 }, {
     'call': function(conf) {
-        this.android[conf['mode']](this['makeHash'](conf));
+        this._config['android'][conf['mode']](this['makeHash'](conf));
     },
     'addCallback': function(name, func) {
         var mine = this;
 
-        mine.externalObj[name] = function(vars) {
+        mine._config['externalObj'][name] = function(vars) {
             func(mine['parseHash'](vars)['vars']);
         };
     },
     'removeCallback': function(name) {
-        delete this.externalObj[name];
+        delete this._config['externalObj'][name];
     }
 });

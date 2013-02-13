@@ -166,7 +166,7 @@ function html(el, text) {
     el.innerHTML = text;
 }
 
-Global['dom'] = {
+C['dom'] = {
     '$': $,
     '$$': $$,
     '$child': $child,

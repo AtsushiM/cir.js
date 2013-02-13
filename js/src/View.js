@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/View/test.js" */
-Global['View'] = klassExtendBase(function(config) {
+C['View'] = klassExtendBase(function(config) {
     var i;
 
     if (!config) {
@@ -9,7 +9,7 @@ Global['View'] = klassExtendBase(function(config) {
         config = owner(this, config);
     }
 
-    this['el'] = Global['$'](config['el'] || this['el'] || create('div'));
+    this['el'] = C['$'](config['el'] || this['el'] || create('div'));
 
     this['attach']();
     if (config['init']) {

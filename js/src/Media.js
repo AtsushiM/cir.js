@@ -13,11 +13,11 @@ Media = klassExtendBase(function(config) {
 
     switch (config['type']) {
         case 'Audio':
-            media = Global['Audio'](config);
+            media = C['Audio'](config);
             break;
         /* case 'Video': */
         default:
-            media = Global['Video'](config);
+            media = C['Video'](config);
     }
     mine._el = media;
 

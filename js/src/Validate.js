@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Validate/test.js" */
-Global['Validate'] = klassExtendBase(function(config) {
+C['Validate'] = klassExtendBase(function(config) {
     config = config || {};
 
     /* this._level = config['level'] || 'warn'; */
@@ -62,4 +62,4 @@ Global['Validate'] = klassExtendBase(function(config) {
     }
 });
 
-Global['validate'] = new Global['Validate']();
+C['validate'] = new C['Validate']();

@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Embed/test.js" */
-/* Global.Embed = function(config) { */
+/* C.Embed = function(config) { */
 function Embed(config) {
     /* var embed = create(config['type'].toLowerCase()); */
     var embed = create(config['type']);
@@ -14,7 +14,7 @@ function Embed(config) {
     return embed;
 }
 /* }; */
-/* Global['Embed']['supportcheck'] = embedSupportCheck; */
+/* C['Embed']['supportcheck'] = embedSupportCheck; */
 function embedSupportCheck(type, suffix) {
     if (!win['HTML' + type + 'Element']) {
         return FALSE;

@@ -19,5 +19,5 @@ ev = klassExtendBase(UNDEFINED, {
     'TOUCHEND': 'touchend',
     'RESIZE': 'resize'
 });
-Global['Event'] = ev;
-ev = Global['e'] = new ev();
+C['Event'] = ev;
+ev = C['e'] = new ev();

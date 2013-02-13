@@ -1,10 +1,10 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-Global['PreRender'] = klassExtendBase(function(config) {
-    this.els = config['els'];
-    this.guesslimit = config['guesslimit'] || 30;
-    this.onrendered = config['onrendered'];
-    this.looptime = config['looptime'] || 100;
-    this.loopblur = this.looptime + (config['loopblur'] || 20);
+C['PreRender'] = klassExtendBase(function(config) {
+    this._els = config['els'];
+    this._guesslimit = config['guesslimit'] || 30;
+    this._onrendered = config['onrendered'];
+    this._looptime = config['looptime'] || 100;
+    this._loopblur = this._looptime + (config['loopblur'] || 20);
     /* this.loopid = this.prevtime = NULL; */
 
     if (!config['manual']) {
@@ -19,10 +19,10 @@ Global['PreRender'] = klassExtendBase(function(config) {
             mine = this,
             prevtime = dateNow();
 
-        for (i = mine.els.length; i--;) {
-            show(mine.els[i]);
+        for (i = mine._els.length; i--;) {
+            show(mine._els[i]);
         }
-        mine.loopid = setInterval(check, this.looptime, this);
+        mine.loopid = setInterval(check, this._looptime, this);
 
         function check() {
             var gettime = dateNow(),
@@ -31,17 +31,17 @@ Global['PreRender'] = klassExtendBase(function(config) {
 
             prevtime = gettime;
 
-            if (difftime < mine.loopblur) {
-                mine.guesslimit--;
+            if (difftime < mine._loopblur) {
+                mine._guesslimit--;
 
-                if (mine.guesslimit < 1) {
+                if (mine._guesslimit < 1) {
                     clearInterval(mine.loopid);
 
-                    for (i = mine.els.length; i--;) {
-                        hide(mine.els[i]);
+                    for (i = mine._els.length; i--;) {
+                        hide(mine._els[i]);
                     }
 
-                    mine.onrendered();
+                    mine._onrendered();
                 }
             }
         }

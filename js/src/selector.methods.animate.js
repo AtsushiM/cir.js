@@ -1,15 +1,15 @@
 /* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
-var methods = Global['$'].methods,
-    Animation = Global['Animation'] || {},
+var methods = C['$'].methods,
+    Animation = C['Animation'] || {},
     csssupport = Animation['support'],
     EASE = {};
 
-if (csssupport && Global['cssease']) {
-    EASE = Global['cssease'];
+if (csssupport && C['cssease']) {
+    EASE = C['cssease'];
 }
-else if (Global['ease']) {
-    EASE = Global['ease'];
+else if (C['ease']) {
+    EASE = C['ease'];
 }
 
 methods['animate'] = function() {
@@ -17,7 +17,7 @@ methods['animate'] = function() {
         this._animate = [];
     }
 
-    return methods._forexe(this, animate, arguments);
+    return selectorForExe(this, animate, arguments);
 }
 methods['stop'] = function() {
     if (this._animate) {
@@ -65,7 +65,7 @@ function animate(el, params, duration, ease, callback) {
         );
     }
     else {
-        anime = new Global['Tweener'](
+        anime = new C['Tweener'](
             el.style,
             convertTweenerParam(el, params),
             option

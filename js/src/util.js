@@ -163,7 +163,7 @@ function owner(ownerObj, methods, overrideObj) {
     return overrideObj;
 }
 
-Global['util'] = {
+C['util'] = {
     'win': win,
     'doc': doc,
     'pageTop': pageTop,

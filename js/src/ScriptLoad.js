@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-Global['ScriptLoad'] = klassExtendBase(function() {
-    this.els = [];
+C['ScriptLoad'] = klassExtendBase(function() {
+    this._els = [];
 }, {
     'requests': function(varary, callback) {
         var mine = this,
@@ -26,7 +26,7 @@ Global['ScriptLoad'] = klassExtendBase(function() {
             i--;
 
             if (i === 0) {
-                callback(mine.els);
+                callback(mine._els);
             }
         }
     },
@@ -38,7 +38,7 @@ Global['ScriptLoad'] = klassExtendBase(function() {
         /* script.type = 'text/javascript'; */
         script.src = vars['src'];
         append(doc.body, script);
-        mine.els.push(script);
+        mine._els.push(script);
 
         if (vars['callback']) {
             disposeid = mine['contract'](script, ev['LOAD'], function() {

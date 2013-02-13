@@ -16,8 +16,6 @@ var win = window,
     ev_ended = 'ended',
     csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
     easebackrate = 1.70158,
-    /* Global = win['C'] = {}, */
-    Global = C = {},
     DeviceAction,
     ExternalAndroid,
     ExternalIOS,
@@ -26,6 +24,8 @@ var win = window,
     WebStorage,
     mb,
     pc;
+    /* C = win['C'] = {}, */
+    C = {};
 
 function cssCubicBezierFormat(text) {
     return 'cubic-bezier(' + text + ')';

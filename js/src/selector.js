@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/selector/test.js" */
-Global['$'] = function(query, _parent /* varless */, $el, instance, len) {
+C['$'] = function(query, _parent /* varless */, $el, instance, len) {
     // var $el,
     //     base,
     //     instance,
@@ -7,7 +7,7 @@ Global['$'] = function(query, _parent /* varless */, $el, instance, len) {
 
     function base() {
     }
-    base.prototype = Global['$'].methods;
+    base.prototype = C['$'].methods;
 
     /* _parent = _parent || doc; */
 

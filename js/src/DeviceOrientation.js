@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/DeviceOrientation/test.js" */
-Global['DeviceOrientation'] = function(config) {
+C['DeviceOrientation'] = function(config) {
     config['e'] = 'deviceorientation';
     return DeviceAction(config);
 };
-Global['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
+C['DeviceOrientation']['support'] = 'ondeviceorientation' in win;

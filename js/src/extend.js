@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/extend/test.js" */
-Global['extend'] = function(child, _super) {
+C['extend'] = function(child, _super) {
     function ctor() {}
 
     ctor.prototype = _super.prototype;

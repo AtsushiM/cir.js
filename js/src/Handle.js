@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/Handle/test.js" */
-Global['Handle'] = klassExtendBase(function(config) {
-    this.config = config;
+C['Handle'] = klassExtendBase(function(config) {
+    this._config = config;
     this['attach']();
 }, {
     'disposeInternal': function() {
@@ -15,11 +15,11 @@ Global['Handle'] = klassExtendBase(function(config) {
     _e: function(onoff) {
         var i;
 
-        for (i in this.config['events']) {
+        for (i in this._config['events']) {
             onoff(
-                this.config['el'],
+                this._config['el'],
                 i,
-                this.config['events'][i]
+                this._config['events'][i]
             );
         }
     }

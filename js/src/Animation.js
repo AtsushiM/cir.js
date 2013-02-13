@@ -11,14 +11,14 @@ var ret = checkCSSAnimTranCheck([
     sheet = ret.sheet,
     Mine;
 
-Mine = Global['Animation'] =
+Mine = C['Animation'] =
     klassExtendBase(function(el, property, option) {
 
     option = option || NULLOBJ;
 
-    this.onComplete = option['onComplete'] || nullFunction;
+    this._onComplete = option['onComplete'] || nullFunction;
 
-    this.el = el;
+    this._el = el;
 
     Mine['id']++;
     this._id = 'ciranim' + Mine['id'];
@@ -59,8 +59,8 @@ Mine = Global['Animation'] =
     }
 }, {
     _off: function() {
-        off(this.el, event_key + 'End', this._end);
-        off(this.el, 'animationend', this._end);
+        off(this._el, event_key + 'End', this._end);
+        off(this._el, 'animationend', this._end);
     },
     'disposeInternal': function() {
         this['stop']();
@@ -69,10 +69,10 @@ Mine = Global['Animation'] =
         var mine = this;
 
         mine._end = endaction;
-        on(mine.el, event_key + 'End', endaction);
-        on(mine.el, 'animationend', endaction);
+        on(mine._el, event_key + 'End', endaction);
+        on(mine._el, 'animationend', endaction);
 
-        addClass(mine.el, mine._id);
+        addClass(mine._el, mine._id);
 
         function endaction(e) {
             var rule = sheet.cssRules,
@@ -91,11 +91,11 @@ Mine = Global['Animation'] =
                         sheet.deleteRule(len);
                     }
                 }
-                removeClass(mine.el, mine._id);
+                removeClass(mine._el, mine._id);
 
-                css(mine.el, mine.property);
+                css(mine._el, mine.property);
             }
-            mine.onComplete(e);
+            mine._onComplete(e);
         }
     },
     'stop': function() {
@@ -103,7 +103,7 @@ Mine = Global['Animation'] =
 
         stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
-        css(this.el, stopobj);
+        css(this._el, stopobj);
         this._off();
     }
 });

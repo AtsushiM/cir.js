@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
-Global['WindowLoad'] = klassExtendBase(function(config) {
+C['WindowLoad'] = klassExtendBase(function(config) {
     if (config) {
         this._onload(config['onload']);
     }

@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/klass/test.js" */
-Global['klass'] = function(config) {
+C['klass'] = function(config) {
     var init = config['init'] || function() {},
         wrap = function() {
             var inits = ancestors(this, '__init__'),
@@ -13,7 +13,7 @@ Global['klass'] = function(config) {
         extend = config['extend'];
 
     if (extend) {
-        Global['extend'](wrap, extend);
+        C['extend'](wrap, extend);
     }
     wrap.prototype['__init__'] = init;
 
@@ -21,7 +21,7 @@ Global['klass'] = function(config) {
 
     return wrap;
 };
-Global['klass']['ancestors'] = ancestors;
+C['klass']['ancestors'] = ancestors;
 
 function ancestors(obj, propname) {
     var props = [],
@@ -42,12 +42,12 @@ function ancestors(obj, propname) {
     return props;
 }
 function klassExtend(kls, init, prop) {
-    return Global['klass']({
+    return C['klass']({
         'extend': kls,
         'init': init,
         'prop': prop
     });
 }
 function klassExtendBase(init, prop) {
-    return klassExtend(Global['Base'], init, prop);
+    return klassExtend(C['Base'], init, prop);
 }

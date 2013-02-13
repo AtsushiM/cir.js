@@ -1,5 +1,5 @@
 /* Test: "%JASMINE_TEST_PATH%" */
-Global['Collection'] = klassExtend(Global['Model'], UNDEFINED, {
+C['Collection'] = klassExtend(C['Model'], UNDEFINED, {
     'each': function(func) {
         var data = this.get(),
             i;

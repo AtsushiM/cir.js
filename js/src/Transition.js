@@ -11,7 +11,7 @@ var ret = checkCSSAnimTranCheck([
     sheet = ret.sheet,
     Mine;
 
-Mine = Global['Transition'] =
+Mine = C['Transition'] =
     klassExtendBase(function(el, property, option) {
 
     option = option || NULLOBJ;
@@ -36,9 +36,9 @@ Mine = Global['Transition'] =
 
     addCSSRule(this._id, css_prefix, duration, ease, transProp);
 
-    this.el = el;
-    this.property = property;
-    this.onComplete = option['onComplete'] || nullFunction;
+    this._el = el;
+    this._property = property;
+    this._onComplete = option['onComplete'] || nullFunction;
 
     if (!option['manual']) {
         this['start']();
@@ -53,23 +53,23 @@ Mine = Global['Transition'] =
         mine._endfunc = function(e) {
             mine['stop']();
             setTimeout(function() {
-                mine.onComplete(e);
+                mine._onComplete(e);
             }, 1);
         };
 
-        on(mine.el, event_key + 'End', mine._endfunc);
-        on(mine.el, 'transitionend', mine._endfunc);
-        addClass(mine.el, mine._id);
-        css(mine.el, mine.property);
+        on(mine._el, event_key + 'End', mine._endfunc);
+        on(mine._el, 'transitionend', mine._endfunc);
+        addClass(mine._el, mine._id);
+        css(mine._el, mine._property);
     },
     'stop': function() {
         var rule = sheet.cssRules,
             len = rule.length,
             name;
 
-        off(this.el, event_key + 'End', this._endfunc);
-        off(this.el, 'transitionend', this._endfunc);
-        removeClass(this.el, this._id);
+        off(this._el, event_key + 'End', this._endfunc);
+        off(this._el, 'transitionend', this._endfunc);
+        removeClass(this._el, this._id);
 
         for (; len--;) {
             name = rule[len].name ||

@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Brush/test.js" */
-Global['Brush'] = klassExtendBase(function(config) {
+C['Brush'] = klassExtendBase(function(config) {
     this._canvas = config['canvas'];
     this._ctx = this._canvas.getContext('2d');
 
@@ -72,4 +72,4 @@ Global['Brush'] = klassExtendBase(function(config) {
         }
     }
 });
-Global['Brush']['support'] = !!win['HTMLCanvasElement'];
+C['Brush']['support'] = !!win['HTMLCanvasElement'];

@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-Global['Twitter'] = klassExtendBase(UNDEFINED,
+C['Twitter'] = klassExtendBase(UNDEFINED,
 {
     'shareURL': function(vars) {
         var name = vars['name'],

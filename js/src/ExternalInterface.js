@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
-Global['ExternalInterface'] = function(config) {
+C['ExternalInterface'] = function(config) {
     config = config || NULLOBJ;
 
     var ext = ExternalIOS;

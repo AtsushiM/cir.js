@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-Global['DragFlick'] = klassExtendBase(function(config) {
+C['DragFlick'] = klassExtendBase(function(config) {
     this._contractid = [];
-    this.config = config;
+    this._config = config;
 
     config = config || NULLOBJ;
     if (!config['manual']) {
@@ -88,7 +88,7 @@ Global['DragFlick'] = klassExtendBase(function(config) {
     },
     'attach': function() {
         var mine = this,
-            vars = this.config,
+            vars = this._config,
             el = vars['el'],
             start = vars['start'] || nullFunction,
             move = vars['move'] || nullFunction,
