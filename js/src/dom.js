@@ -8,9 +8,11 @@ function $$(selector) {
 function $child(selector, el) {
     return el.querySelector(selector);
 }
-function $$child(selector, el) {
-    var eles = el.querySelectorAll(selector),
-        ary = [];
+function $$child(selector, el /* varless */, eles, ary) {
+    // var eles = el.querySelectorAll(selector),
+    //     ary = [];
+    eles = el.querySelectorAll(selector),
+    ary = [];
 
     ary.push.apply(ary, eles);
 
@@ -20,10 +22,13 @@ function $id(id) {
     return doc.getElementById(id);
 }
 
-function hasClass(el, cls) {
-    var clsName = el.className,
-        addedcls = clsName ? clsName.split(' ') : [],
-        i = addedcls.length;
+function hasClass(el, cls /* varless */, clsName, addedcls, i) {
+    // var clsName = el.className,
+    //     addedcls = clsName ? clsName.split(' ') : [],
+    //     i = addedcls.length;
+    clsName = el.className,
+    addedcls = clsName ? clsName.split(' ') : [],
+    i = addedcls.length;
 
     for (; i--;) {
         if (cls === addedcls[i]) {
@@ -34,10 +39,12 @@ function hasClass(el, cls) {
     return FALSE;
 }
 
-function addClass(el, cls) {
+function addClass(el, cls /* varless */, between, orgcls) {
     if (!hasClass(el, cls)) {
-        var between = EMPTY,
-            orgcls = el.className;
+        // var between = EMPTY,
+        //     orgcls = el.className;
+        between = EMPTY,
+        orgcls = el.className;
 
         if (orgcls) {
             between = ' ';
@@ -47,12 +54,12 @@ function addClass(el, cls) {
     }
 }
 
-function removeClass(el, cls) {
+function removeClass(el, cls /* varless */, addedcls, attachcls, i) {
     if (hasClass(el, cls)) {
-        var addedcls,
-            attachcls = [],
-            i,
-            len;
+        // var addedcls,
+        //     attachcls = [],
+        //     i;
+        attachcls = [];
 
         addedcls = el.className.split(' ');
         i = addedcls.length;
@@ -74,8 +81,8 @@ function toggleClass(el, cls) {
     addClass(el, cls);
 }
 
-function attr(el, vars, value) {
-    var i;
+function attr(el, vars, value /* varless */, i) {
+    /* var i; */
 
     if (isObject(vars)) {
         for (i in vars) {
@@ -117,11 +124,12 @@ function show(el) {
 function hide(el) {
     el.style.display = 'none';
 }
-function css(el, addstyle) {
-    var style = el.style,
-        i,
-        key,
-        value;
+function css(el, addstyle /* varless */, style, i, key, value) {
+    // var style = el.style,
+    //     i,
+    //     key,
+    //     value;
+    style = el.style;
 
     for (i in addstyle) {
         key = i;

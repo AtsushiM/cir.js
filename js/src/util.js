@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
-    Date['now'] = function now() {
+    Date['now'] = function() {
         return new Date * 1;
     };
 }
@@ -12,8 +12,8 @@ function dateNow() {
 function pageTop() {
     win.scrollTo(0, 1);
 }
-function override(target, vars) {
-    var i;
+function override(target, vars /* varless */, i) {
+    /* var i; */
 
     for (i in vars) {
         target[i] = vars[i];
@@ -21,8 +21,9 @@ function override(target, vars) {
 
     return target;
 }
-function typeCast(str) {
-    var matchstr = EMPTY + str;
+function typeCast(str /* varless */, matchstr) {
+    /* var matchstr = EMPTY + str; */
+    matchstr = EMPTY + str;
 
     if (matchstr.match('^{.*}$')) {
         return jsonParse(matchstr);
@@ -42,8 +43,8 @@ function typeCast(str) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
-function template(templatetxt, replaceobj) {
-    var i;
+function template(templatetxt, replaceobj /* varless */, i) {
+    /* var i; */
 
     for (i in replaceobj) {
         templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', replaceobj[i]);
@@ -51,9 +52,10 @@ function template(templatetxt, replaceobj) {
 
     return templatetxt;
 }
-function windowOpen(url, windowname, option) {
-    var i,
-        option_ary = [];
+function windowOpen(url, windowname, option /* varless */, i, option_ary) {
+    // var i,
+    //     option_ary = [];
+    option_ary = [];
 
     for (i in option) {
         if (isBoolean(option[i])) {
@@ -69,10 +71,11 @@ function windowOpen(url, windowname, option) {
 
     return win.open(url, windowname, option_ary.join(','));
 }
-function makeQueryString(vars) {
-    var sign = EMPTY,
-        query = EMPTY,
-        i;
+function makeQueryString(vars /* varless */, sign, query, i) {
+    // var sign = EMPTY,
+    //     query = EMPTY,
+    //     i;
+    sign = query = EMPTY;
 
     for (i in vars) {
         if (vars[i]) {
@@ -83,14 +86,17 @@ function makeQueryString(vars) {
 
     return query;
 }
-function parseQueryString(query) {
+function parseQueryString(query /* varless */, params, i, p, result) {
     query = query
         .replace(/^[\#\?]/, EMPTY);
 
-    var params = query.split('&'),
-        i = params.length,
-        p,
-        result = {};
+    // var params = query.split('&'),
+    //     i = params.length,
+    //     p,
+    //     result = {};
+    params = query.split('&'),
+    i = params.length,
+    result = {};
 
     for (; i--;) {
         p = params[i].split('=');
@@ -148,7 +154,8 @@ function proxy(target, func) {
         return func.apply(target, arguments);
     };
 }
-function owner(ownerObj, methods, overrideObj) {
+function owner(ownerObj, methods, overrideObj /* varless */, i) {
+    /* var i; */
     methods = methods || ownerObj;
     overrideObj = overrideObj || methods;
 

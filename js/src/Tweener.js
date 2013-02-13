@@ -72,7 +72,7 @@ Tweener = C['Tweener'] = klassExtendBase(function(target, property, option) {
             now = dateNow(),
             time,
             n = items.length,
-            /* i = 0, */
+            i,
             len,
             prop;
 

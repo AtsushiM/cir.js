@@ -89,7 +89,7 @@ function splitSuffix(value) {
 }
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
-    Date['now'] = function now() {
+    Date['now'] = function() {
         return new Date * 1;
     };
 }
@@ -101,8 +101,8 @@ function dateNow() {
 function pageTop() {
     win.scrollTo(0, 1);
 }
-function override(target, vars) {
-    var i;
+function override(target, vars /* varless */, i) {
+    /* var i; */
 
     for (i in vars) {
         target[i] = vars[i];
@@ -110,8 +110,9 @@ function override(target, vars) {
 
     return target;
 }
-function typeCast(str) {
-    var matchstr = EMPTY + str;
+function typeCast(str /* varless */, matchstr) {
+    /* var matchstr = EMPTY + str; */
+    matchstr = EMPTY + str;
 
     if (matchstr.match('^{.*}$')) {
         return jsonParse(matchstr);
@@ -131,8 +132,8 @@ function typeCast(str) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
-function template(templatetxt, replaceobj) {
-    var i;
+function template(templatetxt, replaceobj /* varless */, i) {
+    /* var i; */
 
     for (i in replaceobj) {
         templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', replaceobj[i]);
@@ -140,9 +141,10 @@ function template(templatetxt, replaceobj) {
 
     return templatetxt;
 }
-function windowOpen(url, windowname, option) {
-    var i,
-        option_ary = [];
+function windowOpen(url, windowname, option /* varless */, i, option_ary) {
+    // var i,
+    //     option_ary = [];
+    option_ary = [];
 
     for (i in option) {
         if (isBoolean(option[i])) {
@@ -158,10 +160,11 @@ function windowOpen(url, windowname, option) {
 
     return win.open(url, windowname, option_ary.join(','));
 }
-function makeQueryString(vars) {
-    var sign = EMPTY,
-        query = EMPTY,
-        i;
+function makeQueryString(vars /* varless */, sign, query, i) {
+    // var sign = EMPTY,
+    //     query = EMPTY,
+    //     i;
+    sign = query = EMPTY;
 
     for (i in vars) {
         if (vars[i]) {
@@ -172,14 +175,17 @@ function makeQueryString(vars) {
 
     return query;
 }
-function parseQueryString(query) {
+function parseQueryString(query /* varless */, params, i, p, result) {
     query = query
         .replace(/^[\#\?]/, EMPTY);
 
-    var params = query.split('&'),
-        i = params.length,
-        p,
-        result = {};
+    // var params = query.split('&'),
+    //     i = params.length,
+    //     p,
+    //     result = {};
+    params = query.split('&'),
+    i = params.length,
+    result = {};
 
     for (; i--;) {
         p = params[i].split('=');
@@ -237,7 +243,8 @@ function proxy(target, func) {
         return func.apply(target, arguments);
     };
 }
-function owner(ownerObj, methods, overrideObj) {
+function owner(ownerObj, methods, overrideObj /* varless */, i) {
+    /* var i; */
     methods = methods || ownerObj;
     overrideObj = overrideObj || methods;
 
@@ -289,9 +296,11 @@ function $$(selector) {
 function $child(selector, el) {
     return el.querySelector(selector);
 }
-function $$child(selector, el) {
-    var eles = el.querySelectorAll(selector),
-        ary = [];
+function $$child(selector, el /* varless */, eles, ary) {
+    // var eles = el.querySelectorAll(selector),
+    //     ary = [];
+    eles = el.querySelectorAll(selector),
+    ary = [];
 
     ary.push.apply(ary, eles);
 
@@ -301,10 +310,13 @@ function $id(id) {
     return doc.getElementById(id);
 }
 
-function hasClass(el, cls) {
-    var clsName = el.className,
-        addedcls = clsName ? clsName.split(' ') : [],
-        i = addedcls.length;
+function hasClass(el, cls /* varless */, clsName, addedcls, i) {
+    // var clsName = el.className,
+    //     addedcls = clsName ? clsName.split(' ') : [],
+    //     i = addedcls.length;
+    clsName = el.className,
+    addedcls = clsName ? clsName.split(' ') : [],
+    i = addedcls.length;
 
     for (; i--;) {
         if (cls === addedcls[i]) {
@@ -315,10 +327,12 @@ function hasClass(el, cls) {
     return FALSE;
 }
 
-function addClass(el, cls) {
+function addClass(el, cls /* varless */, between, orgcls) {
     if (!hasClass(el, cls)) {
-        var between = EMPTY,
-            orgcls = el.className;
+        // var between = EMPTY,
+        //     orgcls = el.className;
+        between = EMPTY,
+        orgcls = el.className;
 
         if (orgcls) {
             between = ' ';
@@ -328,12 +342,12 @@ function addClass(el, cls) {
     }
 }
 
-function removeClass(el, cls) {
+function removeClass(el, cls /* varless */, addedcls, attachcls, i) {
     if (hasClass(el, cls)) {
-        var addedcls,
-            attachcls = [],
-            i,
-            len;
+        // var addedcls,
+        //     attachcls = [],
+        //     i;
+        attachcls = [];
 
         addedcls = el.className.split(' ');
         i = addedcls.length;
@@ -355,8 +369,8 @@ function toggleClass(el, cls) {
     addClass(el, cls);
 }
 
-function attr(el, vars, value) {
-    var i;
+function attr(el, vars, value /* varless */, i) {
+    /* var i; */
 
     if (isObject(vars)) {
         for (i in vars) {
@@ -398,11 +412,12 @@ function show(el) {
 function hide(el) {
     el.style.display = 'none';
 }
-function css(el, addstyle) {
-    var style = el.style,
-        i,
-        key,
-        value;
+function css(el, addstyle /* varless */, style, i, key, value) {
+    // var style = el.style,
+    //     i,
+    //     key,
+    //     value;
+    style = el.style;
 
     for (i in addstyle) {
         key = i;
@@ -1071,7 +1086,7 @@ Tweener = C['Tweener'] = klassExtendBase(function(target, property, option) {
             now = dateNow(),
             time,
             n = items.length,
-            /* i = 0, */
+            i,
             len,
             prop;
 
