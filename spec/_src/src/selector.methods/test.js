@@ -68,12 +68,6 @@ describe('selector.methodsは', function() {
         selector.show();
     });
 
-    it('$(selector).opacity(value)でGlobal.el.opacityを実行する', function() {
-        selector.opacity(0.5);
-        expect(document.body.style.opacity).toEqual('0.5');
-        selector.opacity(1);
-    });
-
     it('$(selector).hasClass(value)でC.dom.hasClassを実行する', function() {
         document.body.className = 'test';
         expect(selector.hasClass('test')).toBeTruthy();

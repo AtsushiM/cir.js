@@ -82,15 +82,6 @@ describe('domは', function() {
         expect($body.style.display).toEqual('none');
     });
 
-    it('opacity(element, value)で対象のelementのstyle.opacityをvalueにする', function() {
-        var $body = el.$('body');
-
-        el.opacity($body, 0);
-        expect($body.style.opacity).toEqual('0');
-        el.opacity($body, 1);
-        expect($body.style.opacity).toEqual('1');
-    });
-
     it('hasClass(element, value)で対象のelementのclassNameにvalueが存在するかどうかboolで返す', function() {
         var $body = el.$('body'),
             baseCls = $body.className;

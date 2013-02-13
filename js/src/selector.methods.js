@@ -48,9 +48,6 @@ C['$'].methods = {
     'hide': function() {
         return selectorForExe(this, hide);
     },
-    'opacity': function() {
-        return selectorForExe(this, opacity, arguments);
-    },
     'hasClass': function() {
         return selectorExe(this, hasClass, arguments);
     },

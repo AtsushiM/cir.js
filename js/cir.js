@@ -398,9 +398,6 @@ function show(el) {
 function hide(el) {
     el.style.display = 'none';
 }
-function opacity(el, value) {
-    el.style.opacity = value;
-}
 function css(el, addstyle) {
     var style = el.style,
         i,
@@ -458,7 +455,6 @@ C['dom'] = {
     'create': create,
     'show': show,
     'hide': hide,
-    'opacity': opacity,
     'hasClass': hasClass,
     'addClass': addClass,
     'removeClass': removeClass,
@@ -1230,9 +1226,6 @@ C['$'].methods = {
     },
     'hide': function() {
         return selectorForExe(this, hide);
-    },
-    'opacity': function() {
-        return selectorForExe(this, opacity, arguments);
     },
     'hasClass': function() {
         return selectorExe(this, hasClass, arguments);
