@@ -16,7 +16,7 @@ var win = window,
     ev_ended = 'ended',
     csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
     easebackrate = 1.70158,
-    DeviceAction,
+    WindowAction,
     ExternalAndroid,
     ExternalIOS,
     Media,
@@ -390,8 +390,9 @@ function removeAttr(el, key) {
     el.removeAttribute(key);
 }
 
-function create(tagname, attribute) {
-    var el= doc.createElement(tagname);
+function create(tagname, attribute /* varless */, el) {
+    /* var el= doc.createElement(tagname); */
+    el= doc.createElement(tagname);
 
     if (attribute) {
         attr(el, attribute);
@@ -510,11 +511,12 @@ C['klass'] = function(config) {
 };
 C['klass']['ancestors'] = ancestors;
 
-function ancestors(obj, propname) {
-    var props = [],
-        flg = TRUE;
+function ancestors(obj, propname /* varless */, props, flg) {
+    // var props = [],
+    //     flg = FALSE;
+    props = [];
 
-    while (flg) {
+    while (!flg) {
         if (obj[propname] && props[props.length - 1] !== obj[propname]) {
             props.push(obj[propname]);
         }
@@ -522,7 +524,7 @@ function ancestors(obj, propname) {
             obj = obj._superclass.prototype;
         }
         else {
-            flg = FALSE;
+            flg = TRUE;
         }
     }
 
@@ -1013,9 +1015,9 @@ Mine['support'] = support;
 Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Tweener = C['Tweener'] = klassExtendBase(function(target, property, option) {
-    var name,
-        prop;
+Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop) {
+    // var name,
+    //     prop;
 
     option = option || NULLOBJ;
 
@@ -1194,12 +1196,13 @@ C['$'] = function(query, _parent /* varless */, $el, instance, len) {
 };
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 function selectorForExe(_this, func, arg) {
-    var i = _this.length,
-        ary = selectorMakeAry(arg);
+    var i = _this.length;
+
+    arg = selectorMakeAry(arg);
 
     for (; i--;) {
-        ary[0] = _this[i];
-        func.apply(_this, ary);
+        arg[0] = _this[i];
+        func.apply(_this, arg);
     }
 
     return _this;
@@ -1423,15 +1426,13 @@ C['HashQuery'] = klassExtendBase(UNDEFINED,
         /* return TRUE; */
     },
     'parseHash': function(hashvars) {
-        var hash,
+        var hash = decodeURIComponent(hashvars)
+               .split('#')[1],
             mode,
             varsHash,
             vars,
             splitVar,
             i;
-
-        hash = decodeURIComponent(hashvars)
-               .split('#')[1];
 
         if (!hash) {
             return FALSE;
@@ -2388,76 +2389,6 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
         function hideAddressHandler() {
             setTimeout(doScroll, 100);
         }
-    },
-    'getOrientation': function() {
-        if (
-            Math.abs(win.orientation) !== 90 &&
-            win.innerWidth < win.innerHeight
-        ) {
-            return {
-                'portrait': TRUE,
-                'landscape': FALSE
-            };
-        }
-
-        return {
-            'portrait': FALSE,
-            'landscape': TRUE
-        };
-    },
-    'attachOrientation': function(vars) {
-        var mine = this,
-            disposeid = [],
-            ret_remove;
-
-        if (vars['immediately']) {
-            change();
-        }
-
-        if (vars['one']) {
-            add(onechange);
-
-            return function() {
-                remove(onechange);
-            };
-        }
-
-        add(change);
-
-        ret_remove = function() {
-            remove(change);
-        };
-
-        function add(handler) {
-            disposeid.push(
-                mine['contract'](win, ev['LOAD'], handler),
-                mine['contract'](win, ev_orientationchange, handler),
-                mine['contract'](win, ev['RESIZE'], handler)
-            );
-        }
-        function remove(handler) {
-            var i = disposeid.length;
-
-            for (; i--;) {
-                mine['uncontract'](disposeid[i]);
-            }
-
-            disposeid = [];
-        }
-        function onechange() {
-            change();
-            remove(onechange);
-        }
-        function change() {
-            if (
-                mine['getOrientation']()['portrait']
-            ) {
-                return vars['portrait']();
-            }
-            vars['landscape']();
-        }
-
-        return ret_remove;
     }
 });
 C['mobile'] = new mb();
@@ -2480,6 +2411,67 @@ pc = C['PC'] = klassExtendBase(UNDEFINED, {
     }
 });
 C['pc'] = new pc();
+/* Test: "../../spec/_src/src/Orientation/test.js" */
+C['Orientation'] = klassExtendBase(function(config) {
+    this._config = config;
+
+    this._contractid = [];
+
+    this._portrait = {
+        'portrait': TRUE,
+        'landscape': FALSE
+    };
+    this._landscape = {
+        'portrait': FALSE,
+        'landscape': TRUE
+    };
+
+    this['attach']();
+}, {
+    'get': function() {
+        if (isNumber(win.orientation)) {
+            if (Math.abs(win.orientation) !== 90) {
+                return this._portrait;
+            }
+
+            return this._landscape;
+        }
+
+        if (
+            win.innerWidth < win.innerHeight
+        ) {
+            return this._portrait;
+        }
+
+        return this._landscape;
+    },
+    'fire': function() {
+        if (
+            this['get']()['portrait']
+        ) {
+            return this._config['portrait']();
+        }
+        this._config['landscape']();
+    },
+    'attach': function(vars) {
+        var proxyed = proxy(this, this['fire']);
+        this._contractid.push(
+            this['contract'](win, ev['LOAD'], proxyed),
+            this['contract'](win, ev_orientationchange, proxyed),
+            this['contract'](win, ev['RESIZE'], proxyed)
+        );
+    },
+    'detach': function() {
+        var i = this._contractid.length;
+
+        for (; i--;) {
+            this['uncontract'](this._contractid[i]);
+        }
+
+        this._contractid = [];
+    }
+});
+C['Orientation']['support'] = 'onorientationchange' in win;
 /* Test: "../../spec/_src/src/Modal/test.js" */
 C['Modal'] = klassExtendBase(function(config) {
     config = config || NULLOBJ;
@@ -2592,7 +2584,7 @@ C['Modal'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
-DeviceAction = klassExtendBase(function(config) {
+WindowAction = klassExtendBase(function(config) {
     // this._e = config['e'];
     // this._callback = config['callback'];
     this._config = config;
@@ -2612,13 +2604,13 @@ DeviceAction = klassExtendBase(function(config) {
 /* Test: "../../spec/_src/src/DeviceOrientation/test.js" */
 C['DeviceOrientation'] = function(config) {
     config['e'] = 'deviceorientation';
-    return DeviceAction(config);
+    return WindowAction(config);
 };
 C['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
 /* Test: "../../spec/_src/src/DeviceMotion/test.js" */
 C['DeviceMotion'] = function(config) {
     config['e'] = 'devicemotion';
-    return DeviceAction(config);
+    return WindowAction(config);
 };
 C['DeviceMotion']['support'] = 'ondevicemotion' in win;
 /* Test: "../../spec/_src/src/DeviceShake/test.js" */
@@ -2850,8 +2842,12 @@ C['Route'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-C['ScriptLoad'] = klassExtendBase(function() {
+C['ScriptLoad'] = klassExtendBase(function(config) {
     this._els = [];
+
+    if (config) {
+        this['requests'](config);
+    }
 }, {
     'requests': function(varary, callback) {
         var mine = this,

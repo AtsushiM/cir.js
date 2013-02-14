@@ -1,11 +1,12 @@
 /* Test: "../../spec/_src/src/selector.methods/test.js" */
 function selectorForExe(_this, func, arg) {
-    var i = _this.length,
-        ary = selectorMakeAry(arg);
+    var i = _this.length;
+
+    arg = selectorMakeAry(arg);
 
     for (; i--;) {
-        ary[0] = _this[i];
-        func.apply(_this, ary);
+        arg[0] = _this[i];
+        func.apply(_this, arg);
     }
 
     return _this;

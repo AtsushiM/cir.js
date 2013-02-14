@@ -102,8 +102,9 @@ function removeAttr(el, key) {
     el.removeAttribute(key);
 }
 
-function create(tagname, attribute) {
-    var el= doc.createElement(tagname);
+function create(tagname, attribute /* varless */, el) {
+    /* var el= doc.createElement(tagname); */
+    el= doc.createElement(tagname);
 
     if (attribute) {
         attr(el, attribute);

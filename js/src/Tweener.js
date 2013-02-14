@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Tweener = C['Tweener'] = klassExtendBase(function(target, property, option) {
-    var name,
-        prop;
+Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop) {
+    // var name,
+    //     prop;
 
     option = option || NULLOBJ;
 

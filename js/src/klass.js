@@ -23,11 +23,12 @@ C['klass'] = function(config) {
 };
 C['klass']['ancestors'] = ancestors;
 
-function ancestors(obj, propname) {
-    var props = [],
-        flg = TRUE;
+function ancestors(obj, propname /* varless */, props, flg) {
+    // var props = [],
+    //     flg = FALSE;
+    props = [];
 
-    while (flg) {
+    while (!flg) {
         if (obj[propname] && props[props.length - 1] !== obj[propname]) {
             props.push(obj[propname]);
         }
@@ -35,7 +36,7 @@ function ancestors(obj, propname) {
             obj = obj._superclass.prototype;
         }
         else {
-            flg = FALSE;
+            flg = TRUE;
         }
     }
 

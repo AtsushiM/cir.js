@@ -31,6 +31,7 @@ src/Modal/\n\
 src/Model/\n\
 src/Movie/\n\
 src/Observer/\n\
+src/Orientation/\n\
 src/PC/\n\
 src/PreRender/\n\
 src/Route/\n\
@@ -92,6 +93,7 @@ src/util/\n\
 ../../js/src/Model.js\n\
 ../../js/src/Movie.js\n\
 ../../js/src/Observer.js\n\
+../../js/src/Orientation.js\n\
 ../../js/src/PC.js\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/Route.js\n\
@@ -153,6 +155,7 @@ src/util/\n\
 ../_src/src/Model/test.js\n\
 ../_src/src/Movie/test.js\n\
 ../_src/src/Observer/test.js\n\
+../_src/src/Orientation/test.js\n\
 ../_src/src/PC/test.js\n\
 ../_src/src/PreRender/test.js\n\
 ../_src/src/Route/test.js\n\

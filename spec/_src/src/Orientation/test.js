@@ -1,81 +1,35 @@
-/* Class: "../../../../js/src/Mobile.js" */
-describe('Mobileは', function() {
-    var c = window.C ? C : Global,
-        mb;
+/* Class: "../../../../js/src/Orientation.js" */
+describe('Orientationは', function() {
+    var orientation;
 
     beforeEach(function() {
         // init
-        mb = new c.Mobile();
+        orientation = new Global.Orientation({
+            portrait: function() {
+            },
+            landscape: function() {
+            }
+        });
     });
     afterEach(function() {
         // clear
-        if (mb.dispose) {
-            mb.dispose();
-        }
     });
 
-    it('dispose()でインスタンスを解放する', function() {
-        mb.dispose();
-        expect(mb).toEqual({});
+    it('get()で画面の向きをチェックする', function() {
+        var orient = orientation.get();
+        expect(orient.portrait).toBeDefined();
+        expect(orient.landscape).toBeDefined();
     });
 
-    it('getZoom()で画面の拡大率を取得する', function() {
-        expect(mb.getZoom()).toBeGreaterThan(0);
-    });
-
-    it('isAndroid()でAndroid端末かどうかチェック', function() {
-        expect(mb.isAndroid()).toBeFalsy();
-        expect(mb.isAndroid('Android')).toBeTruthy();
-        expect(mb.isAndroid('PC')).toBeFalsy();
-    });
-
-    it('isIOS()でiOS端末かどうかチェック', function() {
-        expect(mb.isIOS()).toBeFalsy();
-        expect(mb.isIOS('iPhone')).toBeTruthy();
-        expect(mb.isIOS('iPad')).toBeTruthy();
-        expect(mb.isIOS('iPod')).toBeTruthy();
-        expect(mb.isIOS('PC')).toBeFalsy();
-    });
-
-    it('isWindows()でWindowsモバイル端末かどうかチェック', function() {
-        expect(mb.isWindows()).toBeFalsy();
-        expect(mb.isWindows('IEMobile')).toBeTruthy();
-        expect(mb.isWindows('PC')).toBeFalsy();
-    });
-
-    it('isFBAPP()でFacebookアプリかどうかチェック', function() {
-        expect(mb.isFBAPP()).toBeFalsy();
-        expect(mb.isFBAPP('FBAN')).toBeTruthy();
-        expect(mb.isFBAPP('fban')).toBeFalsy();
-    });
-
-    it('isMobile()でモバイル端末かどうかチェック', function() {
-        spyOn(mb, 'isAndroid').andCallThrough();
-        spyOn(mb, 'isIOS').andCallThrough();
-        spyOn(mb, 'isWindows').andCallThrough();
-        spyOn(mb, 'isFBAPP').andCallThrough();
-
-        expect(mb.isMobile()).toBeFalsy();
-        expect(mb.isAndroid).toHaveBeenCalled();
-        expect(mb.isIOS).toHaveBeenCalled();
-        expect(mb.isWindows).toHaveBeenCalled();
-        expect(mb.isFBAPP).toHaveBeenCalled();
-    });
-
-    it('hideAddress()でアドレスバーを非表示にする', function() {
-        mb.hideAddress();
+    it('attach()で画面サイズ変更の際の処理を実行する', function() {
+        orientation.attach();
         expect(0).toEqual(0);
     });
 
-    it('killScroll()でスクロールを禁止する', function() {
-        mb.killScroll(true);
-        mb.killScroll();
-        expect(0).toEqual(0);
-    });
+    it('detach()は画面向きチェックに紐付けたイベントを削除する関数を返す', function() {
+        orientation.attach();
+        orientation.detach();
 
-    it('revivalScroll()でスクロールを復活する', function() {
-        mb.revivalScroll(true);
-        mb.revivalScroll();
         expect(0).toEqual(0);
     });
 });

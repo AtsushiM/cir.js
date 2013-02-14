@@ -1,4 +1,4 @@
- /*! cir.js v0.8.7 | (c) 2013 Atsushi Mizoue. */(function() {
+ /*! cir.js v0.8.8 | (c) 2013 Atsushi Mizoue. */(function() {
     function h(a) {
         return function() {
             return this[a]
@@ -106,27 +106,25 @@
     function ba(a) {
         return F.querySelector(a)
     }
-    function qa(a, b) {
-        var c = b.querySelectorAll(a), d = [];
+    function qa(a, b, c, d) {
+        c = b.querySelectorAll(a);
+        d = [];
         d.push.apply(d, c);
         return d
     }
-    function G(a, b) {
-        for (var c = a.className, c = c ? c.split(" ") : [], d = c.length; d--; )
-            if (b === c[d])
+    function G(a, b, c, d, e) {
+        d = (c = a.className) ? c.split(" ") : [];
+        for (e = d.length; e--; )
+            if (b === d[e])
                 return q;
         return l
     }
-    function H(a, b) {
-        if (!G(a, b)) {
-            var c = m, d = a.className;
-            d && (c = " ");
-            a.className = d + c + b
-        }
+    function H(a, b, c, d) {
+        G(a, b) || (c = m, (d = a.className) && (c = " "), a.className = d + c + b)
     }
-    function I(a, b) {
+    function I(a, b, c, d, e) {
         if (G(a, b)) {
-            var c, d = [], e;
+            d = [];
             c = a.className.split(" ");
             for (e = c.length; e--; )
                 b !== c[e] && d.push(c[e]);
@@ -138,8 +136,7 @@
             return I(a, b);
         H(a, b)
     }
-    function sa(a, b, c) {
-        var d;
+    function sa(a, b, c, d) {
         if (ia(b)) {
             for (d in b)
                 a.setAttribute(d, b[d]);
@@ -150,8 +147,8 @@
     function ta(a, b) {
         a.removeAttribute(b)
     }
-    function k(a, b) {
-        var c = F.createElement(a);
+    function k(a, b, c) {
+        c = F.createElement(a);
         b && sa(c, b);
         return c
     }
@@ -167,8 +164,8 @@
     function N(a) {
         a.style.display = "none"
     }
-    function O(a, b) {
-        var c = a.style, d, e, f;
+    function O(a, b, c, d, e, f) {
+        c = a.style;
         for (d in b)
             e = d, f = b[d], z(f) && (f += "px"), c[e] = f
     }
@@ -195,9 +192,9 @@
             return a.innerHTML;
         a.innerHTML = b
     }
-    function Aa(a, b) {
-        for (var c = [], d = q; d; )
-            a[b] && c[c.length - 1] !== a[b] && c.push(a[b]), a.R && a.R.prototype ? a = a.R.prototype : d = l;
+    function Aa(a, b, c, d) {
+        for (c = []; !d; )
+            a[b] && c[c.length - 1] !== a[b] && c.push(a[b]), a.R && a.R.prototype ? a = a.R.prototype : d = q;
         return c
     }
     function Ba(a, b, c) {
@@ -207,7 +204,8 @@
         return Ba(C.Base, a, b)
     }
     function R(a, b, c) {
-        var d = a.length;
+        var d;
+        d = a.length;
         for (c = Ca(c); d--; )
             c[0] = a[d], b.apply(a, c);
         return a
@@ -1253,8 +1251,9 @@
                 if (a.match(b))
                     this.a.action[b](b)
         }});
-    C.ScriptLoad = Q(function() {
-        this.j = []
+    C.ScriptLoad = Q(function(a) {
+        this.j = [];
+        a && this.requests(a)
     }, {requests: function(a, b) {
             function c(c) {
                 var f = a[c].callback;

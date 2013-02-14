@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
-DeviceAction = klassExtendBase(function(config) {
+WindowAction = klassExtendBase(function(config) {
     // this._e = config['e'];
     // this._callback = config['callback'];
     this._config = config;

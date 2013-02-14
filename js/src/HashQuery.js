@@ -36,15 +36,13 @@ C['HashQuery'] = klassExtendBase(UNDEFINED,
         /* return TRUE; */
     },
     'parseHash': function(hashvars) {
-        var hash,
+        var hash = decodeURIComponent(hashvars)
+               .split('#')[1],
             mode,
             varsHash,
             vars,
             splitVar,
             i;
-
-        hash = decodeURIComponent(hashvars)
-               .split('#')[1];
 
         if (!hash) {
             return FALSE;
