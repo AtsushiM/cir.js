@@ -9,9 +9,13 @@ function dateNow() {
     return Date['now']();
 }
 
-function pageTop() {
-    win.scrollTo(0, 1);
+function scrollTo(num) {
+    win.scrollTo(0, num);
 }
+function pageTop() {
+    scrollTo(1);
+}
+
 function override(target, vars /* varless */, i) {
     /* var i; */
 

@@ -23,23 +23,6 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
             this['isFBAPP']()
         );
     },
-    'killScroll': function(isNoTop) {
-        if (!this._killscrollid) {
-            if (!isNoTop) {
-                pageTop();
-            }
-            this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
-        }
-    },
-    'revivalScroll': function(isNoTop) {
-        if (this._killscrollid) {
-            if (!isNoTop) {
-                pageTop();
-            }
-            this['uncontract'](this._killscrollid);
-            delete this._killscrollid;
-        }
-    },
     'hideAddress': function() {
         this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
         this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);

@@ -66,18 +66,6 @@ describe('Mobileは', function() {
         mb.hideAddress();
         expect(0).toEqual(0);
     });
-
-    it('killScroll()でスクロールを禁止する', function() {
-        mb.killScroll(true);
-        mb.killScroll();
-        expect(0).toEqual(0);
-    });
-
-    it('revivalScroll()でスクロールを復活する', function() {
-        mb.revivalScroll(true);
-        mb.revivalScroll();
-        expect(0).toEqual(0);
-    });
 });
 /*
 describe('XXXは', function() {

@@ -98,9 +98,13 @@ function dateNow() {
     return Date['now']();
 }
 
-function pageTop() {
-    win.scrollTo(0, 1);
+function scrollTo(num) {
+    win.scrollTo(0, num);
 }
+function pageTop() {
+    scrollTo(1);
+}
+
 function override(target, vars /* varless */, i) {
     /* var i; */
 
@@ -2360,23 +2364,6 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
             this['isFBAPP']()
         );
     },
-    'killScroll': function(isNoTop) {
-        if (!this._killscrollid) {
-            if (!isNoTop) {
-                pageTop();
-            }
-            this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
-        }
-    },
-    'revivalScroll': function(isNoTop) {
-        if (this._killscrollid) {
-            if (!isNoTop) {
-                pageTop();
-            }
-            this['uncontract'](this._killscrollid);
-            delete this._killscrollid;
-        }
-    },
     'hideAddress': function() {
         this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
         this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
@@ -2392,25 +2379,6 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
     }
 });
 C['mobile'] = new mb();
-/* Test: "../../spec/_src/src/PC/test.js" */
-pc = C['PC'] = klassExtendBase(UNDEFINED, {
-    _scroll: function(isNoTop, overflow) {
-        if (!isNoTop) {
-            pageTop();
-        }
-
-        css(doc.body, {
-            'overflow': overflow
-        });
-    },
-    'killScroll': function(isNoTop) {
-        this._scroll(isNoTop, 'hidden');
-    },
-    'revivalScroll': function(isNoTop) {
-        this._scroll(isNoTop, 'auto');
-    }
-});
-C['pc'] = new pc();
 /* Test: "../../spec/_src/src/Orientation/test.js" */
 C['Orientation'] = klassExtendBase(function(config) {
     this._config = config;
@@ -2486,7 +2454,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'position': 'absolute'
     };
 
-    this._scroll = new (isTouch ? mb : pc)();
+    this._scroll = new C['Scroll']();
 
     this._contractid = [];
 
@@ -2531,7 +2499,7 @@ C['Modal'] = klassExtendBase(function(config) {
         remove(this._inner);
     },
     'open': function(text) {
-        this._scroll['killScroll'](true);
+        this._scroll['kill']();
         css(this._bg, {
             'top': doc.body.scrollTop
         });
@@ -2547,7 +2515,7 @@ C['Modal'] = klassExtendBase(function(config) {
         hide(this._inner);
         hide(this._bg);
 
-        this._scroll['revivalScroll'](true);
+        this._scroll['revival']();
     },
     'inner': function(text) {
         this._closeDetach();
@@ -3385,6 +3353,67 @@ C['Validate'] = klassExtendBase(function(config) {
 });
 
 C['validate'] = new C['Validate']();
+/* Test: "../../spec/_src/src/Scroll/test.js" */
+C['Scroll'] = klassExtendBase(UNDEFINED, {
+    'disposeInternal': function() {
+        this['revival']();
+        clearInterval(this._smoothid);
+    },
+    'to': scrollTo,
+    'toTop': pageTop,
+    'toBottom': function() {
+        scrollTo(doc.height);
+    },
+    'smooth': function(target) {
+        var mine = this;
+        if (!mine._smoothmove) {
+            mine._smoothmove = TRUE;
+
+            if (!isNumber(target)) {
+                target = target.offsetTop;
+            }
+
+            if (target > doc.height - win.innerHeight) {
+                target = doc.height - win.innerHeight;
+            }
+
+            mine._before = win.scrollY;
+            mine._smoothid = setInterval(function() {
+                var position = (target - win.scrollY) * 0.2 + win.scrollY;
+
+                if (Math.abs(target - position) < 5 || mine._before === position) {
+                    scrollTo(target);
+                    clearInterval(mine._smoothid);
+                    return delete mine._smoothmove;
+                }
+
+                mine._before = position;
+                scrollTo(position);
+            }, 20);
+        }
+    },
+    'kill': function() {
+        if (!isTouch) {
+            return css(doc.body, {
+                'overflow': 'hidden'
+            });
+        }
+        if (!this._killscrollid) {
+            this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
+        }
+    },
+    'revival': function() {
+        if (!isTouch) {
+            return css(doc.body, {
+                'overflow': 'auto'
+            });
+        }
+        if (this._killscrollid) {
+            this['uncontract'](this._killscrollid);
+            delete this._killscrollid;
+        }
+    }
+});
 C['beer'] = function() {
 console.log(
 "\n" +

@@ -12,7 +12,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'position': 'absolute'
     };
 
-    this._scroll = new (isTouch ? mb : pc)();
+    this._scroll = new C['Scroll']();
 
     this._contractid = [];
 
@@ -57,7 +57,7 @@ C['Modal'] = klassExtendBase(function(config) {
         remove(this._inner);
     },
     'open': function(text) {
-        this._scroll['killScroll'](true);
+        this._scroll['kill']();
         css(this._bg, {
             'top': doc.body.scrollTop
         });
@@ -73,7 +73,7 @@ C['Modal'] = klassExtendBase(function(config) {
         hide(this._inner);
         hide(this._bg);
 
-        this._scroll['revivalScroll'](true);
+        this._scroll['revival']();
     },
     'inner': function(text) {
         this._closeDetach();

@@ -36,6 +36,7 @@ src/PC/\n\
 src/PreRender/\n\
 src/Route/\n\
 src/ScriptLoad/\n\
+src/Scroll/\n\
 src/ServerMeta/\n\
 src/SessionStorage/\n\
 src/Sound/\n\
@@ -98,6 +99,7 @@ src/util/\n\
 ../../js/src/PreRender.js\n\
 ../../js/src/Route.js\n\
 ../../js/src/ScriptLoad.js\n\
+../../js/src/Scroll.js\n\
 ../../js/src/ServerMeta.js\n\
 ../../js/src/SessionStorage.js\n\
 ../../js/src/Sound.js\n\
@@ -160,6 +162,7 @@ src/util/\n\
 ../_src/src/PreRender/test.js\n\
 ../_src/src/Route/test.js\n\
 ../_src/src/ScriptLoad/test.js\n\
+../_src/src/Scroll/test.js\n\
 ../_src/src/ServerMeta/test.js\n\
 ../_src/src/SessionStorage/test.js\n\
 ../_src/src/Sound/test.js\n\
