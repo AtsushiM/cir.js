@@ -3364,8 +3364,11 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     'toBottom': function() {
         scrollTo(doc.height);
     },
-    'smooth': function(target) {
+    'smooth': function(target, callback) {
         var mine = this;
+
+        callback = callback || nullFunction;
+
         if (!mine._smoothmove) {
             mine._smoothmove = TRUE;
 
@@ -3381,9 +3384,10 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
             mine._smoothid = setInterval(function() {
                 var position = (target - win.scrollY) * 0.2 + win.scrollY;
 
-                if (Math.abs(target - position) < 5 || mine._before === position) {
+                if (Math.abs(target - position) < 1 || mine._before === position) {
                     scrollTo(target);
                     clearInterval(mine._smoothid);
+                    callback(target);
                     return delete mine._smoothmove;
                 }
 
