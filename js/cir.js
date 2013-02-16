@@ -3365,7 +3365,8 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
         scrollTo(doc.height);
     },
     'smooth': function(target, callback) {
-        var mine = this;
+        var mine = this,
+            max;
 
         callback = callback || nullFunction;
 
@@ -3376,13 +3377,14 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
                 target = target.offsetTop;
             }
 
-            if (target > doc.height - win.innerHeight) {
-                target = doc.height - win.innerHeight;
+            max = doc.height - win.innerHeight;
+            if (target > max) {
+                target = max;
             }
 
             mine._before = win.scrollY;
             mine._smoothid = setInterval(function() {
-                var position = (target - win.scrollY) * 0.2 + win.scrollY;
+                var position = (target - win.scrollY) * 0.3 + win.scrollY;
 
                 if (Math.abs(target - position) < 1 || mine._before === position) {
                     scrollTo(target);
@@ -3393,7 +3395,7 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
 
                 mine._before = position;
                 scrollTo(position);
-            }, 20);
+            }, 50);
         }
     },
     'kill': function() {
