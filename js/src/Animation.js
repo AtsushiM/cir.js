@@ -9,9 +9,7 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-    Mine;
-
-Mine = C['Animation'] =
+    Mine = C['Animation'] =
     klassExtendBase(function(el, property, option) {
 
     option = option || NULLOBJ;
