@@ -198,7 +198,7 @@ function parseQueryString(query /* varless */, params, i, p, result) {
     return result;
 }
 function is(key, vars) {
-    if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
+    if (Object.prototype.toString.call(vars) == '[object ' + key + ']') {
         return TRUE;
     }
     return FALSE;
@@ -323,7 +323,7 @@ function hasClass(el, cls /* varless */, clsName, addedcls, i) {
     i = addedcls.length;
 
     for (; i--;) {
-        if (cls === addedcls[i]) {
+        if (cls == addedcls[i]) {
             return TRUE;
         }
     }
@@ -357,7 +357,7 @@ function removeClass(el, cls /* varless */, addedcls, attachcls, i) {
         i = addedcls.length;
 
         for (; i--;) {
-            if (cls !== addedcls[i]) {
+            if (cls != addedcls[i]) {
                 attachcls.push(addedcls[i]);
             }
         }
@@ -384,7 +384,7 @@ function attr(el, vars, value /* varless */, i) {
         return TRUE;
     }
 
-    if (value || value === EMPTY) {
+    if (value || value == EMPTY) {
         return el.setAttribute(vars, value);
     }
 
@@ -521,7 +521,7 @@ function ancestors(obj, propname /* varless */, props, flg) {
     props = [];
 
     while (!flg) {
-        if (obj[propname] && props[props.length - 1] !== obj[propname]) {
+        if (obj[propname] && props[props.length - 1] != obj[propname]) {
             props.push(obj[propname]);
         }
         if (obj._superclass && obj._superclass.prototype) {
@@ -862,12 +862,12 @@ var ret = checkCSSAnimTranCheck([
             mine._off();
 
 
-            if (prefix === 'webkit') {
+            if (prefix == 'webkit') {
                 for (; len--;) {
                     name = rule[len].name ||
                         (EMPTY + rule[len].selectorText).split('.')[1];
 
-                    if (name === mine._id) {
+                    if (name == mine._id) {
                         sheet.deleteRule(len);
                     }
                 }
@@ -986,7 +986,7 @@ Mine = C['Transition'] =
             name = rule[len].name ||
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
-            if (name === this._id) {
+            if (name == this._id) {
                 sheet.deleteRule(len);
                 break;
             }
@@ -1372,7 +1372,7 @@ function convertTweenerParam(el, params) {
         tosplit = splitSuffix(params[name]);
         from = styled.getPropertyValue(name);
 
-        if (!from || from === 'none') {
+        if (!from || from == 'none') {
             from = 0;
         }
         else {
@@ -1397,7 +1397,7 @@ C['HashQuery'] = klassExtendBase(UNDEFINED,
         var caststr = typeCast(str),
             matchstr;
 
-        if (str === caststr) {
+        if (str == caststr) {
             matchstr = str.match('^["\'](.*)["\']$');
 
             if (matchstr) {
@@ -1635,7 +1635,7 @@ C['Ajax'] = klassExtendBase(function(config) {
     }
 }, {
     'request': function(vars) {
-        if (vars.dataType === 'json') {
+        if (vars.dataType == 'json') {
             delete vars.dataType;
 
             return this['json'](vars);
@@ -1675,8 +1675,8 @@ C['Ajax'] = klassExtendBase(function(config) {
             error(xhr);
         }
 
-        if (type === 'GET') {
-            if (url.indexOf('?') !== -1) {
+        if (type == 'GET') {
+            if (url.indexOf('?') != -1) {
                 url += '&';
             }
             else {
@@ -1689,7 +1689,7 @@ C['Ajax'] = klassExtendBase(function(config) {
 
         xhr.open(type, url);
 
-        if (type === 'POST') {
+        if (type == 'POST') {
             xhr.setRequestHeader('Content-Type',
                     'application/x-www-form-urlencoded');
         }
@@ -1791,7 +1791,7 @@ C['Brush'] = klassExtendBase(function(config) {
                 pigload(canvas, img);
                 count--;
 
-                if (count === 0) {
+                if (count == 0) {
                     onload();
                 }
             };
@@ -1825,7 +1825,7 @@ C['Datetime'] = function(str) {
 
     str = str.split(/[T:\-\+\/\s]/);
 
-    if (str.length === 3) {
+    if (str.length == 3) {
         str.push(0, 0, 0);
     }
 
@@ -2179,7 +2179,7 @@ ExternalIOS = klassExtend(C['HashQuery'], function() {
         mine._ios[name] = function(e) {
             var hash = mine['getHash']();
 
-            if (hash['mode'] === name) {
+            if (hash['mode'] == name) {
                 func(hash['vars']);
             }
         };
@@ -2367,7 +2367,7 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
         this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
 
         function doScroll() {
-            if (win.pageYOffset === 0) {
+            if (win.pageYOffset == 0) {
                 pageTop();
             }
         }
@@ -2377,6 +2377,64 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
     }
 });
 C['mobile'] = new mb();
+/* Test: "../../spec/_src/src/PC/test.js" */
+(function() {
+var userAgent = win.navigator.userAgent.toLowerCase(),
+    /* appVersion = win.navigator.appVersion.toLowerCase(), */
+    browser;
+
+if (userAgent.indexOf('opera') != -1) {
+    browser = 'opera';
+}
+else if (userAgent.indexOf('msie') != -1) {
+    // if (appVersion.indexOf("msie 9.") != -1) {
+    //     browser = 'ie9';
+    // }
+    // else if (appVersion.indexOf("msie 8.") != -1) {
+    //     browser = 'ie8';
+    // }
+    // else if (appVersion.indexOf("msie 7.") != -1) {
+    //     browser = 'ie7';
+    // }
+    // else if (appVersion.indexOf("msie 6.") != -1) {
+    //     browser = 'ie6';
+    // }
+    // else {
+        browser = 'ie';
+    /* } */
+}
+else if (userAgent.indexOf('chrome') != -1) {
+    browser = 'chrome';
+}
+else if (userAgent.indexOf('safari') != -1) {
+    browser = 'safari';
+}
+else if (userAgent.indexOf('gecko') != -1) {
+    browser = 'gecko';
+}
+else {
+    browser = 'ather';
+}
+
+pc = C['PC'] = klassExtendBase(UNDEFINED, {
+    'isChrome': function(ua) {
+        return browser == 'chrome';
+    },
+    'isSafari': function(ua) {
+        return browser == 'safari';
+    },
+    'isGecko': function(ua) {
+        return browser == 'gecko';
+    },
+    'isOpera': function(ua) {
+        return browser == 'opera';
+    },
+    'isIE': function(ua) {
+        return browser.indexOf('ie') != -1;
+    }
+});
+C['pc'] = new pc();
+}());
 /* Test: "../../spec/_src/src/Orientation/test.js" */
 C['Orientation'] = klassExtendBase(function(config) {
     this._config = config;
@@ -2396,7 +2454,7 @@ C['Orientation'] = klassExtendBase(function(config) {
 }, {
     'get': function() {
         if (isNumber(win.orientation)) {
-            if (Math.abs(win.orientation) !== 90) {
+            if (Math.abs(win.orientation) != 90) {
                 return this._portrait;
             }
 
@@ -2701,10 +2759,10 @@ C['Observer'] = klassExtendBase(function() {
 
         if (target) {
             for (i = target.length; i--;) {
-                if (func === target[i]) {
+                if (func == target[i]) {
                     target.splice(i, 1);
 
-                    if (target.length === 0) {
+                    if (target.length == 0) {
                         delete this._observed[key];
                     }
 
@@ -2838,7 +2896,7 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
         function countdown() {
             i--;
 
-            if (i === 0) {
+            if (i == 0) {
                 callback(mine._els);
             }
         }
@@ -3267,7 +3325,7 @@ C['View'] = klassExtendBase(function(config) {
             events = this['events'];
 
         for (i in events) {
-            if (i === 'me') {
+            if (i == 'me') {
                 $el = this['el'];
             }
             else {
@@ -3384,7 +3442,7 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
             mine._smoothid = setInterval(function() {
                 var position = (target - win.scrollY) * 0.3 + win.scrollY;
 
-                if (Math.abs(target - position) < 1 || mine._before === position) {
+                if (Math.abs(target - position) < 1 || mine._before == position) {
                     scrollTo(target);
                     clearInterval(mine._smoothid);
                     callback(target);

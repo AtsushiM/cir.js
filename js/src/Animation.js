@@ -80,12 +80,12 @@ var ret = checkCSSAnimTranCheck([
             mine._off();
 
 
-            if (prefix === 'webkit') {
+            if (prefix == 'webkit') {
                 for (; len--;) {
                     name = rule[len].name ||
                         (EMPTY + rule[len].selectorText).split('.')[1];
 
-                    if (name === mine._id) {
+                    if (name == mine._id) {
                         sheet.deleteRule(len);
                     }
                 }

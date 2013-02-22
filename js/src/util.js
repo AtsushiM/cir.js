@@ -109,7 +109,7 @@ function parseQueryString(query /* varless */, params, i, p, result) {
     return result;
 }
 function is(key, vars) {
-    if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
+    if (Object.prototype.toString.call(vars) == '[object ' + key + ']') {
         return TRUE;
     }
     return FALSE;

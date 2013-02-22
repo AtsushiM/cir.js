@@ -26,7 +26,7 @@ C['View'] = klassExtendBase(function(config) {
             events = this['events'];
 
         for (i in events) {
-            if (i === 'me') {
+            if (i == 'me') {
                 $el = this['el'];
             }
             else {

@@ -18,6 +18,36 @@ describe('PCは', function() {
         pc.dispose();
         expect(pc).toEqual({});
     });
+
+    it('isChrome()でブラウザがChromeかチェックする', function() {
+        var flg = C.util.isBoolean(pc.isChrome());
+
+        expect(flg).toBeTruthy();
+    });
+
+    it('isGecko()でブラウザがChromeかチェックする', function() {
+        var flg = C.util.isBoolean(pc.isGecko());
+
+        expect(flg).toBeTruthy();
+    });
+
+    it('isIE()でブラウザがIEかチェックする', function() {
+        var flg = C.util.isBoolean(pc.isIE());
+
+        expect(flg).toBeTruthy();
+    });
+
+    it('isOpera()でブラウザがOperaかチェックする', function() {
+        var flg = C.util.isBoolean(pc.isOpera());
+
+        expect(flg).toBeTruthy();
+    });
+
+    it('isSafari()でブラウザがSafariかチェックする', function() {
+        var flg = C.util.isBoolean(pc.isSafari());
+
+        expect(flg).toBeTruthy();
+    });
 });
 /*
 describe('XXXは', function() {

@@ -29,7 +29,7 @@ function ancestors(obj, propname /* varless */, props, flg) {
     props = [];
 
     while (!flg) {
-        if (obj[propname] && props[props.length - 1] !== obj[propname]) {
+        if (obj[propname] && props[props.length - 1] != obj[propname]) {
             props.push(obj[propname]);
         }
         if (obj._superclass && obj._superclass.prototype) {

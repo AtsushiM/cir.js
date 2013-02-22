@@ -17,7 +17,7 @@ C['Orientation'] = klassExtendBase(function(config) {
 }, {
     'get': function() {
         if (isNumber(win.orientation)) {
-            if (Math.abs(win.orientation) !== 90) {
+            if (Math.abs(win.orientation) != 90) {
                 return this._portrait;
             }
 

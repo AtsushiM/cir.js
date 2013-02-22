@@ -47,7 +47,7 @@ C['Brush'] = klassExtendBase(function(config) {
                 pigload(canvas, img);
                 count--;
 
-                if (count === 0) {
+                if (count == 0) {
                     onload();
                 }
             };

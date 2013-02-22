@@ -29,7 +29,7 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
         function countdown() {
             i--;
 
-            if (i === 0) {
+            if (i == 0) {
                 callback(mine._els);
             }
         }

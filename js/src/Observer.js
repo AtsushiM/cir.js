@@ -28,10 +28,10 @@ C['Observer'] = klassExtendBase(function() {
 
         if (target) {
             for (i = target.length; i--;) {
-                if (func === target[i]) {
+                if (func == target[i]) {
                     target.splice(i, 1);
 
-                    if (target.length === 0) {
+                    if (target.length == 0) {
                         delete this._observed[key];
                     }
 

@@ -31,7 +31,7 @@ function hasClass(el, cls /* varless */, clsName, addedcls, i) {
     i = addedcls.length;
 
     for (; i--;) {
-        if (cls === addedcls[i]) {
+        if (cls == addedcls[i]) {
             return TRUE;
         }
     }
@@ -65,7 +65,7 @@ function removeClass(el, cls /* varless */, addedcls, attachcls, i) {
         i = addedcls.length;
 
         for (; i--;) {
-            if (cls !== addedcls[i]) {
+            if (cls != addedcls[i]) {
                 attachcls.push(addedcls[i]);
             }
         }
@@ -92,7 +92,7 @@ function attr(el, vars, value /* varless */, i) {
         return TRUE;
     }
 
-    if (value || value === EMPTY) {
+    if (value || value == EMPTY) {
         return el.setAttribute(vars, value);
     }
 

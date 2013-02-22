@@ -5,7 +5,7 @@ C['Ajax'] = klassExtendBase(function(config) {
     }
 }, {
     'request': function(vars) {
-        if (vars.dataType === 'json') {
+        if (vars.dataType == 'json') {
             delete vars.dataType;
 
             return this['json'](vars);
@@ -45,8 +45,8 @@ C['Ajax'] = klassExtendBase(function(config) {
             error(xhr);
         }
 
-        if (type === 'GET') {
-            if (url.indexOf('?') !== -1) {
+        if (type == 'GET') {
+            if (url.indexOf('?') != -1) {
                 url += '&';
             }
             else {
@@ -59,7 +59,7 @@ C['Ajax'] = klassExtendBase(function(config) {
 
         xhr.open(type, url);
 
-        if (type === 'POST') {
+        if (type == 'POST') {
             xhr.setRequestHeader('Content-Type',
                     'application/x-www-form-urlencoded');
         }

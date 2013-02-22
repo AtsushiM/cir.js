@@ -75,7 +75,7 @@ Mine = C['Transition'] =
             name = rule[len].name ||
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
-            if (name === this._id) {
+            if (name == this._id) {
                 sheet.deleteRule(len);
                 break;
             }

@@ -28,7 +28,7 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
         this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
 
         function doScroll() {
-            if (win.pageYOffset === 0) {
+            if (win.pageYOffset == 0) {
                 pageTop();
             }
         }

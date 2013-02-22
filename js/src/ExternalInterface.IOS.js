@@ -17,7 +17,7 @@ ExternalIOS = klassExtend(C['HashQuery'], function() {
         mine._ios[name] = function(e) {
             var hash = mine['getHash']();
 
-            if (hash['mode'] === name) {
+            if (hash['mode'] == name) {
                 func(hash['vars']);
             }
         };

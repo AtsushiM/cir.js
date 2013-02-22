@@ -5,7 +5,7 @@ C['HashQuery'] = klassExtendBase(UNDEFINED,
         var caststr = typeCast(str),
             matchstr;
 
-        if (str === caststr) {
+        if (str == caststr) {
             matchstr = str.match('^["\'](.*)["\']$');
 
             if (matchstr) {
