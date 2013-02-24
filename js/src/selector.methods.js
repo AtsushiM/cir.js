@@ -32,7 +32,7 @@ C['$'].methods = {
         return this[0].querySelectorAll(query);
     },
     'find': function(query) {
-        return C['$'](query, this._parent);
+        return C['$'](query, this);
     },
     'parent': function() {
         return C['$'](parent(this[0]));

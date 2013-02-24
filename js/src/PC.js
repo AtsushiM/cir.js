@@ -51,7 +51,8 @@ pc = C['PC'] = klassExtendBase(UNDEFINED, {
         return browser == 'opera';
     },
     'isIE': function(ua) {
-        return browser.indexOf('ie') != -1;
+        /* return browser.indexOf('ie') != -1; */
+        return browser == 'ie';
     }
 });
 C['pc'] = new pc();
