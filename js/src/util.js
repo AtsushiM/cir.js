@@ -133,7 +133,10 @@ function isArray(vars) {
     return is('Array', vars);
 }
 function isDefined(vars) {
-    return !is('Undefind', vars);
+    if (vars === UNDEFINED) {
+        return FALSE;
+    }
+    return TRUE;
 }
 function isTouchable() {
     return 'ontouchstart' in win;
