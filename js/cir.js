@@ -3488,7 +3488,7 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
         }
     }
 
-    console.log(C['support']);
+    /* console.log(C['support']); */
 }());
 C['beer'] = function() {
 console.log(

@@ -10,5 +10,5 @@
         }
     }
 
-    console.log(C['support']);
+    /* console.log(C['support']); */
 }());
