@@ -26,7 +26,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'width': '100%',
         'height': '300%'
     }, commoncss));
-    append(doc.body, this._bg);
+    append(body, this._bg);
 
     this._inner = create('div', {
         'class': 'cir-modal-content'
@@ -36,7 +36,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'top': '50%',
         'left': '50%'
     }, commoncss));
-    append(doc.body, this._inner);
+    append(body, this._inner);
 
     if (!config['manual']) {
         this['open']();
@@ -59,7 +59,7 @@ C['Modal'] = klassExtendBase(function(config) {
     'open': function(text) {
         this._scroll['kill']();
         css(this._bg, {
-            'top': doc.body.scrollTop
+            'top': body.scrollTop
         });
 
         show(this._bg);
@@ -87,7 +87,7 @@ C['Modal'] = klassExtendBase(function(config) {
 
         css(this._inner, {
             'margin-top':
-            doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
+            body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 

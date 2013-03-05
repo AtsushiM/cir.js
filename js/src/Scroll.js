@@ -45,7 +45,7 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     },
     'kill': function() {
         if (!this._killscrollid) {
-            css(doc.body, {
+            css(body, {
                 'overflow': 'hidden'
             });
             this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
@@ -53,7 +53,7 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     },
     'revival': function() {
         if (this._killscrollid) {
-            css(doc.body, {
+            css(body, {
                 'overflow': 'auto'
             });
             this['uncontract'](this._killscrollid);

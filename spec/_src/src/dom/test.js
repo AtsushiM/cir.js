@@ -283,6 +283,12 @@ describe('domは', function() {
         expect($make.innerHTML).toEqual('test');
         expect(el.html($make)).toEqual('test');
     });
+
+    it('reflow(el)でelをリフローする', function() {
+        el.reflow();
+        el.reflow(document.body);
+        expect(1).toEqual(1);
+    });
 });
 /*
 describe('XXXは', function() {

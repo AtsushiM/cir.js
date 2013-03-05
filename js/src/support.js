@@ -2,7 +2,9 @@
 (function() {
     var i;
 
-    C['support'] = {};
+    C['support'] = {
+        'CSRF': new XMLHttpRequest().withCredentials !== undefined
+    };
 
     for (i in C) {
         if (isDefined(C[i]['support'])) {

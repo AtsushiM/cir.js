@@ -2,6 +2,7 @@
 (function() {
 var win = window,
     doc = document,
+    body = doc.body,
     TRUE = true,
     FALSE = false,
     NULL = null,

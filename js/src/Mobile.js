@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
-        return doc.body.clientWidth / win.innerWidth;
+        return body.clientWidth / win.innerWidth;
     },
     'isAndroid': function(ua) {
         return checkUserAgent(/Android/i, ua);

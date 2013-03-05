@@ -2,6 +2,7 @@
 (function() {
 var win = window,
     doc = document,
+    body = doc.body,
     TRUE = true,
     FALSE = false,
     NULL = null,
@@ -467,6 +468,10 @@ function html(el, text) {
     el.innerHTML = text;
 }
 
+function reflow(el) {
+    (el || body).offsetTop;
+}
+
 C['dom'] = {
     '$': $,
     '$$': $$,
@@ -491,7 +496,8 @@ C['dom'] = {
     'remove': remove,
     'attr': attr,
     'removeAttr': removeAttr,
-    'html': html
+    'html': html,
+    'reflow': reflow
 };
 /* Test: "../../spec/_src/src/klass/test.js" */
 C['klass'] = function(config) {
@@ -1515,7 +1521,7 @@ Media = klassExtendBase(function(config) {
         loop = config['loop'],
         media,
         ev_canplay = 'canplay',
-        _parent = config['el'] || doc.body;
+        _parent = config['el'] || body;
 
     config['preload'] = 'auto';
     config['autoplay'] =
@@ -2343,7 +2349,7 @@ C['WindowLoad'] = klassExtendBase(function(config) {
 /* Test: "../../spec/_src/src/Mobile/test.js" */
 mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
     'getZoom': function() {
-        return doc.body.clientWidth / win.innerWidth;
+        return body.clientWidth / win.innerWidth;
     },
     'isAndroid': function(ua) {
         return checkUserAgent(/Android/i, ua);
@@ -2528,7 +2534,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'width': '100%',
         'height': '300%'
     }, commoncss));
-    append(doc.body, this._bg);
+    append(body, this._bg);
 
     this._inner = create('div', {
         'class': 'cir-modal-content'
@@ -2538,7 +2544,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'top': '50%',
         'left': '50%'
     }, commoncss));
-    append(doc.body, this._inner);
+    append(body, this._inner);
 
     if (!config['manual']) {
         this['open']();
@@ -2561,7 +2567,7 @@ C['Modal'] = klassExtendBase(function(config) {
     'open': function(text) {
         this._scroll['kill']();
         css(this._bg, {
-            'top': doc.body.scrollTop
+            'top': body.scrollTop
         });
 
         show(this._bg);
@@ -2589,7 +2595,7 @@ C['Modal'] = klassExtendBase(function(config) {
 
         css(this._inner, {
             'margin-top':
-            doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
+            body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
@@ -2912,7 +2918,7 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
 
         /* script.type = 'text/javascript'; */
         script.src = vars['src'];
-        append(doc.body, script);
+        append(body, script);
         mine._els.push(script);
 
         if (vars['callback']) {
@@ -3460,7 +3466,7 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     },
     'kill': function() {
         if (!this._killscrollid) {
-            css(doc.body, {
+            css(body, {
                 'overflow': 'hidden'
             });
             this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
@@ -3468,7 +3474,7 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     },
     'revival': function() {
         if (this._killscrollid) {
-            css(doc.body, {
+            css(body, {
                 'overflow': 'auto'
             });
             this['uncontract'](this._killscrollid);
@@ -3480,7 +3486,9 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
 (function() {
     var i;
 
-    C['support'] = {};
+    C['support'] = {
+        'CSRF': new XMLHttpRequest().withCredentials !== undefined
+    };
 
     for (i in C) {
         if (isDefined(C[i]['support'])) {

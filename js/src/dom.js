@@ -172,6 +172,10 @@ function html(el, text) {
     el.innerHTML = text;
 }
 
+function reflow(el) {
+    (el || body).offsetTop;
+}
+
 C['dom'] = {
     '$': $,
     '$$': $$,
@@ -196,5 +200,6 @@ C['dom'] = {
     'remove': remove,
     'attr': attr,
     'removeAttr': removeAttr,
-    'html': html
+    'html': html,
+    'reflow': reflow
 };
