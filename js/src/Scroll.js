@@ -27,9 +27,10 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
                 target = max;
             }
 
-            mine._before = win.scrollY;
+            /* mine._before = win.scrollY; */
             mine._smoothid = setInterval(function() {
-                var position = (target - win.scrollY) * 0.3 + win.scrollY;
+                var position = win.scrollY;
+                position = (target - position) * 0.3 + position;
 
                 if (Math.abs(target - position) < 1 || mine._before == position) {
                     scrollTo(target);
