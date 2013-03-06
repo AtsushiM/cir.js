@@ -1,35 +1,45 @@
 /* Test: "../../spec/_src/src/selector/test.js" */
-var $base = function(){};
+var $base = function(){},
+    checkQuerySelector = /^(.+[\#\.\s\[>:,]|[\[:])/;
 C['$'] = function(query, _parent /* varless */, $el, instance, len) {
     // var $el,
     //     base,
     //     instance,
     //     len;
 
-    /* var base = function(){}; */
-    /* base.prototype = $_methods; */
-
-    /* _parent = _parent || doc; */
-
-    /* if (isString(query)) { */
-    if (typeof query === 'string') {
-        _parent = _parent || doc;
-        $el = _parent.querySelectorAll(query);
+    if (typeof query == 'string') {
+        if (!_parent) {
+            if (
+                checkQuerySelector.test(query)
+            ) {
+                $el = doc.querySelectorAll(query);
+            }
+            else if (query[0] == '#') {
+                $el = [doc.getElementById(query.substring(1, query.length))];
+            }
+            else if (query[0] == '.') {
+                $el =
+                    doc
+                    .getElementsByClassName(query.substring(1, query.length));
+            }
+            else {
+                $el = doc.getElementsByTagName(query);
+            }
+        }
+        else {
+            $el = _parent.querySelectorAll(query);
+        }
     }
     else {
         $el = [query];
-        query = EMPTY;
     }
+
     len = $el.length;
-    /* instance = new base(); */
     instance = new $base();
 
     instance.length = len;
-    /* instance._selector = query; */
-    /* instance._parent = _parent; */
 
-    /* for (; i < len; i++) { */
-    for (;len--;) {
+    for (; len--;) {
         instance[len] = $el[len];
     }
 

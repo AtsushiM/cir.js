@@ -20,7 +20,7 @@
 
     start = Date.now();
     for (i = 0, len = 100000; i < len; i++) {
-        $test = $('.test');
+        $test = $('#test');
     }
     console.log(Date.now() - start);
 }());

@@ -26,8 +26,8 @@ describe('$は', function() {
     });
 
     it('$(string, selector)でselectorからstringに対応するelementを内包したselectorインスタンスを返す', function() {
-        var body = c.$('div'),
-            selector = new c.$('script', body);
+        var body = c.$('div');
+        var selector = new c.$('script', body);
 
         expect(0).toEqual(0);
     });
