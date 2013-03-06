@@ -20,7 +20,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'class': 'cir-modal-bg'
     });
     css(this._bg, override({
-        'zIndex': 9998,
+        'z-ndex': 9998,
         'top': 0,
         'left': 0,
         'width': '100%',
@@ -32,7 +32,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'class': 'cir-modal-content'
     });
     css(this._inner, override({
-        'zindex': 9999,
+        'z-index': 9999,
         'top': '50%',
         'left': '50%'
     }, commoncss));

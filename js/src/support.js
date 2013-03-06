@@ -3,7 +3,8 @@
     var i;
 
     C['support'] = {
-        'CSRF': new XMLHttpRequest().withCredentials !== undefined
+        'CSRF': new XMLHttpRequest()['withCredentials'] !== UNDEFINED,
+        'Canvas': !!win['HTMLCanvasElement']
     };
 
     for (i in C) {

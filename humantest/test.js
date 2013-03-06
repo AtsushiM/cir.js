@@ -1,6 +1,6 @@
 (function() {
 'use strict';
-    var start = Date.now(),
+    var start,
         $;
 
     if (!window.C) {
@@ -14,10 +14,13 @@
         $ = C.$;
     }
 
-    var $test;
-    for (var i = 0, len = 1000; i < len; i++) {
+    var $test,
+        i,
+        len;
+
+    start = Date.now();
+    for (i = 0, len = 100000; i < len; i++) {
         $test = $('.test');
     }
-
     console.log(Date.now() - start);
 }());

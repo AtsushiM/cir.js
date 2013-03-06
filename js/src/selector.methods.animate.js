@@ -1,6 +1,6 @@
 /* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
-var methods = C['$'].methods,
+var methods = $_methods,
     Animation = C['Animation'] || {},
     csssupport = Animation['support'],
     EASE = {};

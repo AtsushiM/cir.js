@@ -1,17 +1,18 @@
 /* Test: "../../spec/_src/src/selector/test.js" */
+var $base = function(){};
 C['$'] = function(query, _parent /* varless */, $el, instance, len) {
     // var $el,
     //     base,
     //     instance,
     //     len;
 
-    function base() {
-    }
-    base.prototype = C['$'].methods;
+    /* var base = function(){}; */
+    /* base.prototype = $_methods; */
 
     /* _parent = _parent || doc; */
 
-    if (isString(query)) {
+    /* if (isString(query)) { */
+    if (typeof query === 'string') {
         _parent = _parent || doc;
         $el = _parent.querySelectorAll(query);
     }
@@ -20,7 +21,8 @@ C['$'] = function(query, _parent /* varless */, $el, instance, len) {
         query = EMPTY;
     }
     len = $el.length;
-    instance = new base();
+    /* instance = new base(); */
+    instance = new $base();
 
     instance.length = len;
     /* instance._selector = query; */

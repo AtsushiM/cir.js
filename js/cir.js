@@ -1171,19 +1171,20 @@ Tweener.Items = [];
 Tweener['fps'] = 30;
 Tweener['duration'] = 500;
 /* Test: "../../spec/_src/src/selector/test.js" */
+var $base = function(){};
 C['$'] = function(query, _parent /* varless */, $el, instance, len) {
     // var $el,
     //     base,
     //     instance,
     //     len;
 
-    function base() {
-    }
-    base.prototype = C['$'].methods;
+    /* var base = function(){}; */
+    /* base.prototype = $_methods; */
 
     /* _parent = _parent || doc; */
 
-    if (isString(query)) {
+    /* if (isString(query)) { */
+    if (typeof query === 'string') {
         _parent = _parent || doc;
         $el = _parent.querySelectorAll(query);
     }
@@ -1192,7 +1193,8 @@ C['$'] = function(query, _parent /* varless */, $el, instance, len) {
         query = EMPTY;
     }
     len = $el.length;
-    instance = new base();
+    /* instance = new base(); */
+    instance = new $base();
 
     instance.length = len;
     /* instance._selector = query; */
@@ -1234,7 +1236,7 @@ function selectorMakeAry(arg) {
     return ary;
 }
 
-C['$'].methods = {
+var $_methods = C['$'].methods = {
     'querySelectorAll': function(query) {
         return this[0].querySelectorAll(query);
     },
@@ -1295,7 +1297,7 @@ C['$'].methods = {
 };
 /* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
-var methods = C['$'].methods,
+var methods = $_methods,
     Animation = C['Animation'] || {},
     csssupport = Animation['support'],
     EASE = {};
@@ -2528,7 +2530,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'class': 'cir-modal-bg'
     });
     css(this._bg, override({
-        'zIndex': 9998,
+        'z-ndex': 9998,
         'top': 0,
         'left': 0,
         'width': '100%',
@@ -2540,7 +2542,7 @@ C['Modal'] = klassExtendBase(function(config) {
         'class': 'cir-modal-content'
     });
     css(this._inner, override({
-        'zindex': 9999,
+        'z-index': 9999,
         'top': '50%',
         'left': '50%'
     }, commoncss));
@@ -3488,7 +3490,8 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     var i;
 
     C['support'] = {
-        'CSRF': new XMLHttpRequest().withCredentials !== undefined
+        'CSRF': new XMLHttpRequest()['withCredentials'] !== UNDEFINED,
+        'Canvas': !!win['HTMLCanvasElement']
     };
 
     for (i in C) {
@@ -3513,4 +3516,7 @@ console.log(
 "  　 　 ／|::::::;';';'＼／｝　（ヽ、　　_/| 　 (´　　　 _,.ｨ!::ヽ. 　ヾｰ'´;';';';';';';';';:: /ヽ、\n"
 );
 };
+if ($_methods) {
+    $base.prototype = $_methods;
+}
 }());
