@@ -1,7 +1,7 @@
 /* Test: "../../spec/_src/src/selector/test.js" */
 // var $base = function(){},
 //     checkQuerySelector = /^(.+[\#\.\s\[>:,]|[\[:])/;
-var $base = function(){};
+function $base() {}
 
 C['$'] = function(query, _parent /* varless */, $el, instance, len) {
     // var $el,

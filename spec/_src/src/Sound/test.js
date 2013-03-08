@@ -86,7 +86,7 @@ describe('Soundは', function() {
             }
         });
 
-        waits(100);
+        waits(500);
         runs(function() {
             sound.setCurrent(1);
             expect(sound.getCurrent()).toEqual(1);
