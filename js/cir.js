@@ -3450,6 +3450,9 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     'toBottom': function() {
         scrollTo(doc.height);
     },
+    'scrollY': function() {
+        return (win.pageYOffset !== UNDEFINED) ? win.pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
+    },
     'smooth': function(target, callback) {
         var mine = this,
             max;
@@ -3468,9 +3471,9 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
                 target = max;
             }
 
-            /* mine._before = win.scrollY; */
+            mine._before = mine.scrollY();
             mine._smoothid = setInterval(function() {
-                var position = win.scrollY;
+                var position = mine.scrollY();
                 position = (target - position) * 0.3 + position;
 
                 if (Math.abs(target - position) < 1 || mine._before == position) {
@@ -3503,23 +3506,6 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
         }
     }
 });
-/* Test: "%JASMINE_TEST_PATH%" */
-(function() {
-    var i;
-
-    C['support'] = {
-        'CSRF': new XMLHttpRequest()['withCredentials'] !== UNDEFINED,
-        'Canvas': !!win['HTMLCanvasElement']
-    };
-
-    for (i in C) {
-        if (isDefined(C[i]['support'])) {
-            C['support'][i] = C[i]['support'];
-        }
-    }
-
-    /* console.log(C['support']); */
-}());
 C['beer'] = function() {
 console.log(
 "\n" +

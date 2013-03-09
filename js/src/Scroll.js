@@ -9,6 +9,9 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     'toBottom': function() {
         scrollTo(doc.height);
     },
+    'scrollY': function() {
+        return (win.pageYOffset !== UNDEFINED) ? win.pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
+    },
     'smooth': function(target, callback) {
         var mine = this,
             max;
@@ -27,9 +30,9 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
                 target = max;
             }
 
-            /* mine._before = win.scrollY; */
+            mine._before = mine.scrollY();
             mine._smoothid = setInterval(function() {
-                var position = win.scrollY;
+                var position = mine.scrollY();
                 position = (target - position) * 0.3 + position;
 
                 if (Math.abs(target - position) < 1 || mine._before == position) {
