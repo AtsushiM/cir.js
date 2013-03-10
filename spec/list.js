@@ -34,6 +34,7 @@ src/Observer/\n\
 src/Orientation/\n\
 src/PC/\n\
 src/PreRender/\n\
+src/RollOver/\n\
 src/Route/\n\
 src/ScriptLoad/\n\
 src/Scroll/\n\
@@ -97,6 +98,7 @@ src/util/\n\
 ../../js/src/Orientation.js\n\
 ../../js/src/PC.js\n\
 ../../js/src/PreRender.js\n\
+../../js/src/RollOver.js\n\
 ../../js/src/Route.js\n\
 ../../js/src/ScriptLoad.js\n\
 ../../js/src/Scroll.js\n\
@@ -160,6 +162,7 @@ src/util/\n\
 ../_src/src/Orientation/test.js\n\
 ../_src/src/PC/test.js\n\
 ../_src/src/PreRender/test.js\n\
+../_src/src/RollOver/test.js\n\
 ../_src/src/Route/test.js\n\
 ../_src/src/ScriptLoad/test.js\n\
 ../_src/src/Scroll/test.js\n\

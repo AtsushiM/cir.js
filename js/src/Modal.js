@@ -69,7 +69,7 @@ C['Modal'] = klassExtendBase(function(config) {
     'close': function() {
         this._closeDetach();
 
-        html(this._inner, '');
+        html(this._inner, EMPTY);
         hide(this._inner);
         hide(this._bg);
 
