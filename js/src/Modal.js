@@ -1,109 +1,124 @@
 /* Test: "../../spec/_src/src/Modal/test.js" */
-C['Modal'] = klassExtendBase(function(config) {
+C['Modal'] = klassExtendBase(function(config /* varless */, mine, commoncss) {
+    mine = this;
     config = config || NULLOBJ;
 
-    // this._html = config['html'];
-    // this._bgClose = config['bgClose'];
-    // this._closeSelector = config['closeSelector'];
-    this._config = config;
+    // mine._html = config['html'];
+    // mine._bgClose = config['bgClose'];
+    // mine._closeSelector = config['closeSelector'];
+    mine._config = config;
 
-    var commoncss = {
+    /* var commoncss = { */
+    commoncss = {
         'display': 'none',
         'position': 'absolute'
     };
 
-    this._scroll = new C['Scroll']();
+    mine._scroll = new C['Scroll']();
 
-    this._contractid = [];
+    mine._contractid = [];
 
-    this._bg = create('div', {
+    mine._bg = create('div', {
         'class': 'cir-modal-bg'
     });
-    css(this._bg, override({
+    css(mine._bg, override({
         'z-ndex': 9998,
         'top': 0,
         'left': 0,
         'width': '100%',
         'height': '300%'
     }, commoncss));
-    append(body, this._bg);
+    append(body, mine._bg);
 
-    this._inner = create('div', {
+    mine._inner = create('div', {
         'class': 'cir-modal-content'
     });
-    css(this._inner, override({
+    css(mine._inner, override({
         'z-index': 9999,
         'top': '50%',
         'left': '50%'
     }, commoncss));
-    append(body, this._inner);
+    append(body, mine._inner);
 
     if (!config['manual']) {
-        this['open']();
+        mine['open']();
     }
 }, {
-    _closeDetach: function() {
-        var i = this._contractid.length;
+    _closeDetach: function(/* varless */ mine) {
+        mine = this;
+
+        var i = mine._contractid.length;
 
         for (; i--;) {
-            this['uncontract'](this._contractid[i]);
+            mine['uncontract'](mine._contractid[i]);
         }
 
-        this._contractid = [];
+        mine._contractid = [];
     },
-    'disposeInternal': function() {
-        this['close']();
-        remove(this._bg);
-        remove(this._inner);
+    'disposeInternal': function(/* varless */ mine) {
+        mine = this;
+
+        mine['close']();
+        remove(mine._bg);
+        remove(mine._inner);
     },
-    'open': function(text) {
-        this._scroll['kill']();
-        css(this._bg, {
+    'open': function(text /* varless */, mine) {
+        mine = this;
+
+        mine._scroll['kill']();
+        css(mine._bg, {
             'top': body.scrollTop
         });
 
-        show(this._bg);
+        show(mine._bg);
 
-        this['inner'](text);
+        mine['inner'](text);
     },
-    'close': function() {
-        this._closeDetach();
+    'close': function(/* varless */ mine) {
+        mine = this;
 
-        html(this._inner, EMPTY);
-        hide(this._inner);
-        hide(this._bg);
+        mine._closeDetach();
 
-        this._scroll['revival']();
+        html(mine._inner, EMPTY);
+        hide(mine._inner);
+        hide(mine._bg);
+
+        mine._scroll['revival']();
     },
-    'inner': function(text) {
-        this._closeDetach();
+    'inner': function(text /* varless */, mine, computed, close) {
+        mine = this;
 
-        text = text || this._config['html'];
+        // var computed,
+        //     close;
 
-        html(this._inner, text);
-        show(this._inner);
+        mine._closeDetach();
 
-        var computed = computedStyle(this._inner);
+        text = text || mine._config['html'];
 
-        css(this._inner, {
+        html(mine._inner, text);
+        show(mine._inner);
+
+        computed = computedStyle(mine._inner);
+
+        css(mine._inner, {
             'margin-top':
             body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
-        if (this._config['bgClose']) {
-            this['contract'](this._bg, ev['CLICK'], proxy(this, this['close']));
+        if (mine._config['bgClose']) {
+            mine['contract'](mine._bg, ev['CLICK'], proxy(mine, mine['close']));
         }
 
-        if (this._config['closeSelector']) {
-            var close = $$child(this._config['closeSelector'], this._inner),
+        if (mine._config['closeSelector']) {
+            close = $$child(mine._config['closeSelector'], mine._inner),
                 i = close.length;
 
             for (; i--;) {
-                this._contractid.push(
-                    this['contract'](close[i],
+                mine._contractid.push(
+                    mine['contract'](close[i],
                     ev['CLICK'],
-                    proxy(this, this['close']))
+                    proxy(mine, mine['close']))
                 );
             }
         }

@@ -19,18 +19,21 @@ methods['animate'] = function() {
 
     return selectorForExe(this, animate, arguments);
 }
-methods['stop'] = function() {
-    if (this._animate) {
-        var i = this._animate.length;
+methods['stop'] = function(/* varless */ mine, i) {
+    mine = this;
+
+    if (mine._animate) {
+        /* var i = mine._animate.length; */
+        i = mine._animate.length;
 
         for (; i--;) {
-            this._animate[i]['stop']();
+            mine._animate[i]['stop']();
         }
 
-        this._animate = NULL;
+        mine._animate = NULL;
     }
 
-    return this;
+    return mine;
 }
 
 function animate(el, params, duration, ease, callback) {

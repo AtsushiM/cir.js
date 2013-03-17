@@ -9,8 +9,9 @@ C['Throttle'] = klassExtendBase(function(config) {
     'disposeInternal': function() {
         this['unlock']();
     },
-    'request': function(vars) {
-        var mine = this;
+    'request': function(vars /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
 
         if (mine._locked) {
             mine._args = vars;

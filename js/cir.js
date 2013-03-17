@@ -88,6 +88,11 @@ function splitSuffix(value) {
 
     return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
+
+
+function this_stop() {
+    this['stop']();
+}
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function() {
@@ -543,15 +548,21 @@ function ancestors(obj, propname /* varless */, props, flg) {
 
     return props;
 }
-function klassExtend(kls, init, prop) {
-    return C['klass']({
-        'extend': kls,
-        'init': init,
-        'prop': prop
-    });
+function klassExtend(kls, init, prop, support) {
+    var klass = C['klass']({
+            'extend': kls,
+            'init': init,
+            'prop': prop
+        });
+
+    if (isDefined(support)) {
+        klass['support'] = support;
+    }
+
+    return klass;
 }
-function klassExtendBase(init, prop) {
-    return klassExtend(C['Base'], init, prop);
+function klassExtendBase(init, prop, support) {
+    return klassExtend(C['Base'], init, prop, support);
 }
 /* Test: "../../spec/_src/src/extend/test.js" */
 C['extend'] = function(child, _super) {
@@ -581,46 +592,53 @@ C['Base'] = klassExtend(UNDEFINED, function() {
     this._disposestore = {};
 }, {
     _disposecountid: 0,
-    'dispose': function() {
-        var internal = ancestors(this, 'disposeInternal'),
+    'dispose': function(/* varless */ mine) {
+        mine = this;
+
+        var internal = ancestors(mine, 'disposeInternal'),
             i = 0,
-            len = internal.length;
+            temp = mine._disposestore;
 
-        for (; i < len; i++) {
-            internal[i].call(this);
+        for (; i < internal.length; i++) {
+            internal[i].call(mine);
         }
 
-        for (i in this._disposestore) {
-            off.apply(NULL, this._disposestore[i]);
+        for (i in temp) {
+            off.apply(NULL, temp[i]);
         }
 
-        for (i in this) {
-            if (this[i] && isFunction(this[i]['dispose'])) {
-                this[i]['dispose']();
+        for (i in mine) {
+            temp = mine[i];
+
+            if (temp && isFunction(temp['dispose'])) {
+                temp['dispose']();
             }
         }
 
-        this.__proto__ = NULL;
+        mine.__proto__ = NULL;
 
-        for (i in this) {
-            this[i] = NULL;
-            delete this[i];
+        for (i in mine) {
+            mine[i] = NULL;
+            delete mine[i];
         }
 
         return NULL;
     },
-    'contract': function(el, e, handler) {
-        on(el, e, handler);
-        this._disposecountid++;
-        this._disposestore[this._disposecountid] = [el, e, handler];
+    'contract': function(el, e, handler /* varless */, id) {
+        /* var id = ++this._disposecountid; */
+        id = ++this._disposecountid;
 
-        return this._disposecountid;
+        on(el, e, handler);
+        this._disposestore[id] = [el, e, handler];
+
+        return id;
     },
     'uncontract': function(id) {
         if (id) {
-            var arg = this._disposestore[id];
+            var temp = this._disposestore,
+                arg = temp[id];
 
-            delete this._disposestore[id];
+            delete temp[id];
 
             off(arg[0], arg[1], arg[2]);
         }
@@ -801,16 +819,18 @@ var ret = checkCSSAnimTranCheck([
     event_key = ret.event_key,
     sheet = ret.sheet,
     Mine = C['Animation'] =
-    klassExtendBase(function(el, property, option) {
+    klassExtendBase(function(el, property, option /* varless */, mine) {
+
+    mine = this;
 
     option = option || NULLOBJ;
 
-    this._onComplete = option['onComplete'] || nullFunction;
+    mine._onComplete = option['onComplete'] || nullFunction;
 
-    this._el = el;
+    mine._el = el;
 
     Mine['id']++;
-    this._id = 'ciranim' + Mine['id'];
+    mine._id = 'ciranim' + Mine['id'];
 
     var duration = option['duration'] || Mine['duration'],
         // easeOutExpo
@@ -825,7 +845,7 @@ var ret = checkCSSAnimTranCheck([
         }
     }
 
-    this.property = prop;
+    mine.property = prop;
 
     prop = replaceAll(
         replaceAll(jsonStringify(prop), '"', EMPTY),
@@ -834,34 +854,38 @@ var ret = checkCSSAnimTranCheck([
     );
 
     sheet.insertRule(
-        '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
+        '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
         sheet.cssRules.length);
 
     if (!isArray(ease)) {
         ease = [ease];
     }
 
-    addCSSRule(this._id, css_prefix, duration, ease);
+    addCSSRule(mine._id, css_prefix, duration, ease);
 
     if (!option['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
     _off: function() {
-        off(this._el, event_key + 'End', this._end);
-        off(this._el, 'animationend', this._end);
+        var el = this._el,
+            end = this._end;
+
+        off(el, event_key + 'End', end);
+        off(el, 'animationend', end);
     },
-    'disposeInternal': function() {
-        this['stop']();
-    },
-    'start': function() {
-        var mine = this;
+    'disposeInternal': this_stop,
+    'start': function(/* varless */ mine, el) {
+        // var mine = this,
+        //     el = mine._el;
+        mine = this,
+        el = mine._el;
 
         mine._end = endaction;
-        on(mine._el, event_key + 'End', endaction);
-        on(mine._el, 'animationend', endaction);
+        on(el, event_key + 'End', endaction);
+        on(el, 'animationend', endaction);
 
-        addClass(mine._el, mine._id);
+        addClass(el, mine._id);
 
         function endaction(e) {
             var rule = sheet.cssRules,
@@ -880,9 +904,9 @@ var ret = checkCSSAnimTranCheck([
                         sheet.deleteRule(len);
                     }
                 }
-                removeClass(mine._el, mine._id);
+                removeClass(el, mine._id);
 
-                css(mine._el, mine.property);
+                css(el, mine.property);
             }
             mine._onComplete(e);
         }
@@ -895,7 +919,7 @@ var ret = checkCSSAnimTranCheck([
         css(this._el, stopobj);
         this._off();
     }
-});
+}, support);
 
 function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
@@ -916,7 +940,6 @@ function addCSSRule(id, css_prefix, duration, eases) {
 
 Mine['id'] = 0;
 Mine['duration'] = 500;
-Mine['support'] = support;
 }());
 /* Test: "../../spec/_src/src/Transition/test.js" */
 (function() {
@@ -932,12 +955,14 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = C['Transition'] =
-    klassExtendBase(function(el, property, option) {
+    klassExtendBase(function(el, property, option /* varless */, mine) {
+
+    mine = this;
 
     option = option || NULLOBJ;
 
     Mine['id']++;
-    this._id = 'cirtrans' + Mine['id'];
+    mine._id = 'cirtrans' + Mine['id'];
 
     var transProp = [],
         animeProp = override({}, property),
@@ -954,21 +979,20 @@ Mine = C['Transition'] =
         transProp.push(i);
     }
 
-    addCSSRule(this._id, css_prefix, duration, ease, transProp);
+    addCSSRule(mine._id, css_prefix, duration, ease, transProp);
 
-    this._el = el;
-    this._property = property;
-    this._onComplete = option['onComplete'] || nullFunction;
+    mine._el = el;
+    mine._property = property;
+    mine._onComplete = option['onComplete'] || nullFunction;
 
     if (!option['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
-    'disposeInternal': function() {
-        this['stop']();
-    },
-    'start': function() {
-        var mine = this;
+    'disposeInternal': this_stop,
+    'start': function(/* varless */ mine) {
+        /* var mine = this; */
+        mine = this;
 
         mine._endfunc = function(e) {
             mine['stop']();
@@ -982,26 +1006,28 @@ Mine = C['Transition'] =
         addClass(mine._el, mine._id);
         css(mine._el, mine._property);
     },
-    'stop': function() {
+    'stop': function(/* varless */ mine) {
+        mine = this;
+
         var rule = sheet.cssRules,
             len = rule.length,
             name;
 
-        off(this._el, event_key + 'End', this._endfunc);
-        off(this._el, 'transitionend', this._endfunc);
-        removeClass(this._el, this._id);
+        off(mine._el, event_key + 'End', mine._endfunc);
+        off(mine._el, 'transitionend', mine._endfunc);
+        removeClass(mine._el, mine._id);
 
         for (; len--;) {
             name = rule[len].name ||
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
-            if (name == this._id) {
+            if (name == mine._id) {
                 sheet.deleteRule(len);
                 break;
             }
         }
     }
-});
+}, support);
 
 function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
@@ -1022,18 +1048,19 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 }
 
 Mine['id'] = 0;
-Mine['support'] = support;
 Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop) {
+Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop, mine) {
     // var name,
     //     prop;
 
+    mine = this;
+
     option = option || NULLOBJ;
 
-    this._target = target;
-    this._property = [];
+    mine._target = target;
+    mine._property = [];
 
     for (name in property) {
         prop = property[name];
@@ -1043,20 +1070,18 @@ Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* va
         prop['prefix'] = prop['prefix'] || EMPTY;
         prop['suffix'] = prop['suffix'] || 'px';
 
-        this._property.push(prop);
+        mine._property.push(prop);
     }
 
-    this._duration = option['duration'] || Tweener['duration'];
-    this._ease = option['ease'] || this.__ease;
-    this._onComplete = option['onComplete'];
+    mine._duration = option['duration'] || Tweener['duration'];
+    mine._ease = option['ease'] || mine.__ease;
+    mine._onComplete = option['onComplete'];
 
     if (!option['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
-    'disposeInternal': function() {
-        this['stop']();
-    },
+    'disposeInternal': this_stop,
     // easeOutExpo
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
@@ -1142,10 +1167,11 @@ Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* va
             return;
         }
 
-        this['stop']();
+        mine['stop']();
     },
-    'start': function() {
-        var mine = this;
+    'start': function(/* varless */ mine) {
+        /* var mine = this; */
+        mine = this;
 
         mine.begin = dateNow();
 
@@ -1334,18 +1360,21 @@ methods['animate'] = function() {
 
     return selectorForExe(this, animate, arguments);
 }
-methods['stop'] = function() {
-    if (this._animate) {
-        var i = this._animate.length;
+methods['stop'] = function(/* varless */ mine, i) {
+    mine = this;
+
+    if (mine._animate) {
+        /* var i = mine._animate.length; */
+        i = mine._animate.length;
 
         for (; i--;) {
-            this._animate[i]['stop']();
+            mine._animate[i]['stop']();
         }
 
-        this._animate = NULL;
+        mine._animate = NULL;
     }
 
-    return this;
+    return mine;
 }
 
 function animate(el, params, duration, ease, callback) {
@@ -1565,17 +1594,17 @@ Media = klassExtendBase(function(config) {
                 mine['play']();
             };
 
-            autoplayid = this['contract'](media, ev_canplay, autoplay);
+            autoplayid = mine['contract'](media, ev_canplay, autoplay);
         }
         if (loop) {
-            this['loop'](TRUE);
+            mine['loop'](TRUE);
         }
 
         if (config['oncanplay']) {
-            this['contract'](media, ev_canplay, config['oncanplay']);
+            mine['contract'](media, ev_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this['contract'](media, ev_ended, config['onended']);
+            mine['contract'](media, ev_ended, config['onended']);
         }
 
         append(_parent, media);
@@ -1596,8 +1625,10 @@ Media = klassExtendBase(function(config) {
     'setCurrent': function(num) {
         this._el.currentTime = num;
     },
-    'loop': function(bool) {
-        var mine = this;
+    'loop': function(bool /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
+
         if (mine.loopid) {
             mine['uncontract'](mine.loopid);
             delete mine.loopid;
@@ -1664,18 +1695,18 @@ C['Ajax'] = klassExtendBase(function(config) {
     }
 }, {
     'request': function(vars) {
-        if (vars.dataType == 'json') {
-            delete vars.dataType;
-
-            return this['json'](vars);
-        }
-
         var url = vars['url'],
             callback = vars['callback'] || nullFunction,
             error = vars['error'] || nullFunction,
             type = vars['type'] || 'GET',
             query = EMPTY,
             xhr = this._xhr = new XMLHttpRequest();
+
+        if (vars.dataType == 'json') {
+            delete vars.dataType;
+
+            return this['json'](vars);
+        }
 
         if (!vars['cash']) {
             if (!vars['query']) {
@@ -1760,23 +1791,27 @@ C['Handle'] = klassExtendBase(function(config) {
         this._e(off);
     },
     _e: function(onoff) {
-        var i;
+        var i,
+            config = this._config,
+            events = config['events'];
 
-        for (i in this._config['events']) {
+        for (i in events) {
             onoff(
-                this._config['el'],
+                config['el'],
                 i,
-                this._config['events'][i]
+                events[i]
             );
         }
     }
 });
 /* Test: "../../spec/_src/src/Brush/test.js" */
-C['Brush'] = klassExtendBase(function(config) {
-    this._canvas = config['canvas'];
-    this._ctx = this._canvas.getContext('2d');
+C['Brush'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
 
-    this['setSize'](config);
+    mine._canvas = config['canvas'];
+    mine._ctx = mine._canvas.getContext('2d');
+
+    mine['setSize'](config);
 }, {
     'setSize': function(vars) {
         if (vars['width']) {
@@ -1821,70 +1856,71 @@ C['Brush'] = klassExtendBase(function(config) {
                 count--;
 
                 if (count == 0) {
-                    onload();
+                    callback(ret);
                 }
             };
 
             ret[i] = mine['pigment'](pig);
             count++;
         }
-        function onload() {
-            callback(ret);
-        }
 
         return ret;
     },
     'draw': function(layer) {
-        var i = 0, len = layer.length, item;
+        var i = 0,
+            len = layer.length,
+            ctx = this._ctx,
+            temp = this._canvas;
 
-        this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        ctx.clearRect(0, 0, temp.width, temp.height);
 
         for (; i < len; i++) {
-            item = layer[i];
-            this._ctx.drawImage(item['image'], item['x'], item['y']);
+            temp = layer[i];
+            ctx.drawImage(temp['image'], temp['x'], temp['y']);
         }
     }
-});
-C['Brush']['support'] = !!win['HTMLCanvasElement'];
+}, !!win['HTMLCanvasElement']);
 /* Test: "../../spec/_src/src/Datetime/test.js" */
 C['Datetime'] = function(str) {
-    if (!str || isNumber(str)) {
-        return new Date(str);
+    if (str && !isNumber(str)) {
+        str = str.split(/[T:\-\+\/\s]/);
+
+        if (str.length == 3) {
+            str.push(0, 0, 0);
+        }
+
+        return new Date(
+            str[0] * 1,
+            str[1] - 1,
+            str[2] * 1,
+            str[3] * 1,
+            str[4] * 1,
+            str[5] * 1
+        );
     }
 
-    str = str.split(/[T:\-\+\/\s]/);
-
-    if (str.length == 3) {
-        str.push(0, 0, 0);
-    }
-
-    return new Date(
-        str[0] * 1,
-        str[1] - 1,
-        str[2] * 1,
-        str[3] * 1,
-        str[4] * 1,
-        str[5] * 1
-    );
+    return new Date(str);
 };
 /* Test: "../../spec/_src/src/RollOver/test.js" */
-C['Rollover'] = klassExtendBase(function(config) {
+C['Rollover'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
     var cls = config['toggleClass'] || EMPTY,
         over = config['over'] || nullFunction,
         out = config['out'] || nullFunction;
 
-    this._els = config['els'];
+    mine._els = config['els'];
 
-    this._switchover = function() {
-        addClass(this, cls);
+    mine._switchover = function() {
+        addClass(mine, cls);
         over();
     }
-    this._switchout = function() {
-        removeClass(this, cls);
+    mine._switchout = function() {
+        removeClass(mine, cls);
         out();
     }
     if (!config['manual']) {
-        this['attach']();
+        mine['attach']();
     }
 }, {
     'disposeInternal': function() {
@@ -1896,13 +1932,16 @@ C['Rollover'] = klassExtendBase(function(config) {
     'detach': function() {
         this._e(off);
     },
-    _e: function(onoff) {
-        var i = this._els.length;
+    _e: function(onoff /* varless */, mine, i) {
+        mine = this;
+
+        /* var i = mine._els.length; */
+        i = mine._els.length;
 
         for (; i--;) {
-            onoff(this._els[i], ev['SWITCHOVER'], this._switchover);
-            onoff(this._els[i], ev['SWITCHOUT'], this._switchout);
-            onoff(this._els[i], ev['MOUSEOUT'], this._switchout);
+            onoff(mine._els[i], ev['SWITCHOVER'], mine._switchover);
+            onoff(mine._els[i], ev['SWITCHOUT'], mine._switchout);
+            onoff(mine._els[i], ev['MOUSEOUT'], mine._switchout);
         }
     }
 });
@@ -1914,15 +1953,16 @@ C['DataStore'] = klassExtendBase(function() {
         this._data[key] = val;
     },
     'get': function(key) {
-        if (key) {
-            return this._data[key];
-        }
-
         var ret = {},
+            data = this._data,
             i;
 
-        for (i in this._data) {
-            ret[i] = this._data[i];
+        if (key) {
+            return data[key];
+        }
+
+        for (i in data) {
+            ret[i] = data[i];
         }
 
         return ret;
@@ -1944,44 +1984,51 @@ WebStorage = klassExtendBase(function(config) {
     'set': function(key, val) {
         this._storage.setItem(this._n + key, jsonStringify(val));
     },
-    'get': function(key) {
+    'get': function(key /* varless */, mine) {
+        mine = this;
+
         var ret = {},
-            i;
+            i,
+            storage = mine._storage;
 
         if (key) {
-            return jsonParse(this._storage.getItem(this._n + key));
+            return jsonParse(storage.getItem(mine._n + key));
         }
 
-        for (i in this._storage) {
-            if (!this._n) {
-                ret[i] = jsonParse(this._storage[i]);
+        for (i in storage) {
+            if (!mine._n) {
+                ret[i] = jsonParse(storage[i]);
             }
             else {
-                key = i.split(this._n)[1];
+                key = i.split(mine._n)[1];
                 if (key) {
-                    ret[key] = jsonParse(this._storage[i]);
+                    ret[key] = jsonParse(storage[i]);
                 }
             }
         }
 
         return ret;
     },
-    'remove': function(key) {
-        key = this._n + key;
+    'remove': function(key /* varless */, mine) {
+        mine = this;
 
-        if (isDefined(this._storage.getItem(key))) {
-            this._storage.removeItem(key);
+        key = mine._n + key;
+
+        if (isDefined(mine._storage.getItem(key))) {
+            mine._storage.removeItem(key);
         }
     },
-    'reset': function() {
-        if (!this._n) {
-            return this._storage.clear();
+    'reset': function(/* varless */ mine, i) {
+        mine = this;
+
+        if (!mine._n) {
+            return mine._storage.clear();
         }
 
-        var i;
+        /* var i; */
 
-        for (i in this._storage) {
-            this.remove(i);
+        for (i in mine._storage) {
+            mine.remove(i);
         }
     }
 });
@@ -2006,37 +2053,42 @@ C['Deferred'] = klassExtendBase(function() {
     'isResolve': function() {
         return !this._queue;
     },
-    'resolve': function(data) {
-        if (this['isResolve']()) {
-            return this;
+    'resolve': function(data /* varless */, mine) {
+        mine = this;
+
+        if (mine['isResolve']()) {
+            return mine;
         }
 
-        var arr = this._queue,
+        var arr = mine._queue,
             len = arr.length,
             i = 0;
 
-        this._queue = NULL;
-        this._data = data;
+        mine._queue = NULL;
+        mine._data = data;
         for (; i < len; ++i) {
             arr[i](data);
         }
 
-        return this;
+        return mine;
     },
-    'done': function(func) {
-        this._queue ? this._queue.push(func) : func(this._data);
+    'done': function(func /* varless */, mine) {
+        mine = this;
+        mine._queue ? mine._queue.push(func) : func(mine._data);
 
-        return this;
+        return mine;
     }
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-C['DragFlick'] = klassExtendBase(function(config) {
-    this._contractid = [];
-    this._config = config;
+C['DragFlick'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._contractid = [];
+    mine._config = config;
 
     config = config || NULLOBJ;
     if (!config['manual']) {
-        this['attach']();
+        mine['attach']();
     }
 }, {
     _t: function(e) {
@@ -2048,9 +2100,9 @@ C['DragFlick'] = klassExtendBase(function(config) {
             startY,
             dragflg = FALSE;
 
-        this._contractid.push(
-            this['contract'](vars['el'], ev['SWITCHDOWN'], start),
-            this['contract'](win, ev['SWITCHUP'], end)
+        mine._contractid.push(
+            mine['contract'](vars['el'], ev['SWITCHDOWN'], start),
+            mine['contract'](win, ev['SWITCHUP'], end)
         );
 
         function start(e) {
@@ -2176,37 +2228,37 @@ C['DragFlick'] = klassExtendBase(function(config) {
         });
 
         function eventProxy(el, ev, callback) {
-            var handler = function(e) {
-                    var changed = mine._t(e);
-                    callback(changed);
-                };
-
             mine._contractid.push(
                 mine['contract'](el, ev, handler)
             );
+
+            function handler(e) {
+                callback(mine._t(e));
+            }
         }
     },
-    'detach': function() {
-        var i = this._contractid.length;
+    'detach': function(/* varless */ mine) {
+        mine = this;
+
+        var ary = mine._contractid,
+            i = ary.length;
 
         for (; i--;) {
-            this['uncontract'](this._contractid[i]);
+            mine['uncontract'](ary[i]);
         }
 
-        this._contractid = [];
+        mine._contractid = [];
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface/test.js" */
 C['ExternalInterface'] = function(config) {
     config = config || NULLOBJ;
 
-    var ext = ExternalIOS;
-
     if (config['android']) {
-        ext = ExternalAndroid;
+        return new ExternalAndroid(config);
     }
 
-    return new ext(config);
+    return new ExternalIOS();
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
 ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
@@ -2217,8 +2269,9 @@ ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
     'call': function(conf) {
         this._config['android'][conf['mode']](this['makeHash'](conf));
     },
-    'addCallback': function(name, func) {
-        var mine = this;
+    'addCallback': function(name, func /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
 
         mine._config['externalObj'][name] = function(vars) {
             func(mine['parseHash'](vars)['vars']);
@@ -2242,8 +2295,10 @@ ExternalIOS = klassExtend(C['HashQuery'], function() {
     'call': function(conf) {
         this['setHash'](conf);
     },
-    'addCallback': function(name, func) {
-        var mine = this;
+    'addCallback': function(name, func /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
+
         mine._ios[name] = function(e) {
             var hash = mine['getHash']();
 
@@ -2275,25 +2330,25 @@ C['Facebook'] = klassExtendBase(UNDEFINED,
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
-C['FPS'] = klassExtendBase(function(config) {
-    this._criterion =
-    this._surver = config['criterion'];
-    this._msecFrame = this._getFrame(this._criterion);
-    this._enterframe = config['enterframe'];
-    // this._prevtime =
-    // this._nowtime =
-    // this._loopid = 0;
+C['FPS'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._criterion =
+    mine._surver = config['criterion'];
+    mine._msecFrame = mine._getFrame(mine._criterion);
+    mine._enterframe = config['enterframe'];
+    // mine._prevtime =
+    // mine._nowtime =
+    // mine._loopid = 0;
 
     if (!config['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
     _prevtime: 0,
     _nowtime: 0,
     _loopid: 0,
-    'disposeInternal': function() {
-        this['stop']();
-    },
+    'disposeInternal': this_stop,
     'getCriterion': function() {
         return this._criterion;
     },
@@ -2303,20 +2358,24 @@ C['FPS'] = klassExtendBase(function(config) {
     'getFrameTime': function() {
         return this._msecFrame;
     },
-    'enter': function() {
-        this._enterframe({
-            'criterion': this._criterion,
-            'surver': this._surver
+    'enter': function(/* varless */ mine) {
+        mine = this;
+
+        mine._enterframe({
+            'criterion': mine._criterion,
+            'surver': mine._surver
         });
     },
-    'start': function() {
-        this._prevtime = dateNow();
-        this._loopid = setInterval(this._loop, this._msecFrame, this);
+    'start': function(/* varless */ mine) {
+        mine = this;
+
+        mine._prevtime = dateNow();
+        mine._loopid = setInterval(mine._loop, mine._msecFrame, mine);
     },
-    _loop: function(mine) {
-        mine._nowtime = dateNow();
-        mine._surver = mine._getFrame(mine._nowtime - mine._prevtime);
-        mine._prevtime = mine._nowtime;
+    _loop: function(mine /* varless */, nowtime) {
+        nowtime = mine._nowtime = dateNow();
+        mine._surver = mine._getFrame(nowtime - mine._prevtime);
+        mine._prevtime = nowtime;
 
         mine['enter']();
     },
@@ -2328,49 +2387,54 @@ C['FPS'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-C['ImgLoad'] = klassExtendBase(function(config) {
-    this._srcs = config['srcs'];
-    this._srccount = this._srcs.length;
-    this._loadedsrcs = [];
-    this._contractid = [];
-    this._onload = config['onload'] || nullFunction;
-    this._onprogress = config['onprogress'] || nullFunction;
-    // this._loadcount = 0;
-    // this._progress = 0;
+C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._srcs = config['srcs'];
+    mine._srccount = mine._srcs.length;
+    mine._loadedsrcs = [];
+    mine._contractid = [];
+    mine._onload = config['onload'] || nullFunction;
+    mine._onprogress = config['onprogress'] || nullFunction;
+    // mine._loadcount = 0;
+    // mine._progress = 0;
 
     if (!config['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
     _loadcount: 0,
     _progress: 0,
-    _c: function() {
-        this._loadcount++;
+    _c: function(/* varless */ mine) {
+        mine = this;
 
-        this._progress = this._loadcount / this._srccount;
-        this._onprogress(this._progress);
+        var i,
+            loadcount = ++mine._loadcount;
 
-        if (this._loadcount >= this._srccount) {
-            var i = this._contractid.length;
+        mine._progress = loadcount / mine._srccount;
+        mine._onprogress(mine._progress);
+
+        if (loadcount >= mine._srccount) {
+            i = mine._contractid.length;
 
             for (; i--;) {
-                this['uncontract'](this._contractid[i]);
+                mine['uncontract'](mine._contractid[i]);
             }
-            this._contractid = [];
+            mine._contractid = [];
 
-            this._onload(this._loadedsrcs);
+            mine._onload(mine._loadedsrcs);
         }
     },
     'start': function() {
-        if (this.started) {
-            return;
-        }
-
-        this.started = TRUE;
-
         var mine = this,
             img,
             i = mine._srccount;
+
+        if (mine.started) {
+            return;
+        }
+
+        mine.started = TRUE;
 
         for (; i--;) {
             img = create('img');
@@ -2394,15 +2458,19 @@ C['WindowLoad'] = klassExtendBase(function(config) {
         this._onload(config['onload']);
     }
 }, {
-    _onload: function(func) {
-        var mine = this,
-            disposeid,
-            loaded = function() {
-                mine['uncontract'](disposeid);
-                func();
-            };
+    _onload: function(func /* varless */, mine, disposeid, loaded) {
+        // var mine = this,
+        //     disposeid,
+        //     loaded = function() {
+        //         mine['uncontract'](disposeid);
+        //         func();
+        //     };
+        mine = this;
 
-        disposeid = mine['contract'](win, ev['LOAD'], loaded);
+        disposeid = mine['contract'](win, ev['LOAD'], function() {
+            mine['uncontract'](disposeid);
+            func();
+        });
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
@@ -2422,12 +2490,14 @@ mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
     'isFBAPP': function(ua) {
         return checkUserAgent(/FBAN/, ua);
     },
-    'isMobile': function() {
+    'isMobile': function(/* varless */ mine) {
+        mine = this;
+
         return (
-            this['isAndroid']() ||
-            this['isIOS']() ||
-            this['isWindows']() ||
-            this['isFBAPP']()
+            mine['isAndroid']() ||
+            mine['isIOS']() ||
+            mine['isWindows']() ||
+            mine['isFBAPP']()
         );
     },
     'hideAddress': function() {
@@ -2505,172 +2575,196 @@ pc = C['PC'] = klassExtendBase(UNDEFINED, {
 C['pc'] = new pc();
 }());
 /* Test: "../../spec/_src/src/Orientation/test.js" */
-C['Orientation'] = klassExtendBase(function(config) {
-    this._config = config;
+C['Orientation'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
 
-    this._contractid = [];
+    mine._config = config;
 
-    this._portrait = {
+    mine._contractid = [];
+
+    mine._portrait = {
         'portrait': TRUE,
         'landscape': FALSE
     };
-    this._landscape = {
+    mine._landscape = {
         'portrait': FALSE,
         'landscape': TRUE
     };
 
-    this['attach']();
+    mine['attach']();
 }, {
-    'get': function() {
+    'get': function(/* varless */ mine) {
+        mine = this;
+
         if (isNumber(win.orientation)) {
             if (Math.abs(win.orientation) != 90) {
-                return this._portrait;
+                return mine._portrait;
             }
 
-            return this._landscape;
+            return mine._landscape;
         }
 
         if (
             win.innerWidth < win.innerHeight
         ) {
-            return this._portrait;
+            return mine._portrait;
         }
 
-        return this._landscape;
+        return mine._landscape;
     },
-    'fire': function() {
+    'fire': function(/* varless */ mine) {
+        mine = this;
+
         if (
-            this['get']()['portrait']
+            mine['get']()['portrait']
         ) {
-            return this._config['portrait']();
+            return mine._config['portrait']();
         }
-        this._config['landscape']();
+        mine._config['landscape']();
     },
-    'attach': function(vars) {
-        var proxyed = proxy(this, this['fire']);
-        this._contractid.push(
-            this['contract'](win, ev['LOAD'], proxyed),
-            this['contract'](win, ev_orientationchange, proxyed),
-            this['contract'](win, ev['RESIZE'], proxyed)
+    'attach': function(vars /* varless */, mine) {
+        mine = this;
+
+        var proxyed = proxy(mine, mine['fire']);
+        mine._contractid.push(
+            mine['contract'](win, ev['LOAD'], proxyed),
+            mine['contract'](win, ev_orientationchange, proxyed),
+            mine['contract'](win, ev['RESIZE'], proxyed)
         );
     },
-    'detach': function() {
-        var i = this._contractid.length;
+    'detach': function(/* varless */ mine) {
+        mine = this;
+
+        var i = mine._contractid.length;
 
         for (; i--;) {
-            this['uncontract'](this._contractid[i]);
+            mine['uncontract'](mine._contractid[i]);
         }
 
-        this._contractid = [];
+        mine._contractid = [];
     }
-});
-C['Orientation']['support'] = 'onorientationchange' in win;
+}, 'onorientationchange' in win);
 /* Test: "../../spec/_src/src/Modal/test.js" */
-C['Modal'] = klassExtendBase(function(config) {
+C['Modal'] = klassExtendBase(function(config /* varless */, mine, commoncss) {
+    mine = this;
     config = config || NULLOBJ;
 
-    // this._html = config['html'];
-    // this._bgClose = config['bgClose'];
-    // this._closeSelector = config['closeSelector'];
-    this._config = config;
+    // mine._html = config['html'];
+    // mine._bgClose = config['bgClose'];
+    // mine._closeSelector = config['closeSelector'];
+    mine._config = config;
 
-    var commoncss = {
+    /* var commoncss = { */
+    commoncss = {
         'display': 'none',
         'position': 'absolute'
     };
 
-    this._scroll = new C['Scroll']();
+    mine._scroll = new C['Scroll']();
 
-    this._contractid = [];
+    mine._contractid = [];
 
-    this._bg = create('div', {
+    mine._bg = create('div', {
         'class': 'cir-modal-bg'
     });
-    css(this._bg, override({
+    css(mine._bg, override({
         'z-ndex': 9998,
         'top': 0,
         'left': 0,
         'width': '100%',
         'height': '300%'
     }, commoncss));
-    append(body, this._bg);
+    append(body, mine._bg);
 
-    this._inner = create('div', {
+    mine._inner = create('div', {
         'class': 'cir-modal-content'
     });
-    css(this._inner, override({
+    css(mine._inner, override({
         'z-index': 9999,
         'top': '50%',
         'left': '50%'
     }, commoncss));
-    append(body, this._inner);
+    append(body, mine._inner);
 
     if (!config['manual']) {
-        this['open']();
+        mine['open']();
     }
 }, {
-    _closeDetach: function() {
-        var i = this._contractid.length;
+    _closeDetach: function(/* varless */ mine) {
+        mine = this;
+
+        var i = mine._contractid.length;
 
         for (; i--;) {
-            this['uncontract'](this._contractid[i]);
+            mine['uncontract'](mine._contractid[i]);
         }
 
-        this._contractid = [];
+        mine._contractid = [];
     },
-    'disposeInternal': function() {
-        this['close']();
-        remove(this._bg);
-        remove(this._inner);
+    'disposeInternal': function(/* varless */ mine) {
+        mine = this;
+
+        mine['close']();
+        remove(mine._bg);
+        remove(mine._inner);
     },
-    'open': function(text) {
-        this._scroll['kill']();
-        css(this._bg, {
+    'open': function(text /* varless */, mine) {
+        mine = this;
+
+        mine._scroll['kill']();
+        css(mine._bg, {
             'top': body.scrollTop
         });
 
-        show(this._bg);
+        show(mine._bg);
 
-        this['inner'](text);
+        mine['inner'](text);
     },
-    'close': function() {
-        this._closeDetach();
+    'close': function(/* varless */ mine) {
+        mine = this;
 
-        html(this._inner, EMPTY);
-        hide(this._inner);
-        hide(this._bg);
+        mine._closeDetach();
 
-        this._scroll['revival']();
+        html(mine._inner, EMPTY);
+        hide(mine._inner);
+        hide(mine._bg);
+
+        mine._scroll['revival']();
     },
-    'inner': function(text) {
-        this._closeDetach();
+    'inner': function(text /* varless */, mine, computed, close) {
+        mine = this;
 
-        text = text || this._config['html'];
+        // var computed,
+        //     close;
 
-        html(this._inner, text);
-        show(this._inner);
+        mine._closeDetach();
 
-        var computed = computedStyle(this._inner);
+        text = text || mine._config['html'];
 
-        css(this._inner, {
+        html(mine._inner, text);
+        show(mine._inner);
+
+        computed = computedStyle(mine._inner);
+
+        css(mine._inner, {
             'margin-top':
             body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
-        if (this._config['bgClose']) {
-            this['contract'](this._bg, ev['CLICK'], proxy(this, this['close']));
+        if (mine._config['bgClose']) {
+            mine['contract'](mine._bg, ev['CLICK'], proxy(mine, mine['close']));
         }
 
-        if (this._config['closeSelector']) {
-            var close = $$child(this._config['closeSelector'], this._inner),
+        if (mine._config['closeSelector']) {
+            close = $$child(mine._config['closeSelector'], mine._inner),
                 i = close.length;
 
             for (; i--;) {
-                this._contractid.push(
-                    this['contract'](close[i],
+                mine._contractid.push(
+                    mine['contract'](close[i],
                     ev['CLICK'],
-                    proxy(this, this['close']))
+                    proxy(mine, mine['close']))
                 );
             }
         }
@@ -2686,9 +2780,11 @@ WindowAction = klassExtendBase(function(config) {
         this['attach']();
     /* } */
 }, {
-    'attach': function() {
-        this['detach']();
-        this._attachid = this['contract'](win, this._config['e'], this._config['callback']);
+    'attach': function(/* varless */ mine) {
+        mine = this;
+
+        mine['detach']();
+        mine._attachid = mine['contract'](win, mine._config['e'], mine._config['callback']);
     },
     'detach': function() {
         this['uncontract'](this._attachid);
@@ -2726,16 +2822,18 @@ var Shake,
     }
 /* } */
 
-C['DeviceShake'] = klassExtendBase(function(config) {
-    this._shaker = new Shake();
-    // this._limit = config['limit'];
-    // this._waittime = config['waittime'];
-    // this._direction = config['direction'];
-    // this._callback = config['callback'];
-    this._config = config;
+C['DeviceShake'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._shaker = new Shake();
+    // mine._limit = config['limit'];
+    // mine._waittime = config['waittime'];
+    // mine._direction = config['direction'];
+    // mine._callback = config['callback'];
+    mine._config = config;
 
     /* if (config['callback'] && config['direction']) { */
-        this['attach']();
+        mine['attach']();
     /* } */
 }, {
     convertName: {
@@ -2747,34 +2845,34 @@ C['DeviceShake'] = klassExtendBase(function(config) {
         var mine = this,
             base_e,
             shaked = FALSE,
-            direction = mine.convertName[mine._config['direction']],
-            wraphandle = function(e) {
-                e = convert(e);
-
-                if (!base_e) {
-                    base_e = e;
-                }
-
-                if (Math.abs(e[direction] - base_e[direction]) > mine._config['limit']) {
-                    shaked = TRUE;
-                    base_e = NULL;
-
-                    mine._config['callback'](e);
-
-                    setTimeout(function() {
-                        shaked = FALSE;
-                    }, mine._config['waittime']);
-                }
-            };
+            config = mine._config,
+            direction = mine.convertName[config['direction']];
 
         mine._shaker['attach'](wraphandle);
+
+        function wraphandle(e) {
+            e = convert(e);
+
+            if (!base_e) {
+                base_e = e;
+            }
+
+            if (Math.abs(e[direction] - base_e[direction]) > config['limit']) {
+                shaked = TRUE;
+                base_e = NULL;
+
+                config['callback'](e);
+
+                setTimeout(function() {
+                    shaked = FALSE;
+                }, config['waittime']);
+            }
+        }
     },
     'detach': function() {
         this._shaker['detach']();
     }
-});
-
-C['DeviceShake']['support'] = Shake ? TRUE : FALSE;
+}, Shake ? TRUE : FALSE);
 
 }());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
@@ -2786,13 +2884,14 @@ C['FontImg'] = klassExtendBase(function(config) {
 }, {
     'make': function(x) {
         var aryX = (EMPTY + x).split(EMPTY),
+            tagtemp = this._tag,
             tags = EMPTY,
             i = aryX.length;
 
         for (; i--;) {
-            tags = '<' + this._tag +
+            tags = '<' + tagtemp +
                 ' class="font_' + this._type + aryX[i] +
-                '"></' + this._tag + '>' + tags;
+                '"></' + tagtemp + '>' + tags;
         }
 
         return tags;
@@ -2802,29 +2901,37 @@ C['FontImg'] = klassExtendBase(function(config) {
 C['Observer'] = klassExtendBase(function() {
     this._observed = {};
 }, {
-    'on': function(key, func) {
-        if (!this._observed[key]) {
-            this._observed[key] = [];
+    'on': function(key, func /* varless */, mine, observed) {
+        mine = this;
+        observed = mine._observed;
+
+        if (!observed[key]) {
+            observed[key] = [];
         }
 
-        this._observed[key].push(func);
+        observed[key].push(func);
     },
-    'one': function(key, func) {
-        var mine = this,
-            wrapfunc = function(vars) {
-                func(vars);
-                mine['off'](key, wrapfunc);
-            };
+    'one': function(key, func /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
 
         mine['on'](key, wrapfunc);
-    },
-    'off': function(key, func) {
-        if (!func) {
-            return delete this._observed[key];
-        }
 
-        var target = this._observed[key],
+        function wrapfunc(vars) {
+            func(vars);
+            mine['off'](key, wrapfunc);
+        }
+    },
+    'off': function(key, func /* varless */, mine) {
+        mine = this;
+
+        var observed = mine._observed,
+            target = observed[key],
             i;
+
+        if (!func) {
+            return delete observed[key];
+        }
 
         if (target) {
             for (i = target.length; i--;) {
@@ -2832,7 +2939,7 @@ C['Observer'] = klassExtendBase(function() {
                     target.splice(i, 1);
 
                     if (target.length == 0) {
-                        delete this._observed[key];
+                        delete observed[key];
                     }
 
                     return TRUE;
@@ -2858,16 +2965,18 @@ C['Observer'] = klassExtendBase(function() {
     }
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-C['PreRender'] = klassExtendBase(function(config) {
-    this._els = config['els'];
-    this._guesslimit = config['guesslimit'] || 30;
-    this._onrendered = config['onrendered'];
-    this._looptime = config['looptime'] || 100;
-    this._loopblur = this._looptime + (config['loopblur'] || 20);
-    /* this.loopid = this.prevtime = NULL; */
+C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._els = config['els'];
+    mine._guesslimit = config['guesslimit'] || 30;
+    mine._onrendered = config['onrendered'];
+    mine._looptime = config['looptime'] || 100;
+    mine._loopblur = mine._looptime + (config['loopblur'] || 20);
+    /* mine.loopid = mine.prevtime = NULL; */
 
     if (!config['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
     'disposeInternal': function() {
@@ -2881,7 +2990,7 @@ C['PreRender'] = klassExtendBase(function(config) {
         for (i = mine._els.length; i--;) {
             show(mine._els[i]);
         }
-        mine.loopid = setInterval(check, this._looptime, this);
+        mine.loopid = setInterval(check, mine._looptime, mine);
 
         function check() {
             var gettime = dateNow(),
@@ -2920,16 +3029,20 @@ C['Route'] = klassExtendBase(function(config) {
     'start': function() {
         this['fire'](this._config['target']);
     },
-    'fire': function(action) {
-        var i;
+    'fire': function(action /* varless */, mine) {
+        mine = this;
 
-        if (this._config['noregex'] && this._config['action'][action]) {
-            return this._config['action'][action](action);
+        var i,
+            config = mine._config,
+            config_action = config['action'];
+
+        if (config['noregex'] && config_action[action]) {
+            return config_action[action](action);
         }
 
-        for (i in this._config['action']) {
+        for (i in config_action) {
             if (action.match(i)) {
-                this._config['action'][i](i);
+                config_action[i](i);
             }
         }
     }
@@ -2952,13 +3065,12 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
         }
 
         function request(i) {
-            var callback = varary[i]['callback'],
-                check = function(e) {
-                    callback(e);
-                    countdown();
-                };
+            var callback = varary[i]['callback'];
 
-            varary[i]['callback'] = check;
+            varary[i]['callback'] = function(e) {
+                callback(e);
+                countdown();
+            };
 
             mine['request'](varary[i]);
         }
@@ -3066,10 +3178,12 @@ C['Surrogate'] = klassExtendBase(function(config) {
     'disposeInternal': function() {
         this['clear']();
     },
-    'request': function(arg) {
-        this._args = arg;
-        this['clear']();
-        this._waitid = setTimeout(this['flush'], this._delay, this);
+    'request': function(arg /* varless */, mine) {
+        mine = this;
+
+        mine._args = arg;
+        mine['clear']();
+        mine._waitid = setTimeout(mine['flush'], mine._delay, mine);
     },
     'flush': function(mine) {
         mine = mine || this;
@@ -3091,8 +3205,9 @@ C['Throttle'] = klassExtendBase(function(config) {
     'disposeInternal': function() {
         this['unlock']();
     },
-    'request': function(vars) {
-        var mine = this;
+    'request': function(vars /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
 
         if (mine._locked) {
             mine._args = vars;
@@ -3291,43 +3406,49 @@ C['XML'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Model/test.js" */
-C['Model'] = klassExtendBase(function(config) {
+C['Model'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
     config = config || NULLOBJ;
 
     var i,
-        defaults = config['defaults'] || this['defaults'] || {},
-        events = config['events'] || this['events'];
+        defaults = config['defaults'] || mine['defaults'] || {},
+        events = config['events'] || mine['events'];
 
-    this._validate = config['validate'] || this['validate'] || {};
-    this._store = config['store'] || this['store'] || new C['DataStore']();
-    this._observer = new C['Observer']();
+    mine._validate = config['validate'] || mine['validate'] || {};
+    mine._store = config['store'] || mine['store'] || new C['DataStore']();
+    mine._observer = new C['Observer']();
 
     for (i in defaults) {
-        this['set'](i, defaults[i]);
+        mine['set'](i, defaults[i]);
     }
     for (i in events) {
-        this['on'](i, events[i]);
+        mine['on'](i, events[i]);
     }
 }, {
-    notice: function(eventname, key, val) {
-        this._observer['fire'](eventname, this._store['get']());
+    notice: function(eventname, key, val /* varless */, mine) {
+        mine = this;
+
+        mine._observer['fire'](eventname, mine._store['get']());
 
         if (key) {
-            this._observer['fire'](eventname + ':' + key, val);
+            mine._observer['fire'](eventname + ':' + key, val);
         }
     },
-    'set': function(key, val) {
+    'set': function(key, val /* varless */, mine) {
+        mine = this;
+
         if (
-            this._validate[key] &&
-            !this._validate[key](key, val)
+            mine._validate[key] &&
+            !mine._validate[key](key, val)
         ) {
-            return this.notice('fail', key, val);
+            return mine.notice('fail', key, val);
         }
 
-        this._prev = this._store['get']();
-        this._store['set'](key, val);
+        mine._prev = mine._store['get']();
+        mine._store['set'](key, val);
 
-        this.notice(ev['CHANGE'], key, val);
+        mine.notice(ev['CHANGE'], key, val);
     },
     'prev': function(key) {
         if (!key) {
@@ -3338,23 +3459,26 @@ C['Model'] = klassExtendBase(function(config) {
     'get': function(key) {
         return this._store['get'](key);
     },
-    'remove': function(key) {
-        if (key) {
-            var get = this._store['get'](key),
-                ret = this._store['remove'](key);
+    'remove': function(key /* varless */, mine) {
+        mine = this;
 
-            this.notice('remove', key, get);
+        if (key) {
+            var get = mine._store['get'](key),
+                ret = mine._store['remove'](key);
+
+            mine.notice('remove', key, get);
 
             return ret;
         }
     },
-    'reset': function() {
-        var ret = this._store['reset']();
+    'reset': function(/* varless */ ret) {
+        ret = this._store['reset']();
 
         this.notice('reset');
     },
-    'on': function(key, func) {
-        var proxyfunc = proxy(this, func);
+    'on': function(key, func /* varless */, proxyfunc) {
+        /* var proxyfunc = proxy(this, func); */
+        proxyfunc = proxy(this, func);
         this._observer['on'](key, proxyfunc);
 
         return proxyfunc;
@@ -3367,42 +3491,46 @@ C['Model'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/View/test.js" */
-C['View'] = klassExtendBase(function(config) {
-    var i;
+C['View'] = klassExtendBase(function(config /* varless */, mine, i) {
+    mine = this;
+
+    /* var i; */
 
     if (!config) {
-        config = owner(this, this, {});
+        config = owner(mine, mine, {});
     }
     else {
-        config = owner(this, config);
+        config = owner(mine, config);
     }
 
-    this['el'] = C['$'](config['el'] || this['el'] || create('div'));
+    mine['el'] = C['$'](config['el'] || mine['el'] || create('div'));
 
-    this['attach']();
+    mine['attach']();
     if (config['init']) {
-        this['init']();
+        mine['init']();
     }
 }, {
     'disposeInternal': function() {
         this._e('off');
     },
-    _e: function(methodname) {
-        var i,
-            j,
-            $el,
-            events = this['events'];
+    _e: function(methodname /* varless */, mine, i, j, $el, events) {
+        mine = this;
+
+        // var i,
+        //     j,
+        //     $el,
+            events = mine['events'];
 
         for (i in events) {
             if (i == 'me') {
-                $el = this['el'];
+                $el = mine['el'];
             }
             else {
-                $el = this['el'].find(i);
+                $el = mine['el'].find(i);
             }
 
             for (j in events[i]) {
-                $el[methodname](j, this[events[i][j]]);
+                $el[methodname](j, mine[events[i][j]]);
             }
         }
     },
@@ -3414,13 +3542,15 @@ C['View'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Validate/test.js" */
-C['Validate'] = klassExtendBase(function(config) {
+C['Validate'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
     config = config || {};
 
-    /* this._level = config['level'] || 'warn'; */
-    this._level = config['level'];
+    /* mine._level = config['level'] || 'warn'; */
+    mine._level = config['level'];
 
-    owner(this, this, config);
+    owner(mine, mine, config);
 }, {
     'displayError': function(key, text) {
         text = 'Validate Error:' + key + ' is ' + text + '.';
@@ -3492,9 +3622,10 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     'scrollY': function() {
         return (win.pageYOffset !== UNDEFINED) ? win.pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
     },
-    'smooth': function(target, callback) {
-        var mine = this,
-            max;
+    'smooth': function(target, callback /* varless */, mine, max) {
+        // var mine = this,
+        //     max;
+        mine = this;
 
         callback = callback || nullFunction;
 
@@ -3511,8 +3642,10 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
             }
 
             mine._before = mine.scrollY();
-            mine._smoothid = setInterval(function() {
-                var position = mine.scrollY();
+            mine._smoothid = setInterval(function(/* varless */ position) {
+                /* var position = mine.scrollY(); */
+                position = mine.scrollY();
+
                 position = (target - position) * 0.3 + position;
 
                 if (Math.abs(target - position) < 1 || mine._before == position) {
@@ -3527,21 +3660,25 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
             }, 50);
         }
     },
-    'kill': function() {
-        if (!this._killscrollid) {
+    'kill': function(/* varless */ mine) {
+        mine = this;
+
+        if (!mine._killscrollid) {
             css(body, {
                 'overflow': 'hidden'
             });
-            this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
+            mine._killscrollid = mine['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
-    'revival': function() {
-        if (this._killscrollid) {
+    'revival': function(/* varless */ mine) {
+        mine = this;
+
+        if (mine._killscrollid) {
             css(body, {
                 'overflow': 'auto'
             });
-            this['uncontract'](this._killscrollid);
-            delete this._killscrollid;
+            mine['uncontract'](mine._killscrollid);
+            delete mine._killscrollid;
         }
     }
 });

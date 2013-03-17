@@ -7,8 +7,9 @@ ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
     'call': function(conf) {
         this._config['android'][conf['mode']](this['makeHash'](conf));
     },
-    'addCallback': function(name, func) {
-        var mine = this;
+    'addCallback': function(name, func /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
 
         mine._config['externalObj'][name] = function(vars) {
             func(mine['parseHash'](vars)['vars']);

@@ -7,13 +7,14 @@ C['FontImg'] = klassExtendBase(function(config) {
 }, {
     'make': function(x) {
         var aryX = (EMPTY + x).split(EMPTY),
+            tagtemp = this._tag,
             tags = EMPTY,
             i = aryX.length;
 
         for (; i--;) {
-            tags = '<' + this._tag +
+            tags = '<' + tagtemp +
                 ' class="font_' + this._type + aryX[i] +
-                '"></' + this._tag + '>' + tags;
+                '"></' + tagtemp + '>' + tags;
         }
 
         return tags;

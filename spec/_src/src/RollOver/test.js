@@ -4,7 +4,7 @@ describe('Rolloverは', function() {
 
     beforeEach(function() {
         // init
-        rollover = new C.RollOver({
+        rollover = new C.Rollover({
             els: C.dom.$$('body'),
             toggleClass: '',
             over: function() {},
@@ -17,7 +17,7 @@ describe('Rolloverは', function() {
     });
 
     it('タッチデバイス対応のロールオーバ処理を行う', function() {
-        rollover = new C.RollOver({
+        rollover = new C.Rollover({
             els: C.dom.$$('body'),
             toggleClass: '',
             over: function() {},

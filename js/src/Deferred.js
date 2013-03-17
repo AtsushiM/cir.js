@@ -5,26 +5,29 @@ C['Deferred'] = klassExtendBase(function() {
     'isResolve': function() {
         return !this._queue;
     },
-    'resolve': function(data) {
-        if (this['isResolve']()) {
-            return this;
+    'resolve': function(data /* varless */, mine) {
+        mine = this;
+
+        if (mine['isResolve']()) {
+            return mine;
         }
 
-        var arr = this._queue,
+        var arr = mine._queue,
             len = arr.length,
             i = 0;
 
-        this._queue = NULL;
-        this._data = data;
+        mine._queue = NULL;
+        mine._data = data;
         for (; i < len; ++i) {
             arr[i](data);
         }
 
-        return this;
+        return mine;
     },
-    'done': function(func) {
-        this._queue ? this._queue.push(func) : func(this._data);
+    'done': function(func /* varless */, mine) {
+        mine = this;
+        mine._queue ? mine._queue.push(func) : func(mine._data);
 
-        return this;
+        return mine;
     }
 });

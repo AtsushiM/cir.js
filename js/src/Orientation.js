@@ -1,61 +1,70 @@
 /* Test: "../../spec/_src/src/Orientation/test.js" */
-C['Orientation'] = klassExtendBase(function(config) {
-    this._config = config;
+C['Orientation'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
 
-    this._contractid = [];
+    mine._config = config;
 
-    this._portrait = {
+    mine._contractid = [];
+
+    mine._portrait = {
         'portrait': TRUE,
         'landscape': FALSE
     };
-    this._landscape = {
+    mine._landscape = {
         'portrait': FALSE,
         'landscape': TRUE
     };
 
-    this['attach']();
+    mine['attach']();
 }, {
-    'get': function() {
+    'get': function(/* varless */ mine) {
+        mine = this;
+
         if (isNumber(win.orientation)) {
             if (Math.abs(win.orientation) != 90) {
-                return this._portrait;
+                return mine._portrait;
             }
 
-            return this._landscape;
+            return mine._landscape;
         }
 
         if (
             win.innerWidth < win.innerHeight
         ) {
-            return this._portrait;
+            return mine._portrait;
         }
 
-        return this._landscape;
+        return mine._landscape;
     },
-    'fire': function() {
+    'fire': function(/* varless */ mine) {
+        mine = this;
+
         if (
-            this['get']()['portrait']
+            mine['get']()['portrait']
         ) {
-            return this._config['portrait']();
+            return mine._config['portrait']();
         }
-        this._config['landscape']();
+        mine._config['landscape']();
     },
-    'attach': function(vars) {
-        var proxyed = proxy(this, this['fire']);
-        this._contractid.push(
-            this['contract'](win, ev['LOAD'], proxyed),
-            this['contract'](win, ev_orientationchange, proxyed),
-            this['contract'](win, ev['RESIZE'], proxyed)
+    'attach': function(vars /* varless */, mine) {
+        mine = this;
+
+        var proxyed = proxy(mine, mine['fire']);
+        mine._contractid.push(
+            mine['contract'](win, ev['LOAD'], proxyed),
+            mine['contract'](win, ev_orientationchange, proxyed),
+            mine['contract'](win, ev['RESIZE'], proxyed)
         );
     },
-    'detach': function() {
-        var i = this._contractid.length;
+    'detach': function(/* varless */ mine) {
+        mine = this;
+
+        var i = mine._contractid.length;
 
         for (; i--;) {
-            this['uncontract'](this._contractid[i]);
+            mine['uncontract'](mine._contractid[i]);
         }
 
-        this._contractid = [];
+        mine._contractid = [];
     }
-});
-C['Orientation']['support'] = 'onorientationchange' in win;
+}, 'onorientationchange' in win);

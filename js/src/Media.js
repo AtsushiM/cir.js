@@ -29,17 +29,17 @@ Media = klassExtendBase(function(config) {
                 mine['play']();
             };
 
-            autoplayid = this['contract'](media, ev_canplay, autoplay);
+            autoplayid = mine['contract'](media, ev_canplay, autoplay);
         }
         if (loop) {
-            this['loop'](TRUE);
+            mine['loop'](TRUE);
         }
 
         if (config['oncanplay']) {
-            this['contract'](media, ev_canplay, config['oncanplay']);
+            mine['contract'](media, ev_canplay, config['oncanplay']);
         }
         if (config['onended']) {
-            this['contract'](media, ev_ended, config['onended']);
+            mine['contract'](media, ev_ended, config['onended']);
         }
 
         append(_parent, media);
@@ -60,8 +60,10 @@ Media = klassExtendBase(function(config) {
     'setCurrent': function(num) {
         this._el.currentTime = num;
     },
-    'loop': function(bool) {
-        var mine = this;
+    'loop': function(bool /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
+
         if (mine.loopid) {
             mine['uncontract'](mine.loopid);
             delete mine.loopid;

@@ -12,8 +12,10 @@ ExternalIOS = klassExtend(C['HashQuery'], function() {
     'call': function(conf) {
         this['setHash'](conf);
     },
-    'addCallback': function(name, func) {
-        var mine = this;
+    'addCallback': function(name, func /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
+
         mine._ios[name] = function(e) {
             var hash = mine['getHash']();
 

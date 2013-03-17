@@ -1,21 +1,23 @@
 /* Test: "../../spec/_src/src/RollOver/test.js" */
-C['Rollover'] = klassExtendBase(function(config) {
+C['Rollover'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
     var cls = config['toggleClass'] || EMPTY,
         over = config['over'] || nullFunction,
         out = config['out'] || nullFunction;
 
-    this._els = config['els'];
+    mine._els = config['els'];
 
-    this._switchover = function() {
-        addClass(this, cls);
+    mine._switchover = function() {
+        addClass(mine, cls);
         over();
     }
-    this._switchout = function() {
-        removeClass(this, cls);
+    mine._switchout = function() {
+        removeClass(mine, cls);
         out();
     }
     if (!config['manual']) {
-        this['attach']();
+        mine['attach']();
     }
 }, {
     'disposeInternal': function() {
@@ -27,13 +29,16 @@ C['Rollover'] = klassExtendBase(function(config) {
     'detach': function() {
         this._e(off);
     },
-    _e: function(onoff) {
-        var i = this._els.length;
+    _e: function(onoff /* varless */, mine, i) {
+        mine = this;
+
+        /* var i = mine._els.length; */
+        i = mine._els.length;
 
         for (; i--;) {
-            onoff(this._els[i], ev['SWITCHOVER'], this._switchover);
-            onoff(this._els[i], ev['SWITCHOUT'], this._switchout);
-            onoff(this._els[i], ev['MOUSEOUT'], this._switchout);
+            onoff(mine._els[i], ev['SWITCHOVER'], mine._switchover);
+            onoff(mine._els[i], ev['SWITCHOUT'], mine._switchout);
+            onoff(mine._els[i], ev['MOUSEOUT'], mine._switchout);
         }
     }
 });

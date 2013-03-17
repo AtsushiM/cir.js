@@ -1,23 +1,23 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
-C['FPS'] = klassExtendBase(function(config) {
-    this._criterion =
-    this._surver = config['criterion'];
-    this._msecFrame = this._getFrame(this._criterion);
-    this._enterframe = config['enterframe'];
-    // this._prevtime =
-    // this._nowtime =
-    // this._loopid = 0;
+C['FPS'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._criterion =
+    mine._surver = config['criterion'];
+    mine._msecFrame = mine._getFrame(mine._criterion);
+    mine._enterframe = config['enterframe'];
+    // mine._prevtime =
+    // mine._nowtime =
+    // mine._loopid = 0;
 
     if (!config['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
     _prevtime: 0,
     _nowtime: 0,
     _loopid: 0,
-    'disposeInternal': function() {
-        this['stop']();
-    },
+    'disposeInternal': this_stop,
     'getCriterion': function() {
         return this._criterion;
     },
@@ -27,20 +27,24 @@ C['FPS'] = klassExtendBase(function(config) {
     'getFrameTime': function() {
         return this._msecFrame;
     },
-    'enter': function() {
-        this._enterframe({
-            'criterion': this._criterion,
-            'surver': this._surver
+    'enter': function(/* varless */ mine) {
+        mine = this;
+
+        mine._enterframe({
+            'criterion': mine._criterion,
+            'surver': mine._surver
         });
     },
-    'start': function() {
-        this._prevtime = dateNow();
-        this._loopid = setInterval(this._loop, this._msecFrame, this);
+    'start': function(/* varless */ mine) {
+        mine = this;
+
+        mine._prevtime = dateNow();
+        mine._loopid = setInterval(mine._loop, mine._msecFrame, mine);
     },
-    _loop: function(mine) {
-        mine._nowtime = dateNow();
-        mine._surver = mine._getFrame(mine._nowtime - mine._prevtime);
-        mine._prevtime = mine._nowtime;
+    _loop: function(mine /* varless */, nowtime) {
+        nowtime = mine._nowtime = dateNow();
+        mine._surver = mine._getFrame(nowtime - mine._prevtime);
+        mine._prevtime = nowtime;
 
         mine['enter']();
     },

@@ -16,13 +16,12 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
         }
 
         function request(i) {
-            var callback = varary[i]['callback'],
-                check = function(e) {
-                    callback(e);
-                    countdown();
-                };
+            var callback = varary[i]['callback'];
 
-            varary[i]['callback'] = check;
+            varary[i]['callback'] = function(e) {
+                callback(e);
+                countdown();
+            };
 
             mine['request'](varary[i]);
         }

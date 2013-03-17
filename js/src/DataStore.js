@@ -6,15 +6,16 @@ C['DataStore'] = klassExtendBase(function() {
         this._data[key] = val;
     },
     'get': function(key) {
-        if (key) {
-            return this._data[key];
-        }
-
         var ret = {},
+            data = this._data,
             i;
 
-        for (i in this._data) {
-            ret[i] = this._data[i];
+        if (key) {
+            return data[key];
+        }
+
+        for (i in data) {
+            ret[i] = data[i];
         }
 
         return ret;

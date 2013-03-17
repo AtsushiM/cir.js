@@ -1,12 +1,14 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop) {
+Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop, mine) {
     // var name,
     //     prop;
 
+    mine = this;
+
     option = option || NULLOBJ;
 
-    this._target = target;
-    this._property = [];
+    mine._target = target;
+    mine._property = [];
 
     for (name in property) {
         prop = property[name];
@@ -16,20 +18,18 @@ Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* va
         prop['prefix'] = prop['prefix'] || EMPTY;
         prop['suffix'] = prop['suffix'] || 'px';
 
-        this._property.push(prop);
+        mine._property.push(prop);
     }
 
-    this._duration = option['duration'] || Tweener['duration'];
-    this._ease = option['ease'] || this.__ease;
-    this._onComplete = option['onComplete'];
+    mine._duration = option['duration'] || Tweener['duration'];
+    mine._ease = option['ease'] || mine.__ease;
+    mine._onComplete = option['onComplete'];
 
     if (!option['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
-    'disposeInternal': function() {
-        this['stop']();
-    },
+    'disposeInternal': this_stop,
     // easeOutExpo
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
@@ -115,10 +115,11 @@ Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* va
             return;
         }
 
-        this['stop']();
+        mine['stop']();
     },
-    'start': function() {
-        var mine = this;
+    'start': function(/* varless */ mine) {
+        /* var mine = this; */
+        mine = this;
 
         mine.begin = dateNow();
 

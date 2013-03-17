@@ -5,18 +5,18 @@ C['Ajax'] = klassExtendBase(function(config) {
     }
 }, {
     'request': function(vars) {
-        if (vars.dataType == 'json') {
-            delete vars.dataType;
-
-            return this['json'](vars);
-        }
-
         var url = vars['url'],
             callback = vars['callback'] || nullFunction,
             error = vars['error'] || nullFunction,
             type = vars['type'] || 'GET',
             query = EMPTY,
             xhr = this._xhr = new XMLHttpRequest();
+
+        if (vars.dataType == 'json') {
+            delete vars.dataType;
+
+            return this['json'](vars);
+        }
 
         if (!vars['cash']) {
             if (!vars['query']) {

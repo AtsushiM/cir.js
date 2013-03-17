@@ -4,14 +4,18 @@ C['WindowLoad'] = klassExtendBase(function(config) {
         this._onload(config['onload']);
     }
 }, {
-    _onload: function(func) {
-        var mine = this,
-            disposeid,
-            loaded = function() {
-                mine['uncontract'](disposeid);
-                func();
-            };
+    _onload: function(func /* varless */, mine, disposeid, loaded) {
+        // var mine = this,
+        //     disposeid,
+        //     loaded = function() {
+        //         mine['uncontract'](disposeid);
+        //         func();
+        //     };
+        mine = this;
 
-        disposeid = mine['contract'](win, ev['LOAD'], loaded);
+        disposeid = mine['contract'](win, ev['LOAD'], function() {
+            mine['uncontract'](disposeid);
+            func();
+        });
     }
 });

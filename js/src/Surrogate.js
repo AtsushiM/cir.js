@@ -8,10 +8,12 @@ C['Surrogate'] = klassExtendBase(function(config) {
     'disposeInternal': function() {
         this['clear']();
     },
-    'request': function(arg) {
-        this._args = arg;
-        this['clear']();
-        this._waitid = setTimeout(this['flush'], this._delay, this);
+    'request': function(arg /* varless */, mine) {
+        mine = this;
+
+        mine._args = arg;
+        mine['clear']();
+        mine._waitid = setTimeout(mine['flush'], mine._delay, mine);
     },
     'flush': function(mine) {
         mine = mine || this;

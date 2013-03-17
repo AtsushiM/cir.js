@@ -18,16 +18,18 @@ var Shake,
     }
 /* } */
 
-C['DeviceShake'] = klassExtendBase(function(config) {
-    this._shaker = new Shake();
-    // this._limit = config['limit'];
-    // this._waittime = config['waittime'];
-    // this._direction = config['direction'];
-    // this._callback = config['callback'];
-    this._config = config;
+C['DeviceShake'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._shaker = new Shake();
+    // mine._limit = config['limit'];
+    // mine._waittime = config['waittime'];
+    // mine._direction = config['direction'];
+    // mine._callback = config['callback'];
+    mine._config = config;
 
     /* if (config['callback'] && config['direction']) { */
-        this['attach']();
+        mine['attach']();
     /* } */
 }, {
     convertName: {
@@ -39,33 +41,33 @@ C['DeviceShake'] = klassExtendBase(function(config) {
         var mine = this,
             base_e,
             shaked = FALSE,
-            direction = mine.convertName[mine._config['direction']],
-            wraphandle = function(e) {
-                e = convert(e);
-
-                if (!base_e) {
-                    base_e = e;
-                }
-
-                if (Math.abs(e[direction] - base_e[direction]) > mine._config['limit']) {
-                    shaked = TRUE;
-                    base_e = NULL;
-
-                    mine._config['callback'](e);
-
-                    setTimeout(function() {
-                        shaked = FALSE;
-                    }, mine._config['waittime']);
-                }
-            };
+            config = mine._config,
+            direction = mine.convertName[config['direction']];
 
         mine._shaker['attach'](wraphandle);
+
+        function wraphandle(e) {
+            e = convert(e);
+
+            if (!base_e) {
+                base_e = e;
+            }
+
+            if (Math.abs(e[direction] - base_e[direction]) > config['limit']) {
+                shaked = TRUE;
+                base_e = NULL;
+
+                config['callback'](e);
+
+                setTimeout(function() {
+                    shaked = FALSE;
+                }, config['waittime']);
+            }
+        }
     },
     'detach': function() {
         this._shaker['detach']();
     }
-});
-
-C['DeviceShake']['support'] = Shake ? TRUE : FALSE;
+}, Shake ? TRUE : FALSE);
 
 }());

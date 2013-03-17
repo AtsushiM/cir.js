@@ -10,16 +10,18 @@ var ret = checkCSSAnimTranCheck([
     event_key = ret.event_key,
     sheet = ret.sheet,
     Mine = C['Animation'] =
-    klassExtendBase(function(el, property, option) {
+    klassExtendBase(function(el, property, option /* varless */, mine) {
+
+    mine = this;
 
     option = option || NULLOBJ;
 
-    this._onComplete = option['onComplete'] || nullFunction;
+    mine._onComplete = option['onComplete'] || nullFunction;
 
-    this._el = el;
+    mine._el = el;
 
     Mine['id']++;
-    this._id = 'ciranim' + Mine['id'];
+    mine._id = 'ciranim' + Mine['id'];
 
     var duration = option['duration'] || Mine['duration'],
         // easeOutExpo
@@ -34,7 +36,7 @@ var ret = checkCSSAnimTranCheck([
         }
     }
 
-    this.property = prop;
+    mine.property = prop;
 
     prop = replaceAll(
         replaceAll(jsonStringify(prop), '"', EMPTY),
@@ -43,34 +45,38 @@ var ret = checkCSSAnimTranCheck([
     );
 
     sheet.insertRule(
-        '@' + css_prefix + 'keyframes ' + this._id + '{to' + prop + '}',
+        '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
         sheet.cssRules.length);
 
     if (!isArray(ease)) {
         ease = [ease];
     }
 
-    addCSSRule(this._id, css_prefix, duration, ease);
+    addCSSRule(mine._id, css_prefix, duration, ease);
 
     if (!option['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
     _off: function() {
-        off(this._el, event_key + 'End', this._end);
-        off(this._el, 'animationend', this._end);
+        var el = this._el,
+            end = this._end;
+
+        off(el, event_key + 'End', end);
+        off(el, 'animationend', end);
     },
-    'disposeInternal': function() {
-        this['stop']();
-    },
-    'start': function() {
-        var mine = this;
+    'disposeInternal': this_stop,
+    'start': function(/* varless */ mine, el) {
+        // var mine = this,
+        //     el = mine._el;
+        mine = this,
+        el = mine._el;
 
         mine._end = endaction;
-        on(mine._el, event_key + 'End', endaction);
-        on(mine._el, 'animationend', endaction);
+        on(el, event_key + 'End', endaction);
+        on(el, 'animationend', endaction);
 
-        addClass(mine._el, mine._id);
+        addClass(el, mine._id);
 
         function endaction(e) {
             var rule = sheet.cssRules,
@@ -89,9 +95,9 @@ var ret = checkCSSAnimTranCheck([
                         sheet.deleteRule(len);
                     }
                 }
-                removeClass(mine._el, mine._id);
+                removeClass(el, mine._id);
 
-                css(mine._el, mine.property);
+                css(el, mine.property);
             }
             mine._onComplete(e);
         }
@@ -104,7 +110,7 @@ var ret = checkCSSAnimTranCheck([
         css(this._el, stopobj);
         this._off();
     }
-});
+}, support);
 
 function addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
@@ -125,5 +131,4 @@ function addCSSRule(id, css_prefix, duration, eases) {
 
 Mine['id'] = 0;
 Mine['duration'] = 500;
-Mine['support'] = support;
 }());

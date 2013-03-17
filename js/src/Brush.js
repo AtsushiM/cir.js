@@ -1,9 +1,11 @@
 /* Test: "../../spec/_src/src/Brush/test.js" */
-C['Brush'] = klassExtendBase(function(config) {
-    this._canvas = config['canvas'];
-    this._ctx = this._canvas.getContext('2d');
+C['Brush'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
 
-    this['setSize'](config);
+    mine._canvas = config['canvas'];
+    mine._ctx = mine._canvas.getContext('2d');
+
+    mine['setSize'](config);
 }, {
     'setSize': function(vars) {
         if (vars['width']) {
@@ -48,28 +50,27 @@ C['Brush'] = klassExtendBase(function(config) {
                 count--;
 
                 if (count == 0) {
-                    onload();
+                    callback(ret);
                 }
             };
 
             ret[i] = mine['pigment'](pig);
             count++;
         }
-        function onload() {
-            callback(ret);
-        }
 
         return ret;
     },
     'draw': function(layer) {
-        var i = 0, len = layer.length, item;
+        var i = 0,
+            len = layer.length,
+            ctx = this._ctx,
+            temp = this._canvas;
 
-        this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        ctx.clearRect(0, 0, temp.width, temp.height);
 
         for (; i < len; i++) {
-            item = layer[i];
-            this._ctx.drawImage(item['image'], item['x'], item['y']);
+            temp = layer[i];
+            ctx.drawImage(temp['image'], temp['x'], temp['y']);
         }
     }
-});
-C['Brush']['support'] = !!win['HTMLCanvasElement'];
+}, !!win['HTMLCanvasElement']);

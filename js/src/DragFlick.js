@@ -1,11 +1,13 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-C['DragFlick'] = klassExtendBase(function(config) {
-    this._contractid = [];
-    this._config = config;
+C['DragFlick'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._contractid = [];
+    mine._config = config;
 
     config = config || NULLOBJ;
     if (!config['manual']) {
-        this['attach']();
+        mine['attach']();
     }
 }, {
     _t: function(e) {
@@ -17,9 +19,9 @@ C['DragFlick'] = klassExtendBase(function(config) {
             startY,
             dragflg = FALSE;
 
-        this._contractid.push(
-            this['contract'](vars['el'], ev['SWITCHDOWN'], start),
-            this['contract'](win, ev['SWITCHUP'], end)
+        mine._contractid.push(
+            mine['contract'](vars['el'], ev['SWITCHDOWN'], start),
+            mine['contract'](win, ev['SWITCHUP'], end)
         );
 
         function start(e) {
@@ -145,23 +147,25 @@ C['DragFlick'] = klassExtendBase(function(config) {
         });
 
         function eventProxy(el, ev, callback) {
-            var handler = function(e) {
-                    var changed = mine._t(e);
-                    callback(changed);
-                };
-
             mine._contractid.push(
                 mine['contract'](el, ev, handler)
             );
+
+            function handler(e) {
+                callback(mine._t(e));
+            }
         }
     },
-    'detach': function() {
-        var i = this._contractid.length;
+    'detach': function(/* varless */ mine) {
+        mine = this;
+
+        var ary = mine._contractid,
+            i = ary.length;
 
         for (; i--;) {
-            this['uncontract'](this._contractid[i]);
+            mine['uncontract'](ary[i]);
         }
 
-        this._contractid = [];
+        mine._contractid = [];
     }
 });

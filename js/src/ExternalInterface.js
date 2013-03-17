@@ -2,11 +2,9 @@
 C['ExternalInterface'] = function(config) {
     config = config || NULLOBJ;
 
-    var ext = ExternalIOS;
-
     if (config['android']) {
-        ext = ExternalAndroid;
+        return new ExternalAndroid(config);
     }
 
-    return new ext(config);
+    return new ExternalIOS();
 };

@@ -12,12 +12,14 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = C['Transition'] =
-    klassExtendBase(function(el, property, option) {
+    klassExtendBase(function(el, property, option /* varless */, mine) {
+
+    mine = this;
 
     option = option || NULLOBJ;
 
     Mine['id']++;
-    this._id = 'cirtrans' + Mine['id'];
+    mine._id = 'cirtrans' + Mine['id'];
 
     var transProp = [],
         animeProp = override({}, property),
@@ -34,21 +36,20 @@ Mine = C['Transition'] =
         transProp.push(i);
     }
 
-    addCSSRule(this._id, css_prefix, duration, ease, transProp);
+    addCSSRule(mine._id, css_prefix, duration, ease, transProp);
 
-    this._el = el;
-    this._property = property;
-    this._onComplete = option['onComplete'] || nullFunction;
+    mine._el = el;
+    mine._property = property;
+    mine._onComplete = option['onComplete'] || nullFunction;
 
     if (!option['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
-    'disposeInternal': function() {
-        this['stop']();
-    },
-    'start': function() {
-        var mine = this;
+    'disposeInternal': this_stop,
+    'start': function(/* varless */ mine) {
+        /* var mine = this; */
+        mine = this;
 
         mine._endfunc = function(e) {
             mine['stop']();
@@ -62,26 +63,28 @@ Mine = C['Transition'] =
         addClass(mine._el, mine._id);
         css(mine._el, mine._property);
     },
-    'stop': function() {
+    'stop': function(/* varless */ mine) {
+        mine = this;
+
         var rule = sheet.cssRules,
             len = rule.length,
             name;
 
-        off(this._el, event_key + 'End', this._endfunc);
-        off(this._el, 'transitionend', this._endfunc);
-        removeClass(this._el, this._id);
+        off(mine._el, event_key + 'End', mine._endfunc);
+        off(mine._el, 'transitionend', mine._endfunc);
+        removeClass(mine._el, mine._id);
 
         for (; len--;) {
             name = rule[len].name ||
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
-            if (name == this._id) {
+            if (name == mine._id) {
                 sheet.deleteRule(len);
                 break;
             }
         }
     }
-});
+}, support);
 
 function addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
@@ -102,6 +105,5 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 }
 
 Mine['id'] = 0;
-Mine['support'] = support;
 Mine['duration'] = 500;
 }());

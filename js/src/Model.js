@@ -1,41 +1,47 @@
 /* Test: "../../spec/_src/src/Model/test.js" */
-C['Model'] = klassExtendBase(function(config) {
+C['Model'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
     config = config || NULLOBJ;
 
     var i,
-        defaults = config['defaults'] || this['defaults'] || {},
-        events = config['events'] || this['events'];
+        defaults = config['defaults'] || mine['defaults'] || {},
+        events = config['events'] || mine['events'];
 
-    this._validate = config['validate'] || this['validate'] || {};
-    this._store = config['store'] || this['store'] || new C['DataStore']();
-    this._observer = new C['Observer']();
+    mine._validate = config['validate'] || mine['validate'] || {};
+    mine._store = config['store'] || mine['store'] || new C['DataStore']();
+    mine._observer = new C['Observer']();
 
     for (i in defaults) {
-        this['set'](i, defaults[i]);
+        mine['set'](i, defaults[i]);
     }
     for (i in events) {
-        this['on'](i, events[i]);
+        mine['on'](i, events[i]);
     }
 }, {
-    notice: function(eventname, key, val) {
-        this._observer['fire'](eventname, this._store['get']());
+    notice: function(eventname, key, val /* varless */, mine) {
+        mine = this;
+
+        mine._observer['fire'](eventname, mine._store['get']());
 
         if (key) {
-            this._observer['fire'](eventname + ':' + key, val);
+            mine._observer['fire'](eventname + ':' + key, val);
         }
     },
-    'set': function(key, val) {
+    'set': function(key, val /* varless */, mine) {
+        mine = this;
+
         if (
-            this._validate[key] &&
-            !this._validate[key](key, val)
+            mine._validate[key] &&
+            !mine._validate[key](key, val)
         ) {
-            return this.notice('fail', key, val);
+            return mine.notice('fail', key, val);
         }
 
-        this._prev = this._store['get']();
-        this._store['set'](key, val);
+        mine._prev = mine._store['get']();
+        mine._store['set'](key, val);
 
-        this.notice(ev['CHANGE'], key, val);
+        mine.notice(ev['CHANGE'], key, val);
     },
     'prev': function(key) {
         if (!key) {
@@ -46,23 +52,26 @@ C['Model'] = klassExtendBase(function(config) {
     'get': function(key) {
         return this._store['get'](key);
     },
-    'remove': function(key) {
-        if (key) {
-            var get = this._store['get'](key),
-                ret = this._store['remove'](key);
+    'remove': function(key /* varless */, mine) {
+        mine = this;
 
-            this.notice('remove', key, get);
+        if (key) {
+            var get = mine._store['get'](key),
+                ret = mine._store['remove'](key);
+
+            mine.notice('remove', key, get);
 
             return ret;
         }
     },
-    'reset': function() {
-        var ret = this._store['reset']();
+    'reset': function(/* varless */ ret) {
+        ret = this._store['reset']();
 
         this.notice('reset');
     },
-    'on': function(key, func) {
-        var proxyfunc = proxy(this, func);
+    'on': function(key, func /* varless */, proxyfunc) {
+        /* var proxyfunc = proxy(this, func); */
+        proxyfunc = proxy(this, func);
         this._observer['on'](key, proxyfunc);
 
         return proxyfunc;

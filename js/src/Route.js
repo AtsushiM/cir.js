@@ -12,16 +12,20 @@ C['Route'] = klassExtendBase(function(config) {
     'start': function() {
         this['fire'](this._config['target']);
     },
-    'fire': function(action) {
-        var i;
+    'fire': function(action /* varless */, mine) {
+        mine = this;
 
-        if (this._config['noregex'] && this._config['action'][action]) {
-            return this._config['action'][action](action);
+        var i,
+            config = mine._config,
+            config_action = config['action'];
+
+        if (config['noregex'] && config_action[action]) {
+            return config_action[action](action);
         }
 
-        for (i in this._config['action']) {
+        for (i in config_action) {
             if (action.match(i)) {
-                this._config['action'][i](i);
+                config_action[i](i);
             }
         }
     }

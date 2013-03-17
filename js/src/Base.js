@@ -3,46 +3,53 @@ C['Base'] = klassExtend(UNDEFINED, function() {
     this._disposestore = {};
 }, {
     _disposecountid: 0,
-    'dispose': function() {
-        var internal = ancestors(this, 'disposeInternal'),
+    'dispose': function(/* varless */ mine) {
+        mine = this;
+
+        var internal = ancestors(mine, 'disposeInternal'),
             i = 0,
-            len = internal.length;
+            temp = mine._disposestore;
 
-        for (; i < len; i++) {
-            internal[i].call(this);
+        for (; i < internal.length; i++) {
+            internal[i].call(mine);
         }
 
-        for (i in this._disposestore) {
-            off.apply(NULL, this._disposestore[i]);
+        for (i in temp) {
+            off.apply(NULL, temp[i]);
         }
 
-        for (i in this) {
-            if (this[i] && isFunction(this[i]['dispose'])) {
-                this[i]['dispose']();
+        for (i in mine) {
+            temp = mine[i];
+
+            if (temp && isFunction(temp['dispose'])) {
+                temp['dispose']();
             }
         }
 
-        this.__proto__ = NULL;
+        mine.__proto__ = NULL;
 
-        for (i in this) {
-            this[i] = NULL;
-            delete this[i];
+        for (i in mine) {
+            mine[i] = NULL;
+            delete mine[i];
         }
 
         return NULL;
     },
-    'contract': function(el, e, handler) {
-        on(el, e, handler);
-        this._disposecountid++;
-        this._disposestore[this._disposecountid] = [el, e, handler];
+    'contract': function(el, e, handler /* varless */, id) {
+        /* var id = ++this._disposecountid; */
+        id = ++this._disposecountid;
 
-        return this._disposecountid;
+        on(el, e, handler);
+        this._disposestore[id] = [el, e, handler];
+
+        return id;
     },
     'uncontract': function(id) {
         if (id) {
-            var arg = this._disposestore[id];
+            var temp = this._disposestore,
+                arg = temp[id];
 
-            delete this._disposestore[id];
+            delete temp[id];
 
             off(arg[0], arg[1], arg[2]);
         }

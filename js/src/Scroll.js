@@ -12,9 +12,10 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
     'scrollY': function() {
         return (win.pageYOffset !== UNDEFINED) ? win.pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
     },
-    'smooth': function(target, callback) {
-        var mine = this,
-            max;
+    'smooth': function(target, callback /* varless */, mine, max) {
+        // var mine = this,
+        //     max;
+        mine = this;
 
         callback = callback || nullFunction;
 
@@ -31,8 +32,10 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
             }
 
             mine._before = mine.scrollY();
-            mine._smoothid = setInterval(function() {
-                var position = mine.scrollY();
+            mine._smoothid = setInterval(function(/* varless */ position) {
+                /* var position = mine.scrollY(); */
+                position = mine.scrollY();
+
                 position = (target - position) * 0.3 + position;
 
                 if (Math.abs(target - position) < 1 || mine._before == position) {
@@ -47,21 +50,25 @@ C['Scroll'] = klassExtendBase(UNDEFINED, {
             }, 50);
         }
     },
-    'kill': function() {
-        if (!this._killscrollid) {
+    'kill': function(/* varless */ mine) {
+        mine = this;
+
+        if (!mine._killscrollid) {
             css(body, {
                 'overflow': 'hidden'
             });
-            this._killscrollid = this['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
+            mine._killscrollid = mine['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
-    'revival': function() {
-        if (this._killscrollid) {
+    'revival': function(/* varless */ mine) {
+        mine = this;
+
+        if (mine._killscrollid) {
             css(body, {
                 'overflow': 'auto'
             });
-            this['uncontract'](this._killscrollid);
-            delete this._killscrollid;
+            mine['uncontract'](mine._killscrollid);
+            delete mine._killscrollid;
         }
     }
 });

@@ -13,13 +13,15 @@ C['Handle'] = klassExtendBase(function(config) {
         this._e(off);
     },
     _e: function(onoff) {
-        var i;
+        var i,
+            config = this._config,
+            events = config['events'];
 
-        for (i in this._config['events']) {
+        for (i in events) {
             onoff(
-                this._config['el'],
+                config['el'],
                 i,
-                this._config['events'][i]
+                events[i]
             );
         }
     }

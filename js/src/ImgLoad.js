@@ -1,47 +1,52 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-C['ImgLoad'] = klassExtendBase(function(config) {
-    this._srcs = config['srcs'];
-    this._srccount = this._srcs.length;
-    this._loadedsrcs = [];
-    this._contractid = [];
-    this._onload = config['onload'] || nullFunction;
-    this._onprogress = config['onprogress'] || nullFunction;
-    // this._loadcount = 0;
-    // this._progress = 0;
+C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
+    mine = this;
+
+    mine._srcs = config['srcs'];
+    mine._srccount = mine._srcs.length;
+    mine._loadedsrcs = [];
+    mine._contractid = [];
+    mine._onload = config['onload'] || nullFunction;
+    mine._onprogress = config['onprogress'] || nullFunction;
+    // mine._loadcount = 0;
+    // mine._progress = 0;
 
     if (!config['manual']) {
-        this['start']();
+        mine['start']();
     }
 }, {
     _loadcount: 0,
     _progress: 0,
-    _c: function() {
-        this._loadcount++;
+    _c: function(/* varless */ mine) {
+        mine = this;
 
-        this._progress = this._loadcount / this._srccount;
-        this._onprogress(this._progress);
+        var i,
+            loadcount = ++mine._loadcount;
 
-        if (this._loadcount >= this._srccount) {
-            var i = this._contractid.length;
+        mine._progress = loadcount / mine._srccount;
+        mine._onprogress(mine._progress);
+
+        if (loadcount >= mine._srccount) {
+            i = mine._contractid.length;
 
             for (; i--;) {
-                this['uncontract'](this._contractid[i]);
+                mine['uncontract'](mine._contractid[i]);
             }
-            this._contractid = [];
+            mine._contractid = [];
 
-            this._onload(this._loadedsrcs);
+            mine._onload(mine._loadedsrcs);
         }
     },
     'start': function() {
-        if (this.started) {
-            return;
-        }
-
-        this.started = TRUE;
-
         var mine = this,
             img,
             i = mine._srccount;
+
+        if (mine.started) {
+            return;
+        }
+
+        mine.started = TRUE;
 
         for (; i--;) {
             img = create('img');

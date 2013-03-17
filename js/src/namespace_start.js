@@ -88,3 +88,8 @@ function splitSuffix(value) {
 
     return value.match(/^(.*?)([0-9\.]+)(.*)$/);
 }
+
+
+function this_stop() {
+    this['stop']();
+}

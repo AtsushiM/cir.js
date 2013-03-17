@@ -42,13 +42,19 @@ function ancestors(obj, propname /* varless */, props, flg) {
 
     return props;
 }
-function klassExtend(kls, init, prop) {
-    return C['klass']({
-        'extend': kls,
-        'init': init,
-        'prop': prop
-    });
+function klassExtend(kls, init, prop, support) {
+    var klass = C['klass']({
+            'extend': kls,
+            'init': init,
+            'prop': prop
+        });
+
+    if (isDefined(support)) {
+        klass['support'] = support;
+    }
+
+    return klass;
 }
-function klassExtendBase(init, prop) {
-    return klassExtend(C['Base'], init, prop);
+function klassExtendBase(init, prop, support) {
+    return klassExtend(C['Base'], init, prop, support);
 }
