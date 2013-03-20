@@ -20,9 +20,7 @@ C['Rollover'] = klassExtendBase(function(config /* varless */, mine) {
         mine['attach']();
     }
 }, {
-    'disposeInternal': function() {
-        this['detach']();
-    },
+    'disposeInternal': this_detach,
     'attach': function() {
         this._e(on);
     },

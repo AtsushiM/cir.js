@@ -9,28 +9,24 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
     'requests': function(varary, callback) {
         var mine = this,
             i = 0,
-            len = varary.length;
+            len = varary.length,
+            async = new Async({
+                'waits': varary,
+                'callback': function() {
+                    callback(mine._els);
+                }
+            }),
+            wrapback;
 
         for (; i < len; i++) {
-            request(i);
-        }
-
-        function request(i) {
-            var callback = varary[i]['callback'];
+            wrapback = varary[i]['callback'];
 
             varary[i]['callback'] = function(e) {
-                callback(e);
-                countdown();
+                wrapback(e);
+                async['pass']();
             };
 
             mine['request'](varary[i]);
-        }
-        function countdown() {
-            i--;
-
-            if (i == 0) {
-                callback(mine._els);
-            }
         }
     },
     'request': function(vars) {

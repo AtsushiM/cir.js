@@ -1,32 +1,6 @@
 // Cool is Right.
 (function() {
-var win = window,
-    doc = document,
-    body = doc.body,
-    TRUE = true,
-    FALSE = false,
-    NULL = null,
-    EMPTY = '',
-    NULLOBJ = {},
-    UNDEFINED = undefined,
-    isTouch = isTouchable(),
-    ev,
-    ev_hashchange = 'hashchange',
-    ev_orientationchange = 'orientationchange',
-    ev_canplay = 'canplay',
-    ev_ended = 'ended',
-    csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
-    easebackrate = 1.70158,
-    WindowAction,
-    ExternalAndroid,
-    ExternalIOS,
-    Media,
-    Tweener,
-    WebStorage,
-    mb,
-    pc;
-    /* C = win['C'] = {}, */
-    C = {};
+C = {};
 
 function cssCubicBezierFormat(text) {
     return 'cubic-bezier(' + text + ')';
@@ -93,3 +67,38 @@ function splitSuffix(value) {
 function this_stop() {
     this['stop']();
 }
+function this_clearInterval_loop() {
+    clearInterval(this._loopid);
+}
+function this_detach() {
+    this['detach']();
+}
+
+var win = window,
+    doc = document,
+    body = doc.body,
+    TRUE = true,
+    FALSE = false,
+    NULL = null,
+    EMPTY = '',
+    NULLOBJ = {},
+    UNDEFINED = undefined,
+    isTouch = isTouchable(),
+    ev_hashchange = 'hashchange',
+    ev_orientationchange = 'orientationchange',
+    ev_canplay = 'canplay',
+    ev_ended = 'ended',
+    csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
+    easebackrate = 1.70158,
+
+ev,
+Async,
+WindowAction,
+ExternalAndroid,
+ExternalIOS,
+Media,
+Tweener,
+WebStorage,
+mb,
+pc,
+$_methods;

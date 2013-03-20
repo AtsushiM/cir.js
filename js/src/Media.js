@@ -64,13 +64,13 @@ Media = klassExtendBase(function(config) {
         /* var mine = this; */
         mine = this;
 
-        if (mine.loopid) {
-            mine['uncontract'](mine.loopid);
-            delete mine.loopid;
+        if (mine._loopid) {
+            mine['uncontract'](mine._loopid);
+            delete mine._loopid;
         }
 
         if (bool) {
-            mine.loopid =
+            mine._loopid =
             mine['contract'](mine._el, ev_ended, function() {
                 mine['stop']();
                 mine['play']();

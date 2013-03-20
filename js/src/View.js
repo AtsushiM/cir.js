@@ -18,9 +18,7 @@ C['View'] = klassExtendBase(function(config /* varless */, mine, i) {
         mine['init']();
     }
 }, {
-    'disposeInternal': function() {
-        this._e('off');
-    },
+    'disposeInternal': this_detach,
     _e: function(methodname /* varless */, mine, i, j, $el, events) {
         mine = this;
 

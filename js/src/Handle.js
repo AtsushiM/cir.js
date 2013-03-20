@@ -3,9 +3,7 @@ C['Handle'] = klassExtendBase(function(config) {
     this._config = config;
     this['attach']();
 }, {
-    'disposeInternal': function() {
-        this['detach']();
-    },
+    'disposeInternal': this_detach,
     'attach': function() {
         this._e(on);
     },

@@ -7,15 +7,13 @@ C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
     mine._onrendered = config['onrendered'];
     mine._looptime = config['looptime'] || 100;
     mine._loopblur = mine._looptime + (config['loopblur'] || 20);
-    /* mine.loopid = mine.prevtime = NULL; */
+    /* mine._loopid = mine.prevtime = NULL; */
 
     if (!config['manual']) {
         mine['start']();
     }
 }, {
-    'disposeInternal': function() {
-        clearInterval(this.loopid);
-    },
+    'disposeInternal': this_clearInterval_loop,
     'start': function() {
         var i,
             mine = this,
@@ -24,7 +22,7 @@ C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
         for (i = mine._els.length; i--;) {
             show(mine._els[i]);
         }
-        mine.loopid = setInterval(check, mine._looptime, mine);
+        mine._loopid = setInterval(check, mine._looptime, mine);
 
         function check() {
             var gettime = dateNow(),
@@ -37,7 +35,7 @@ C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
                 mine._guesslimit--;
 
                 if (mine._guesslimit < 1) {
-                    clearInterval(mine.loopid);
+                    clearInterval(mine._loopid);
 
                     for (i = mine._els.length; i--;) {
                         hide(mine._els[i]);

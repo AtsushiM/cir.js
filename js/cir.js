@@ -1,32 +1,6 @@
 // Cool is Right.
 (function() {
-var win = window,
-    doc = document,
-    body = doc.body,
-    TRUE = true,
-    FALSE = false,
-    NULL = null,
-    EMPTY = '',
-    NULLOBJ = {},
-    UNDEFINED = undefined,
-    isTouch = isTouchable(),
-    ev,
-    ev_hashchange = 'hashchange',
-    ev_orientationchange = 'orientationchange',
-    ev_canplay = 'canplay',
-    ev_ended = 'ended',
-    csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
-    easebackrate = 1.70158,
-    WindowAction,
-    ExternalAndroid,
-    ExternalIOS,
-    Media,
-    Tweener,
-    WebStorage,
-    mb,
-    pc;
-    /* C = win['C'] = {}, */
-    C = {};
+C = {};
 
 function cssCubicBezierFormat(text) {
     return 'cubic-bezier(' + text + ')';
@@ -93,6 +67,41 @@ function splitSuffix(value) {
 function this_stop() {
     this['stop']();
 }
+function this_clearInterval_loop() {
+    clearInterval(this._loopid);
+}
+function this_detach() {
+    this['detach']();
+}
+
+var win = window,
+    doc = document,
+    body = doc.body,
+    TRUE = true,
+    FALSE = false,
+    NULL = null,
+    EMPTY = '',
+    NULLOBJ = {},
+    UNDEFINED = undefined,
+    isTouch = isTouchable(),
+    ev_hashchange = 'hashchange',
+    ev_orientationchange = 'orientationchange',
+    ev_canplay = 'canplay',
+    ev_ended = 'ended',
+    csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
+    easebackrate = 1.70158,
+
+ev,
+Async,
+WindowAction,
+ExternalAndroid,
+ExternalIOS,
+Media,
+Tweener,
+WebStorage,
+mb,
+pc,
+$_methods;
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function() {
@@ -645,7 +654,7 @@ C['Base'] = klassExtend(UNDEFINED, function() {
     }
 });
 /* Test: "../../spec/_src/src/Event/test.js" */
-ev = klassExtendBase(UNDEFINED, {
+ev = C['Event'] = klassExtendBase(UNDEFINED, {
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
     'SWITCHMOVE': isTouch ? 'touchmove' : 'mousemove',
@@ -665,7 +674,6 @@ ev = klassExtendBase(UNDEFINED, {
     'TOUCHEND': 'touchend',
     'RESIZE': 'resize'
 });
-C['Event'] = ev;
 ev = C['e'] = new ev();
 /* Test: "../../spec/_src/src/ease/test.js" */
 C['ease'] = {
@@ -1280,7 +1288,7 @@ function selectorMakeAry(arg) {
     return ary;
 }
 
-var $_methods = C['$'].methods = {
+$_methods = C['$'].methods = {
     'querySelectorAll': function(query) {
         return this[0].querySelectorAll(query);
     },
@@ -1527,7 +1535,6 @@ C['HashQuery'] = klassExtendBase(UNDEFINED,
 /* Test: "../../spec/_src/src/Embed/test.js" */
 /* C.Embed = function(config) { */
 function Embed(config) {
-    /* var embed = create(config['type'].toLowerCase()); */
     var embed = create(config['type']);
 
     embed['controls'] = config['controls'] ? TRUE : FALSE;
@@ -1629,13 +1636,13 @@ Media = klassExtendBase(function(config) {
         /* var mine = this; */
         mine = this;
 
-        if (mine.loopid) {
-            mine['uncontract'](mine.loopid);
-            delete mine.loopid;
+        if (mine._loopid) {
+            mine['uncontract'](mine._loopid);
+            delete mine._loopid;
         }
 
         if (bool) {
-            mine.loopid =
+            mine._loopid =
             mine['contract'](mine._el, ev_ended, function() {
                 mine['stop']();
                 mine['play']();
@@ -1776,14 +1783,79 @@ C['Ajax'] = klassExtendBase(function(config) {
         this['request'](vars);
     }
 });
+/* Test: "../../spec/_src/src/Async/test.js" */
+Async = C['Async'] = klassExtendBase(function(config /* varless */, mine, waits) {
+    // var mine = this,
+    //     waits = config['waits'];
+    mine = this;
+    waits = config['waits'];
+
+    if (isArray(waits)) {
+        waits = waits.length;
+    }
+
+    mine._waits = waits;
+    mine._callback = config['callback'];
+    mine._onprogress = config['onprogress'] || nullFunction;
+
+    mine._args = [];
+}, {
+    _success: 0,
+    _miss: 0,
+    _progress: 0,
+    _check: function(vars /* varless */, mine, state) {
+        // var mine = this,
+        //     state = NULL;
+        mine = this;
+        /* state = NULL; */
+
+        if (isDefined(vars)) {
+            mine._args.push(vars);
+        }
+
+        mine._progress = mine._success / mine._waits;
+        if (mine._progress > 1) {
+            mine._progress = 1;
+        }
+        mine._onprogress(mine._progress);
+
+        if (mine._miss) {
+            state = new Error('miss');
+        }
+
+        if (mine._success == mine._waits || mine._miss) {
+            mine._callback(state, mine._args);
+            mine._callback =
+            mine._onprogress = nullFunction;
+        }
+    },
+    'getProgress': function() {
+        return this._progress;
+    },
+    'pass': function(vars) {
+        this._success++;
+
+        this._check(vars);
+    },
+    'miss': function(vars) {
+        this._miss++;
+
+        this._check(vars);
+    },
+    'exit': function(vars /* varless */, mine) {
+        mine = this;
+
+        mine._success = mine._waits;
+
+        mine._check(vars);
+    }
+});
 /* Test: "../../spec/_src/src/Handle/test.js" */
 C['Handle'] = klassExtendBase(function(config) {
     this._config = config;
     this['attach']();
 }, {
-    'disposeInternal': function() {
-        this['detach']();
-    },
+    'disposeInternal': this_detach,
     'attach': function() {
         this._e(on);
     },
@@ -1923,9 +1995,7 @@ C['Rollover'] = klassExtendBase(function(config /* varless */, mine) {
         mine['attach']();
     }
 }, {
-    'disposeInternal': function() {
-        this['detach']();
-    },
+    'disposeInternal': this_detach,
     'attach': function() {
         this._e(on);
     },
@@ -2285,8 +2355,8 @@ ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
 ExternalIOS = klassExtend(C['HashQuery'], function() {
     this._ios = {};
 }, {
-    'disposeInternal': function() {
-        var i;
+    'disposeInternal': function(/* varless */ i) {
+        /* var i; */
 
         for (i in this._ios) {
             this['removeCallback'](i);
@@ -2299,8 +2369,9 @@ ExternalIOS = klassExtend(C['HashQuery'], function() {
         /* var mine = this; */
         mine = this;
 
-        mine._ios[name] = function(e) {
-            var hash = mine['getHash']();
+        mine._ios[name] = function(/* varless */ hash) {
+            /* var hash = mine['getHash'](); */
+            hash = mine['getHash']();
 
             if (hash['mode'] == name) {
                 func(hash['vars']);
@@ -2382,59 +2453,44 @@ C['FPS'] = klassExtendBase(function(config /* varless */, mine) {
     _getFrame: function(time) {
         return Math.round(1000 / time);
     },
-    'stop': function() {
-        clearInterval(this._loopid);
-    }
+    'stop': this_clearInterval_loop
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
     mine = this;
 
     mine._srcs = config['srcs'];
-    mine._srccount = mine._srcs.length;
     mine._loadedsrcs = [];
     mine._contractid = [];
-    mine._onload = config['onload'] || nullFunction;
-    mine._onprogress = config['onprogress'] || nullFunction;
-    // mine._loadcount = 0;
-    // mine._progress = 0;
-
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
-    _loadcount: 0,
-    _progress: 0,
-    _c: function(/* varless */ mine) {
-        mine = this;
-
-        var i,
-            loadcount = ++mine._loadcount;
-
-        mine._progress = loadcount / mine._srccount;
-        mine._onprogress(mine._progress);
-
-        if (loadcount >= mine._srccount) {
-            i = mine._contractid.length;
+    mine._async = new Async({
+        'waits': mine._srcs,
+        'onprogress': config['onprogress'],
+        'callback': function() {
+            var i = mine._contractid.length;
 
             for (; i--;) {
                 mine['uncontract'](mine._contractid[i]);
             }
             mine._contractid = [];
 
-            mine._onload(mine._loadedsrcs);
+            (config['onload'] || nullFunction)(mine._loadedsrcs);
         }
-    },
+    });
+
+    if (!config['manual']) {
+        mine['start']();
+    }
+}, {
     'start': function() {
         var mine = this,
             img,
-            i = mine._srccount;
+            i = mine._srcs.length;
 
-        if (mine.started) {
+        if (mine._started) {
             return;
         }
 
-        mine.started = TRUE;
+        mine._started = TRUE;
 
         for (; i--;) {
             img = create('img');
@@ -2445,11 +2501,8 @@ C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
         }
 
         function countup() {
-            mine._c();
+            mine._async['pass']();
         }
-    },
-    'getProgress': function() {
-        return this._progress;
     }
 });
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
@@ -2876,10 +2929,11 @@ C['DeviceShake'] = klassExtendBase(function(config /* varless */, mine) {
 
 }());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
-C['FontImg'] = klassExtendBase(function(config) {
+C['FontImg'] = klassExtendBase(function(config /* varless */, type) {
     config = config || NULLOBJ;
+    type = config['type'];
 
-    this._type = config['type'] ? config['type'] + '_' : EMPTY;
+    this._type = type ? type + '_' : EMPTY;
     this._tag = config['tag'] || 'span';
 }, {
     'make': function(x) {
@@ -2973,15 +3027,13 @@ C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
     mine._onrendered = config['onrendered'];
     mine._looptime = config['looptime'] || 100;
     mine._loopblur = mine._looptime + (config['loopblur'] || 20);
-    /* mine.loopid = mine.prevtime = NULL; */
+    /* mine._loopid = mine.prevtime = NULL; */
 
     if (!config['manual']) {
         mine['start']();
     }
 }, {
-    'disposeInternal': function() {
-        clearInterval(this.loopid);
-    },
+    'disposeInternal': this_clearInterval_loop,
     'start': function() {
         var i,
             mine = this,
@@ -2990,7 +3042,7 @@ C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
         for (i = mine._els.length; i--;) {
             show(mine._els[i]);
         }
-        mine.loopid = setInterval(check, mine._looptime, mine);
+        mine._loopid = setInterval(check, mine._looptime, mine);
 
         function check() {
             var gettime = dateNow(),
@@ -3003,7 +3055,7 @@ C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
                 mine._guesslimit--;
 
                 if (mine._guesslimit < 1) {
-                    clearInterval(mine.loopid);
+                    clearInterval(mine._loopid);
 
                     for (i = mine._els.length; i--;) {
                         hide(mine._els[i]);
@@ -3058,28 +3110,24 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
     'requests': function(varary, callback) {
         var mine = this,
             i = 0,
-            len = varary.length;
+            len = varary.length,
+            async = new Async({
+                'waits': varary,
+                'callback': function() {
+                    callback(mine._els);
+                }
+            }),
+            wrapback;
 
         for (; i < len; i++) {
-            request(i);
-        }
-
-        function request(i) {
-            var callback = varary[i]['callback'];
+            wrapback = varary[i]['callback'];
 
             varary[i]['callback'] = function(e) {
-                callback(e);
-                countdown();
+                wrapback(e);
+                async['pass']();
             };
 
             mine['request'](varary[i]);
-        }
-        function countdown() {
-            i--;
-
-            if (i == 0) {
-                callback(mine._els);
-            }
         }
     },
     'request': function(vars) {
@@ -3510,9 +3558,7 @@ C['View'] = klassExtendBase(function(config /* varless */, mine, i) {
         mine['init']();
     }
 }, {
-    'disposeInternal': function() {
-        this._e('off');
-    },
+    'disposeInternal': this_detach,
     _e: function(methodname /* varless */, mine, i, j, $el, events) {
         mine = this;
 

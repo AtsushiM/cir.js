@@ -51,7 +51,5 @@ C['FPS'] = klassExtendBase(function(config /* varless */, mine) {
     _getFrame: function(time) {
         return Math.round(1000 / time);
     },
-    'stop': function() {
-        clearInterval(this._loopid);
-    }
+    'stop': this_clearInterval_loop
 });

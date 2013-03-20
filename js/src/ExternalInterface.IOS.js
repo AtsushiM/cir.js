@@ -2,8 +2,8 @@
 ExternalIOS = klassExtend(C['HashQuery'], function() {
     this._ios = {};
 }, {
-    'disposeInternal': function() {
-        var i;
+    'disposeInternal': function(/* varless */ i) {
+        /* var i; */
 
         for (i in this._ios) {
             this['removeCallback'](i);
@@ -16,8 +16,9 @@ ExternalIOS = klassExtend(C['HashQuery'], function() {
         /* var mine = this; */
         mine = this;
 
-        mine._ios[name] = function(e) {
-            var hash = mine['getHash']();
+        mine._ios[name] = function(/* varless */ hash) {
+            /* var hash = mine['getHash'](); */
+            hash = mine['getHash']();
 
             if (hash['mode'] == name) {
                 func(hash['vars']);

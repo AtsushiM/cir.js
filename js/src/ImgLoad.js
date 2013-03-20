@@ -3,50 +3,37 @@ C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
     mine = this;
 
     mine._srcs = config['srcs'];
-    mine._srccount = mine._srcs.length;
     mine._loadedsrcs = [];
     mine._contractid = [];
-    mine._onload = config['onload'] || nullFunction;
-    mine._onprogress = config['onprogress'] || nullFunction;
-    // mine._loadcount = 0;
-    // mine._progress = 0;
-
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
-    _loadcount: 0,
-    _progress: 0,
-    _c: function(/* varless */ mine) {
-        mine = this;
-
-        var i,
-            loadcount = ++mine._loadcount;
-
-        mine._progress = loadcount / mine._srccount;
-        mine._onprogress(mine._progress);
-
-        if (loadcount >= mine._srccount) {
-            i = mine._contractid.length;
+    mine._async = new Async({
+        'waits': mine._srcs,
+        'onprogress': config['onprogress'],
+        'callback': function() {
+            var i = mine._contractid.length;
 
             for (; i--;) {
                 mine['uncontract'](mine._contractid[i]);
             }
             mine._contractid = [];
 
-            mine._onload(mine._loadedsrcs);
+            (config['onload'] || nullFunction)(mine._loadedsrcs);
         }
-    },
+    });
+
+    if (!config['manual']) {
+        mine['start']();
+    }
+}, {
     'start': function() {
         var mine = this,
             img,
-            i = mine._srccount;
+            i = mine._srcs.length;
 
-        if (mine.started) {
+        if (mine._started) {
             return;
         }
 
-        mine.started = TRUE;
+        mine._started = TRUE;
 
         for (; i--;) {
             img = create('img');
@@ -57,10 +44,7 @@ C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
         }
 
         function countup() {
-            mine._c();
+            mine._async['pass']();
         }
-    },
-    'getProgress': function() {
-        return this._progress;
     }
 });

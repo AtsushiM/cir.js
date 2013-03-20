@@ -1,7 +1,6 @@
 /* Test: "../../spec/_src/src/Embed/test.js" */
 /* C.Embed = function(config) { */
 function Embed(config) {
-    /* var embed = create(config['type'].toLowerCase()); */
     var embed = create(config['type']);
 
     embed['controls'] = config['controls'] ? TRUE : FALSE;

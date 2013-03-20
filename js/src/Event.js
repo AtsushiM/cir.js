@@ -1,5 +1,5 @@
 /* Test: "../../spec/_src/src/Event/test.js" */
-ev = klassExtendBase(UNDEFINED, {
+ev = C['Event'] = klassExtendBase(UNDEFINED, {
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
     'SWITCHMOVE': isTouch ? 'touchmove' : 'mousemove',
@@ -19,5 +19,4 @@ ev = klassExtendBase(UNDEFINED, {
     'TOUCHEND': 'touchend',
     'RESIZE': 'resize'
 });
-C['Event'] = ev;
 ev = C['e'] = new ev();

@@ -1,8 +1,9 @@
 /* Test: "../../spec/_src/src/FontImg/test.js" */
-C['FontImg'] = klassExtendBase(function(config) {
+C['FontImg'] = klassExtendBase(function(config /* varless */, type) {
     config = config || NULLOBJ;
+    type = config['type'];
 
-    this._type = config['type'] ? config['type'] + '_' : EMPTY;
+    this._type = type ? type + '_' : EMPTY;
     this._tag = config['tag'] || 'span';
 }, {
     'make': function(x) {

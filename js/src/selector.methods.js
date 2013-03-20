@@ -27,7 +27,7 @@ function selectorMakeAry(arg) {
     return ary;
 }
 
-var $_methods = C['$'].methods = {
+$_methods = C['$'].methods = {
     'querySelectorAll': function(query) {
         return this[0].querySelectorAll(query);
     },

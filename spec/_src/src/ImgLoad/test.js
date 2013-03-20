@@ -63,26 +63,6 @@ describe('ImgLoadは', function() {
             expect(progress).toEqual(1);
         });
     });
-
-    it('getProgress()で読込状況を0~1の間で返す', function() {
-        var before = 0;
-
-        imgload = new c.ImgLoad({
-            srcs: [
-                // img path
-                '/spec/common/r.png',
-                '/spec/common/g.png',
-                '/spec/common/b.png'
-            ],
-            onprogress: function(prog) {
-                expect(prog).toBeGreaterThan(before);
-                before = prog;
-
-                expect(imgload.getProgress()).toEqual(prog);
-            }
-        });
-        imgload.start();
-    });
 });
 /*
 describe('XXXは', function() {
