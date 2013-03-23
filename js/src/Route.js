@@ -1,14 +1,15 @@
 /* Test: "../../spec/_src/src/Route/test.js" */
-C['Route'] = klassExtendBase(function(config) {
-    // this._target = config['target'] || EMPTY;
-    // this._noregex = config['noregex'];
-    // this._action = config['action'];
-    this._config = config;
+C['Route'] = classExtendBase({
+    'init': function(config) {
+        // this._target = config['target'] || EMPTY;
+        // this._noregex = config['noregex'];
+        // this._action = config['action'];
+        this._config = config;
 
-    if (!config['manual']) {
-        this['start']();
-    }
-}, {
+        if (!config['manual']) {
+            this['start']();
+        }
+    },
     'start': function() {
         this['fire'](this._config['target']);
     },

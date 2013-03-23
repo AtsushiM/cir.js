@@ -1,26 +1,30 @@
 /* Test: "../../spec/_src/src/RollOver/test.js" */
-C['Rollover'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Rollover'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    var cls = config['toggleClass'] || EMPTY,
-        over = config['over'] || nullFunction,
-        out = config['out'] || nullFunction;
+        var cls = config['toggleClass'] || EMPTY,
+            over = config['over'] || nullFunction,
+            out = config['out'] || nullFunction;
 
-    mine._els = config['els'];
+        mine._els = config['els'];
 
-    mine._switchover = function() {
-        addClass(mine, cls);
-        over();
-    }
-    mine._switchout = function() {
-        removeClass(mine, cls);
-        out();
-    }
-    if (!config['manual']) {
-        mine['attach']();
-    }
-}, {
-    'disposeInternal': this_detach,
+        mine._switchover = function() {
+            addClass(mine, cls);
+            over();
+        }
+        mine._switchout = function() {
+            removeClass(mine, cls);
+            out();
+        }
+        if (!config['manual']) {
+            mine['attach']();
+        }
+    },
+    'dispose': function() {
+        this['detach']();
+        this['_super']();
+    },
     'attach': function() {
         this._e(on);
     },

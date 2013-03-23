@@ -1,22 +1,23 @@
 /* Test: "../../spec/_src/src/Orientation/test.js" */
-C['Orientation'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Orientation'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._config = config;
+        mine._config = config;
 
-    mine._contractid = [];
+        mine._contractid = [];
 
-    mine._portrait = {
-        'portrait': TRUE,
-        'landscape': FALSE
-    };
-    mine._landscape = {
-        'portrait': FALSE,
-        'landscape': TRUE
-    };
+        mine._portrait = {
+            'portrait': TRUE,
+            'landscape': FALSE
+        };
+        mine._landscape = {
+            'portrait': FALSE,
+            'landscape': TRUE
+        };
 
-    mine['attach']();
-}, {
+        mine['attach']();
+    },
     'get': function(/* varless */ mine) {
         mine = this;
 

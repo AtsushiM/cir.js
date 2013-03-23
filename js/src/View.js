@@ -1,24 +1,28 @@
 /* Test: "../../spec/_src/src/View/test.js" */
-C['View'] = klassExtendBase(function(config /* varless */, mine, i) {
-    mine = this;
+C['View'] = classExtendBase({
+    'init': function(config /* varless */, mine, i) {
+        mine = this;
 
-    /* var i; */
+        /* var i; */
 
-    if (!config) {
-        config = owner(mine, mine, {});
-    }
-    else {
-        config = owner(mine, config);
-    }
+        if (!config) {
+            config = owner(mine, mine, {});
+        }
+        else {
+            config = owner(mine, config);
+        }
 
-    mine['el'] = C['$'](config['el'] || mine['el'] || create('div'));
+        mine['el'] = C['$'](config['el'] || mine['el'] || create('div'));
 
-    mine['attach']();
-    if (config['init']) {
-        mine['init']();
-    }
-}, {
-    'disposeInternal': this_detach,
+        mine['attach']();
+        if (config['init']) {
+            mine['init']();
+        }
+    },
+    'dispose': function() {
+        this['detach']();
+        this['_super']();
+    },
     _e: function(methodname /* varless */, mine, i, j, $el, events) {
         mine = this;
 

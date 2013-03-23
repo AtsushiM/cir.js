@@ -1,9 +1,10 @@
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
-    // this._android = config['android'];
-    // this._externalObj = config['externalObj'];
-    this._config = config;
-}, {
+ExternalAndroid = classExtend(C['HashQuery'], {
+    'init': function(config) {
+        // this._android = config['android'];
+        // this._externalObj = config['externalObj'];
+        this._config = config;
+    },
     'call': function(conf) {
         this._config['android'][conf['mode']](this['makeHash'](conf));
     },

@@ -1,7 +1,8 @@
 /* Test: "../../spec/_src/src/Observer/test.js" */
-C['Observer'] = klassExtendBase(function() {
-    this._observed = {};
-}, {
+C['Observer'] = classExtendBase({
+    'init': function() {
+        this._observed = {};
+    },
     'on': function(key, func /* varless */, mine, observed) {
         mine = this;
         observed = mine._observed;

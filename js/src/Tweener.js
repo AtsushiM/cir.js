@@ -1,35 +1,39 @@
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop, mine) {
-    // var name,
-    //     prop;
+Tweener = C['Tweener'] = classExtendBase({
+    'init': function(target, property, option /* varless */, name, prop, mine) {
+        // var name,
+        //     prop;
 
-    mine = this;
+        mine = this;
 
-    option = option || NULLOBJ;
+        option = option || NULLOBJ;
 
-    mine._target = target;
-    mine._property = [];
+        mine._target = target;
+        mine._property = [];
 
-    for (name in property) {
-        prop = property[name];
-        prop['name'] = name;
+        for (name in property) {
+            prop = property[name];
+            prop['name'] = name;
 
-        prop.distance = prop['to'] - prop['from'];
-        prop['prefix'] = prop['prefix'] || EMPTY;
-        prop['suffix'] = prop['suffix'] || 'px';
+            prop.distance = prop['to'] - prop['from'];
+            prop['prefix'] = prop['prefix'] || EMPTY;
+            prop['suffix'] = prop['suffix'] || 'px';
 
-        mine._property.push(prop);
-    }
+            mine._property.push(prop);
+        }
 
-    mine._duration = option['duration'] || Tweener['duration'];
-    mine._ease = option['ease'] || mine.__ease;
-    mine._onComplete = option['onComplete'];
+        mine._duration = option['duration'] || Tweener['duration'];
+        mine._ease = option['ease'] || mine.__ease;
+        mine._onComplete = option['onComplete'];
 
-    if (!option['manual']) {
-        mine['start']();
-    }
-}, {
-    'disposeInternal': this_stop,
+        if (!option['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     // easeOutExpo
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;

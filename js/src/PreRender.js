@@ -1,19 +1,23 @@
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['PreRender'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._els = config['els'];
-    mine._guesslimit = config['guesslimit'] || 30;
-    mine._onrendered = config['onrendered'];
-    mine._looptime = config['looptime'] || 100;
-    mine._loopblur = mine._looptime + (config['loopblur'] || 20);
-    /* mine._loopid = mine.prevtime = NULL; */
+        mine._els = config['els'];
+        mine._guesslimit = config['guesslimit'] || 30;
+        mine._onrendered = config['onrendered'];
+        mine._looptime = config['looptime'] || 100;
+        mine._loopblur = mine._looptime + (config['loopblur'] || 20);
+        /* mine._loopid = mine.prevtime = NULL; */
 
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
-    'disposeInternal': this_clearInterval_loop,
+        if (!config['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        clearInterval(this._loopid);
+        this['_super']();
+    },
     'start': function() {
         var i,
             mine = this,

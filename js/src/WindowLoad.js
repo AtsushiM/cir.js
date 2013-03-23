@@ -1,9 +1,5 @@
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
-C['WindowLoad'] = klassExtendBase(function(config) {
-    if (config) {
-        this._onload(config['onload']);
-    }
-}, {
+C['WindowLoad'] = classExtendBase({
     _onload: function(func /* varless */, mine, disposeid, loaded) {
         // var mine = this,
         //     disposeid,
@@ -17,5 +13,10 @@ C['WindowLoad'] = klassExtendBase(function(config) {
             mine['uncontract'](disposeid);
             func();
         });
+    },
+    'init': function(config) {
+        if (config) {
+            this._onload(config['onload']);
+        }
     }
 });

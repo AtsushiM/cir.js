@@ -1,8 +1,9 @@
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
-WebStorage = klassExtendBase(function(config) {
-    this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
-    this._storage = win[config['type'] + 'Storage'];
-}, {
+WebStorage = classExtendBase({
+    'init': function(config) {
+        this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
+        this._storage = win[config['type'] + 'Storage'];
+    },
     'set': function(key, val) {
         this._storage.setItem(this._n + key, jsonStringify(val));
     },

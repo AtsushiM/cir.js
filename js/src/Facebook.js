@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-C['Facebook'] = klassExtendBase(UNDEFINED,
-{
+C['Facebook'] = classExtendBase({
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +
         'app_id=' + vars['app_id'] + '&' +

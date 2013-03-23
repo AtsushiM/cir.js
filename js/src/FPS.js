@@ -1,23 +1,27 @@
 /* Test: "../../spec/_src/src/FPS/test.js" */
-C['FPS'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
-
-    mine._criterion =
-    mine._surver = config['criterion'];
-    mine._msecFrame = mine._getFrame(mine._criterion);
-    mine._enterframe = config['enterframe'];
-    // mine._prevtime =
-    // mine._nowtime =
-    // mine._loopid = 0;
-
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
+C['FPS'] = classExtendBase({
     _prevtime: 0,
     _nowtime: 0,
     _loopid: 0,
-    'disposeInternal': this_stop,
+    'init': function(config /* varless */, mine) {
+        mine = this;
+
+        mine._criterion =
+        mine._surver = config['criterion'];
+        mine._msecFrame = mine._getFrame(mine._criterion);
+        mine._enterframe = config['enterframe'];
+        // mine._prevtime =
+        // mine._nowtime =
+        // mine._loopid = 0;
+
+        if (!config['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     'getCriterion': function() {
         return this._criterion;
     },

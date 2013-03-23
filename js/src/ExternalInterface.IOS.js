@@ -1,13 +1,16 @@
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-ExternalIOS = klassExtend(C['HashQuery'], function() {
-    this._ios = {};
-}, {
-    'disposeInternal': function(/* varless */ i) {
+ExternalIOS = classExtend(C['HashQuery'], {
+    'init': function() {
+        this._ios = {};
+    },
+    'dispose': function(/* varless */ i) {
         /* var i; */
 
         for (i in this._ios) {
             this['removeCallback'](i);
         }
+
+        this['_super']();
     },
     'call': function(conf) {
         this['setHash'](conf);

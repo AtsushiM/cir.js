@@ -1,8 +1,10 @@
 /* Test: "../../spec/_src/src/Scroll/test.js" */
-C['Scroll'] = klassExtendBase(UNDEFINED, {
-    'disposeInternal': function() {
+C['Scroll'] = classExtendBase({
+    'dispose': function() {
         this['revival']();
         clearInterval(this._smoothid);
+
+        this['_super']();
     },
     'to': scrollTo,
     'toTop': pageTop,

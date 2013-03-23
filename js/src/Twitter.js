@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-C['Twitter'] = klassExtendBase(UNDEFINED,
-{
+C['Twitter'] = classExtendBase({
     'shareURL': function(vars) {
         var name = vars['name'],
             hash = vars['hash'];

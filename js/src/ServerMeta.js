@@ -3,21 +3,22 @@
 var xhr,
     isLoaded = FALSE;
 
-C['ServerMeta'] = klassExtendBase(function(config) {
-    config = config || NULLOBJ;
+C['ServerMeta'] = classExtendBase({
+    'init': function(config) {
+        config = config || NULLOBJ;
 
-    var callback = config['callback'] || nullFunction;
+        var callback = config['callback'] || nullFunction;
 
-    if (!xhr) {
-        xhr = getHeader(function() {
-            isLoaded = TRUE;
+        if (!xhr) {
+            xhr = getHeader(function() {
+                isLoaded = TRUE;
+                callback(xhr);
+            });
+        }
+        else {
             callback(xhr);
-        });
-    }
-    else {
-        callback(xhr);
-    }
-}, {
+        }
+    },
     'date': function(callback) {
         return getHeader(function(xhr) {
             callback(xhr.getResponseHeader('Date'));

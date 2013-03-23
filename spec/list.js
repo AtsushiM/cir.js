@@ -6,6 +6,7 @@ src/Async/\n\
 src/Audio/\n\
 src/Base/\n\
 src/Brush/\n\
+src/Class/\n\
 src/DataStore/\n\
 src/Datetime/\n\
 src/Deferred/\n\
@@ -57,8 +58,6 @@ src/XML/\n\
 src/cssease/\n\
 src/dom/\n\
 src/ease/\n\
-src/extend/\n\
-src/klass/\n\
 src/selector/\n\
 src/selector.methods/\n\
 src/selector.methods.animate/\n\
@@ -71,6 +70,7 @@ src/util/\n\
 ../../js/src/Audio.js\n\
 ../../js/src/Base.js\n\
 ../../js/src/Brush.js\n\
+../../js/src/Class.js\n\
 ../../js/src/DataStore.js\n\
 ../../js/src/Datetime.js\n\
 ../../js/src/Deferred.js\n\
@@ -122,8 +122,6 @@ src/util/\n\
 ../../js/src/cssease.js\n\
 ../../js/src/dom.js\n\
 ../../js/src/ease.js\n\
-../../js/src/extend.js\n\
-../../js/src/klass.js\n\
 ../../js/src/selector.js\n\
 ../../js/src/selector.methods.js\n\
 ../../js/src/selector.methods.animate.js\n\
@@ -136,6 +134,7 @@ src/util/\n\
 ../_src/src/Audio/test.js\n\
 ../_src/src/Base/test.js\n\
 ../_src/src/Brush/test.js\n\
+../_src/src/Class/test.js\n\
 ../_src/src/DataStore/test.js\n\
 ../_src/src/Datetime/test.js\n\
 ../_src/src/Deferred/test.js\n\
@@ -187,8 +186,6 @@ src/util/\n\
 ../_src/src/cssease/test.js\n\
 ../_src/src/dom/test.js\n\
 ../_src/src/ease/test.js\n\
-../_src/src/extend/test.js\n\
-../_src/src/klass/test.js\n\
 ../_src/src/selector/test.js\n\
 ../_src/src/selector.methods/test.js\n\
 ../_src/src/selector.methods.animate/test.js\n\

@@ -1,13 +1,14 @@
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
-WindowAction = klassExtendBase(function(config) {
-    // this._e = config['e'];
-    // this._callback = config['callback'];
-    this._config = config;
+WindowAction = classExtendBase({
+    'init': function(config) {
+        // this._e = config['e'];
+        // this._callback = config['callback'];
+        this._config = config;
 
-    /* if (config['callback']) { */
+        /* if (config['callback']) { */
         this['attach']();
-    /* } */
-}, {
+        /* } */
+    },
     'attach': function(/* varless */ mine) {
         mine = this;
 

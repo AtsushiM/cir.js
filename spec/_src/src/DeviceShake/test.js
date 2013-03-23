@@ -11,15 +11,15 @@ describe('DeviceShakeは', function() {
     });
 
     it('端末を振る動作に合わせてcallbackを発火する', function() {
-        var motion = Global.DeviceMotion.support,
-            orient = Global.DeviceOrientation.support,
+        var motion = c.DeviceMotion.support,
+            orient = c.DeviceOrientation.support,
             bool = false;
 
         if (motion || orient) {
             bool = true;
         }
 
-        expect(Global.DeviceShake.support).toEqual(bool);
+        expect(c.DeviceShake.support).toEqual(bool);
     });
 });
 /*

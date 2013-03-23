@@ -1,12 +1,13 @@
 /* Test: "../../spec/_src/src/Brush/test.js" */
-C['Brush'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Brush'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._canvas = config['canvas'];
-    mine._ctx = mine._canvas.getContext('2d');
+        mine._canvas = config['canvas'];
+        mine._ctx = mine._canvas.getContext('2d');
 
-    mine['setSize'](config);
-}, {
+        mine['setSize'](config);
+    },
     'setSize': function(vars) {
         if (vars['width']) {
             this._canvas.width = vars['width'];

@@ -1,13 +1,15 @@
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-C['Throttle'] = klassExtendBase(function(config) {
-    this._waittime = config['waittime'];
-    this._callback = config['callback'];
-    // this._locked = FALSE;
-    // this._waitid = NULL;
-    // this._args = NULL;
-}, {
-    'disposeInternal': function() {
+C['Throttle'] = classExtendBase({
+    'init': function(config) {
+        this._waittime = config['waittime'];
+        this._callback = config['callback'];
+        // this._locked = FALSE;
+        // this._waitid = NULL;
+        // this._args = NULL;
+    },
+    'dispose': function() {
         this['unlock']();
+        this['_super']();
     },
     'request': function(vars /* varless */, mine) {
         /* var mine = this; */

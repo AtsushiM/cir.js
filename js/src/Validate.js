@@ -1,14 +1,15 @@
 /* Test: "../../spec/_src/src/Validate/test.js" */
-C['Validate'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Validate'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    config = config || {};
+        config = config || {};
 
-    /* mine._level = config['level'] || 'warn'; */
-    mine._level = config['level'];
+        /* mine._level = config['level'] || 'warn'; */
+        mine._level = config['level'];
 
-    owner(mine, mine, config);
-}, {
+        owner(mine, mine, config);
+    },
     'displayError': function(key, text) {
         text = 'Validate Error:' + key + ' is ' + text + '.';
 

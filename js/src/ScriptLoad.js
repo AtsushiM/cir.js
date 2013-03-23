@@ -1,11 +1,12 @@
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-C['ScriptLoad'] = klassExtendBase(function(config) {
-    this._els = [];
+C['ScriptLoad'] = classExtendBase({
+    'init': function(config) {
+        this._els = [];
 
-    if (config) {
-        this['requests'](config);
-    }
-}, {
+        if (config) {
+            this['requests'](config);
+        }
+    },
     'requests': function(varary, callback) {
         var mine = this,
             i = 0,

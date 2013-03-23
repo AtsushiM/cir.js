@@ -1,9 +1,10 @@
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-C['Ajax'] = klassExtendBase(function(config) {
-    if (config) {
-        this['request'](config);
-    }
-}, {
+C['Ajax'] = classExtendBase({
+    'init': function(config) {
+        if (config) {
+            this['request'](config);
+        }
+    },
     'request': function(vars) {
         var url = vars['url'],
             callback = vars['callback'] || nullFunction,

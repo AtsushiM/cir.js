@@ -1,12 +1,14 @@
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-C['Surrogate'] = klassExtendBase(function(config) {
-    this._delay = config['delay'];
-    this._callback = config['callback'];
-    // this._args = NULL;
-    // this._waitid = NULL;
-}, {
-    'disposeInternal': function() {
+C['Surrogate'] = classExtendBase({
+    'init': function(config) {
+        this._delay = config['delay'];
+        this._callback = config['callback'];
+        // this._args = NULL;
+        // this._waitid = NULL;
+    },
+    'dispose': function() {
         this['clear']();
+        this['_super']();
     },
     'request': function(arg /* varless */, mine) {
         mine = this;

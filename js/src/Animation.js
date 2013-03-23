@@ -9,55 +9,8 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-    Mine = C['Animation'] =
-    klassExtendBase(function(el, property, option /* varless */, mine) {
-
-    mine = this;
-
-    option = option || NULLOBJ;
-
-    mine._onComplete = option['onComplete'] || nullFunction;
-
-    mine._el = el;
-
-    Mine['id']++;
-    mine._id = 'ciranim' + Mine['id'];
-
-    var duration = option['duration'] || Mine['duration'],
-        // easeOutExpo
-        ease = option['ease'] || csseaseOutExpo,
-        i,
-        prop = {};
-
-    for (i in property) {
-        prop[i] = property[i];
-        if (isNumber(prop[i])) {
-            prop[i] = prop[i] + 'px';
-        }
-    }
-
-    mine.property = prop;
-
-    prop = replaceAll(
-        replaceAll(jsonStringify(prop), '"', EMPTY),
-        ',',
-        ';'
-    );
-
-    sheet.insertRule(
-        '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
-        sheet.cssRules.length);
-
-    if (!isArray(ease)) {
-        ease = [ease];
-    }
-
-    addCSSRule(mine._id, css_prefix, duration, ease);
-
-    if (!option['manual']) {
-        mine['start']();
-    }
-}, {
+Mine = C['Animation'] =
+classExtendBase({
     _off: function() {
         var el = this._el,
             end = this._end;
@@ -65,7 +18,57 @@ var ret = checkCSSAnimTranCheck([
         off(el, event_key + 'End', end);
         off(el, 'animationend', end);
     },
-    'disposeInternal': this_stop,
+    'init': function(el, property, option /* varless */, mine) {
+        mine = this;
+
+        option = option || NULLOBJ;
+
+        mine._onComplete = option['onComplete'] || nullFunction;
+
+        mine._el = el;
+
+        Mine['id']++;
+        mine._id = 'ciranim' + Mine['id'];
+
+        var duration = option['duration'] || Mine['duration'],
+            // easeOutExpo
+            ease = option['ease'] || csseaseOutExpo,
+            i,
+            prop = {};
+
+        for (i in property) {
+            prop[i] = property[i];
+            if (isNumber(prop[i])) {
+                prop[i] = prop[i] + 'px';
+            }
+        }
+
+        mine.property = prop;
+
+        prop = replaceAll(
+            replaceAll(jsonStringify(prop), '"', EMPTY),
+            ',',
+            ';'
+        );
+
+        sheet.insertRule(
+            '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
+            sheet.cssRules.length);
+
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
+
+        addCSSRule(mine._id, css_prefix, duration, ease);
+
+        if (!option['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     'start': function(/* varless */ mine, el) {
         // var mine = this,
         //     el = mine._el;

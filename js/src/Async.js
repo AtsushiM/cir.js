@@ -1,20 +1,5 @@
 /* Test: "../../spec/_src/src/Async/test.js" */
-Async = C['Async'] = klassExtendBase(function(config /* varless */, mine, waits) {
-    // var mine = this,
-    //     waits = config['waits'];
-    mine = this;
-    waits = config['waits'];
-
-    if (isArray(waits)) {
-        waits = waits.length;
-    }
-
-    mine._waits = waits;
-    mine._callback = config['callback'];
-    mine._onprogress = config['onprogress'] || nullFunction;
-
-    mine._args = [];
-}, {
+Async = C['Async'] = classExtendBase({
     _success: 0,
     _miss: 0,
     _progress: 0,
@@ -43,6 +28,22 @@ Async = C['Async'] = klassExtendBase(function(config /* varless */, mine, waits)
             mine._callback =
             mine._onprogress = nullFunction;
         }
+    },
+    'init': function(config /* varless */, mine, waits) {
+        // var mine = this,
+        //     waits = config['waits'];
+        mine = this;
+        waits = config['waits'];
+
+        if (isArray(waits)) {
+            waits = waits.length;
+        }
+
+        mine._waits = waits;
+        mine._callback = config['callback'];
+        mine._onprogress = config['onprogress'] || nullFunction;
+
+        mine._args = [];
     },
     'getProgress': function() {
         return this._progress;

@@ -513,56 +513,77 @@ C['dom'] = {
     'html': html,
     'reflow': reflow
 };
-/* Test: "../../spec/_src/src/klass/test.js" */
-C['klass'] = function(config) {
-    var init = config['init'] || function() {},
-        wrap = function() {
-            var inits = ancestors(this, '_init'),
-                i = inits.length;
+/* Test: "../../spec/_src/src/Class/test.js" */
+(function() {
+    C['lass'] = function() {};
 
-            for (; i--;) {
-                inits[i].apply(this, arguments);
+    var initializing = FALSE,
+        fnTest = /xyz/.test(function() {
+            xyz;
+        }) ? /\b_super\b/ : /.*/;
+
+    C['lass']['extend'] = function(props) {
+        var SuperClass = this,
+            new_this,
+            i;
+
+        initializing = TRUE;
+        new_this = new SuperClass();
+        initializing = FALSE;
+
+        function Class() {
+            if (!initializing && this['init']) {
+                this['init'].apply(this, arguments);
             }
-        },
-        prop = config['prop'],
-        extend = config['extend'];
-
-    if (extend) {
-        C['extend'](wrap, extend);
-    }
-    wrap.prototype['_init'] = init;
-
-    override(wrap.prototype, prop);
-
-    return wrap;
-};
-C['klass']['ancestors'] = ancestors;
-
-function ancestors(obj, propname /* varless */, props, flg) {
-    // var props = [],
-    //     flg = FALSE;
-    props = [];
-
-    while (!flg) {
-        if (obj[propname] && props[props.length - 1] != obj[propname]) {
-            props.push(obj[propname]);
         }
-        if (obj._superclass && obj._superclass.prototype) {
-            obj = obj._superclass.prototype;
-        }
-        else {
-            flg = TRUE;
-        }
-    }
 
-    return props;
-}
-function klassExtend(kls, init, prop, support) {
-    var klass = C['klass']({
-            'extend': kls,
-            'init': init,
-            'prop': prop
-        });
+        Class.prototype = new_this;
+        Class.prototype['constructor'] = Class;
+
+        for (i in props) {
+            if (props.hasOwnProperty(i)) {
+                addMethod(i);
+            }
+        }
+
+        function addMethod(key) {
+            var prop = props[key],
+                _super = SuperClass.prototype[key],
+                isMethodOverride = (
+                    typeof prop === 'function' &&
+                    typeof _super === 'function' &&
+                    fnTest.test(prop)
+                );
+
+            if (isMethodOverride) {
+                Class.prototype[key] = function() {
+                    var ret,
+                        tmp = this['_super'];
+
+                    this['_super'] = _super;
+
+                    ret = prop.apply(this, arguments);
+
+                    this['_super'] = tmp;
+
+                    return ret;
+                };
+            }
+            else {
+                Class.prototype[key] = prop;
+            }
+        }
+
+        Class['extend'] = SuperClass['extend'];
+
+        return Class;
+    };
+}());
+
+function classExtend(cls, prop, support) {
+    cls = cls || C['lass'];
+
+    var klass = cls['extend'](prop);
 
     if (isDefined(support)) {
         klass['support'] = support;
@@ -570,47 +591,17 @@ function klassExtend(kls, init, prop, support) {
 
     return klass;
 }
-function klassExtendBase(init, prop, support) {
-    return klassExtend(C['Base'], init, prop, support);
+function classExtendBase(prop, support) {
+    return classExtend(C['Base'], prop, support);
 }
-/* Test: "../../spec/_src/src/extend/test.js" */
-C['extend'] = function(child, _super) {
-    function ctor() {}
-
-    ctor.prototype = _super.prototype;
-    child.prototype = new ctor();
-
-    var cpt = child.prototype;
-
-    cpt._superclass = _super;
-    // cpt._super = function() {
-    //     var prev = this._prevctor;
-
-    //     if (prev) {
-    //         prev = prev.prototype._superclass;
-    //     }
-    //     else {
-    //         prev = this._prevctor = _super;
-    //     }
-
-    //     prev.apply(this, arguments);
-    // };
-};
 /* Test: "../../spec/_src/src/Base/test.js" */
-C['Base'] = klassExtend(UNDEFINED, function() {
-    this._disposestore = {};
-}, {
+C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
     'dispose': function(/* varless */ mine) {
         mine = this;
 
-        var internal = ancestors(mine, 'disposeInternal'),
-            i = 0,
+        var i = 0,
             temp = mine._disposestore;
-
-        for (; i < internal.length; i++) {
-            internal[i].call(mine);
-        }
 
         for (i in temp) {
             off.apply(NULL, temp[i]);
@@ -633,12 +624,17 @@ C['Base'] = klassExtend(UNDEFINED, function() {
 
         return NULL;
     },
-    'contract': function(el, e, handler /* varless */, id) {
+    'contract': function(el, e, handler /* varless */, mine, id) {
+        mine = this;
+
+        if (!mine._disposestore) {
+            mine._disposestore = {};
+        }
         /* var id = ++this._disposecountid; */
-        id = ++this._disposecountid;
+        id = ++mine._disposecountid;
 
         on(el, e, handler);
-        this._disposestore[id] = [el, e, handler];
+        mine._disposestore[id] = [el, e, handler];
 
         return id;
     },
@@ -654,7 +650,7 @@ C['Base'] = klassExtend(UNDEFINED, function() {
     }
 });
 /* Test: "../../spec/_src/src/Event/test.js" */
-ev = C['Event'] = klassExtendBase(UNDEFINED, {
+ev = C['Event'] = classExtendBase({
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
     'SWITCHMOVE': isTouch ? 'touchmove' : 'mousemove',
@@ -826,55 +822,8 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-    Mine = C['Animation'] =
-    klassExtendBase(function(el, property, option /* varless */, mine) {
-
-    mine = this;
-
-    option = option || NULLOBJ;
-
-    mine._onComplete = option['onComplete'] || nullFunction;
-
-    mine._el = el;
-
-    Mine['id']++;
-    mine._id = 'ciranim' + Mine['id'];
-
-    var duration = option['duration'] || Mine['duration'],
-        // easeOutExpo
-        ease = option['ease'] || csseaseOutExpo,
-        i,
-        prop = {};
-
-    for (i in property) {
-        prop[i] = property[i];
-        if (isNumber(prop[i])) {
-            prop[i] = prop[i] + 'px';
-        }
-    }
-
-    mine.property = prop;
-
-    prop = replaceAll(
-        replaceAll(jsonStringify(prop), '"', EMPTY),
-        ',',
-        ';'
-    );
-
-    sheet.insertRule(
-        '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
-        sheet.cssRules.length);
-
-    if (!isArray(ease)) {
-        ease = [ease];
-    }
-
-    addCSSRule(mine._id, css_prefix, duration, ease);
-
-    if (!option['manual']) {
-        mine['start']();
-    }
-}, {
+Mine = C['Animation'] =
+classExtendBase({
     _off: function() {
         var el = this._el,
             end = this._end;
@@ -882,7 +831,57 @@ var ret = checkCSSAnimTranCheck([
         off(el, event_key + 'End', end);
         off(el, 'animationend', end);
     },
-    'disposeInternal': this_stop,
+    'init': function(el, property, option /* varless */, mine) {
+        mine = this;
+
+        option = option || NULLOBJ;
+
+        mine._onComplete = option['onComplete'] || nullFunction;
+
+        mine._el = el;
+
+        Mine['id']++;
+        mine._id = 'ciranim' + Mine['id'];
+
+        var duration = option['duration'] || Mine['duration'],
+            // easeOutExpo
+            ease = option['ease'] || csseaseOutExpo,
+            i,
+            prop = {};
+
+        for (i in property) {
+            prop[i] = property[i];
+            if (isNumber(prop[i])) {
+                prop[i] = prop[i] + 'px';
+            }
+        }
+
+        mine.property = prop;
+
+        prop = replaceAll(
+            replaceAll(jsonStringify(prop), '"', EMPTY),
+            ',',
+            ';'
+        );
+
+        sheet.insertRule(
+            '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
+            sheet.cssRules.length);
+
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
+
+        addCSSRule(mine._id, css_prefix, duration, ease);
+
+        if (!option['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     'start': function(/* varless */ mine, el) {
         // var mine = this,
         //     el = mine._el;
@@ -963,41 +962,44 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = C['Transition'] =
-    klassExtendBase(function(el, property, option /* varless */, mine) {
+    classExtendBase({
+    'init': function(el, property, option /* varless */, mine) {
+        mine = this;
 
-    mine = this;
+        option = option || NULLOBJ;
 
-    option = option || NULLOBJ;
+        Mine['id']++;
+        mine._id = 'cirtrans' + Mine['id'];
 
-    Mine['id']++;
-    mine._id = 'cirtrans' + Mine['id'];
+        var transProp = [],
+            animeProp = override({}, property),
+            i,
+            duration = option['duration'] || Mine['duration'],
+            // easeOutExpo
+            ease = option['ease'] || csseaseOutExpo;
 
-    var transProp = [],
-        animeProp = override({}, property),
-        i,
-        duration = option['duration'] || Mine['duration'],
-        // easeOutExpo
-        ease = option['ease'] || csseaseOutExpo;
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
 
-    if (!isArray(ease)) {
-        ease = [ease];
-    }
+        for (i in property) {
+            transProp.push(i);
+        }
 
-    for (i in property) {
-        transProp.push(i);
-    }
+        addCSSRule(mine._id, css_prefix, duration, ease, transProp);
 
-    addCSSRule(mine._id, css_prefix, duration, ease, transProp);
+        mine._el = el;
+        mine._property = property;
+        mine._onComplete = option['onComplete'] || nullFunction;
 
-    mine._el = el;
-    mine._property = property;
-    mine._onComplete = option['onComplete'] || nullFunction;
-
-    if (!option['manual']) {
-        mine['start']();
-    }
-}, {
-    'disposeInternal': this_stop,
+        if (!option['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     'start': function(/* varless */ mine) {
         /* var mine = this; */
         mine = this;
@@ -1059,37 +1061,41 @@ Mine['id'] = 0;
 Mine['duration'] = 500;
 }());
 /* Test: "../../spec/_src/src/Tweener/test.js" */
-Tweener = C['Tweener'] = klassExtendBase(function(target, property, option /* varless */, name, prop, mine) {
-    // var name,
-    //     prop;
+Tweener = C['Tweener'] = classExtendBase({
+    'init': function(target, property, option /* varless */, name, prop, mine) {
+        // var name,
+        //     prop;
 
-    mine = this;
+        mine = this;
 
-    option = option || NULLOBJ;
+        option = option || NULLOBJ;
 
-    mine._target = target;
-    mine._property = [];
+        mine._target = target;
+        mine._property = [];
 
-    for (name in property) {
-        prop = property[name];
-        prop['name'] = name;
+        for (name in property) {
+            prop = property[name];
+            prop['name'] = name;
 
-        prop.distance = prop['to'] - prop['from'];
-        prop['prefix'] = prop['prefix'] || EMPTY;
-        prop['suffix'] = prop['suffix'] || 'px';
+            prop.distance = prop['to'] - prop['from'];
+            prop['prefix'] = prop['prefix'] || EMPTY;
+            prop['suffix'] = prop['suffix'] || 'px';
 
-        mine._property.push(prop);
-    }
+            mine._property.push(prop);
+        }
 
-    mine._duration = option['duration'] || Tweener['duration'];
-    mine._ease = option['ease'] || mine.__ease;
-    mine._onComplete = option['onComplete'];
+        mine._duration = option['duration'] || Tweener['duration'];
+        mine._ease = option['ease'] || mine.__ease;
+        mine._onComplete = option['onComplete'];
 
-    if (!option['manual']) {
-        mine['start']();
-    }
-}, {
-    'disposeInternal': this_stop,
+        if (!option['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     // easeOutExpo
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
@@ -1457,8 +1463,7 @@ function convertTweenerParam(el, params) {
 }
 }());
 /* Test: "../../spec/_src/src/HashQuery/test.js" */
-C['HashQuery'] = klassExtendBase(UNDEFINED,
-{
+C['HashQuery'] = classExtendBase({
     'typeCast': function(str) {
         var caststr = typeCast(str),
             matchstr;
@@ -1571,54 +1576,56 @@ function embedSupportCheck(type, suffix) {
     return FALSE;
 }
 /* Test: "../../spec/_src/src/Media/test.js" */
-Media = klassExtendBase(function(config) {
-    var mine = this,
-        autoplay = config['autoplay'],
-        loop = config['loop'],
-        media,
-        ev_canplay = 'canplay',
-        _parent = config['el'] || body;
+Media = classExtendBase({
+    'init': function(config) {
+        var mine = this,
+            autoplay = config['autoplay'],
+            loop = config['loop'],
+            media,
+            ev_canplay = 'canplay',
+            _parent = config['el'] || body;
 
-    config['preload'] = 'auto';
-    config['autoplay'] =
-    config['loop'] = FALSE;
+        config['preload'] = 'auto';
+        config['autoplay'] =
+        config['loop'] = FALSE;
 
-    switch (config['type']) {
-        case 'Audio':
-            media = C['Audio'](config);
-            break;
-        /* case 'Video': */
-        default:
-            media = C['Video'](config);
-    }
-    mine._el = media;
-
-    if (media) {
-        if (autoplay) {
-            var autoplayid;
-            autoplay = function() {
-                mine['uncontract'](autoplayid);
-                mine['play']();
-            };
-
-            autoplayid = mine['contract'](media, ev_canplay, autoplay);
+        switch (config['type']) {
+            case 'Audio':
+                media = C['Audio'](config);
+                break;
+            /* case 'Video': */
+            default:
+                media = C['Video'](config);
         }
-        if (loop) {
-            mine['loop'](TRUE);
-        }
+        mine._el = media;
 
-        if (config['oncanplay']) {
-            mine['contract'](media, ev_canplay, config['oncanplay']);
-        }
-        if (config['onended']) {
-            mine['contract'](media, ev_ended, config['onended']);
-        }
+        if (media) {
+            if (autoplay) {
+                var autoplayid;
+                autoplay = function() {
+                    mine['uncontract'](autoplayid);
+                    mine['play']();
+                };
 
-        append(_parent, media);
-    }
-}, {
-    'disposeInternal': function() {
+                autoplayid = mine['contract'](media, ev_canplay, autoplay);
+            }
+            if (loop) {
+                mine['loop'](TRUE);
+            }
+
+            if (config['oncanplay']) {
+                mine['contract'](media, ev_canplay, config['oncanplay']);
+            }
+            if (config['onended']) {
+                mine['contract'](media, ev_ended, config['onended']);
+            }
+
+            append(_parent, media);
+        }
+    },
+    'dispose': function() {
         remove(this._el);
+        this['_super']();
     },
     'getElement': function() {
         return this._el;
@@ -1696,11 +1703,12 @@ C['Movie'] = function(config) {
 };
 C['Movie']['support'] = C['Video']['support'];
 /* Test: "../../spec/_src/src/Ajax/test.js" */
-C['Ajax'] = klassExtendBase(function(config) {
-    if (config) {
-        this['request'](config);
-    }
-}, {
+C['Ajax'] = classExtendBase({
+    'init': function(config) {
+        if (config) {
+            this['request'](config);
+        }
+    },
     'request': function(vars) {
         var url = vars['url'],
             callback = vars['callback'] || nullFunction,
@@ -1784,22 +1792,7 @@ C['Ajax'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Async/test.js" */
-Async = C['Async'] = klassExtendBase(function(config /* varless */, mine, waits) {
-    // var mine = this,
-    //     waits = config['waits'];
-    mine = this;
-    waits = config['waits'];
-
-    if (isArray(waits)) {
-        waits = waits.length;
-    }
-
-    mine._waits = waits;
-    mine._callback = config['callback'];
-    mine._onprogress = config['onprogress'] || nullFunction;
-
-    mine._args = [];
-}, {
+Async = C['Async'] = classExtendBase({
     _success: 0,
     _miss: 0,
     _progress: 0,
@@ -1829,6 +1822,22 @@ Async = C['Async'] = klassExtendBase(function(config /* varless */, mine, waits)
             mine._onprogress = nullFunction;
         }
     },
+    'init': function(config /* varless */, mine, waits) {
+        // var mine = this,
+        //     waits = config['waits'];
+        mine = this;
+        waits = config['waits'];
+
+        if (isArray(waits)) {
+            waits = waits.length;
+        }
+
+        mine._waits = waits;
+        mine._callback = config['callback'];
+        mine._onprogress = config['onprogress'] || nullFunction;
+
+        mine._args = [];
+    },
     'getProgress': function() {
         return this._progress;
     },
@@ -1851,11 +1860,15 @@ Async = C['Async'] = klassExtendBase(function(config /* varless */, mine, waits)
     }
 });
 /* Test: "../../spec/_src/src/Handle/test.js" */
-C['Handle'] = klassExtendBase(function(config) {
-    this._config = config;
-    this['attach']();
-}, {
-    'disposeInternal': this_detach,
+C['Handle'] = classExtendBase({
+    'init': function(config) {
+        this._config = config;
+        this['attach']();
+    },
+    'dispose': function() {
+        this['detach']();
+        this['_super']();
+    },
     'attach': function() {
         this._e(on);
     },
@@ -1877,14 +1890,15 @@ C['Handle'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Brush/test.js" */
-C['Brush'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Brush'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._canvas = config['canvas'];
-    mine._ctx = mine._canvas.getContext('2d');
+        mine._canvas = config['canvas'];
+        mine._ctx = mine._canvas.getContext('2d');
 
-    mine['setSize'](config);
-}, {
+        mine['setSize'](config);
+    },
     'setSize': function(vars) {
         if (vars['width']) {
             this._canvas.width = vars['width'];
@@ -1974,28 +1988,32 @@ C['Datetime'] = function(str) {
     return new Date(str);
 };
 /* Test: "../../spec/_src/src/RollOver/test.js" */
-C['Rollover'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Rollover'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    var cls = config['toggleClass'] || EMPTY,
-        over = config['over'] || nullFunction,
-        out = config['out'] || nullFunction;
+        var cls = config['toggleClass'] || EMPTY,
+            over = config['over'] || nullFunction,
+            out = config['out'] || nullFunction;
 
-    mine._els = config['els'];
+        mine._els = config['els'];
 
-    mine._switchover = function() {
-        addClass(mine, cls);
-        over();
-    }
-    mine._switchout = function() {
-        removeClass(mine, cls);
-        out();
-    }
-    if (!config['manual']) {
-        mine['attach']();
-    }
-}, {
-    'disposeInternal': this_detach,
+        mine._switchover = function() {
+            addClass(mine, cls);
+            over();
+        }
+        mine._switchout = function() {
+            removeClass(mine, cls);
+            out();
+        }
+        if (!config['manual']) {
+            mine['attach']();
+        }
+    },
+    'dispose': function() {
+        this['detach']();
+        this['_super']();
+    },
     'attach': function() {
         this._e(on);
     },
@@ -2016,9 +2034,10 @@ C['Rollover'] = klassExtendBase(function(config /* varless */, mine) {
     }
 });
 /* Test: "../../spec/_src/src/DataStore/test.js" */
-C['DataStore'] = klassExtendBase(function() {
-    this._data = {};
-}, {
+C['DataStore'] = classExtendBase({
+    'init': function() {
+        this._data = {};
+    },
     'set': function(key, val) {
         this._data[key] = val;
     },
@@ -2047,10 +2066,11 @@ C['DataStore'] = klassExtendBase(function() {
     }
 });
 /* Test: "../../spec/_src/src/WebStorage/test.js" */
-WebStorage = klassExtendBase(function(config) {
-    this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
-    this._storage = win[config['type'] + 'Storage'];
-}, {
+WebStorage = classExtendBase({
+    'init': function(config) {
+        this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
+        this._storage = win[config['type'] + 'Storage'];
+    },
     'set': function(key, val) {
         this._storage.setItem(this._n + key, jsonStringify(val));
     },
@@ -2117,9 +2137,10 @@ C['SessionStorage'] = function(config) {
     return new WebStorage(config);
 };
 /* Test: "../../spec/_src/src/Deferred/test.js" */
-C['Deferred'] = klassExtendBase(function() {
-    this._queue = [];
-}, {
+C['Deferred'] = classExtendBase({
+    'init': function() {
+        this._queue = [];
+    },
     'isResolve': function() {
         return !this._queue;
     },
@@ -2150,17 +2171,7 @@ C['Deferred'] = klassExtendBase(function() {
     }
 });
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-C['DragFlick'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
-
-    mine._contractid = [];
-    mine._config = config;
-
-    config = config || NULLOBJ;
-    if (!config['manual']) {
-        mine['attach']();
-    }
-}, {
+C['DragFlick'] = classExtendBase({
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
     },
@@ -2238,6 +2249,17 @@ C['DragFlick'] = klassExtendBase(function(config /* varless */, mine) {
                 vars['callback'](direction);
             }
         });
+    },
+    'init': function(config /* varless */, mine) {
+        mine = this;
+
+        mine._contractid = [];
+        mine._config = config;
+
+        config = config || NULLOBJ;
+        if (!config['manual']) {
+            mine['attach']();
+        }
     },
     'attach': function() {
         var mine = this,
@@ -2331,11 +2353,12 @@ C['ExternalInterface'] = function(config) {
     return new ExternalIOS();
 };
 /* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
-ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
-    // this._android = config['android'];
-    // this._externalObj = config['externalObj'];
-    this._config = config;
-}, {
+ExternalAndroid = classExtend(C['HashQuery'], {
+    'init': function(config) {
+        // this._android = config['android'];
+        // this._externalObj = config['externalObj'];
+        this._config = config;
+    },
     'call': function(conf) {
         this._config['android'][conf['mode']](this['makeHash'](conf));
     },
@@ -2352,15 +2375,18 @@ ExternalAndroid = klassExtend(C['HashQuery'], function(config) {
     }
 });
 /* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
-ExternalIOS = klassExtend(C['HashQuery'], function() {
-    this._ios = {};
-}, {
-    'disposeInternal': function(/* varless */ i) {
+ExternalIOS = classExtend(C['HashQuery'], {
+    'init': function() {
+        this._ios = {};
+    },
+    'dispose': function(/* varless */ i) {
         /* var i; */
 
         for (i in this._ios) {
             this['removeCallback'](i);
         }
+
+        this['_super']();
     },
     'call': function(conf) {
         this['setHash'](conf);
@@ -2385,8 +2411,7 @@ ExternalIOS = klassExtend(C['HashQuery'], function() {
     }
 });
 /* Test: "../../spec/_src/src/Facebook/test.js" */
-C['Facebook'] = klassExtendBase(UNDEFINED,
-{
+C['Facebook'] = classExtendBase({
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +
         'app_id=' + vars['app_id'] + '&' +
@@ -2401,25 +2426,29 @@ C['Facebook'] = klassExtendBase(UNDEFINED,
     }
 });
 /* Test: "../../spec/_src/src/FPS/test.js" */
-C['FPS'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
-
-    mine._criterion =
-    mine._surver = config['criterion'];
-    mine._msecFrame = mine._getFrame(mine._criterion);
-    mine._enterframe = config['enterframe'];
-    // mine._prevtime =
-    // mine._nowtime =
-    // mine._loopid = 0;
-
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
+C['FPS'] = classExtendBase({
     _prevtime: 0,
     _nowtime: 0,
     _loopid: 0,
-    'disposeInternal': this_stop,
+    'init': function(config /* varless */, mine) {
+        mine = this;
+
+        mine._criterion =
+        mine._surver = config['criterion'];
+        mine._msecFrame = mine._getFrame(mine._criterion);
+        mine._enterframe = config['enterframe'];
+        // mine._prevtime =
+        // mine._nowtime =
+        // mine._loopid = 0;
+
+        if (!config['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     'getCriterion': function() {
         return this._criterion;
     },
@@ -2456,31 +2485,32 @@ C['FPS'] = klassExtendBase(function(config /* varless */, mine) {
     'stop': this_clearInterval_loop
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['ImgLoad'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._srcs = config['srcs'];
-    mine._loadedsrcs = [];
-    mine._contractid = [];
-    mine._async = new Async({
-        'waits': mine._srcs,
-        'onprogress': config['onprogress'],
-        'callback': function() {
-            var i = mine._contractid.length;
+        mine._srcs = config['srcs'];
+        mine._loadedsrcs = [];
+        mine._contractid = [];
+        mine._async = new Async({
+            'waits': mine._srcs,
+            'onprogress': config['onprogress'],
+            'callback': function() {
+                var i = mine._contractid.length;
 
-            for (; i--;) {
-                mine['uncontract'](mine._contractid[i]);
+                for (; i--;) {
+                    mine['uncontract'](mine._contractid[i]);
+                }
+                mine._contractid = [];
+
+                (config['onload'] || nullFunction)(mine._loadedsrcs);
             }
-            mine._contractid = [];
+        });
 
-            (config['onload'] || nullFunction)(mine._loadedsrcs);
+        if (!config['manual']) {
+            mine['start']();
         }
-    });
-
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
+    },
     'start': function() {
         var mine = this,
             img,
@@ -2506,11 +2536,7 @@ C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
     }
 });
 /* Test: "../../spec/_src/src/WindowLoad/test.js" */
-C['WindowLoad'] = klassExtendBase(function(config) {
-    if (config) {
-        this._onload(config['onload']);
-    }
-}, {
+C['WindowLoad'] = classExtendBase({
     _onload: function(func /* varless */, mine, disposeid, loaded) {
         // var mine = this,
         //     disposeid,
@@ -2524,10 +2550,15 @@ C['WindowLoad'] = klassExtendBase(function(config) {
             mine['uncontract'](disposeid);
             func();
         });
+    },
+    'init': function(config) {
+        if (config) {
+            this._onload(config['onload']);
+        }
     }
 });
 /* Test: "../../spec/_src/src/Mobile/test.js" */
-mb = C['Mobile'] = klassExtendBase(UNDEFINED, {
+mb = C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return body.clientWidth / win.innerWidth;
     },
@@ -2607,7 +2638,7 @@ else {
     browser = 'ather';
 }
 
-pc = C['PC'] = klassExtendBase(UNDEFINED, {
+pc = C['PC'] = classExtendBase({
     'isChrome': function(ua) {
         return browser == 'chrome';
     },
@@ -2628,24 +2659,25 @@ pc = C['PC'] = klassExtendBase(UNDEFINED, {
 C['pc'] = new pc();
 }());
 /* Test: "../../spec/_src/src/Orientation/test.js" */
-C['Orientation'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Orientation'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._config = config;
+        mine._config = config;
 
-    mine._contractid = [];
+        mine._contractid = [];
 
-    mine._portrait = {
-        'portrait': TRUE,
-        'landscape': FALSE
-    };
-    mine._landscape = {
-        'portrait': FALSE,
-        'landscape': TRUE
-    };
+        mine._portrait = {
+            'portrait': TRUE,
+            'landscape': FALSE
+        };
+        mine._landscape = {
+            'portrait': FALSE,
+            'landscape': TRUE
+        };
 
-    mine['attach']();
-}, {
+        mine['attach']();
+    },
     'get': function(/* varless */ mine) {
         mine = this;
 
@@ -2698,51 +2730,7 @@ C['Orientation'] = klassExtendBase(function(config /* varless */, mine) {
     }
 }, 'onorientationchange' in win);
 /* Test: "../../spec/_src/src/Modal/test.js" */
-C['Modal'] = klassExtendBase(function(config /* varless */, mine, commoncss) {
-    mine = this;
-    config = config || NULLOBJ;
-
-    // mine._html = config['html'];
-    // mine._bgClose = config['bgClose'];
-    // mine._closeSelector = config['closeSelector'];
-    mine._config = config;
-
-    /* var commoncss = { */
-    commoncss = {
-        'display': 'none',
-        'position': 'absolute'
-    };
-
-    mine._scroll = new C['Scroll']();
-
-    mine._contractid = [];
-
-    mine._bg = create('div', {
-        'class': 'cir-modal-bg'
-    });
-    css(mine._bg, override({
-        'z-ndex': 9998,
-        'top': 0,
-        'left': 0,
-        'width': '100%',
-        'height': '300%'
-    }, commoncss));
-    append(body, mine._bg);
-
-    mine._inner = create('div', {
-        'class': 'cir-modal-content'
-    });
-    css(mine._inner, override({
-        'z-index': 9999,
-        'top': '50%',
-        'left': '50%'
-    }, commoncss));
-    append(body, mine._inner);
-
-    if (!config['manual']) {
-        mine['open']();
-    }
-}, {
+C['Modal'] = classExtendBase({
     _closeDetach: function(/* varless */ mine) {
         mine = this;
 
@@ -2754,12 +2742,59 @@ C['Modal'] = klassExtendBase(function(config /* varless */, mine, commoncss) {
 
         mine._contractid = [];
     },
-    'disposeInternal': function(/* varless */ mine) {
+    'init': function(config /* varless */, mine, commoncss) {
+        mine = this;
+        config = config || NULLOBJ;
+
+        // mine._html = config['html'];
+        // mine._bgClose = config['bgClose'];
+        // mine._closeSelector = config['closeSelector'];
+        mine._config = config;
+
+        /* var commoncss = { */
+        commoncss = {
+            'display': 'none',
+            'position': 'absolute'
+        };
+
+        mine._scroll = new C['Scroll']();
+
+        mine._contractid = [];
+
+        mine._bg = create('div', {
+            'class': 'cir-modal-bg'
+        });
+        css(mine._bg, override({
+            'z-ndex': 9998,
+            'top': 0,
+            'left': 0,
+            'width': '100%',
+            'height': '300%'
+        }, commoncss));
+        append(body, mine._bg);
+
+        mine._inner = create('div', {
+            'class': 'cir-modal-content'
+        });
+        css(mine._inner, override({
+            'z-index': 9999,
+            'top': '50%',
+            'left': '50%'
+        }, commoncss));
+        append(body, mine._inner);
+
+        if (!config['manual']) {
+            mine['open']();
+        }
+    },
+    'dispose': function(/* varless */ mine) {
         mine = this;
 
         mine['close']();
         remove(mine._bg);
         remove(mine._inner);
+
+        this['_super']();
     },
     'open': function(text /* varless */, mine) {
         mine = this;
@@ -2824,15 +2859,16 @@ C['Modal'] = klassExtendBase(function(config /* varless */, mine, commoncss) {
     }
 });
 /* Test: "../../spec/_src/src/DeviceAction/test.js" */
-WindowAction = klassExtendBase(function(config) {
-    // this._e = config['e'];
-    // this._callback = config['callback'];
-    this._config = config;
+WindowAction = classExtendBase({
+    'init': function(config) {
+        // this._e = config['e'];
+        // this._callback = config['callback'];
+        this._config = config;
 
-    /* if (config['callback']) { */
+        /* if (config['callback']) { */
         this['attach']();
-    /* } */
-}, {
+        /* } */
+    },
     'attach': function(/* varless */ mine) {
         mine = this;
 
@@ -2875,24 +2911,25 @@ var Shake,
     }
 /* } */
 
-C['DeviceShake'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
-
-    mine._shaker = new Shake();
-    // mine._limit = config['limit'];
-    // mine._waittime = config['waittime'];
-    // mine._direction = config['direction'];
-    // mine._callback = config['callback'];
-    mine._config = config;
-
-    /* if (config['callback'] && config['direction']) { */
-        mine['attach']();
-    /* } */
-}, {
+C['DeviceShake'] = classExtendBase({
     convertName: {
         'x': 'gamma',
         'y': 'beta',
         'z': 'alpha'
+    },
+    'init': function(config /* varless */, mine) {
+        mine = this;
+
+        mine._shaker = new Shake();
+        // mine._limit = config['limit'];
+        // mine._waittime = config['waittime'];
+        // mine._direction = config['direction'];
+        // mine._callback = config['callback'];
+        mine._config = config;
+
+        /* if (config['callback'] && config['direction']) { */
+        mine['attach']();
+        /* } */
     },
     'attach': function() {
         var mine = this,
@@ -2929,13 +2966,14 @@ C['DeviceShake'] = klassExtendBase(function(config /* varless */, mine) {
 
 }());
 /* Test: "../../spec/_src/src/FontImg/test.js" */
-C['FontImg'] = klassExtendBase(function(config /* varless */, type) {
-    config = config || NULLOBJ;
-    type = config['type'];
+C['FontImg'] = classExtendBase({
+    'init': function(config /* varless */, type) {
+        config = config || NULLOBJ;
+        type = config['type'];
 
-    this._type = type ? type + '_' : EMPTY;
-    this._tag = config['tag'] || 'span';
-}, {
+        this._type = type ? type + '_' : EMPTY;
+        this._tag = config['tag'] || 'span';
+    },
     'make': function(x) {
         var aryX = (EMPTY + x).split(EMPTY),
             tagtemp = this._tag,
@@ -2952,9 +2990,10 @@ C['FontImg'] = klassExtendBase(function(config /* varless */, type) {
     }
 });
 /* Test: "../../spec/_src/src/Observer/test.js" */
-C['Observer'] = klassExtendBase(function() {
-    this._observed = {};
-}, {
+C['Observer'] = classExtendBase({
+    'init': function() {
+        this._observed = {};
+    },
     'on': function(key, func /* varless */, mine, observed) {
         mine = this;
         observed = mine._observed;
@@ -3019,21 +3058,25 @@ C['Observer'] = klassExtendBase(function() {
     }
 });
 /* Test: "../../spec/_src/src/PreRender/test.js" */
-C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['PreRender'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._els = config['els'];
-    mine._guesslimit = config['guesslimit'] || 30;
-    mine._onrendered = config['onrendered'];
-    mine._looptime = config['looptime'] || 100;
-    mine._loopblur = mine._looptime + (config['loopblur'] || 20);
-    /* mine._loopid = mine.prevtime = NULL; */
+        mine._els = config['els'];
+        mine._guesslimit = config['guesslimit'] || 30;
+        mine._onrendered = config['onrendered'];
+        mine._looptime = config['looptime'] || 100;
+        mine._loopblur = mine._looptime + (config['loopblur'] || 20);
+        /* mine._loopid = mine.prevtime = NULL; */
 
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
-    'disposeInternal': this_clearInterval_loop,
+        if (!config['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        clearInterval(this._loopid);
+        this['_super']();
+    },
     'start': function() {
         var i,
             mine = this,
@@ -3068,16 +3111,17 @@ C['PreRender'] = klassExtendBase(function(config /* varless */, mine) {
     }
 });
 /* Test: "../../spec/_src/src/Route/test.js" */
-C['Route'] = klassExtendBase(function(config) {
-    // this._target = config['target'] || EMPTY;
-    // this._noregex = config['noregex'];
-    // this._action = config['action'];
-    this._config = config;
+C['Route'] = classExtendBase({
+    'init': function(config) {
+        // this._target = config['target'] || EMPTY;
+        // this._noregex = config['noregex'];
+        // this._action = config['action'];
+        this._config = config;
 
-    if (!config['manual']) {
-        this['start']();
-    }
-}, {
+        if (!config['manual']) {
+            this['start']();
+        }
+    },
     'start': function() {
         this['fire'](this._config['target']);
     },
@@ -3100,13 +3144,14 @@ C['Route'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/ScriptLoad/test.js" */
-C['ScriptLoad'] = klassExtendBase(function(config) {
-    this._els = [];
+C['ScriptLoad'] = classExtendBase({
+    'init': function(config) {
+        this._els = [];
 
-    if (config) {
-        this['requests'](config);
-    }
-}, {
+        if (config) {
+            this['requests'](config);
+        }
+    },
     'requests': function(varary, callback) {
         var mine = this,
             i = 0,
@@ -3153,21 +3198,22 @@ C['ScriptLoad'] = klassExtendBase(function(config) {
 var xhr,
     isLoaded = FALSE;
 
-C['ServerMeta'] = klassExtendBase(function(config) {
-    config = config || NULLOBJ;
+C['ServerMeta'] = classExtendBase({
+    'init': function(config) {
+        config = config || NULLOBJ;
 
-    var callback = config['callback'] || nullFunction;
+        var callback = config['callback'] || nullFunction;
 
-    if (!xhr) {
-        xhr = getHeader(function() {
-            isLoaded = TRUE;
+        if (!xhr) {
+            xhr = getHeader(function() {
+                isLoaded = TRUE;
+                callback(xhr);
+            });
+        }
+        else {
             callback(xhr);
-        });
-    }
-    else {
-        callback(xhr);
-    }
-}, {
+        }
+    },
     'date': function(callback) {
         return getHeader(function(xhr) {
             callback(xhr.getResponseHeader('Date'));
@@ -3217,14 +3263,16 @@ function getHeader(callback) {
 }
 }());
 /* Test: "../../spec/_src/src/Surrogate/test.js" */
-C['Surrogate'] = klassExtendBase(function(config) {
-    this._delay = config['delay'];
-    this._callback = config['callback'];
-    // this._args = NULL;
-    // this._waitid = NULL;
-}, {
-    'disposeInternal': function() {
+C['Surrogate'] = classExtendBase({
+    'init': function(config) {
+        this._delay = config['delay'];
+        this._callback = config['callback'];
+        // this._args = NULL;
+        // this._waitid = NULL;
+    },
+    'dispose': function() {
         this['clear']();
+        this['_super']();
     },
     'request': function(arg /* varless */, mine) {
         mine = this;
@@ -3243,15 +3291,17 @@ C['Surrogate'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Throttle/test.js" */
-C['Throttle'] = klassExtendBase(function(config) {
-    this._waittime = config['waittime'];
-    this._callback = config['callback'];
-    // this._locked = FALSE;
-    // this._waitid = NULL;
-    // this._args = NULL;
-}, {
-    'disposeInternal': function() {
+C['Throttle'] = classExtendBase({
+    'init': function(config) {
+        this._waittime = config['waittime'];
+        this._callback = config['callback'];
+        // this._locked = FALSE;
+        // this._waitid = NULL;
+        // this._args = NULL;
+    },
+    'dispose': function() {
         this['unlock']();
+        this['_super']();
     },
     'request': function(vars /* varless */, mine) {
         /* var mine = this; */
@@ -3426,8 +3476,7 @@ C['Timer'] = function(config) {
     return instance;
 };
 /* Test: "../../spec/_src/src/Twitter/test.js" */
-C['Twitter'] = klassExtendBase(UNDEFINED,
-{
+C['Twitter'] = classExtendBase({
     'shareURL': function(vars) {
         var name = vars['name'],
             hash = vars['hash'];
@@ -3442,10 +3491,11 @@ C['Twitter'] = klassExtendBase(UNDEFINED,
     }
 });
 /* Test: "../../spec/_src/src/XML/test.js" */
-C['XML'] = klassExtendBase(function(config) {
-    this._el = create('div');
-    html(this._el, config['data']);
-}, {
+C['XML'] = classExtendBase({
+    'init': function(config) {
+        this._el = create('div');
+        html(this._el, config['data']);
+    },
     '$': function(selector) {
         return $child(selector, this._el);
     },
@@ -3454,33 +3504,34 @@ C['XML'] = klassExtendBase(function(config) {
     }
 });
 /* Test: "../../spec/_src/src/Model/test.js" */
-C['Model'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
-
-    config = config || NULLOBJ;
-
-    var i,
-        defaults = config['defaults'] || mine['defaults'] || {},
-        events = config['events'] || mine['events'];
-
-    mine._validate = config['validate'] || mine['validate'] || {};
-    mine._store = config['store'] || mine['store'] || new C['DataStore']();
-    mine._observer = new C['Observer']();
-
-    for (i in defaults) {
-        mine['set'](i, defaults[i]);
-    }
-    for (i in events) {
-        mine['on'](i, events[i]);
-    }
-}, {
-    notice: function(eventname, key, val /* varless */, mine) {
+C['Model'] = classExtendBase({
+    _notice: function(eventname, key, val /* varless */, mine) {
         mine = this;
 
         mine._observer['fire'](eventname, mine._store['get']());
 
         if (key) {
             mine._observer['fire'](eventname + ':' + key, val);
+        }
+    },
+    'init': function(config /* varless */, mine) {
+        mine = this;
+
+        config = config || NULLOBJ;
+
+        var i,
+            defaults = config['defaults'] || mine['defaults'] || {},
+            events = config['events'] || mine['events'];
+
+        mine._validate = config['validate'] || mine['validate'] || {};
+        mine._store = config['store'] || mine['store'] || new C['DataStore']();
+        mine._observer = new C['Observer']();
+
+        for (i in defaults) {
+            mine['set'](i, defaults[i]);
+        }
+        for (i in events) {
+            mine['on'](i, events[i]);
         }
     },
     'set': function(key, val /* varless */, mine) {
@@ -3490,13 +3541,13 @@ C['Model'] = klassExtendBase(function(config /* varless */, mine) {
             mine._validate[key] &&
             !mine._validate[key](key, val)
         ) {
-            return mine.notice('fail', key, val);
+            return mine._notice('fail', key, val);
         }
 
         mine._prev = mine._store['get']();
         mine._store['set'](key, val);
 
-        mine.notice(ev['CHANGE'], key, val);
+        mine._notice(ev['CHANGE'], key, val);
     },
     'prev': function(key) {
         if (!key) {
@@ -3514,7 +3565,7 @@ C['Model'] = klassExtendBase(function(config /* varless */, mine) {
             var get = mine._store['get'](key),
                 ret = mine._store['remove'](key);
 
-            mine.notice('remove', key, get);
+            mine._notice('remove', key, get);
 
             return ret;
         }
@@ -3522,7 +3573,7 @@ C['Model'] = klassExtendBase(function(config /* varless */, mine) {
     'reset': function(/* varless */ ret) {
         ret = this._store['reset']();
 
-        this.notice('reset');
+        this._notice('reset');
     },
     'on': function(key, func /* varless */, proxyfunc) {
         /* var proxyfunc = proxy(this, func); */
@@ -3539,26 +3590,30 @@ C['Model'] = klassExtendBase(function(config /* varless */, mine) {
     }
 });
 /* Test: "../../spec/_src/src/View/test.js" */
-C['View'] = klassExtendBase(function(config /* varless */, mine, i) {
-    mine = this;
+C['View'] = classExtendBase({
+    'init': function(config /* varless */, mine, i) {
+        mine = this;
 
-    /* var i; */
+        /* var i; */
 
-    if (!config) {
-        config = owner(mine, mine, {});
-    }
-    else {
-        config = owner(mine, config);
-    }
+        if (!config) {
+            config = owner(mine, mine, {});
+        }
+        else {
+            config = owner(mine, config);
+        }
 
-    mine['el'] = C['$'](config['el'] || mine['el'] || create('div'));
+        mine['el'] = C['$'](config['el'] || mine['el'] || create('div'));
 
-    mine['attach']();
-    if (config['init']) {
-        mine['init']();
-    }
-}, {
-    'disposeInternal': this_detach,
+        mine['attach']();
+        if (config['init']) {
+            mine['init']();
+        }
+    },
+    'dispose': function() {
+        this['detach']();
+        this['_super']();
+    },
     _e: function(methodname /* varless */, mine, i, j, $el, events) {
         mine = this;
 
@@ -3588,16 +3643,17 @@ C['View'] = klassExtendBase(function(config /* varless */, mine, i) {
     }
 });
 /* Test: "../../spec/_src/src/Validate/test.js" */
-C['Validate'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['Validate'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    config = config || {};
+        config = config || {};
 
-    /* mine._level = config['level'] || 'warn'; */
-    mine._level = config['level'];
+        /* mine._level = config['level'] || 'warn'; */
+        mine._level = config['level'];
 
-    owner(mine, mine, config);
-}, {
+        owner(mine, mine, config);
+    },
     'displayError': function(key, text) {
         text = 'Validate Error:' + key + ' is ' + text + '.';
 
@@ -3655,10 +3711,12 @@ C['Validate'] = klassExtendBase(function(config /* varless */, mine) {
 
 C['validate'] = new C['Validate']();
 /* Test: "../../spec/_src/src/Scroll/test.js" */
-C['Scroll'] = klassExtendBase(UNDEFINED, {
-    'disposeInternal': function() {
+C['Scroll'] = classExtendBase({
+    'dispose': function() {
         this['revival']();
         clearInterval(this._smoothid);
+
+        this['_super']();
     },
     'to': scrollTo,
     'toTop': pageTop,

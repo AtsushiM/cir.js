@@ -1,18 +1,11 @@
 /* Test: "../../spec/_src/src/Base/test.js" */
-C['Base'] = klassExtend(UNDEFINED, function() {
-    this._disposestore = {};
-}, {
+C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
     'dispose': function(/* varless */ mine) {
         mine = this;
 
-        var internal = ancestors(mine, 'disposeInternal'),
-            i = 0,
+        var i = 0,
             temp = mine._disposestore;
-
-        for (; i < internal.length; i++) {
-            internal[i].call(mine);
-        }
 
         for (i in temp) {
             off.apply(NULL, temp[i]);
@@ -35,12 +28,17 @@ C['Base'] = klassExtend(UNDEFINED, function() {
 
         return NULL;
     },
-    'contract': function(el, e, handler /* varless */, id) {
+    'contract': function(el, e, handler /* varless */, mine, id) {
+        mine = this;
+
+        if (!mine._disposestore) {
+            mine._disposestore = {};
+        }
         /* var id = ++this._disposecountid; */
-        id = ++this._disposecountid;
+        id = ++mine._disposecountid;
 
         on(el, e, handler);
-        this._disposestore[id] = [el, e, handler];
+        mine._disposestore[id] = [el, e, handler];
 
         return id;
     },

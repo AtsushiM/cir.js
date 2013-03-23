@@ -1,52 +1,54 @@
 /* Test: "../../spec/_src/src/Media/test.js" */
-Media = klassExtendBase(function(config) {
-    var mine = this,
-        autoplay = config['autoplay'],
-        loop = config['loop'],
-        media,
-        ev_canplay = 'canplay',
-        _parent = config['el'] || body;
+Media = classExtendBase({
+    'init': function(config) {
+        var mine = this,
+            autoplay = config['autoplay'],
+            loop = config['loop'],
+            media,
+            ev_canplay = 'canplay',
+            _parent = config['el'] || body;
 
-    config['preload'] = 'auto';
-    config['autoplay'] =
-    config['loop'] = FALSE;
+        config['preload'] = 'auto';
+        config['autoplay'] =
+        config['loop'] = FALSE;
 
-    switch (config['type']) {
-        case 'Audio':
-            media = C['Audio'](config);
-            break;
-        /* case 'Video': */
-        default:
-            media = C['Video'](config);
-    }
-    mine._el = media;
-
-    if (media) {
-        if (autoplay) {
-            var autoplayid;
-            autoplay = function() {
-                mine['uncontract'](autoplayid);
-                mine['play']();
-            };
-
-            autoplayid = mine['contract'](media, ev_canplay, autoplay);
+        switch (config['type']) {
+            case 'Audio':
+                media = C['Audio'](config);
+                break;
+            /* case 'Video': */
+            default:
+                media = C['Video'](config);
         }
-        if (loop) {
-            mine['loop'](TRUE);
-        }
+        mine._el = media;
 
-        if (config['oncanplay']) {
-            mine['contract'](media, ev_canplay, config['oncanplay']);
-        }
-        if (config['onended']) {
-            mine['contract'](media, ev_ended, config['onended']);
-        }
+        if (media) {
+            if (autoplay) {
+                var autoplayid;
+                autoplay = function() {
+                    mine['uncontract'](autoplayid);
+                    mine['play']();
+                };
 
-        append(_parent, media);
-    }
-}, {
-    'disposeInternal': function() {
+                autoplayid = mine['contract'](media, ev_canplay, autoplay);
+            }
+            if (loop) {
+                mine['loop'](TRUE);
+            }
+
+            if (config['oncanplay']) {
+                mine['contract'](media, ev_canplay, config['oncanplay']);
+            }
+            if (config['onended']) {
+                mine['contract'](media, ev_ended, config['onended']);
+            }
+
+            append(_parent, media);
+        }
+    },
+    'dispose': function() {
         remove(this._el);
+        this['_super']();
     },
     'getElement': function() {
         return this._el;

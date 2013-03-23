@@ -1,29 +1,30 @@
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
-C['ImgLoad'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
+C['ImgLoad'] = classExtendBase({
+    'init': function(config /* varless */, mine) {
+        mine = this;
 
-    mine._srcs = config['srcs'];
-    mine._loadedsrcs = [];
-    mine._contractid = [];
-    mine._async = new Async({
-        'waits': mine._srcs,
-        'onprogress': config['onprogress'],
-        'callback': function() {
-            var i = mine._contractid.length;
+        mine._srcs = config['srcs'];
+        mine._loadedsrcs = [];
+        mine._contractid = [];
+        mine._async = new Async({
+            'waits': mine._srcs,
+            'onprogress': config['onprogress'],
+            'callback': function() {
+                var i = mine._contractid.length;
 
-            for (; i--;) {
-                mine['uncontract'](mine._contractid[i]);
+                for (; i--;) {
+                    mine['uncontract'](mine._contractid[i]);
+                }
+                mine._contractid = [];
+
+                (config['onload'] || nullFunction)(mine._loadedsrcs);
             }
-            mine._contractid = [];
+        });
 
-            (config['onload'] || nullFunction)(mine._loadedsrcs);
+        if (!config['manual']) {
+            mine['start']();
         }
-    });
-
-    if (!config['manual']) {
-        mine['start']();
-    }
-}, {
+    },
     'start': function() {
         var mine = this,
             img,

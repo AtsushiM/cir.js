@@ -37,7 +37,7 @@ else {
     browser = 'ather';
 }
 
-pc = C['PC'] = klassExtendBase(UNDEFINED, {
+pc = C['PC'] = classExtendBase({
     'isChrome': function(ua) {
         return browser == 'chrome';
     },

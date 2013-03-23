@@ -18,24 +18,25 @@ var Shake,
     }
 /* } */
 
-C['DeviceShake'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
-
-    mine._shaker = new Shake();
-    // mine._limit = config['limit'];
-    // mine._waittime = config['waittime'];
-    // mine._direction = config['direction'];
-    // mine._callback = config['callback'];
-    mine._config = config;
-
-    /* if (config['callback'] && config['direction']) { */
-        mine['attach']();
-    /* } */
-}, {
+C['DeviceShake'] = classExtendBase({
     convertName: {
         'x': 'gamma',
         'y': 'beta',
         'z': 'alpha'
+    },
+    'init': function(config /* varless */, mine) {
+        mine = this;
+
+        mine._shaker = new Shake();
+        // mine._limit = config['limit'];
+        // mine._waittime = config['waittime'];
+        // mine._direction = config['direction'];
+        // mine._callback = config['callback'];
+        mine._config = config;
+
+        /* if (config['callback'] && config['direction']) { */
+        mine['attach']();
+        /* } */
     },
     'attach': function() {
         var mine = this,

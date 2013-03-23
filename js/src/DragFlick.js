@@ -1,15 +1,5 @@
 /* Test: "../../spec/_src/src/DragFlick/test.js" */
-C['DragFlick'] = klassExtendBase(function(config /* varless */, mine) {
-    mine = this;
-
-    mine._contractid = [];
-    mine._config = config;
-
-    config = config || NULLOBJ;
-    if (!config['manual']) {
-        mine['attach']();
-    }
-}, {
+C['DragFlick'] = classExtendBase({
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
     },
@@ -87,6 +77,17 @@ C['DragFlick'] = klassExtendBase(function(config /* varless */, mine) {
                 vars['callback'](direction);
             }
         });
+    },
+    'init': function(config /* varless */, mine) {
+        mine = this;
+
+        mine._contractid = [];
+        mine._config = config;
+
+        config = config || NULLOBJ;
+        if (!config['manual']) {
+            mine['attach']();
+        }
     },
     'attach': function() {
         var mine = this,

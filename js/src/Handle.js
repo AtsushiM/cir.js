@@ -1,9 +1,13 @@
 /* Test: "../../spec/_src/src/Handle/test.js" */
-C['Handle'] = klassExtendBase(function(config) {
-    this._config = config;
-    this['attach']();
-}, {
-    'disposeInternal': this_detach,
+C['Handle'] = classExtendBase({
+    'init': function(config) {
+        this._config = config;
+        this['attach']();
+    },
+    'dispose': function() {
+        this['detach']();
+        this['_super']();
+    },
     'attach': function() {
         this._e(on);
     },

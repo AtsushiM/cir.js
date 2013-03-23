@@ -12,41 +12,44 @@ var ret = checkCSSAnimTranCheck([
     Mine;
 
 Mine = C['Transition'] =
-    klassExtendBase(function(el, property, option /* varless */, mine) {
+    classExtendBase({
+    'init': function(el, property, option /* varless */, mine) {
+        mine = this;
 
-    mine = this;
+        option = option || NULLOBJ;
 
-    option = option || NULLOBJ;
+        Mine['id']++;
+        mine._id = 'cirtrans' + Mine['id'];
 
-    Mine['id']++;
-    mine._id = 'cirtrans' + Mine['id'];
+        var transProp = [],
+            animeProp = override({}, property),
+            i,
+            duration = option['duration'] || Mine['duration'],
+            // easeOutExpo
+            ease = option['ease'] || csseaseOutExpo;
 
-    var transProp = [],
-        animeProp = override({}, property),
-        i,
-        duration = option['duration'] || Mine['duration'],
-        // easeOutExpo
-        ease = option['ease'] || csseaseOutExpo;
+        if (!isArray(ease)) {
+            ease = [ease];
+        }
 
-    if (!isArray(ease)) {
-        ease = [ease];
-    }
+        for (i in property) {
+            transProp.push(i);
+        }
 
-    for (i in property) {
-        transProp.push(i);
-    }
+        addCSSRule(mine._id, css_prefix, duration, ease, transProp);
 
-    addCSSRule(mine._id, css_prefix, duration, ease, transProp);
+        mine._el = el;
+        mine._property = property;
+        mine._onComplete = option['onComplete'] || nullFunction;
 
-    mine._el = el;
-    mine._property = property;
-    mine._onComplete = option['onComplete'] || nullFunction;
-
-    if (!option['manual']) {
-        mine['start']();
-    }
-}, {
-    'disposeInternal': this_stop,
+        if (!option['manual']) {
+            mine['start']();
+        }
+    },
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
+    },
     'start': function(/* varless */ mine) {
         /* var mine = this; */
         mine = this;

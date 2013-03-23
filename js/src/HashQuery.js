@@ -1,6 +1,5 @@
 /* Test: "../../spec/_src/src/HashQuery/test.js" */
-C['HashQuery'] = klassExtendBase(UNDEFINED,
-{
+C['HashQuery'] = classExtendBase({
     'typeCast': function(str) {
         var caststr = typeCast(str),
             matchstr;
