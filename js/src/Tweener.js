@@ -30,10 +30,7 @@ Tweener = C['Tweener'] = classExtendBase({
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     // easeOutExpo
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;

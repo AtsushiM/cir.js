@@ -5,9 +5,8 @@ C = {};
 function cssCubicBezierFormat(text) {
     return 'cubic-bezier(' + text + ')';
 }
-function checkCSSAnimTranCheck(propnames, event_key) {
-    var prop = propnames,
-        el = create('p'),
+function checkCSSAnimTranCheck(prop, event_key) {
+    var el = create('p'),
         support = FALSE,
         prefix,
         css_prefix = EMPTY,
@@ -50,25 +49,23 @@ function checkCSSAnimTranCheck(propnames, event_key) {
 }
 
 function jsonParse(json) {
-    return win['JSON']['parse'](json);
+    return JSON['parse'](json);
 }
 function jsonStringify(text) {
-    return win['JSON']['stringify'](text);
+    return JSON['stringify'](text);
+}
+
+function noIndexOf(str, needle) {
+    return str.indexOf(needle) != -1 ? TRUE : FALSE;
 }
 
 function splitSuffix(value) {
-    value = value || EMPTY;
-    value = EMPTY + value;
-
-    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
+    return (EMPTY + (value || EMPTY)).match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 
-
-function this_stop() {
+function this_stop__super() {
     this['stop']();
-}
-function this_clearInterval_loop() {
-    clearInterval(this._loopid);
+    this['_super']();
 }
 function this_detach() {
     this['detach']();

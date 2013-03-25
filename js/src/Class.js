@@ -9,12 +9,7 @@
 
     C['lass']['extend'] = function(props) {
         var SuperClass = this,
-            new_this,
             i;
-
-        initializing = TRUE;
-        new_this = new SuperClass();
-        initializing = FALSE;
 
         function Class() {
             if (!initializing && this['init']) {
@@ -22,7 +17,10 @@
             }
         }
 
-        Class.prototype = new_this;
+        initializing = TRUE;
+        Class.prototype = new SuperClass();
+        initializing = FALSE;
+
         Class.prototype['constructor'] = Class;
 
         for (i in props) {
@@ -35,8 +33,10 @@
             var prop = props[key],
                 _super = SuperClass.prototype[key],
                 isMethodOverride = (
-                    typeof prop === 'function' &&
-                    typeof _super === 'function' &&
+                    // typeof prop === 'function' &&
+                    // typeof _super === 'function' &&
+                    isFunction(prop) &&
+                    isFunction(_super) &&
                     fnTest.test(prop)
                 );
 

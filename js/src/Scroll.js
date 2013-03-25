@@ -11,8 +11,10 @@ C['Scroll'] = classExtendBase({
     'toBottom': function() {
         scrollTo(doc.height);
     },
-    'scrollY': function() {
-        return (win.pageYOffset !== UNDEFINED) ? win.pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
+    'scrollY': function(/* varless */ pageYOffset) {
+        pageYOffset = win.pageYOffset;
+
+        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
     },
     'smooth': function(target, callback /* varless */, mine, max) {
         // var mine = this,

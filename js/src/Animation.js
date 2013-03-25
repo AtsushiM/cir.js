@@ -65,10 +65,7 @@ classExtendBase({
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'start': function(/* varless */ mine, el) {
         // var mine = this,
         //     el = mine._el;

@@ -46,10 +46,7 @@ Mine = C['Transition'] =
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'start': function(/* varless */ mine) {
         /* var mine = this; */
         mine = this;

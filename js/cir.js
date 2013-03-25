@@ -5,9 +5,8 @@ C = {};
 function cssCubicBezierFormat(text) {
     return 'cubic-bezier(' + text + ')';
 }
-function checkCSSAnimTranCheck(propnames, event_key) {
-    var prop = propnames,
-        el = create('p'),
+function checkCSSAnimTranCheck(prop, event_key) {
+    var el = create('p'),
         support = FALSE,
         prefix,
         css_prefix = EMPTY,
@@ -50,25 +49,23 @@ function checkCSSAnimTranCheck(propnames, event_key) {
 }
 
 function jsonParse(json) {
-    return win['JSON']['parse'](json);
+    return JSON['parse'](json);
 }
 function jsonStringify(text) {
-    return win['JSON']['stringify'](text);
+    return JSON['stringify'](text);
+}
+
+function noIndexOf(str, needle) {
+    return str.indexOf(needle) != -1 ? TRUE : FALSE;
 }
 
 function splitSuffix(value) {
-    value = value || EMPTY;
-    value = EMPTY + value;
-
-    return value.match(/^(.*?)([0-9\.]+)(.*)$/);
+    return (EMPTY + (value || EMPTY)).match(/^(.*?)([0-9\.]+)(.*)$/);
 }
 
-
-function this_stop() {
+function this_stop__super() {
     this['stop']();
-}
-function this_clearInterval_loop() {
-    clearInterval(this._loopid);
+    this['_super']();
 }
 function this_detach() {
     this['detach']();
@@ -524,12 +521,7 @@ C['dom'] = {
 
     C['lass']['extend'] = function(props) {
         var SuperClass = this,
-            new_this,
             i;
-
-        initializing = TRUE;
-        new_this = new SuperClass();
-        initializing = FALSE;
 
         function Class() {
             if (!initializing && this['init']) {
@@ -537,7 +529,10 @@ C['dom'] = {
             }
         }
 
-        Class.prototype = new_this;
+        initializing = TRUE;
+        Class.prototype = new SuperClass();
+        initializing = FALSE;
+
         Class.prototype['constructor'] = Class;
 
         for (i in props) {
@@ -550,8 +545,10 @@ C['dom'] = {
             var prop = props[key],
                 _super = SuperClass.prototype[key],
                 isMethodOverride = (
-                    typeof prop === 'function' &&
-                    typeof _super === 'function' &&
+                    // typeof prop === 'function' &&
+                    // typeof _super === 'function' &&
+                    isFunction(prop) &&
+                    isFunction(_super) &&
                     fnTest.test(prop)
                 );
 
@@ -878,10 +875,7 @@ classExtendBase({
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'start': function(/* varless */ mine, el) {
         // var mine = this,
         //     el = mine._el;
@@ -996,10 +990,7 @@ Mine = C['Transition'] =
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'start': function(/* varless */ mine) {
         /* var mine = this; */
         mine = this;
@@ -1092,10 +1083,7 @@ Tweener = C['Tweener'] = classExtendBase({
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     // easeOutExpo
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
@@ -1751,7 +1739,7 @@ C['Ajax'] = classExtendBase({
         }
 
         if (type == 'GET') {
-            if (url.indexOf('?') != -1) {
+            if (noIndexOf(url, '?')) {
                 url += '&';
             }
             else {
@@ -2445,10 +2433,7 @@ C['FPS'] = classExtendBase({
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'getCriterion': function() {
         return this._criterion;
     },
@@ -2482,7 +2467,9 @@ C['FPS'] = classExtendBase({
     _getFrame: function(time) {
         return Math.round(1000 / time);
     },
-    'stop': this_clearInterval_loop
+    'stop': function() {
+        clearInterval(this._loopid);
+    }
 });
 /* Test: "../../spec/_src/src/ImgLoad/test.js" */
 C['ImgLoad'] = classExtendBase({
@@ -2605,33 +2592,19 @@ var userAgent = win.navigator.userAgent.toLowerCase(),
     /* appVersion = win.navigator.appVersion.toLowerCase(), */
     browser;
 
-if (userAgent.indexOf('opera') != -1) {
+if (noIndexOf(userAgent, 'opera')) {
     browser = 'opera';
 }
-else if (userAgent.indexOf('msie') != -1) {
-    // if (appVersion.indexOf("msie 9.") != -1) {
-    //     browser = 'ie9';
-    // }
-    // else if (appVersion.indexOf("msie 8.") != -1) {
-    //     browser = 'ie8';
-    // }
-    // else if (appVersion.indexOf("msie 7.") != -1) {
-    //     browser = 'ie7';
-    // }
-    // else if (appVersion.indexOf("msie 6.") != -1) {
-    //     browser = 'ie6';
-    // }
-    // else {
-        browser = 'ie';
-    /* } */
+else if (noIndexOf(userAgent, 'msie')) {
+    browser = 'ie';
 }
-else if (userAgent.indexOf('chrome') != -1) {
+else if (noIndexOf(userAgent, 'chrome')) {
     browser = 'chrome';
 }
-else if (userAgent.indexOf('safari') != -1) {
+else if (noIndexOf(userAgent, 'safari')) {
     browser = 'safari';
 }
-else if (userAgent.indexOf('gecko') != -1) {
+else if (noIndexOf(userAgent, 'gecko')) {
     browser = 'gecko';
 }
 else {
@@ -2652,7 +2625,6 @@ pc = C['PC'] = classExtendBase({
         return browser == 'opera';
     },
     'isIE': function(ua) {
-        /* return browser.indexOf('ie') != -1; */
         return browser == 'ie';
     }
 });
@@ -3644,6 +3616,12 @@ C['View'] = classExtendBase({
 });
 /* Test: "../../spec/_src/src/Validate/test.js" */
 C['Validate'] = classExtendBase({
+    _check: function(is, key, value, txt) {
+        if (is(value)) {
+            return TRUE;
+        }
+        this['displayError'](key, txt);
+    },
     'init': function(config /* varless */, mine) {
         mine = this;
 
@@ -3672,43 +3650,24 @@ C['Validate'] = classExtendBase({
         }
     },
     'isObject': function(key, value) {
-        if (isObject(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Object');
+        return this._check(isObject, key, value, 'Object');
     },
     'isNumber': function(key, value) {
-        if (isNumber(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Number');
+        return this._check(isNumber, key, value, 'Number');
     },
     'isString': function(key, value) {
-        if (isString(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'String');
+        return this._check(isString, key, value, 'String');
     },
     'isFunction': function(key, value) {
-        if (isFunction(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Function');
+        return this._check(isFunction, key, value, 'Function');
     },
     'isBoolean': function(key, value) {
-        if (isBoolean(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Boolean');
+        return this._check(isBoolean, key, value, 'Boolean');
     },
     'isArray': function(key, value) {
-        if (isArray(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Array');
+        return this._check(isArray, key, value, 'Array');
     }
 });
-
 C['validate'] = new C['Validate']();
 /* Test: "../../spec/_src/src/Scroll/test.js" */
 C['Scroll'] = classExtendBase({
@@ -3723,8 +3682,10 @@ C['Scroll'] = classExtendBase({
     'toBottom': function() {
         scrollTo(doc.height);
     },
-    'scrollY': function() {
-        return (win.pageYOffset !== UNDEFINED) ? win.pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
+    'scrollY': function(/* varless */ pageYOffset) {
+        pageYOffset = win.pageYOffset;
+
+        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
     },
     'smooth': function(target, callback /* varless */, mine, max) {
         // var mine = this,
@@ -3786,20 +3747,6 @@ C['Scroll'] = classExtendBase({
         }
     }
 });
-C['beer'] = function() {
-console.log(
-"\n" +
-"   　　　　　　　　　　　　　　　　　　　　　　　　　　　,. -‐＝=､､\n" +
-"　　　　　　 　　　　　　 ,. =＝=､､　ｏ 　 ○o. 　i 　　 　　 :::ト､\n" +
-"　　　　　　 　　　　　_,/ 　 　 　｀ヾ´´`ヽ、　ﾟ　.ｌ 　 　　 　:::ﾄ､＼YEAHHHHHHHHHHHHHHHHHHHH!\n" +
-"　　　　　 　　　　　 // 　　　　 .::::/　　:::::!=＝=l　　　　　 :::|ｽ.　',\n" +
-"　 　 　 　 　　 　 /./ 　 　 　 .::::/　　 ::::l　　　 |　 __ ..... _::::|} ヽ l-､\n" +
-"  　 　 　 　 　 ,ｨｸ ,'..__ 　　　.::::/ 　　 ::::l　　　 :l '´　　　　｀)'｀ヽ ヾ;＼\n" +
-"　　　　　 　／::{ﾞ　ヽ、 ｀`丶､;/‐‐- ､::::l　　 　 `'::┬‐--＜_ 　 } ./;:::::＼\n" +
-"　　　　　／::::::::!　　 ,＞---‐'ﾞｰ- ...__)ｲ　,.　-‐‐-､ﾄ､　　 |l::ヽ ／;';';';';::::＼\n" +
-"  　 　 ／|::::::;';';'＼／｝　（ヽ、　　_/| 　 (´　　　 _,.ｨ!::ヽ. 　ヾｰ'´;';';';';';';';';:: /ヽ、\n"
-);
-};
 if ($_methods) {
     $base.prototype = $_methods;
 }

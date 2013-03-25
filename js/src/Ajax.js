@@ -47,7 +47,7 @@ C['Ajax'] = classExtendBase({
         }
 
         if (type == 'GET') {
-            if (url.indexOf('?') != -1) {
+            if (noIndexOf(url, '?')) {
                 url += '&';
             }
             else {

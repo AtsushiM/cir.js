@@ -4,33 +4,19 @@ var userAgent = win.navigator.userAgent.toLowerCase(),
     /* appVersion = win.navigator.appVersion.toLowerCase(), */
     browser;
 
-if (userAgent.indexOf('opera') != -1) {
+if (noIndexOf(userAgent, 'opera')) {
     browser = 'opera';
 }
-else if (userAgent.indexOf('msie') != -1) {
-    // if (appVersion.indexOf("msie 9.") != -1) {
-    //     browser = 'ie9';
-    // }
-    // else if (appVersion.indexOf("msie 8.") != -1) {
-    //     browser = 'ie8';
-    // }
-    // else if (appVersion.indexOf("msie 7.") != -1) {
-    //     browser = 'ie7';
-    // }
-    // else if (appVersion.indexOf("msie 6.") != -1) {
-    //     browser = 'ie6';
-    // }
-    // else {
-        browser = 'ie';
-    /* } */
+else if (noIndexOf(userAgent, 'msie')) {
+    browser = 'ie';
 }
-else if (userAgent.indexOf('chrome') != -1) {
+else if (noIndexOf(userAgent, 'chrome')) {
     browser = 'chrome';
 }
-else if (userAgent.indexOf('safari') != -1) {
+else if (noIndexOf(userAgent, 'safari')) {
     browser = 'safari';
 }
-else if (userAgent.indexOf('gecko') != -1) {
+else if (noIndexOf(userAgent, 'gecko')) {
     browser = 'gecko';
 }
 else {
@@ -51,7 +37,6 @@ pc = C['PC'] = classExtendBase({
         return browser == 'opera';
     },
     'isIE': function(ua) {
-        /* return browser.indexOf('ie') != -1; */
         return browser == 'ie';
     }
 });

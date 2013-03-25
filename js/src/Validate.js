@@ -1,5 +1,11 @@
 /* Test: "../../spec/_src/src/Validate/test.js" */
 C['Validate'] = classExtendBase({
+    _check: function(is, key, value, txt) {
+        if (is(value)) {
+            return TRUE;
+        }
+        this['displayError'](key, txt);
+    },
     'init': function(config /* varless */, mine) {
         mine = this;
 
@@ -28,41 +34,22 @@ C['Validate'] = classExtendBase({
         }
     },
     'isObject': function(key, value) {
-        if (isObject(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Object');
+        return this._check(isObject, key, value, 'Object');
     },
     'isNumber': function(key, value) {
-        if (isNumber(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Number');
+        return this._check(isNumber, key, value, 'Number');
     },
     'isString': function(key, value) {
-        if (isString(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'String');
+        return this._check(isString, key, value, 'String');
     },
     'isFunction': function(key, value) {
-        if (isFunction(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Function');
+        return this._check(isFunction, key, value, 'Function');
     },
     'isBoolean': function(key, value) {
-        if (isBoolean(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Boolean');
+        return this._check(isBoolean, key, value, 'Boolean');
     },
     'isArray': function(key, value) {
-        if (isArray(value)) {
-            return TRUE;
-        }
-        this['displayError'](key, 'Array');
+        return this._check(isArray, key, value, 'Array');
     }
 });
-
 C['validate'] = new C['Validate']();

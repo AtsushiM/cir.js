@@ -18,10 +18,7 @@ C['FPS'] = classExtendBase({
             mine['start']();
         }
     },
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'getCriterion': function() {
         return this._criterion;
     },
@@ -55,5 +52,7 @@ C['FPS'] = classExtendBase({
     _getFrame: function(time) {
         return Math.round(1000 / time);
     },
-    'stop': this_clearInterval_loop
+    'stop': function() {
+        clearInterval(this._loopid);
+    }
 });
