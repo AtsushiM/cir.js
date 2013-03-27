@@ -73,7 +73,7 @@ function this_detach() {
 
 var win = window,
     doc = document,
-    body = doc.body,
+    body,
     TRUE = true,
     FALSE = false,
     NULL = null,
@@ -99,6 +99,7 @@ WebStorage,
 mb,
 pc,
 $_methods;
+
 /* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function() {
@@ -480,8 +481,13 @@ function html(el, text) {
 }
 
 function reflow(el) {
-    (el || body).offsetTop;
+    el = el || body;
+    el.offsetTop;
 }
+
+on(doc, 'DOMContentLoaded', function() {
+    body = doc.body;
+});
 
 C['dom'] = {
     '$': $,

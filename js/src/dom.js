@@ -173,8 +173,13 @@ function html(el, text) {
 }
 
 function reflow(el) {
-    (el || body).offsetTop;
+    el = el || body;
+    el.offsetTop;
 }
+
+on(doc, 'DOMContentLoaded', function() {
+    body = doc.body;
+});
 
 C['dom'] = {
     '$': $,

@@ -11,7 +11,7 @@ describe('DeviceOrientationは', function() {
     });
 
     it('deviceorientationイベントを登録する', function() {
-        expect(Global.DeviceOrientation.support).toEqual('ondeviceorientation' in window);
+        expect(c.DeviceOrientation.support).toEqual('ondeviceorientation' in window);
     });
 });
 /*

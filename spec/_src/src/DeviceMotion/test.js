@@ -11,7 +11,7 @@ describe('DeviceMotionは', function() {
     });
 
     it('devicemotionイベントを登録する', function() {
-        expect(Global.DeviceMotion.support).toEqual('ondevicemotion' in window);
+        expect(c.DeviceMotion.support).toEqual('ondevicemotion' in window);
     });
 });
 /*
