@@ -22,14 +22,14 @@ describe('$は', function() {
     it('$(string, element)でelementからstringに対応するelementを内包したselectorインスタンスを返す', function() {
         var selector = new c.$('script', document.body);
 
-        expect(0).toEqual(0);
+        expect(selector.length).toBeGreaterThan(0);
     });
 
     it('$(string, selector)でselectorからstringに対応するelementを内包したselectorインスタンスを返す', function() {
-        var body = c.$('div');
+        var body = c.$('body');
         var selector = new c.$('script', body);
 
-        expect(0).toEqual(0);
+        expect(selector.length).toBeGreaterThan(0);
     });
 });
 /*

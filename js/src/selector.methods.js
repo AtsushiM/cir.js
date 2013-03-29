@@ -43,6 +43,70 @@ $_methods = C['$'].methods = {
     'off': function() {
         return selectorForExe(this, off, arguments);
     },
+    'delegate': function(clsname, eventname, handler) {
+        var temp;
+
+        if (!this._delegated) {
+            this._delegated = {};
+        }
+        temp = this._delegated;
+
+        if (!temp[eventname]) {
+            temp[eventname] = {};
+        }
+        temp = temp[eventname];
+
+        if (!temp[clsname]) {
+            temp[clsname] = [];
+        }
+        temp = temp[clsname];
+
+        return selectorForExe(this, function() {
+            var wraphandle = delegate.apply(NULL, arguments);
+
+            temp.push([handler, wraphandle]);
+        }, arguments);
+    },
+    'undelegate': function(clsname, eventname, handler) {
+        var temp = this._delegated,
+            i;
+
+        if (!temp) {
+            return FALSE;
+        }
+        temp = temp[eventname];
+        if (!temp) {
+            return FALSE;
+        }
+        temp = temp[clsname];
+        if (!temp) {
+            return FALSE;
+        }
+
+        i = temp.length;
+
+        if (handler) {
+            for (; i--; ) {
+                if (temp[i][0] === handler) {
+                    this['off'](eventname, temp[i][1]);
+
+                    temp.splice(i, 1);
+
+                    return TRUE;
+                }
+            }
+
+            return FALSE;
+        }
+        else {
+            for (; i--; ) {
+                this['off'](eventname, temp[i][1]);
+                temp.splice(i, 1);
+            }
+
+            return TRUE;
+        }
+    },
     'show': function() {
         return selectorForExe(this, show);
     },

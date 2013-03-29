@@ -22,20 +22,10 @@ function $id(id) {
     return doc.getElementById(id);
 }
 
-function hasClass(el, cls /* varless */, clsName, addedcls, i) {
-    // var clsName = el.className,
-    //     addedcls = clsName ? clsName.split(' ') : [],
-    //     i = addedcls.length;
-    clsName = el.className,
-    addedcls = clsName ? clsName.split(' ') : [],
-    i = addedcls.length;
-
-    for (; i--;) {
-        if (cls == addedcls[i]) {
-            return TRUE;
-        }
+function hasClass(el, cls) {
+    if (el.className.indexOf(cls) >= 0) {
+        return TRUE;
     }
-
     return FALSE;
 }
 
@@ -119,6 +109,21 @@ function on(el, eventname, handler) {
 function off(el, eventname, handler) {
     el.removeEventListener(eventname, handler, FALSE);
 }
+
+function delegate(el, clsname, eventname, handler) {
+    on(el, eventname, wraphandle);
+
+    function wraphandle(e) {
+        var el = e.target;
+
+        if (hasClass(el, clsname)) {
+            handler.apply(el, arguments);
+        }
+    }
+
+    return wraphandle;
+}
+
 function show(el) {
     el.style.display = 'block';
 }
@@ -189,6 +194,7 @@ C['dom'] = {
     '$id': $id,
     'on': on,
     'off': off,
+    'delegate': delegate,
     'create': create,
     'show': show,
     'hide': hide,

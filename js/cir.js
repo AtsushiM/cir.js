@@ -48,11 +48,11 @@ function checkCSSAnimTranCheck(prop, event_key) {
     };
 }
 
-function jsonParse(json) {
-    return JSON['parse'](json);
+function jsonParse(text) {
+    return JSON['parse'](text);
 }
-function jsonStringify(text) {
-    return JSON['stringify'](text);
+function jsonStringify(json) {
+    return JSON['stringify'](json);
 }
 
 function noIndexOf(str, needle) {
@@ -330,20 +330,10 @@ function $id(id) {
     return doc.getElementById(id);
 }
 
-function hasClass(el, cls /* varless */, clsName, addedcls, i) {
-    // var clsName = el.className,
-    //     addedcls = clsName ? clsName.split(' ') : [],
-    //     i = addedcls.length;
-    clsName = el.className,
-    addedcls = clsName ? clsName.split(' ') : [],
-    i = addedcls.length;
-
-    for (; i--;) {
-        if (cls == addedcls[i]) {
-            return TRUE;
-        }
+function hasClass(el, cls) {
+    if (el.className.indexOf(cls) >= 0) {
+        return TRUE;
     }
-
     return FALSE;
 }
 
@@ -427,6 +417,21 @@ function on(el, eventname, handler) {
 function off(el, eventname, handler) {
     el.removeEventListener(eventname, handler, FALSE);
 }
+
+function delegate(el, clsname, eventname, handler) {
+    on(el, eventname, wraphandle);
+
+    function wraphandle(e) {
+        var el = e.target;
+
+        if (hasClass(el, clsname)) {
+            handler.apply(el, arguments);
+        }
+    }
+
+    return wraphandle;
+}
+
 function show(el) {
     el.style.display = 'block';
 }
@@ -497,6 +502,7 @@ C['dom'] = {
     '$id': $id,
     'on': on,
     'off': off,
+    'delegate': delegate,
     'create': create,
     'show': show,
     'hide': hide,
@@ -1248,10 +1254,8 @@ C['$'] = function(query, _parent /* varless */, $el, instance, len) {
         $el = [query];
     }
 
-    len = $el.length;
     instance = new $base();
-
-    instance.length = len;
+    len = instance.length = $el.length;
 
     for (; len--;) {
         instance[len] = $el[len];
@@ -1303,6 +1307,70 @@ $_methods = C['$'].methods = {
     },
     'off': function() {
         return selectorForExe(this, off, arguments);
+    },
+    'delegate': function(clsname, eventname, handler) {
+        var temp;
+
+        if (!this._delegated) {
+            this._delegated = {};
+        }
+        temp = this._delegated;
+
+        if (!temp[eventname]) {
+            temp[eventname] = {};
+        }
+        temp = temp[eventname];
+
+        if (!temp[clsname]) {
+            temp[clsname] = [];
+        }
+        temp = temp[clsname];
+
+        return selectorForExe(this, function() {
+            var wraphandle = delegate.apply(NULL, arguments);
+
+            temp.push([handler, wraphandle]);
+        }, arguments);
+    },
+    'undelegate': function(clsname, eventname, handler) {
+        var temp = this._delegated,
+            i;
+
+        if (!temp) {
+            return FALSE;
+        }
+        temp = temp[eventname];
+        if (!temp) {
+            return FALSE;
+        }
+        temp = temp[clsname];
+        if (!temp) {
+            return FALSE;
+        }
+
+        i = temp.length;
+
+        if (handler) {
+            for (; i--; ) {
+                if (temp[i][0] === handler) {
+                    this['off'](eventname, temp[i][1]);
+
+                    temp.splice(i, 1);
+
+                    return TRUE;
+                }
+            }
+
+            return FALSE;
+        }
+        else {
+            for (; i--; ) {
+                this['off'](eventname, temp[i][1]);
+                temp.splice(i, 1);
+            }
+
+            return TRUE;
+        }
     },
     'show': function() {
         return selectorForExe(this, show);

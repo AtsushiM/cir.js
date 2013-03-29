@@ -56,6 +56,52 @@ describe('selector.methodsは', function() {
         expect(count).toEqual(0);
     });
 
+    it('$(selector).delegate(clsname, eventname, handler)でC.dom.delegateを実行する', function() {
+        var count = 0,
+            func = function() {
+                count++;
+            },
+            wraphandle;
+
+        wraphandle = selector.delegate('runner', 'click', func);
+
+        document.body.click();
+
+        expect(count).toEqual(0);
+
+        document.querySelector('.runner').click();
+        expect(count).toEqual(1);
+        document.querySelector('.runner').click();
+        expect(count).toEqual(2);
+
+        selector.undelegate('runner', 'click', func);
+    });
+
+    it('$(selector).undelegate(clsname, eventname [, handler])でdelegateで登録したイベントを削除する', function() {
+        var count = 0,
+            func = function() {
+                count++;
+            },
+            wraphandle;
+
+        wraphandle = selector.delegate('runner', 'click', func);
+        selector.undelegate('runner', 'click', func);
+
+        document.body.click();
+
+        expect(count).toEqual(0);
+
+        document.querySelector('.runner').click();
+        expect(count).toEqual(0);
+        document.querySelector('.runner').click();
+        expect(count).toEqual(0);
+
+        wraphandle = selector.delegate('runner', 'click', func);
+        selector.undelegate('runner', 'click');
+        document.querySelector('.runner').click();
+        expect(count).toEqual(0);
+    });
+
     it('$(selector).show()でC.dom.showを実行する', function() {
         selector.show();
 

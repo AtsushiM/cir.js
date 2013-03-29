@@ -48,11 +48,11 @@ function checkCSSAnimTranCheck(prop, event_key) {
     };
 }
 
-function jsonParse(json) {
-    return JSON['parse'](json);
+function jsonParse(text) {
+    return JSON['parse'](text);
 }
-function jsonStringify(text) {
-    return JSON['stringify'](text);
+function jsonStringify(json) {
+    return JSON['stringify'](json);
 }
 
 function noIndexOf(str, needle) {

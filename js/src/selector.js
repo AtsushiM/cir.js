@@ -42,10 +42,8 @@ C['$'] = function(query, _parent /* varless */, $el, instance, len) {
         $el = [query];
     }
 
-    len = $el.length;
     instance = new $base();
-
-    instance.length = len;
+    len = instance.length = $el.length;
 
     for (; len--;) {
         instance[len] = $el[len];

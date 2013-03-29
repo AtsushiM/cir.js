@@ -50,6 +50,25 @@ describe('domは', function() {
         el.off(window, 'load', func);
     });
 
+    it('delegate(element, clsname, eventname, handler)でelement内のclassNameにclsnameを持つ要素にeventnameでhandlerを登録する', function() {
+        var ret,
+            wraphandle;
+
+        wraphandle = el.delegate(document.body, 'runner', 'click', function() {
+            ret = true;
+        });
+
+        expect(typeof wraphandle).toEqual('function');
+
+        document.body.click();
+        expect(ret).toBeFalsy();
+
+        document.querySelector('.runner').click();
+        expect(ret).toBeTruthy();
+
+        el.off(document.body, 'click', wraphandle);
+    });
+
     it('create(tagname [, attr])でタグを生成する', function() {
         var $div = el.create('div');
 
