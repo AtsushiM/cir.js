@@ -166,8 +166,23 @@ function before(el, addel) {
 function after(el, addel) {
     return beforeafter(el, addel, el.nextSibling);
 }
+function insertBefore(el, addel) {
+    return el.insertBefore(addel, el.firstChild);
+}
 function remove(el) {
     return parent(el).removeChild(el);
+}
+function escape(html) {
+    if (isString(html)) {
+        html = html
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    return html;
 }
 function html(el, text) {
     if (!text) {
@@ -175,6 +190,13 @@ function html(el, text) {
     }
 
     el.innerHTML = text;
+}
+function val(el, value) {
+    if (!value) {
+        return el.value;
+    }
+
+    el.value = value;
 }
 
 function reflow(el) {
@@ -208,9 +230,12 @@ C['dom'] = {
     'parent': parent,
     'before': before,
     'after': after,
+    'insertBefore': insertBefore,
     'remove': remove,
     'attr': attr,
     'removeAttr': removeAttr,
     'html': html,
+    'val': val,
+    'escape': escape,
     'reflow': reflow
 };

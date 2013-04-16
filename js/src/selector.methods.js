@@ -131,6 +131,9 @@ $_methods = C['$'].methods = {
     'html': function() {
         return selectorExe(this, html, arguments);
     },
+    'val': function() {
+        return selectorExe(this, val, arguments);
+    },
     'attr': function() {
         return selectorExe(this, attr, arguments);
     },
@@ -145,6 +148,9 @@ $_methods = C['$'].methods = {
     },
     'after': function() {
         return selectorExe(this, after, arguments);
+    },
+    'insertBefore': function() {
+        return selectorExe(this, insertBefore, arguments);
     },
     'remove': function() {
         return selectorForExe(this, remove, arguments);

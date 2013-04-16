@@ -29,10 +29,10 @@ function typeCast(str /* varless */, matchstr) {
     /* var matchstr = EMPTY + str; */
     matchstr = EMPTY + str;
 
-    if (matchstr.match('^{.*}$')) {
+    if (matchstr.match(/^{.*}$/)) {
         return jsonParse(matchstr);
     }
-    if (matchstr.match('^[0-9\.]+$')) {
+    if (matchstr.match(/^[0-9\.]+$/)) {
         return matchstr * 1;
     }
     if (matchstr === 'true') {
@@ -51,7 +51,7 @@ function template(templatetxt, replaceobj /* varless */, i) {
     /* var i; */
 
     for (i in replaceobj) {
-        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', replaceobj[i]);
+        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(replaceobj[i]));
     }
 
     return templatetxt;

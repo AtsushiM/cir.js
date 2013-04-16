@@ -281,6 +281,32 @@ describe('domは', function() {
         el.remove($make3);
     });
 
+    it('insertBefore(element, addelement)でelementの中の一番前にaddelementを追加する', function() {
+        var $body = el.$('body'),
+            $make1 = el.create('div', {
+                'class': 'insertbeforetest',
+                'data-name': 1
+            }),
+            $make2 = el.create('div', {
+                'class': 'insertbeforetest',
+                'data-name': 2
+            }),
+            $make3 = el.create('div', {
+                'class': 'insertbeforetest',
+                'data-name': 3
+            });
+
+        el.append($body, $make1);
+        el.append($body, $make3);
+        el.insertBefore($make1, $make2);
+
+        expect(C.dom.$child('.insertbeforetest', $make1)).toBe($make2);
+
+        el.remove($make1);
+        el.remove($make2);
+        el.remove($make3);
+    });
+
     it('remove(element)でelementを削除する', function() {
         var $body = el.$('body'),
             $make = el.create('div');
@@ -301,6 +327,23 @@ describe('domは', function() {
         el.html($make, 'test');
         expect($make.innerHTML).toEqual('test');
         expect(el.html($make)).toEqual('test');
+    });
+
+    it('val(element, text)でelement.valueにtextを設定する', function() {
+        var $body = el.$('body'),
+            $make = el.create('input', {
+                value: ''
+            });
+
+        expect($make.value).toEqual('');
+        expect(el.val($make)).toEqual('');
+        el.val($make, 'test');
+        expect($make.value).toEqual('test');
+        expect(el.val($make)).toEqual('test');
+    });
+
+    it('escape(text)でhtml形式のテキストを表示する上で問題になる文字をエスケープする', function() {
+        expect(el.escape('"' + "'&<>")).toEqual('&quot;&#039;&amp;&lt;&gt;');
     });
 
     it('reflow(el)でelをリフローする', function() {

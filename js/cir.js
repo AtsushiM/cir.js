@@ -131,10 +131,10 @@ function typeCast(str /* varless */, matchstr) {
     /* var matchstr = EMPTY + str; */
     matchstr = EMPTY + str;
 
-    if (matchstr.match('^{.*}$')) {
+    if (matchstr.match(/^{.*}$/)) {
         return jsonParse(matchstr);
     }
-    if (matchstr.match('^[0-9\.]+$')) {
+    if (matchstr.match(/^[0-9\.]+$/)) {
         return matchstr * 1;
     }
     if (matchstr === 'true') {
@@ -153,7 +153,7 @@ function template(templatetxt, replaceobj /* varless */, i) {
     /* var i; */
 
     for (i in replaceobj) {
-        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', replaceobj[i]);
+        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(replaceobj[i]));
     }
 
     return templatetxt;
@@ -474,8 +474,23 @@ function before(el, addel) {
 function after(el, addel) {
     return beforeafter(el, addel, el.nextSibling);
 }
+function insertBefore(el, addel) {
+    return el.insertBefore(addel, el.firstChild);
+}
 function remove(el) {
     return parent(el).removeChild(el);
+}
+function escape(html) {
+    if (isString(html)) {
+        html = html
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    return html;
 }
 function html(el, text) {
     if (!text) {
@@ -483,6 +498,13 @@ function html(el, text) {
     }
 
     el.innerHTML = text;
+}
+function val(el, value) {
+    if (!value) {
+        return el.value;
+    }
+
+    el.value = value;
 }
 
 function reflow(el) {
@@ -516,10 +538,13 @@ C['dom'] = {
     'parent': parent,
     'before': before,
     'after': after,
+    'insertBefore': insertBefore,
     'remove': remove,
     'attr': attr,
     'removeAttr': removeAttr,
     'html': html,
+    'val': val,
+    'escape': escape,
     'reflow': reflow
 };
 /* Test: "../../spec/_src/src/Class/test.js" */
@@ -1396,6 +1421,9 @@ $_methods = C['$'].methods = {
     'html': function() {
         return selectorExe(this, html, arguments);
     },
+    'val': function() {
+        return selectorExe(this, val, arguments);
+    },
     'attr': function() {
         return selectorExe(this, attr, arguments);
     },
@@ -1410,6 +1438,9 @@ $_methods = C['$'].methods = {
     },
     'after': function() {
         return selectorExe(this, after, arguments);
+    },
+    'insertBefore': function() {
+        return selectorExe(this, insertBefore, arguments);
     },
     'remove': function() {
         return selectorForExe(this, remove, arguments);

@@ -207,6 +207,31 @@ describe('selector.methodsは', function() {
         C.dom.remove($make3);
     });
 
+    it('$(selector).insertBefore(element)でC.dom.insertBeforeを実行する', function() {
+        var $make1 = el.create('div', {
+                'class': 'insertbeforetest',
+                'id': 'insertbeforetest1'
+            }),
+            $make2 = el.create('div', {
+                'class': 'insertbeforetest',
+                'id': 'insertbeforetest2'
+            }),
+            $make3 = el.create('div', {
+                'class': 'insertbeforetest',
+                'id': 'insertbeforetest3'
+            });
+
+        selector.append($make1);
+        selector.append($make3);
+        C.$('#insertbeforetest1').insertBefore($make2);
+
+        expect(C.dom.$child('.insertbeforetest', $make1)).toBe($make2);
+
+        C.dom.remove($make1);
+        C.dom.remove($make2);
+        C.dom.remove($make3);
+    });
+
     it('$(selector).remove(element)でC.dom.removeを実行する', function() {
         var div = document.createElement('div');
 
@@ -229,6 +254,19 @@ describe('selector.methodsは', function() {
 
         $div.html('test');
         expect($div.html()).toEqual('test');
+    });
+
+    it('$(selector).val(value)でC.dom.valを実行する', function() {
+        var input = document.createElement('input', {
+            value: ''
+        });
+
+        input.className = 'selectorTestValue';
+
+        var $input = Global.$(input);
+
+        $input.val('test');
+        expect($input.val()).toEqual('test');
     });
 
     it('$(selector).attr(value)でC.dom.attrを実行する', function() {
