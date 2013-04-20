@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Route/test.js" */
 C['Route'] = classExtendBase({
     'init': function(config) {
         // this._target = config['target'] || EMPTY;

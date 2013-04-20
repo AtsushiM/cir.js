@@ -101,6 +101,14 @@ describe('Observerは', function() {
 
         expect(ret1).toEqual(2);
         expect(ret2).toEqual(3);
+
+        observer.on('test3', function(arg1, arg2, arg3) {
+            expect(arg1).toEqual(1);
+            expect(arg2).toEqual(2);
+            expect(arg3).toEqual(3);
+        });
+
+        observer.fire('test3', 1, 2, 3);
     });
 });
 /*

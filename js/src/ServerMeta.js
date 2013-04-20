@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
 var xhr,
     isLoaded = FALSE;

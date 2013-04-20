@@ -100,7 +100,6 @@ mb,
 pc,
 $_methods;
 
-/* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function() {
         return new Date * 1;
@@ -149,14 +148,49 @@ function typeCast(str /* varless */, matchstr) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
-function template(templatetxt, replaceobj /* varless */, i) {
+function template(templatetxt, replaceobj /* varless */, i, temp) {
     /* var i; */
 
     for (i in replaceobj) {
-        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(replaceobj[i]));
+        temp = replaceobj[i];
+
+        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp));
+        templatetxt = replaceAll(templatetxt, '<%- ' + i + ' %>', temp);
     }
 
     return templatetxt;
+}
+function escape(html) {
+    if (isString(html)) {
+        html =
+            replaceAll(
+                replaceAll(
+                    replaceAll(
+                        replaceAll(
+                            replaceAll(html, '&', '&amp;'),
+                        '"', '&quot;'),
+                    "'", '&#039;'),
+                '<', '&lt;'),
+            '>', '&gt;');
+    }
+
+    return html;
+}
+function unescape(html) {
+    if (isString(html)) {
+        html =
+            replaceAll(
+                replaceAll(
+                    replaceAll(
+                        replaceAll(
+                            replaceAll(html, '&gt;', '>'),
+                        '&lt;', '<'),
+                    '&#039;', "'"),
+                '&quot;', '"'),
+            '&amp;', '&');
+    }
+
+    return html;
 }
 function windowOpen(url, windowname, option /* varless */, i, option_ary) {
     // var i,
@@ -286,6 +320,8 @@ C['util'] = {
     'override': override,
     'replaceAll': replaceAll,
     'template': template,
+    'escape': escape,
+    'unescape': unescape,
     'windowOpen': windowOpen,
     'typeCast': typeCast,
     'makeQueryString': makeQueryString,
@@ -306,7 +342,6 @@ C['util'] = {
     'proxy': proxy,
     'owner': owner
 };
-/* Test: "../../spec/_src/src/dom/test.js" */
 function $(selector) {
     return $child(selector, doc);
 }
@@ -480,27 +515,15 @@ function insertBefore(el, addel) {
 function remove(el) {
     return parent(el).removeChild(el);
 }
-function escape(html) {
-    if (isString(html)) {
-        html = html
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
-
-    return html;
-}
 function html(el, text) {
-    if (!text) {
+    if (!isDefined(text)) {
         return el.innerHTML;
     }
 
     el.innerHTML = text;
 }
 function val(el, value) {
-    if (!value) {
+    if (!isDefined(value)) {
         return el.value;
     }
 
@@ -544,10 +567,8 @@ C['dom'] = {
     'removeAttr': removeAttr,
     'html': html,
     'val': val,
-    'escape': escape,
     'reflow': reflow
 };
-/* Test: "../../spec/_src/src/Class/test.js" */
 (function() {
     C['lass'] = function() {};
 
@@ -628,7 +649,6 @@ function classExtend(cls, prop, support) {
 function classExtendBase(prop, support) {
     return classExtend(C['Base'], prop, support);
 }
-/* Test: "../../spec/_src/src/Base/test.js" */
 C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
     'dispose': function(/* varless */ mine) {
@@ -683,7 +703,6 @@ C['Base'] = classExtend(UNDEFINED, {
         }
     }
 });
-/* Test: "../../spec/_src/src/Event/test.js" */
 ev = C['Event'] = classExtendBase({
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
@@ -705,7 +724,6 @@ ev = C['Event'] = classExtendBase({
     'RESIZE': 'resize'
 });
 ev = C['e'] = new ev();
-/* Test: "../../spec/_src/src/ease/test.js" */
 C['ease'] = {
     'linear': function(time, from, dist, duration) {
         return dist * time / duration + from;
@@ -809,7 +827,6 @@ C['ease'] = {
                 (((easebackrate *= (1.525)) + 1) * time + easebackrate) + 2) + from;
     }
 };
-/* Test: "../../spec/_src/src/cssease/test.js" */
 C['cssease'] = {
     'linear': 'linear',
 
@@ -845,7 +862,6 @@ C['cssease'] = {
     'outBack': [cssCubicBezierFormat('0.175,0.885,0.32,1'),cssCubicBezierFormat('0.175,0.885,0.32,1.275')],
     'inOutBack': [cssCubicBezierFormat('0.68,0,0.265,1'),cssCubicBezierFormat('0.68,-0.55,0.265,1.55')]
 };
-/* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var ret = checkCSSAnimTranCheck([
         'animation',
@@ -979,7 +995,6 @@ function addCSSRule(id, css_prefix, duration, eases) {
 Mine['id'] = 0;
 Mine['duration'] = 500;
 }());
-/* Test: "../../spec/_src/src/Transition/test.js" */
 (function() {
 var ret = checkCSSAnimTranCheck([
         'transitionProperty',
@@ -1088,7 +1103,6 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 Mine['id'] = 0;
 Mine['duration'] = 500;
 }());
-/* Test: "../../spec/_src/src/Tweener/test.js" */
 Tweener = C['Tweener'] = classExtendBase({
     'init': function(target, property, option /* varless */, name, prop, mine) {
         // var name,
@@ -1235,7 +1249,6 @@ Tweener._setProp = function(target, prop, point) {
 Tweener.Items = [];
 Tweener['fps'] = 30;
 Tweener['duration'] = 500;
-/* Test: "../../spec/_src/src/selector/test.js" */
 // var $base = function(){},
 //     checkQuerySelector = /^(.+[\#\.\s\[>:,]|[\[:])/;
 function $base() {}
@@ -1288,7 +1301,6 @@ C['$'] = function(query, _parent /* varless */, $el, instance, len) {
 
     return instance;
 };
-/* Test: "../../spec/_src/src/selector.methods/test.js" */
 function selectorForExe(_this, func, arg) {
     var i = _this.length;
 
@@ -1446,7 +1458,6 @@ $_methods = C['$'].methods = {
         return selectorForExe(this, remove, arguments);
     }
 };
-/* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
 var methods = $_methods,
     Animation = C['Animation'] || {},
@@ -1555,7 +1566,6 @@ function convertTweenerParam(el, params) {
     return retobj;
 }
 }());
-/* Test: "../../spec/_src/src/HashQuery/test.js" */
 C['HashQuery'] = classExtendBase({
     'typeCast': function(str) {
         var caststr = typeCast(str),
@@ -1630,7 +1640,6 @@ C['HashQuery'] = classExtendBase({
         return this['parseHash'](location.hash);
     }
 });
-/* Test: "../../spec/_src/src/Embed/test.js" */
 /* C.Embed = function(config) { */
 function Embed(config) {
     var embed = create(config['type']);
@@ -1668,7 +1677,6 @@ function embedSupportCheck(type, suffix) {
     }
     return FALSE;
 }
-/* Test: "../../spec/_src/src/Media/test.js" */
 Media = classExtendBase({
     'init': function(config) {
         var mine = this,
@@ -1760,7 +1768,6 @@ Media = classExtendBase({
         this['pause']();
     }
 });
-/* Test: "../../spec/_src/src/Audio/test.js" */
 C['Audio'] = function(config) {
     config['type'] = 'audio';
     config['suffix'] = C['Audio']['support'];
@@ -1772,13 +1779,11 @@ C['Audio']['support'] = embedSupportCheck('Audio', [
     ['ogg', 'ogg'],
     ['m4a', 'mp4']
 ]);
-/* Test: "../../spec/_src/src/Sound/test.js" */
 C['Sound'] = function(config) {
     config['type'] = 'Audio';
     return new Media(config);
 };
 C['Sound']['support'] = C['Audio']['support'];
-/* Test: "../../spec/_src/src/Video/test.js" */
 C['Video'] = function(config) {
     config['type'] = 'video';
     config['suffix'] = C['Video']['support'];
@@ -1789,13 +1794,11 @@ C['Video']['support'] = embedSupportCheck('Video', [
     ['mp4', 'mp4'],
     ['ogv', 'ogg']
 ]);
-/* Test: "../../spec/_src/src/Movie/test.js" */
 C['Movie'] = function(config) {
     config['type'] = 'Video';
     return new Media(config);
 };
 C['Movie']['support'] = C['Video']['support'];
-/* Test: "../../spec/_src/src/Ajax/test.js" */
 C['Ajax'] = classExtendBase({
     'init': function(config) {
         if (config) {
@@ -1884,7 +1887,6 @@ C['Ajax'] = classExtendBase({
         this['request'](vars);
     }
 });
-/* Test: "../../spec/_src/src/Async/test.js" */
 Async = C['Async'] = classExtendBase({
     _success: 0,
     _miss: 0,
@@ -1952,7 +1954,6 @@ Async = C['Async'] = classExtendBase({
         mine._check(vars);
     }
 });
-/* Test: "../../spec/_src/src/Handle/test.js" */
 C['Handle'] = classExtendBase({
     'init': function(config) {
         this._config = config;
@@ -1982,7 +1983,6 @@ C['Handle'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/Brush/test.js" */
 C['Brush'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -2059,7 +2059,6 @@ C['Brush'] = classExtendBase({
         }
     }
 }, !!win['HTMLCanvasElement']);
-/* Test: "../../spec/_src/src/Datetime/test.js" */
 C['Datetime'] = function(str) {
     if (str && !isNumber(str)) {
         str = str.split(/[T:\-\+\/\s]/);
@@ -2080,7 +2079,6 @@ C['Datetime'] = function(str) {
 
     return new Date(str);
 };
-/* Test: "../../spec/_src/src/RollOver/test.js" */
 C['Rollover'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -2126,7 +2124,6 @@ C['Rollover'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/DataStore/test.js" */
 C['DataStore'] = classExtendBase({
     'init': function() {
         this._data = {};
@@ -2158,7 +2155,6 @@ C['DataStore'] = classExtendBase({
         this._data = {};
     }
 });
-/* Test: "../../spec/_src/src/WebStorage/test.js" */
 WebStorage = classExtendBase({
     'init': function(config) {
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
@@ -2215,21 +2211,18 @@ WebStorage = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/LocalStorage/test.js" */
 C['LocalStorage'] = function(config) {
     config = config || {};
 
     config['type'] = 'local';
     return new WebStorage(config);
 };
-/* Test: "../../spec/_src/src/SessionStorage/test.js" */
 C['SessionStorage'] = function(config) {
     config = config || {};
 
     config['type'] = 'session';
     return new WebStorage(config);
 };
-/* Test: "../../spec/_src/src/Deferred/test.js" */
 C['Deferred'] = classExtendBase({
     'init': function() {
         this._queue = [];
@@ -2263,7 +2256,6 @@ C['Deferred'] = classExtendBase({
         return mine;
     }
 });
-/* Test: "../../spec/_src/src/DragFlick/test.js" */
 C['DragFlick'] = classExtendBase({
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
@@ -2435,7 +2427,6 @@ C['DragFlick'] = classExtendBase({
         mine._contractid = [];
     }
 });
-/* Test: "../../spec/_src/src/ExternalInterface/test.js" */
 C['ExternalInterface'] = function(config) {
     config = config || NULLOBJ;
 
@@ -2445,7 +2436,6 @@ C['ExternalInterface'] = function(config) {
 
     return new ExternalIOS();
 };
-/* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
 ExternalAndroid = classExtend(C['HashQuery'], {
     'init': function(config) {
         // this._android = config['android'];
@@ -2467,7 +2457,6 @@ ExternalAndroid = classExtend(C['HashQuery'], {
         delete this._config['externalObj'][name];
     }
 });
-/* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
 ExternalIOS = classExtend(C['HashQuery'], {
     'init': function() {
         this._ios = {};
@@ -2503,7 +2492,6 @@ ExternalIOS = classExtend(C['HashQuery'], {
         delete this._ios[name];
     }
 });
-/* Test: "../../spec/_src/src/Facebook/test.js" */
 C['Facebook'] = classExtendBase({
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +
@@ -2518,7 +2506,6 @@ C['Facebook'] = classExtendBase({
         });
     }
 });
-/* Test: "../../spec/_src/src/FPS/test.js" */
 C['FPS'] = classExtendBase({
     _prevtime: 0,
     _nowtime: 0,
@@ -2576,7 +2563,6 @@ C['FPS'] = classExtendBase({
         clearInterval(this._loopid);
     }
 });
-/* Test: "../../spec/_src/src/ImgLoad/test.js" */
 C['ImgLoad'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -2627,7 +2613,6 @@ C['ImgLoad'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/WindowLoad/test.js" */
 C['WindowLoad'] = classExtendBase({
     _onload: function(func /* varless */, mine, disposeid, loaded) {
         // var mine = this,
@@ -2649,7 +2634,6 @@ C['WindowLoad'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/Mobile/test.js" */
 mb = C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return body.clientWidth / win.innerWidth;
@@ -2691,7 +2675,6 @@ mb = C['Mobile'] = classExtendBase({
     }
 });
 C['mobile'] = new mb();
-/* Test: "../../spec/_src/src/PC/test.js" */
 (function() {
 var userAgent = win.navigator.userAgent.toLowerCase(),
     /* appVersion = win.navigator.appVersion.toLowerCase(), */
@@ -2735,7 +2718,6 @@ pc = C['PC'] = classExtendBase({
 });
 C['pc'] = new pc();
 }());
-/* Test: "../../spec/_src/src/Orientation/test.js" */
 C['Orientation'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -2806,7 +2788,6 @@ C['Orientation'] = classExtendBase({
         mine._contractid = [];
     }
 }, 'onorientationchange' in win);
-/* Test: "../../spec/_src/src/Modal/test.js" */
 C['Modal'] = classExtendBase({
     _closeDetach: function(/* varless */ mine) {
         mine = this;
@@ -2896,7 +2877,7 @@ C['Modal'] = classExtendBase({
 
         mine._scroll['revival']();
     },
-    'inner': function(text /* varless */, mine, computed, close) {
+    'inner': function(text /* varless */, mine, computed, close, i) {
         mine = this;
 
         // var computed,
@@ -2935,7 +2916,6 @@ C['Modal'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/DeviceAction/test.js" */
 WindowAction = classExtendBase({
     'init': function(config) {
         // this._e = config['e'];
@@ -2956,19 +2936,16 @@ WindowAction = classExtendBase({
         this['uncontract'](this._attachid);
     }
 });
-/* Test: "../../spec/_src/src/DeviceOrientation/test.js" */
 C['DeviceOrientation'] = function(config) {
     config['e'] = 'deviceorientation';
     return WindowAction(config);
 };
 C['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
-/* Test: "../../spec/_src/src/DeviceMotion/test.js" */
 C['DeviceMotion'] = function(config) {
     config['e'] = 'devicemotion';
     return WindowAction(config);
 };
 C['DeviceMotion']['support'] = 'ondevicemotion' in win;
-/* Test: "../../spec/_src/src/DeviceShake/test.js" */
 (function() {
 var Shake,
     convert;
@@ -3042,7 +3019,6 @@ C['DeviceShake'] = classExtendBase({
 }, Shake ? TRUE : FALSE);
 
 }());
-/* Test: "../../spec/_src/src/FontImg/test.js" */
 C['FontImg'] = classExtendBase({
     'init': function(config /* varless */, type) {
         config = config || NULLOBJ;
@@ -3066,7 +3042,6 @@ C['FontImg'] = classExtendBase({
         return tags;
     }
 });
-/* Test: "../../spec/_src/src/Observer/test.js" */
 C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
@@ -3119,22 +3094,25 @@ C['Observer'] = classExtendBase({
 
         return FALSE;
     },
-    'fire': function(key, vars) {
+    'fire': function(key, args___) {
         var target = this._observed[key],
+            args = [],
             func,
             i;
 
         if (target) {
+            args.push.apply(args, arguments);
+            args = args.slice(1);
+
             for (i = target.length; i--;) {
                 func = target[i];
                 if (func) {
-                    func(vars);
+                    func.apply(null, args);
                 }
             }
         }
     }
 });
-/* Test: "../../spec/_src/src/PreRender/test.js" */
 C['PreRender'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -3187,7 +3165,6 @@ C['PreRender'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/Route/test.js" */
 C['Route'] = classExtendBase({
     'init': function(config) {
         // this._target = config['target'] || EMPTY;
@@ -3220,7 +3197,6 @@ C['Route'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 C['ScriptLoad'] = classExtendBase({
     'init': function(config) {
         this._els = [];
@@ -3270,7 +3246,6 @@ C['ScriptLoad'] = classExtendBase({
         }
     }
 });
-/* Test: "../../spec/_src/src/ServerMeta/test.js" */
 (function() {
 var xhr,
     isLoaded = FALSE;
@@ -3339,7 +3314,6 @@ function getHeader(callback) {
     return xhr;
 }
 }());
-/* Test: "../../spec/_src/src/Surrogate/test.js" */
 C['Surrogate'] = classExtendBase({
     'init': function(config) {
         this._delay = config['delay'];
@@ -3367,7 +3341,6 @@ C['Surrogate'] = classExtendBase({
         clearInterval(this._waitid);
     }
 });
-/* Test: "../../spec/_src/src/Throttle/test.js" */
 C['Throttle'] = classExtendBase({
     'init': function(config) {
         this._waittime = config['waittime'];
@@ -3410,7 +3383,6 @@ C['Throttle'] = classExtendBase({
         clearInterval(mine._waitid);
     }
 });
-/* Test: "../../spec/_src/src/Timer/test.js" */
 C['Timer'] = function(config) {
     var limit = config['limit'],
         limitx1000 = limit * 1000,
@@ -3552,7 +3524,6 @@ C['Timer'] = function(config) {
 
     return instance;
 };
-/* Test: "../../spec/_src/src/Twitter/test.js" */
 C['Twitter'] = classExtendBase({
     'shareURL': function(vars) {
         var name = vars['name'],
@@ -3567,7 +3538,6 @@ C['Twitter'] = classExtendBase({
         });
     }
 });
-/* Test: "../../spec/_src/src/XML/test.js" */
 C['XML'] = classExtendBase({
     'init': function(config) {
         this._el = create('div');
@@ -3580,7 +3550,6 @@ C['XML'] = classExtendBase({
         return $$child(selector, this._el);
     }
 });
-/* Test: "../../spec/_src/src/Model/test.js" */
 C['Model'] = classExtendBase({
     _notice: function(eventname, key, val /* varless */, mine) {
         mine = this;
@@ -3663,10 +3632,9 @@ C['Model'] = classExtendBase({
         this._observer['off'](key, func);
     },
     'fire': function(key, vars) {
-        return this._observer['fire'](key, vars);
+        return this._observer['fire'].apply(this._observer, arguments);
     }
 });
-/* Test: "../../spec/_src/src/View/test.js" */
 C['View'] = classExtendBase({
     'init': function(config /* varless */, mine, i) {
         mine = this;
@@ -3719,7 +3687,23 @@ C['View'] = classExtendBase({
         this._e('off');
     }
 });
-/* Test: "../../spec/_src/src/Validate/test.js" */
+C['Collection'] = classExtend(C['Model'], {
+    _notice: function(eventname, key, val /* varless */, mine) {
+        mine = this;
+
+        mine._observer['fire'](eventname, val, key, mine._store['get']());
+    },
+    'init': function(config) {
+        this['_super'](config);
+        this._collectid = 0;
+    },
+    'add': function(val) {
+        this._collectid++;
+        this['set'](this._collectid, val);
+
+        return this._collectid;
+    }
+});
 C['Validate'] = classExtendBase({
     _check: function(is, key, value, txt) {
         if (is(value)) {
@@ -3774,7 +3758,6 @@ C['Validate'] = classExtendBase({
     }
 });
 C['validate'] = new C['Validate']();
-/* Test: "../../spec/_src/src/Scroll/test.js" */
 C['Scroll'] = classExtendBase({
     'dispose': function() {
         this['revival']();

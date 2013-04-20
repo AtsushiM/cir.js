@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Deferred/test.js" */
 C['Deferred'] = classExtendBase({
     'init': function() {
         this._queue = [];

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Transition/test.js" */
 (function() {
 var ret = checkCSSAnimTranCheck([
         'transitionProperty',

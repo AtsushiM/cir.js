@@ -49,14 +49,23 @@ describe('utilは', function() {
         expect(text).toEqual('ZBCDEZFGHIZ');
     });
 
-    it('template(templatetxt, replaceobj)はtemplatetxt中の"<%= key %>"をreplaceobjの値で置換する', function() {
-        var text = 'before <%= template %> after';
+    it('template(templatetxt, replaceobj)はtemplatetxt中の"<%= key %>", "<%- key %>"をreplaceobjの値で置換する', function() {
+        var text = 'before <%= template %> <%= test %> after';
 
         text = util.template(text, {
-            'template': 'Cool is Right.'
+            'template': 'Cool is Right.',
+            'test': '<script>alert("lol");</script>'
         });
 
-        expect(text).toEqual('before Cool is Right. after');
+        expect(text).toEqual('before Cool is Right. &lt;script&gt;alert(&quot;lol&quot;);&lt;/script&gt; after');
+    });
+
+    it('escape(text)でhtml形式のテキストを表示する上で問題になる文字をエスケープする', function() {
+        expect(util.escape('"' + "'&<>")).toEqual('&quot;&#039;&amp;&lt;&gt;');
+    });
+
+    it('escape(text)でhtml形式のテキストを表示する上で問題になる文字をエスケープする', function() {
+        expect(util.unescape('&quot;&#039;&amp;&lt;&gt;')).toEqual('"' + "'&<>");
     });
 
     it('windowOpen(url, windowname)で新規ウィンドウを開く', function() {

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/PC/test.js" */
 (function() {
 var userAgent = win.navigator.userAgent.toLowerCase(),
     /* appVersion = win.navigator.appVersion.toLowerCase(), */

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Brush/test.js" */
 C['Brush'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;

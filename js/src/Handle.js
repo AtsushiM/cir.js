@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Handle/test.js" */
 C['Handle'] = classExtendBase({
     'init': function(config) {
         this._config = config;

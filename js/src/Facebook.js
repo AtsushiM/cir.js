@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Facebook/test.js" */
 C['Facebook'] = classExtendBase({
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +

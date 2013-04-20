@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Modal/test.js" */
 C['Modal'] = classExtendBase({
     _closeDetach: function(/* varless */ mine) {
         mine = this;
@@ -88,7 +87,7 @@ C['Modal'] = classExtendBase({
 
         mine._scroll['revival']();
     },
-    'inner': function(text /* varless */, mine, computed, close) {
+    'inner': function(text /* varless */, mine, computed, close, i) {
         mine = this;
 
         // var computed,

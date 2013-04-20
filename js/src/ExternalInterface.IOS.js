@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/ExternalInterface.IOS/test.js" */
 ExternalIOS = classExtend(C['HashQuery'], {
     'init': function() {
         this._ios = {};

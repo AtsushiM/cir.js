@@ -1,10 +1,9 @@
 describe('Modalは', function() {
-    var c = window.C ? C : Global,
-        modal;
+    var modal;
 
     beforeEach(function() {
-        // init
-        modal = new c.Modal({
+        // // init
+        modal = new C.Modal({
             html: 'test',
             bgClose: true,
             closeSelector: '.close',
@@ -19,12 +18,14 @@ describe('Modalは', function() {
 
     it('dispose()でインスタンスを解放する', function() {
         modal.dispose();
-        expect(modal).to.eql({});
+        expect(modal).to.eql({
+            _super: undefined
+        });
     });
 
     it('manual: trueでmodal.openを呼び出さない', function(done) {
         modal.dispose();
-        modal = new c.Modal({
+        modal = new C.Modal({
             html: 'test',
             manual: true
         });

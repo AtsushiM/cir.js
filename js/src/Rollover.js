@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/RollOver/test.js" */
 C['Rollover'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/FPS/test.js" */
 C['FPS'] = classExtendBase({
     _prevtime: 0,
     _nowtime: 0,

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Throttle/test.js" */
 C['Throttle'] = classExtendBase({
     'init': function(config) {
         this._waittime = config['waittime'];

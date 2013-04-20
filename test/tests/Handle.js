@@ -24,7 +24,9 @@ describe('Handleは', function() {
 
     it('dispose()でインスタンスを解放する', function() {
         handle.dispose();
-        expect(handle).to.eql({});
+        expect(handle).to.eql({
+            _super: undefined
+        });
     });
 
     it('初期化時に{el: element, events: {event: function}}に合わせてイベントを追加する', function() {

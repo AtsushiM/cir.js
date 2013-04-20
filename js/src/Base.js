@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Base/test.js" */
 C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
     'dispose': function(/* varless */ mine) {

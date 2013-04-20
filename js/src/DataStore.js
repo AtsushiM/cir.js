@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/DataStore/test.js" */
 C['DataStore'] = classExtendBase({
     'init': function() {
         this._data = {};

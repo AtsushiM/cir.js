@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/ExternalInterface.Android/test.js" */
 ExternalAndroid = classExtend(C['HashQuery'], {
     'init': function(config) {
         // this._android = config['android'];

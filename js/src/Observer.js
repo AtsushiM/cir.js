@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Observer/test.js" */
 C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
@@ -51,16 +50,20 @@ C['Observer'] = classExtendBase({
 
         return FALSE;
     },
-    'fire': function(key, vars) {
+    'fire': function(key, args___) {
         var target = this._observed[key],
+            args = [],
             func,
             i;
 
         if (target) {
+            args.push.apply(args, arguments);
+            args = args.slice(1);
+
             for (i = target.length; i--;) {
                 func = target[i];
                 if (func) {
-                    func(vars);
+                    func.apply(null, args);
                 }
             }
         }

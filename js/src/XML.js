@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/XML/test.js" */
 C['XML'] = classExtendBase({
     'init': function(config) {
         this._el = create('div');

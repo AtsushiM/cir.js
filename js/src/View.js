@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/View/test.js" */
 C['View'] = classExtendBase({
     'init': function(config /* varless */, mine, i) {
         mine = this;

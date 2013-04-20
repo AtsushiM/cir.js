@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/WindowLoad/test.js" */
 C['WindowLoad'] = classExtendBase({
     _onload: function(func /* varless */, mine, disposeid, loaded) {
         // var mine = this,

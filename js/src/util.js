@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/util/test.js" */
 if (!Date['now']) {
     Date['now'] = function() {
         return new Date * 1;
@@ -47,14 +46,49 @@ function typeCast(str /* varless */, matchstr) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
-function template(templatetxt, replaceobj /* varless */, i) {
+function template(templatetxt, replaceobj /* varless */, i, temp) {
     /* var i; */
 
     for (i in replaceobj) {
-        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(replaceobj[i]));
+        temp = replaceobj[i];
+
+        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp));
+        templatetxt = replaceAll(templatetxt, '<%- ' + i + ' %>', temp);
     }
 
     return templatetxt;
+}
+function escape(html) {
+    if (isString(html)) {
+        html =
+            replaceAll(
+                replaceAll(
+                    replaceAll(
+                        replaceAll(
+                            replaceAll(html, '&', '&amp;'),
+                        '"', '&quot;'),
+                    "'", '&#039;'),
+                '<', '&lt;'),
+            '>', '&gt;');
+    }
+
+    return html;
+}
+function unescape(html) {
+    if (isString(html)) {
+        html =
+            replaceAll(
+                replaceAll(
+                    replaceAll(
+                        replaceAll(
+                            replaceAll(html, '&gt;', '>'),
+                        '&lt;', '<'),
+                    '&#039;', "'"),
+                '&quot;', '"'),
+            '&amp;', '&');
+    }
+
+    return html;
 }
 function windowOpen(url, windowname, option /* varless */, i, option_ary) {
     // var i,
@@ -184,6 +218,8 @@ C['util'] = {
     'override': override,
     'replaceAll': replaceAll,
     'template': template,
+    'escape': escape,
+    'unescape': unescape,
     'windowOpen': windowOpen,
     'typeCast': typeCast,
     'makeQueryString': makeQueryString,

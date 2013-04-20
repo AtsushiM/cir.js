@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Validate/test.js" */
 C['Validate'] = classExtendBase({
     _check: function(is, key, value, txt) {
         if (is(value)) {

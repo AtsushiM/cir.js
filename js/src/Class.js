@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Class/test.js" */
 (function() {
     C['lass'] = function() {};
 

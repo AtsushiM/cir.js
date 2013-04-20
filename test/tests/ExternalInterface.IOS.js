@@ -24,7 +24,9 @@ describe('ExternalInterface.IOSは', function() {
 
     it('dispose()でインスタンスを解放する', function() {
         external.dispose();
-        expect(external).to.eql({});
+        expect(external).to.eql({
+            _super: undefined
+        });
     });
 
     it('call({mode: string, vars: {key: val}})でネイティブ機能を呼び出す', function() {

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/WebStorage/test.js" */
 WebStorage = classExtendBase({
     'init': function(config) {
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;

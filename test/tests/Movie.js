@@ -27,7 +27,9 @@ describe('Movieは', function() {
             }
         });
         movie.dispose();
-        expect(movie).to.eql({});
+        expect(movie).to.eql({
+            _super: undefined
+        });
     });
 
     it('getElement()でvideo要素を取得する', function(done) {
@@ -81,7 +83,7 @@ describe('Movieは', function() {
 
         setTimeout(function() {
             movie.setCurrent(1);
-            expect(movie.getCurrent()).toEqual(1);
+            expect(movie.getCurrent()).to.be(1);
             done();
         }, 1000);
     });
@@ -94,11 +96,11 @@ describe('Movieは', function() {
             loop: false,
             oncanplay: function(e) {
                 // write code.
+                expect(movie.getDuration() > 0).to.be(true);
+                done();
             },
             onended: function(e) {
                 // write code.
-                expect(movie.getDuration() > 0).to.be(true);
-                done();
             }
         });
     });
@@ -111,16 +113,16 @@ describe('Movieは', function() {
             loop: false,
             oncanplay: function(e) {
                 // write code.
-            },
-            onended: function(e) {
                 movie.play();
                 movie.stop();
                 done();
+            },
+            onended: function(e) {
             }
         });
     });
 
-    it('loop()でループを設定する', function() {
+    it('loop()でループを設定する', function(done) {
         var end = 0;
 
         movie = new c.Movie({
@@ -132,12 +134,16 @@ describe('Movieは', function() {
                 // write code.
             },
             onended: function(e) {
-                console.log(end);
-                end++;
+                // end++;
+
+                // if (end === 2) {
+                //     done();
+                // }
             }
         });
 
-        waits(100);
+        done();
+
         // runs(function() {
         //     movie.loop(true);
         //     movie.play();
@@ -153,7 +159,7 @@ describe('Movieは', function() {
         // });
     });
 
-    it('pause()で一時停止する', function() {
+    it('pause()で一時停止する', function(done) {
         movie = new c.Movie({
             dir: '/spec/common/',
             name: 'testmovie',
@@ -163,22 +169,23 @@ describe('Movieは', function() {
                 // write code.
             },
             onended: function(e) {
-                expect(0).toEqual(1);
+                expect(0).to.be(1);
             }
         });
 
-        waits(100);
-        runs(function() {
+        setTimeout(function() {
             movie.play();
-        });
-        waits(500);
-        runs(function() {
-            movie.pause();
-            expect(movie.getCurrent()).not.toEqual(0);
-        });
+
+            setTimeout(function() {
+                movie.pause();
+                expect(movie.getCurrent()).not.to.be(0);
+
+                done();
+            }, 500);
+        }, 100);
     });
 
-    it('stop()で停止する', function() {
+    it('stop()で停止する', function(done) {
         movie = new c.Movie({
             dir: '/spec/common/',
             name: 'testmovie',
@@ -191,14 +198,13 @@ describe('Movieは', function() {
             }
         });
 
-        waits(100);
-        runs(function() {
+        setTimeout(function() {
             movie.play();
-        });
-        waits(500);
-        runs(function() {
-            movie.stop();
-            expect(movie.getCurrent()).toEqual(0);
-        });
+            setTimeout(function() {
+                movie.stop();
+                expect(movie.getCurrent()).to.be(0);
+                done();
+            }, 500);
+        }, 100);
     });
 });

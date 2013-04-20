@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Video/test.js" */
 C['Video'] = function(config) {
     config['type'] = 'video';
     config['suffix'] = C['Video']['support'];

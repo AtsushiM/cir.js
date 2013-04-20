@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Datetime/test.js" */
 C['Datetime'] = function(str) {
     if (str && !isNumber(str)) {
         str = str.split(/[T:\-\+\/\s]/);

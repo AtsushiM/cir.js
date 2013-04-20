@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Surrogate/test.js" */
 C['Surrogate'] = classExtendBase({
     'init': function(config) {
         this._delay = config['delay'];

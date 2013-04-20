@@ -1,4 +1,4 @@
-describe('Classは', function() {
+describe('C.lassは', function() {
     beforeEach(function() {
         // init
     });

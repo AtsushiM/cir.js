@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/ScriptLoad/test.js" */
 C['ScriptLoad'] = classExtendBase({
     'init': function(config) {
         this._els = [];

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/DragFlick/test.js" */
 C['DragFlick'] = classExtendBase({
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;

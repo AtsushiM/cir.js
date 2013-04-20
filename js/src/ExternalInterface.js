@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/ExternalInterface/test.js" */
 C['ExternalInterface'] = function(config) {
     config = config || NULLOBJ;
 

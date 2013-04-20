@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Mobile/test.js" */
 mb = C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return body.clientWidth / win.innerWidth;

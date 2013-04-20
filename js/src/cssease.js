@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/cssease/test.js" */
 C['cssease'] = {
     'linear': 'linear',
 

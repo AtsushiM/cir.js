@@ -5,24 +5,23 @@ describe('FPSは', function() {
         criterion = 10;
 
     beforeEach(function() {
-        // init
-        fps = new c.FPS({
-            enterframe: function() {
-            }
-        });
     });
     afterEach(function() {
         // clear
-        if (fps.dispose) {
+        if (fps && fps.stop) {
             fps.stop();
-            fps.dispose();
         }
     });
 
     it('dispose()でインスタンスを解放する', function() {
+        fps = new c.FPS({
+            enterframe: function() {
+            }
+        });
         fps.dispose();
-        expect(fps).to.eql({});
-        waits(10);
+        expect(fps).to.eql({
+            _super: undefined
+        });
     });
 
     it('getCriterion()で目標FPSを取得する', function() {
@@ -90,33 +89,40 @@ describe('FPSは', function() {
             enterframe: dammy.enterframe
         });
 
+        fps.start();
+
         setTimeout(function() {
-            expect(_criterion > 13).to.be(true);
-            expect(_criterion < 21).to.be(true);
+            expect(_criterion > 5).to.be(true);
+            expect(_criterion < 11).to.be(true);
 
             done();
-        }, Math.ceil(fps.getFrameTime() * 20));
+
+        }, Math.ceil(fps.getFrameTime() * 10));
     });
 
-    it('stop()でフレームごとの実行を停止する', function() {
+    it('stop()でフレームごとの実行を停止する', function(done) {
+        var _criterion,
+            _surver;
+
         dammy = {
-            enterframe: function() {
+            enterframe: function(fps) {
+                _criterion = fps.criterion;
+                _surver = fps.surver;
             }
         };
-        spyOn(dammy, 'enterframe').andCallThrough();
+
         fps = new c.FPS({
             criterion: criterion,
             enterframe: dammy.enterframe
         });
+
         fps.stop();
 
-        waits(fps.getFrameTime());
-        runs(function() {
-            expect(dammy.enterframe.callCount).to.be(0);
-        });
-        waits(fps.getFrameTime());
-        runs(function() {
-            expect(dammy.enterframe.callCount).to.be(0);
-        });
+        setTimeout(function() {
+            expect(_criterion).to.be(undefined);
+            expect(_surver).to.be(undefined);
+
+            done();
+        }, Math.ceil(fps.getFrameTime() * 5));
     });
 });

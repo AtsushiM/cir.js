@@ -203,6 +203,18 @@ describe('domは', function() {
         dom.remove($make);
     });
 
+    it('insertBefore(_parent, element)で_parentの一番前にelementを追加する', function() {
+        var $body = dom.$('body'),
+            $make = dom.create('div');
+
+        $make.className = 'insertBeforeTest';
+
+        expect(dom.$('.insertBeforeTest')).to.be(null);
+        dom.insertBefore($body, $make);
+        expect(dom.$('.insertBeforeTest')).not.to.be(undefined);
+        dom.remove($make);
+    });
+
     it('parent(element)でelementの親エレメントを取得する', function() {
         var $body = dom.$('body'),
             $make = dom.create('div');

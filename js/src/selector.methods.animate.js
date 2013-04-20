@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/selector.methods.animate/test.js" */
 (function() {
 var methods = $_methods,
     Animation = C['Animation'] || {},

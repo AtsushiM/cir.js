@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Scroll/test.js" */
 C['Scroll'] = classExtendBase({
     'dispose': function() {
         this['revival']();

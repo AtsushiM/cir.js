@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Tweener/test.js" */
 Tweener = C['Tweener'] = classExtendBase({
     'init': function(target, property, option /* varless */, name, prop, mine) {
         // var name,

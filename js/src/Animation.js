@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Animation/test.js" */
 (function() {
 var ret = checkCSSAnimTranCheck([
         'animation',

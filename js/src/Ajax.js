@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Ajax/test.js" */
 C['Ajax'] = classExtendBase({
     'init': function(config) {
         if (config) {

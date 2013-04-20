@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Embed/test.js" */
 /* C.Embed = function(config) { */
 function Embed(config) {
     var embed = create(config['type']);

@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Twitter/test.js" */
 C['Twitter'] = classExtendBase({
     'shareURL': function(vars) {
         var name = vars['name'],

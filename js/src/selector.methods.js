@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/selector.methods/test.js" */
 function selectorForExe(_this, func, arg) {
     var i = _this.length;
 

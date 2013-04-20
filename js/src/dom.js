@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/dom/test.js" */
 function $(selector) {
     return $child(selector, doc);
 }
@@ -172,27 +171,15 @@ function insertBefore(el, addel) {
 function remove(el) {
     return parent(el).removeChild(el);
 }
-function escape(html) {
-    if (isString(html)) {
-        html = html
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
-
-    return html;
-}
 function html(el, text) {
-    if (!text) {
+    if (!isDefined(text)) {
         return el.innerHTML;
     }
 
     el.innerHTML = text;
 }
 function val(el, value) {
-    if (!value) {
+    if (!isDefined(value)) {
         return el.value;
     }
 
@@ -236,6 +223,5 @@ C['dom'] = {
     'removeAttr': removeAttr,
     'html': html,
     'val': val,
-    'escape': escape,
     'reflow': reflow
 };

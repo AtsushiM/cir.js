@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/ease/test.js" */
 C['ease'] = {
     'linear': function(time, from, dist, duration) {
         return dist * time / duration + from;

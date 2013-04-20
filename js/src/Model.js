@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Model/test.js" */
 C['Model'] = classExtendBase({
     _notice: function(eventname, key, val /* varless */, mine) {
         mine = this;
@@ -81,6 +80,6 @@ C['Model'] = classExtendBase({
         this._observer['off'](key, func);
     },
     'fire': function(key, vars) {
-        return this._observer['fire'](key, vars);
+        return this._observer['fire'].apply(this._observer, arguments);
     }
 });

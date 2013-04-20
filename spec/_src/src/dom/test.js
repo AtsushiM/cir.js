@@ -327,6 +327,9 @@ describe('domは', function() {
         el.html($make, 'test');
         expect($make.innerHTML).toEqual('test');
         expect(el.html($make)).toEqual('test');
+        el.html($make, '');
+        expect($make.innerHTML).toEqual('');
+        expect(el.html($make)).toEqual('');
     });
 
     it('val(element, text)でelement.valueにtextを設定する', function() {
@@ -340,10 +343,9 @@ describe('domは', function() {
         el.val($make, 'test');
         expect($make.value).toEqual('test');
         expect(el.val($make)).toEqual('test');
-    });
-
-    it('escape(text)でhtml形式のテキストを表示する上で問題になる文字をエスケープする', function() {
-        expect(el.escape('"' + "'&<>")).toEqual('&quot;&#039;&amp;&lt;&gt;');
+        el.val($make, '');
+        expect($make.value).toEqual('');
+        expect(el.val($make)).toEqual('');
     });
 
     it('reflow(el)でelをリフローする', function() {

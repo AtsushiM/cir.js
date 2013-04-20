@@ -1,22 +1,17 @@
-/* Test: "%JASMINE_TEST_PATH%" */
 C['Collection'] = classExtend(C['Model'], {
-    'each': function(func) {
-        var data = this.get(),
-            i;
+    _notice: function(eventname, key, val /* varless */, mine) {
+        mine = this;
 
-        for (i in data) {
-            func.call(this, data[i], i, data);
-        }
+        mine._observer['fire'](eventname, val, key, mine._store['get']());
     },
-    'filter': function(filterfunc, func) {
-        var data = this.get(),
-            i,
-            ret = [];
+    'init': function(config) {
+        this['_super'](config);
+        this._collectid = 0;
+    },
+    'add': function(val) {
+        this._collectid++;
+        this['set'](this._collectid, val);
 
-        for (i in data) {
-            if (filterfunc.call(this, data[i])) {
-                func.call(this, data[i], i, data);
-            }
-        }
+        return this._collectid;
     }
 });

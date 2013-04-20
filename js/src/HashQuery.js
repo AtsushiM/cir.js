@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/HashQuery/test.js" */
 C['HashQuery'] = classExtendBase({
     'typeCast': function(str) {
         var caststr = typeCast(str),

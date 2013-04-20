@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Async/test.js" */
 Async = C['Async'] = classExtendBase({
     _success: 0,
     _miss: 0,

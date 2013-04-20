@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/DeviceAction/test.js" */
 WindowAction = classExtendBase({
     'init': function(config) {
         // this._e = config['e'];

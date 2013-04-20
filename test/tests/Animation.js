@@ -26,7 +26,9 @@ describe('Animationは', function() {
         });
 
         animation.dispose();
-        expect(animation).to.eql({});
+        expect(animation).to.eql({
+            _super: undefined
+        });
     });
 
     it('CSS Animationでアニメーションする', function(done) {

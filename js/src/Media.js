@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/Media/test.js" */
 Media = classExtendBase({
     'init': function(config) {
         var mine = this,

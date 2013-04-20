@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/PreRender/test.js" */
 C['PreRender'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;

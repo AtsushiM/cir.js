@@ -4,7 +4,7 @@ describe('Scrollは', function() {
 
     beforeEach(function() {
         // init
-        scroll = new Global.Scroll();
+        scroll = new C.Scroll();
     });
     afterEach(function() {
         // clear

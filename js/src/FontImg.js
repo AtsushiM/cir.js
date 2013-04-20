@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/FontImg/test.js" */
 C['FontImg'] = classExtendBase({
     'init': function(config /* varless */, type) {
         config = config || NULLOBJ;

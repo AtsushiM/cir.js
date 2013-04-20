@@ -1,4 +1,3 @@
-/* Test: "../../spec/_src/src/selector/test.js" */
 // var $base = function(){},
 //     checkQuerySelector = /^(.+[\#\.\s\[>:,]|[\[:])/;
 function $base() {}
