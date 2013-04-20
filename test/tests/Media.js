@@ -13,7 +13,7 @@ describe('Mediaは', function() {
         expect(0).to.be(0);
         // media = new c.Media({
         //     type: 'Video',
-        //     dir: '/spec/common/',
+        //     dir: '/test/common/',
         //     name: 'testmovie',
         //     autoplay: false,
         //     loop: false,
@@ -30,7 +30,7 @@ describe('Mediaは', function() {
 
         // media = new c.Media({
         //     type: 'Audio',
-        //     dir: '/spec/common/',
+        //     dir: '/test/common/',
         //     name: 'tm2_door000',
         //     autoplay: false,
         //     loop: false,

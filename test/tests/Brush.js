@@ -42,7 +42,7 @@ describe('Brushは', function() {
 
     it('pigment({src, width, height, onload})でsrcオプションで指定した画像を表示するcanvas要素を含んだオブジェクトを作成する', function() {
         var pigment = brush.pigment({
-                src: '/spec/common/r.png',
+                src: '/test/common/r.png',
                 width: 100,
                 height: 100,
                 onload: function(canvas, img) {
@@ -58,7 +58,7 @@ describe('Brushは', function() {
     it('pigments({name: {src, width, height, onload}})でsrcオプションで指定した画像を表示するcanvas要素を含むオブジェクトを作成する', function(done) {
         var pigments = brush.pigments({
                 r: {
-                    src: '/spec/common/r.png',
+                    src: '/test/common/r.png',
                     width: 100,
                     height: 100,
                     onload: function(canvas, img) {
@@ -67,7 +67,7 @@ describe('Brushは', function() {
                     }
                 },
                 g: {
-                    src: '/spec/common/g.png',
+                    src: '/test/common/g.png',
                     width: 100,
                     height: 100,
                     onload: function(canvas, img) {
@@ -76,7 +76,7 @@ describe('Brushは', function() {
                     }
                 },
                 b: {
-                    src: '/spec/common/b.png',
+                    src: '/test/common/b.png',
                     width: 100,
                     height: 100,
                     onload: function(canvas, img) {
@@ -104,7 +104,7 @@ describe('Brushは', function() {
     it('draw([{image, x, y}])でcanvasに描画する', function(done) {
         var pigments = brush.pigments({
                 r: {
-                    src: '/spec/common/r.png',
+                    src: '/test/common/r.png',
                     width: 100,
                     height: 100,
                     onload: function(canvas, img) {
@@ -113,7 +113,7 @@ describe('Brushは', function() {
                     }
                 },
                 g: {
-                    src: '/spec/common/g.png',
+                    src: '/test/common/g.png',
                     width: 200,
                     height: 100,
                     onload: function(canvas, img) {
@@ -122,7 +122,7 @@ describe('Brushは', function() {
                     }
                 },
                 b: {
-                    src: '/spec/common/b.png',
+                    src: '/test/common/b.png',
                     width: 300,
                     height: 100,
                     onload: function(canvas, img) {

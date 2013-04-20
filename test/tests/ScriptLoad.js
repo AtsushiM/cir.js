@@ -24,10 +24,10 @@ describe('ScriptLoadは', function() {
 
     it('request({src, callback})でscriptファイルをhtmlに読み込む', function(done) {
         var arg = {
-                src: '/spec/common/test.js',
+                src: '/test/common/test.js',
                 callback: function(e) {
                     expect(
-                        !!document.querySelector('script[src="/spec/common/test.js"]')
+                        !!document.querySelector('script[src="/test/common/test.js"]')
                     ).to.be(true);
                     done();
                 }
@@ -39,11 +39,11 @@ describe('ScriptLoadは', function() {
     it('requests([{src, callback}], callback)で複数scriptファイルをhtmlに読み込む', function(done) {
         var arg = [
                 {
-                    src: '/spec/common/test2.js',
+                    src: '/test/common/test2.js',
                     callback: function() {}
                 },
                 {
-                    src: '/spec/common/test3.js',
+                    src: '/test/common/test3.js',
                     callback: function(e) {
                     }
                 }
@@ -51,10 +51,10 @@ describe('ScriptLoadは', function() {
 
         scriptload.requests(arg, function() {
             expect(
-                !!document.querySelectorAll('script[src="/spec/common/test2.js"]')
+                !!document.querySelectorAll('script[src="/test/common/test2.js"]')
             ).to.be(true);
             expect(
-                !!document.querySelectorAll('script[src="/spec/common/test3.js"]')
+                !!document.querySelectorAll('script[src="/test/common/test3.js"]')
             ).to.be(true);
 
             done();

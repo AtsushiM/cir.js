@@ -15,7 +15,7 @@ describe('Soundは', function() {
 
     it('dispose()でインスタンスを解放する', function() {
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
@@ -35,7 +35,7 @@ describe('Soundは', function() {
 
     it('getElement()でAudio要素を取得する', function(done) {
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
@@ -52,7 +52,7 @@ describe('Soundは', function() {
 
     it('getCurrent()で現在秒数を取得する', function(done) {
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
@@ -69,7 +69,7 @@ describe('Soundは', function() {
 
     it('setCurrent(num)で現在秒数を設定する', function() {
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
@@ -86,7 +86,7 @@ describe('Soundは', function() {
 
     it('getDuration()で総再生時間を取得する', function() {
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
@@ -102,7 +102,7 @@ describe('Soundは', function() {
 
     it('play()で再生する', function(done) {
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
@@ -121,7 +121,7 @@ describe('Soundは', function() {
         // var end = 0;
 
         // sound = new c.Sound({
-        //     dir: '/spec/common/',
+        //     dir: '/test/common/',
         //     name: 'tm2_door000',
         //     autoplay: false,
         //     loop: false,
@@ -144,7 +144,7 @@ describe('Soundは', function() {
         var end = 0;
 
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: false,
             loop: false,
@@ -167,7 +167,7 @@ describe('Soundは', function() {
 
     it('stop()で停止する', function(done) {
         sound = new c.Sound({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'tm2_door000',
             autoplay: true,
             loop: false,

@@ -5,7 +5,7 @@ describe('Videoは', function() {
     beforeEach(function() {
         // init
         video = new c.Video({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             preload: 'auto',
             autoplay: true,

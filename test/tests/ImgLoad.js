@@ -10,9 +10,9 @@ describe('ImgLoadは', function() {
         imgload = new c.ImgLoad({
             srcs: [
                 // img path
-                '/spec/common/r.png',
-                '/spec/common/g.png',
-                '/spec/common/b.png'
+                '/test/common/r.png',
+                '/test/common/g.png',
+                '/test/common/b.png'
             ],
             onprogress: function(prog) {
                 progress = prog;
@@ -35,9 +35,9 @@ describe('ImgLoadは', function() {
         imgload = new c.ImgLoad({
             srcs: [
                 // img path
-                '/spec/common/r.png',
-                '/spec/common/g.png',
-                '/spec/common/b.png'
+                '/test/common/r.png',
+                '/test/common/g.png',
+                '/test/common/b.png'
             ],
             onprogress: function(prog) {
                 progress = prog;

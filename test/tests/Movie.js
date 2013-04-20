@@ -14,7 +14,7 @@ describe('Movieは', function() {
 
     it('dispose()でインスタンスを解放する', function() {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -34,7 +34,7 @@ describe('Movieは', function() {
 
     it('getElement()でvideo要素を取得する', function(done) {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -54,7 +54,7 @@ describe('Movieは', function() {
 
     it('getCurrent()で現在秒数を取得する', function() {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -69,7 +69,7 @@ describe('Movieは', function() {
 
     it('setCurrent(num)で現在秒数を設定する', function(done) {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -90,7 +90,7 @@ describe('Movieは', function() {
 
     it('getDuration()で総再生時間を取得する', function(done) {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -107,7 +107,7 @@ describe('Movieは', function() {
 
     it('play()で再生する', function(done) {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -126,7 +126,7 @@ describe('Movieは', function() {
         var end = 0;
 
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -161,7 +161,7 @@ describe('Movieは', function() {
 
     it('pause()で一時停止する', function(done) {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
@@ -187,7 +187,7 @@ describe('Movieは', function() {
 
     it('stop()で停止する', function(done) {
         movie = new c.Movie({
-            dir: '/spec/common/',
+            dir: '/test/common/',
             name: 'testmovie',
             autoplay: false,
             loop: false,
