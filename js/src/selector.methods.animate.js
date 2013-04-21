@@ -92,12 +92,12 @@ function convertTweenerParam(el, params) {
             from = 0;
         }
         else {
-            from = splitSuffix(from)[2] * 1;
+            from = +splitSuffix(from)[2];
         }
 
         retobj[name] = {
             'from': from,
-            'to': tosplit[2] * 1 || 0,
+            'to': +tosplit[2] || 0,
             'prefix': tosplit[1],
             'suffix': tosplit[3]
         };

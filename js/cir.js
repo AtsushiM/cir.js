@@ -102,7 +102,7 @@ $_methods;
 
 if (!Date['now']) {
     Date['now'] = function() {
-        return new Date * 1;
+        return +new Date;
     };
 }
 
@@ -134,7 +134,7 @@ function typeCast(str /* varless */, matchstr) {
         return jsonParse(matchstr);
     }
     if (matchstr.match(/^[0-9\.]+$/)) {
-        return matchstr * 1;
+        return +matchstr;
     }
     if (matchstr === 'true') {
         return TRUE;
@@ -279,6 +279,11 @@ function isTouchable() {
 }
 function nullFunction() {
 }
+function abstractMethod(error) {
+    return function() {
+        throw new Error(error);
+    };
+}
 function eventPrevent(e) {
     e.preventDefault();
     return FALSE;
@@ -336,6 +341,7 @@ C['util'] = {
     'isDefined': isDefined,
     'isTouchable': isTouchable,
     'nullFunction': nullFunction,
+    'abstractMethod': abstractMethod,
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
@@ -1552,12 +1558,12 @@ function convertTweenerParam(el, params) {
             from = 0;
         }
         else {
-            from = splitSuffix(from)[2] * 1;
+            from = +splitSuffix(from)[2];
         }
 
         retobj[name] = {
             'from': from,
-            'to': tosplit[2] * 1 || 0,
+            'to': +tosplit[2] || 0,
             'prefix': tosplit[1],
             'suffix': tosplit[3]
         };
@@ -2068,12 +2074,12 @@ C['Datetime'] = function(str) {
         }
 
         return new Date(
-            str[0] * 1,
+            +str[0],
             str[1] - 1,
-            str[2] * 1,
-            str[3] * 1,
-            str[4] * 1,
-            str[5] * 1
+            +str[2],
+            +str[3],
+            +str[4],
+            +str[5]
         );
     }
 
