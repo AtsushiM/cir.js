@@ -8,7 +8,7 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-Mine = C['Animation'] =
+Mine = C['SSAnime'] =
 classExtendBase({
     _off: function() {
         var el = this._el,

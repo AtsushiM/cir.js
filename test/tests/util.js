@@ -17,6 +17,17 @@ describe('utilは', function() {
         expect(util.doc).to.be(document);
     });
 
+    it('abstraceFunction()は継承先のクラスで実装を強制したいメソッドがある場合に使用する', function(done) {
+        expect(typeof util.abstraceFunction).to.be('function');
+
+        try {
+            util.abstraceFunction();
+        }
+        catch (e) {
+            done();
+        }
+    });
+
     it('pageTop()でスクロールをトップから1pxまで移動する', function() {
         util.pageTop();
         expect(0).to.be(0);

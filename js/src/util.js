@@ -52,43 +52,34 @@ function template(templatetxt, replaceobj /* varless */, i, temp) {
     for (i in replaceobj) {
         temp = replaceobj[i];
 
-        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp));
-        templatetxt = replaceAll(templatetxt, '<%- ' + i + ' %>', temp);
+        templatetxt = replaceAll(
+            replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp)),
+        '<%- ' + i + ' %>', temp);
     }
 
     return templatetxt;
 }
 function escape(html) {
-    if (isString(html)) {
-        html =
+    return replaceAll(
+        replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(
-                        replaceAll(
-                            replaceAll(html, '&', '&amp;'),
-                        '"', '&quot;'),
-                    "'", '&#039;'),
-                '<', '&lt;'),
-            '>', '&gt;');
-    }
-
-    return html;
+                    replaceAll(html, '&', '&amp;'),
+                '"', '&quot;'),
+            "'", '&#039;'),
+        '<', '&lt;'),
+    '>', '&gt;');
 }
 function unescape(html) {
-    if (isString(html)) {
-        html =
+    return replaceAll(
+        replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(
-                        replaceAll(
-                            replaceAll(html, '&gt;', '>'),
-                        '&lt;', '<'),
-                    '&#039;', "'"),
-                '&quot;', '"'),
-            '&amp;', '&');
-    }
-
-    return html;
+                    replaceAll(html, '&gt;', '>'),
+                '&lt;', '<'),
+            '&#039;', "'"),
+        '&quot;', '"'),
+    '&amp;', '&');
 }
 function windowOpen(url, windowname, option /* varless */, i, option_ary) {
     // var i,
@@ -177,10 +168,8 @@ function isTouchable() {
 }
 function nullFunction() {
 }
-function abstractMethod(error) {
-    return function() {
-        throw new Error(error);
-    };
+function abstraceFunction() {
+    throw new Error('abstract-function was executed without being implemented.');
 }
 function eventPrevent(e) {
     e.preventDefault();
@@ -239,7 +228,7 @@ C['util'] = {
     'isDefined': isDefined,
     'isTouchable': isTouchable,
     'nullFunction': nullFunction,
-    'abstractMethod': abstractMethod,
+    'abstraceFunction': abstraceFunction,
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,

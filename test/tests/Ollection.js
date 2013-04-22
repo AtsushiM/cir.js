@@ -1,10 +1,10 @@
-describe('Collectionは', function() {
+describe('Ollectionは', function() {
     var c = window.C ? C : Global,
         collection;
 
     beforeEach(function() {
         // init
-        collection = new c.Collection({
+        collection = new c.Ollection({
             on: {
                 'change': function(vars) {
                 },
@@ -50,6 +50,75 @@ describe('Collectionは', function() {
 
         expect(collection.add(_val)).to.be(1);
         expect(collection.add(_val)).to.be(2);
+    });
+
+    it('each(callback)で保存されたデータ全てにcallbackで処理を行う', function() {
+        var count = 0;
+
+        collection.add({
+            test: 1
+        });
+        collection.add({
+            test: 2
+        });
+        collection.add({
+            test: 3
+        });
+
+        collection.each(function(val, key, collect) {
+            count++;
+
+            expect(val).to.eql({
+                test: count
+            });
+            expect(key).to.eql(count);
+            expect(collect).to.eql({
+                1: {test: 1},
+                2: {test: 2},
+                3: {test: 3}
+            });
+        });
+
+        expect(count).to.be(3);
+    });
+
+    it('map(callback)で保存されたデータ全てにcallbackで処理を行う。callbackの返り値が対応する保存されたデータを上書きする', function() {
+        var count = 0;
+
+        collection.add({
+            test: 1
+        });
+        collection.add({
+            test: 2
+        });
+        collection.add({
+            test: 3
+        });
+
+        collection.map(function(val, key, collect) {
+            count++;
+
+            expect(val).to.eql({
+                test: count
+            });
+            expect(key).to.eql(count);
+            expect(collect).to.eql({
+                1: {test: 1},
+                2: {test: 2},
+                3: {test: 3}
+            });
+
+            return {
+                test: count * 2
+            };
+        });
+
+        expect(count).to.be(3);
+        expect(collection.get()).to.eql({
+            1: {test: 2},
+            2: {test: 4},
+            3: {test: 6}
+        });
     });
 
     it('prev(key)で一つ前の状態の値を返す', function() {

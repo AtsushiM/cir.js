@@ -1,10 +1,10 @@
-describe('csseaseは', function() {
+describe('easeは', function() {
     var c = window.C ? C : Global,
         ease;
 
     beforeEach(function() {
         // init
-        ease = c.cssease;
+        ease = c.ease;
     });
     afterEach(function() {
         // clear

@@ -10,7 +10,7 @@ var ret = checkCSSAnimTranCheck([
     sheet = ret.sheet,
     Mine;
 
-Mine = C['Transition'] =
+Mine = C['SSTrans'] =
     classExtendBase({
     'init': function(el, property, option /* varless */, mine) {
         mine = this;

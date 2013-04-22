@@ -1,4 +1,4 @@
-C['cssease'] = {
+C['ssease'] = {
     'linear': 'linear',
 
     'inCubic': cssCubicBezierFormat('0.55,0.055,0.675,0.19'),

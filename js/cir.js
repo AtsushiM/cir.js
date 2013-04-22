@@ -154,43 +154,34 @@ function template(templatetxt, replaceobj /* varless */, i, temp) {
     for (i in replaceobj) {
         temp = replaceobj[i];
 
-        templatetxt = replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp));
-        templatetxt = replaceAll(templatetxt, '<%- ' + i + ' %>', temp);
+        templatetxt = replaceAll(
+            replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp)),
+        '<%- ' + i + ' %>', temp);
     }
 
     return templatetxt;
 }
 function escape(html) {
-    if (isString(html)) {
-        html =
+    return replaceAll(
+        replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(
-                        replaceAll(
-                            replaceAll(html, '&', '&amp;'),
-                        '"', '&quot;'),
-                    "'", '&#039;'),
-                '<', '&lt;'),
-            '>', '&gt;');
-    }
-
-    return html;
+                    replaceAll(html, '&', '&amp;'),
+                '"', '&quot;'),
+            "'", '&#039;'),
+        '<', '&lt;'),
+    '>', '&gt;');
 }
 function unescape(html) {
-    if (isString(html)) {
-        html =
+    return replaceAll(
+        replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(
-                        replaceAll(
-                            replaceAll(html, '&gt;', '>'),
-                        '&lt;', '<'),
-                    '&#039;', "'"),
-                '&quot;', '"'),
-            '&amp;', '&');
-    }
-
-    return html;
+                    replaceAll(html, '&gt;', '>'),
+                '&lt;', '<'),
+            '&#039;', "'"),
+        '&quot;', '"'),
+    '&amp;', '&');
 }
 function windowOpen(url, windowname, option /* varless */, i, option_ary) {
     // var i,
@@ -279,10 +270,8 @@ function isTouchable() {
 }
 function nullFunction() {
 }
-function abstractMethod(error) {
-    return function() {
-        throw new Error(error);
-    };
+function abstraceFunction() {
+    throw new Error('abstract-function was executed without being implemented.');
 }
 function eventPrevent(e) {
     e.preventDefault();
@@ -341,7 +330,7 @@ C['util'] = {
     'isDefined': isDefined,
     'isTouchable': isTouchable,
     'nullFunction': nullFunction,
-    'abstractMethod': abstractMethod,
+    'abstraceFunction': abstraceFunction,
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
     'checkUserAgent': checkUserAgent,
@@ -833,7 +822,7 @@ C['ease'] = {
                 (((easebackrate *= (1.525)) + 1) * time + easebackrate) + 2) + from;
     }
 };
-C['cssease'] = {
+C['ssease'] = {
     'linear': 'linear',
 
     'inCubic': cssCubicBezierFormat('0.55,0.055,0.675,0.19'),
@@ -878,7 +867,7 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-Mine = C['Animation'] =
+Mine = C['SSAnime'] =
 classExtendBase({
     _off: function() {
         var el = this._el,
@@ -1013,7 +1002,7 @@ var ret = checkCSSAnimTranCheck([
     sheet = ret.sheet,
     Mine;
 
-Mine = C['Transition'] =
+Mine = C['SSTrans'] =
     classExtendBase({
     'init': function(el, property, option /* varless */, mine) {
         mine = this;
@@ -1466,7 +1455,7 @@ $_methods = C['$'].methods = {
 };
 (function() {
 var methods = $_methods,
-    Animation = C['Animation'] || {},
+    Animation = C['SSAnime'] || {},
     csssupport = Animation['support'],
     EASE = {};
 
@@ -3693,7 +3682,7 @@ C['View'] = classExtendBase({
         this._e('off');
     }
 });
-C['Collection'] = classExtend(C['Model'], {
+C['Ollection'] = classExtend(C['Model'], {
     _notice: function(eventname, key, val /* varless */, mine) {
         mine = this;
 
@@ -3708,6 +3697,22 @@ C['Collection'] = classExtend(C['Model'], {
         this['set'](this._collectid, val);
 
         return this._collectid;
+    },
+    'each': function(callback) {
+        var i,
+            collection = this.get();
+
+        for (i in collection) {
+            callback.apply(this, [collection[i], i, collection]);
+        }
+    },
+    'map': function(callback) {
+        var i,
+            collection = this.get();
+
+        for (i in collection) {
+            this.set(i, callback.apply(this, [collection[i], i, collection]));
+        }
     }
 });
 C['Validate'] = classExtendBase({

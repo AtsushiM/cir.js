@@ -1,6 +1,6 @@
 (function() {
 var methods = $_methods,
-    Animation = C['Animation'] || {},
+    Animation = C['SSAnime'] || {},
     csssupport = Animation['support'],
     EASE = {};
 

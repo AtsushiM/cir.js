@@ -1,4 +1,4 @@
-describe('Animationは', function() {
+describe('SSAnimeは', function() {
     var c = window.C ? C : Global,
         animation,
         div;
@@ -17,7 +17,7 @@ describe('Animationは', function() {
     });
 
     it('dispose()でインスタンスを解放する', function() {
-        animation = new c.Animation(div, {
+        animation = new c.SSAnime(div, {
             opacity: '0'
         }, {
             onComplete: function() {
@@ -31,10 +31,10 @@ describe('Animationは', function() {
         });
     });
 
-    it('CSS Animationでアニメーションする', function(done) {
+    it('アニメーションする', function(done) {
         var count = 0;
 
-        animation = new c.Animation(div, {
+        animation = new c.SSAnime(div, {
             opacity: '0'
         }, {
             onComplete: function() {
@@ -50,7 +50,7 @@ describe('Animationは', function() {
     it('start()でアニメーションを開始する', function(done) {
         var count = 0;
 
-        animation = new c.Animation(div, {
+        animation = new c.SSAnime(div, {
             opacity: '0'
         }, {
             manual: true,
@@ -64,13 +64,13 @@ describe('Animationは', function() {
         setTimeout(function() {
             expect(count).to.be(0);
             animation.start();
-        }, c.Animation.duration + 200);
+        }, c.SSAnime.duration + 200);
     });
 
     it('stop()でアニメーションを開始する', function() {
         var count = 0;
 
-        animation = new c.Animation(div, {
+        animation = new c.SSAnime(div, {
             opacity: '0'
         }, {
             onComplete: function() {
@@ -82,6 +82,6 @@ describe('Animationは', function() {
 
         setTimeout(function() {
             expect(count).to.be(0);
-        }, c.Animation.duration + 200);
+        }, c.SSAnime.duration + 200);
     });
 });
