@@ -27,56 +27,50 @@ describe('Ollectionは', function() {
         expect(collection).to.eql({});
     });
 
-    it('set(key, val)で値を設定し、changeイベントを発火する', function() {
-        var ret = 0;
-
-        collection.on('change', function() {
-            ret = 1;
+    it('set(key, val)で値を設定し、changeイベントを発火する', function(done) {
+        collection.on('change', function(val, key, collect) {
+            expect(val).to.be('test');
+            expect(key).to.be(0);
+            expect(c.util.isArray(collect)).to.be(true);
+            done();
         });
-        collection.set('settest', 1);
-
-        expect(ret).to.be(1);
+        collection.set(0, 'test');
     });
 
     it('add(val)で連番をkeyにし、set(key, val)を呼び出す。返り値はkeyとなる。', function() {
-        var count = 0,
-            _val = 'test';
-
-        collection.set = function(key, val) {
-            count++;
-            expect(key).to.be(count);
-            expect(val).to.be(_val);
-        };
-
-        expect(collection.add(_val)).to.be(1);
-        expect(collection.add(_val)).to.be(2);
+        expect(collection.add('test1')).to.be(0);
+        expect(collection.add('test2')).to.be(1);
+        expect(collection.get()).to.eql([
+            'test1',
+            'test2'
+        ]);
     });
 
     it('each(callback)で保存されたデータ全てにcallbackで処理を行う', function() {
         var count = 0;
 
         collection.add({
+            test: 0
+        });
+        collection.add({
             test: 1
         });
         collection.add({
             test: 2
         });
-        collection.add({
-            test: 3
-        });
 
         collection.each(function(val, key, collect) {
-            count++;
-
             expect(val).to.eql({
                 test: count
             });
             expect(key).to.eql(count);
-            expect(collect).to.eql({
-                1: {test: 1},
-                2: {test: 2},
-                3: {test: 3}
-            });
+            expect(collect).to.eql([
+                {test: 0},
+                {test: 1},
+                {test: 2}
+            ]);
+
+            count++;
         });
 
         expect(count).to.be(3);
@@ -86,39 +80,41 @@ describe('Ollectionは', function() {
         var count = 0;
 
         collection.add({
+            test: 0
+        });
+        collection.add({
             test: 1
         });
         collection.add({
             test: 2
         });
-        collection.add({
-            test: 3
-        });
 
         collection.map(function(val, key, collect) {
-            count++;
+            var ret = {
+                    test: count * 2
+                };
 
             expect(val).to.eql({
                 test: count
             });
             expect(key).to.eql(count);
-            expect(collect).to.eql({
-                1: {test: 1},
-                2: {test: 2},
-                3: {test: 3}
-            });
+            expect(collect).to.eql([
+                {test: 0},
+                {test: 1},
+                {test: 2}
+            ]);
 
-            return {
-                test: count * 2
-            };
+            count++;
+
+            return ret;
         });
 
         expect(count).to.be(3);
-        expect(collection.get()).to.eql({
-            1: {test: 2},
-            2: {test: 4},
-            3: {test: 6}
-        });
+        expect(collection.get()).to.eql([
+            {test: 0},
+            {test: 2},
+            {test: 4}
+        ]);
     });
 
     it('prev(key)で一つ前の状態の値を返す', function() {
