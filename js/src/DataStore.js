@@ -14,7 +14,17 @@ C['DataStore'] = classExtendBase({
         this['reset']();
     },
     'set': function(key, val) {
-        this._data[key] = val;
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
+        }
+
+        for (i in key) {
+            this._data[i] = key[i];
+        }
     },
     'get': function(key) {
         var ret = this._createStore(),

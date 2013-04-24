@@ -45,6 +45,30 @@ describe('LocalStorageは', function() {
         }
     });
 
+    it('set(obj)でデータをlocalStorageにデータを保存する', function() {
+        test(storage);
+        test(storagecir);
+
+        function test(storage) {
+            storage.set('test1', 1);
+            storage.set('test2', 'test');
+            storage.set('test3', {
+                test: 'test'
+            });
+            storage.set({
+                test1: 1,
+                test2: 'test',
+                test3: {
+                    test: 'test'
+                }
+            });
+
+            expect(storage.get('test1')).to.be(1);
+            expect(storage.get('test2')).to.be('test');
+            expect(storage.get('test3')).to.eql({test: 'test'});
+        }
+    });
+
     it('get(key)でlocalStorageからデータを取得する', function() {
         test(storage);
         test(storagecir);

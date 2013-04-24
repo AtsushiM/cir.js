@@ -31,17 +31,31 @@ C['Model'] = classExtendBase({
     'set': function(key, val /* varless */, mine) {
         mine = this;
 
-        if (
-            mine._validate[key] &&
-            !mine._validate[key](key, val)
-        ) {
-            return mine._notice('fail', key, val);
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
         }
 
         mine._prev = mine._store['get']();
-        mine._store['set'](key, val);
 
-        mine._notice(ev['CHANGE'], key, val);
+        for (i in key) {
+            val = key[i];
+
+            if (
+                mine._validate[i] &&
+                !mine._validate[i](i, val)
+            ) {
+                return mine._notice('fail', i, val);
+            }
+
+            mine._store['set'](i, val);
+            mine._observer['fire'](ev['CHANGE'] + ':' + i, val);
+        }
+
+        mine._observer['fire'](ev['CHANGE'], mine._store['get']());
     },
     'prev': function(key) {
         if (!key) {

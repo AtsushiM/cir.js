@@ -1,9 +1,4 @@
 C['Ollection'] = classExtend(C['Model'], {
-    _notice: function(eventname, key, val /* varless */, mine) {
-        mine = this;
-
-        mine._observer['fire'](eventname, val, key, mine._store['get']());
-    },
     'init': function(config /* varless */, mine) {
         mine = this;
 
@@ -32,14 +27,26 @@ C['Ollection'] = classExtend(C['Model'], {
     'set': function(key, val /* varless */, mine) {
         mine = this;
 
-        if (!isNumber(+key)) {
-            return mine._notice('fail', key, val);
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
         }
 
         mine._prev = mine._store['get']();
-        mine._store['set'](key, val);
 
-        mine._notice(ev['CHANGE'], key, val);
+        for (i in key) {
+            val = key[i];
+
+            if (!isNumber(+i)) {
+                return mine._notice('fail', key, val);
+            }
+
+            mine._store['set'](key, val);
+            mine._observer['fire'](ev['CHANGE'], val, +i, mine._store['get']());
+        }
     },
     'add': function(val) {
         var collectid = this._store['get']().length;

@@ -33,6 +33,20 @@ describe('DataStoreは', function() {
         }
     });
 
+    it('set(obj)でデータを保存する', function() {
+        storage.set({
+            test1: 1,
+            test2: 'test',
+            test3: {
+                test: 'test'
+            }
+        });
+
+        expect(storage.get('test1')).to.be(1);
+        expect(storage.get('test2')).to.be('test');
+        expect(storage.get('test3')).to.eql({test: 'test'});
+    });
+
     it('get(key)でデータを取得する', function() {
         test(storage);
 

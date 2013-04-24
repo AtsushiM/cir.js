@@ -75,7 +75,9 @@ function attr(el, vars, value /* varless */, i) {
 
     if (isObject(vars)) {
         for (i in vars) {
-            el.setAttribute(i, vars[i]);
+            if (vars[i]) {
+                el.setAttribute(i, vars[i]);
+            }
         }
 
         return TRUE;

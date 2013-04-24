@@ -414,7 +414,9 @@ function attr(el, vars, value /* varless */, i) {
 
     if (isObject(vars)) {
         for (i in vars) {
-            el.setAttribute(i, vars[i]);
+            if (vars[i]) {
+                el.setAttribute(i, vars[i]);
+            }
         }
 
         return TRUE;
@@ -2135,7 +2137,17 @@ C['DataStore'] = classExtendBase({
         this['reset']();
     },
     'set': function(key, val) {
-        this._data[key] = val;
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
+        }
+
+        for (i in key) {
+            this._data[i] = key[i];
+        }
     },
     'get': function(key) {
         var ret = this._createStore(),
@@ -2180,7 +2192,17 @@ WebStorage = classExtendBase({
         this._storage = win[config['type'] + 'Storage'];
     },
     'set': function(key, val) {
-        this._storage.setItem(this._n + key, jsonStringify(val));
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
+        }
+
+        for (i in key) {
+            this._storage.setItem(this._n + i, jsonStringify(key[i]));
+        }
     },
     'get': function(key /* varless */, mine) {
         mine = this;
@@ -3602,17 +3624,31 @@ C['Model'] = classExtendBase({
     'set': function(key, val /* varless */, mine) {
         mine = this;
 
-        if (
-            mine._validate[key] &&
-            !mine._validate[key](key, val)
-        ) {
-            return mine._notice('fail', key, val);
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
         }
 
         mine._prev = mine._store['get']();
-        mine._store['set'](key, val);
 
-        mine._notice(ev['CHANGE'], key, val);
+        for (i in key) {
+            val = key[i];
+
+            if (
+                mine._validate[i] &&
+                !mine._validate[i](i, val)
+            ) {
+                return mine._notice('fail', i, val);
+            }
+
+            mine._store['set'](i, val);
+            mine._observer['fire'](ev['CHANGE'] + ':' + i, val);
+        }
+
+        mine._observer['fire'](ev['CHANGE'], mine._store['get']());
     },
     'prev': function(key) {
         if (!key) {
@@ -3707,11 +3743,6 @@ C['View'] = classExtendBase({
     }
 });
 C['Ollection'] = classExtend(C['Model'], {
-    _notice: function(eventname, key, val /* varless */, mine) {
-        mine = this;
-
-        mine._observer['fire'](eventname, val, key, mine._store['get']());
-    },
     'init': function(config /* varless */, mine) {
         mine = this;
 
@@ -3740,14 +3771,26 @@ C['Ollection'] = classExtend(C['Model'], {
     'set': function(key, val /* varless */, mine) {
         mine = this;
 
-        if (!isNumber(+key)) {
-            return mine._notice('fail', key, val);
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
         }
 
         mine._prev = mine._store['get']();
-        mine._store['set'](key, val);
 
-        mine._notice(ev['CHANGE'], key, val);
+        for (i in key) {
+            val = key[i];
+
+            if (!isNumber(+i)) {
+                return mine._notice('fail', key, val);
+            }
+
+            mine._store['set'](key, val);
+            mine._observer['fire'](ev['CHANGE'], val, +i, mine._store['get']());
+        }
     },
     'add': function(val) {
         var collectid = this._store['get']().length;
@@ -3902,6 +3945,112 @@ C['Scroll'] = classExtendBase({
             mine['uncontract'](mine._killscrollid);
             delete mine._killscrollid;
         }
+    }
+});
+C['LimitText'] = classExtendBase({
+    _copyAppend: function(text) {
+        append(parent(this._el), this._copyel);
+    },
+    _copyRemove: function() {
+        html(this._copyel, '');
+        remove(this._copyel);
+    },
+    _parseComputed: function(computedPoint) {
+        return +computedPoint.split('px')[0];
+    },
+    _getComputed: function(text) {
+        html(this._copyel, text);
+
+        var computed = computedStyle(this._copyel);
+
+        return {
+            'width': this._parseComputed(computed['width']),
+            'height': this._parseComputed(computed['height']),
+            'font-size': this._parseComputed(computed['font-size'])
+        };
+    },
+    'init': function(config) {
+        this._width = config['width'];
+        this._height = config['height'];
+        this._el = config['el'];
+        this._copyel = create(this._el.tagName, {
+            'class': attr(this._el, 'class'),
+            'id': attr(this._el, 'id'),
+            'style': attr(this._el, 'style')
+        });
+
+        css(this._copyel, {
+            'position': 'fixed',
+            /* 'top': '-9999px', */
+            'top': '0',
+            'left': '0',
+            'visibility': 'hidden'
+        });
+
+        this._copyAppend();
+        this._fontsize = this._getComputed('a')['font-size'];
+        this._copyRemove();
+    },
+    'getLimitFontSize': function(text) {
+        text = '' + text;
+
+        var flg = true,
+            computed,
+            size = this._fontsize,
+            limitsize = 8;
+
+        css(this._copyel, {
+            'font-size': size
+        });
+        this._copyAppend();
+
+        while (flg && size >= limitsize) {
+            computed = this._getComputed(text);
+
+            if (
+                computed['width'] <= this._width &&
+                computed['height'] <= this._height
+            ) {
+                flg = false;
+            }
+            else {
+                size--;
+                css(this._copyel, {
+                    'font-size': size
+                });
+            }
+        }
+
+        this._copyRemove();
+
+        return size;
+    },
+    'getLimitTextLength': function(text) {
+        text = '' + text;
+
+        var orgtext = text,
+            flg = true,
+            computed;
+
+        this._copyAppend();
+
+        while (flg && text !== '') {
+            computed = this._getComputed(text);
+
+            if (
+                computed['width'] <= this._width &&
+                computed['height'] <= this._height
+            ) {
+                flg = false;
+            }
+            else {
+                text = text.slice(0, text.length - 1);
+            }
+        }
+
+        this._copyRemove();
+
+        return text.length;
     }
 });
 if ($_methods) {

@@ -12,7 +12,17 @@ WebStorage = classExtendBase({
         this._storage = win[config['type'] + 'Storage'];
     },
     'set': function(key, val) {
-        this._storage.setItem(this._n + key, jsonStringify(val));
+        var i;
+
+        if (typeof key !== 'object') {
+            i = {};
+            i[key] = val;
+            key = i;
+        }
+
+        for (i in key) {
+            this._storage.setItem(this._n + i, jsonStringify(key[i]));
+        }
     },
     'get': function(key /* varless */, mine) {
         mine = this;

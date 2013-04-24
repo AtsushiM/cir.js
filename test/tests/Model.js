@@ -52,6 +52,26 @@ describe('Modelは', function() {
         model.set('settest', 1);
 
         expect(ret).to.be(1);
+        expect(model.get('settest')).to.be(1);
+    });
+
+    it('set(obj)で値を設定し、changeイベントを発火する', function() {
+        var ret = 0;
+
+        model.on('change:settest1', function() {
+            ret += 1;
+        });
+        model.on('change:settest2', function() {
+            ret += 2;
+        });
+
+        model.set({
+            settest1: 1,
+            settest2: 2
+        });
+        expect(ret).to.be(3);
+        expect(model.get('settest1')).to.be(1);
+        expect(model.get('settest2')).to.be(2);
     });
 
     it('prev(key)で一つ前の状態の値を返す', function() {
