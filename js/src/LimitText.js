@@ -1,4 +1,5 @@
 C['LimitText'] = classExtendBase({
+    _minfontsize: 8,
     _copyAppend: function(text) {
         append(parent(this._el), this._copyel);
     },
@@ -12,12 +13,12 @@ C['LimitText'] = classExtendBase({
     _getComputed: function(text) {
         html(this._copyel, text);
 
-        var computed = computedStyle(this._copyel);
+        /* var computed = computedStyle(this._copyel); */
 
         return {
-            'width': this._parseComputed(computed['width']),
-            'height': this._parseComputed(computed['height']),
-            'font-size': this._parseComputed(computed['font-size'])
+            'width': this._parseComputed(this._computed['width']),
+            'height': this._parseComputed(this._computed['height']),
+            'font-size': this._parseComputed(this._computed['font-size'])
         };
     },
     'init': function(config) {
@@ -38,69 +39,90 @@ C['LimitText'] = classExtendBase({
             'visibility': 'hidden'
         });
 
+        this._computed = computedStyle(this._copyel);
+
         this._copyAppend();
         this._fontsize = this._getComputed('a')['font-size'];
         this._copyRemove();
     },
+    _limitCheck: function(text) {
+        var computed = this._getComputed(text);
+
+        if (
+            computed['width'] <= this._width &&
+            computed['height'] <= this._height
+        ) {
+            return TRUE;
+        }
+
+        return FALSE;
+    },
     'getLimitFontSize': function(text) {
         text = '' + text;
 
-        var flg = true,
-            computed,
-            size = this._fontsize,
-            limitsize = 8;
+        var that = this,
+            high = this._fontsize;
 
-        css(this._copyel, {
-            'font-size': size
+        css(that._copyel, {
+            'font-size': high
         });
-        this._copyAppend();
 
-        while (flg && size >= limitsize) {
-            computed = this._getComputed(text);
+        that._copyAppend();
 
-            if (
-                computed['width'] <= this._width &&
-                computed['height'] <= this._height
-            ) {
-                flg = false;
-            }
-            else {
-                size--;
-                css(this._copyel, {
-                    'font-size': size
-                });
-            }
+        if (that._limitCheck(text)) {
+            answer = high;
+        }
+        else {
+            binarySearch({
+                'low': that._minfontsize - 1,
+                'high': high,
+                'compare': function(point) {
+                    css(that._copyel, {
+                        'font-size': point
+                    });
+                    return that._limitCheck(text);
+                },
+                'end': function(point) {
+                    answer = point;
+                }
+            });
         }
 
-        this._copyRemove();
+        that._copyRemove();
 
-        return size;
+        if (answer < that._minfontsize) {
+            answer = 0;
+        }
+
+        return answer;
     },
     'getLimitTextLength': function(text) {
         text = '' + text;
 
-        var orgtext = text,
-            flg = true,
-            computed;
+        var that = this,
+            len = text.length,
+            answer;
 
-        this._copyAppend();
+        that._copyAppend();
 
-        while (flg && text !== '') {
-            computed = this._getComputed(text);
-
-            if (
-                computed['width'] <= this._width &&
-                computed['height'] <= this._height
-            ) {
-                flg = false;
-            }
-            else {
-                text = text.slice(0, text.length - 1);
-            }
+        if (that._limitCheck(text)) {
+            answer = len;
+        }
+        else {
+            binarySearch({
+                'low': 0,
+                'high': len,
+                'compare': function(point) {
+                    return that._limitCheck(text.slice(0, point));
+                },
+                'end': function(point) {
+                    answer = point;
+                }
+            });
         }
 
-        this._copyRemove();
+        that._copyRemove();
 
-        return text.length;
+        return answer;
     }
 });

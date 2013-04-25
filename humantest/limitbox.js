@@ -7,11 +7,32 @@
         });
 
     console.log(
-        limittext.getLimitTextLength(1234567890)
+        limittext.getLimitTextLength('abcdefghijklmonpqrs')
     );
     console.log(
-        limittext.getLimitFontSize(1234567890)
+        limittext.getLimitFontSize('abcdefghijklmnopqr')
     );
 
+    // var testary = [],
+    //     i = 0,
+    //     len = 100;
+
+    // for (;i < len; i++) {
+    //     testary[i] = i;
+    // }
+
+    // C.util.binarySearch({
+    //     low: 0,
+    //     high: testary.length - 1,
+    //     compare: function(point) {
+    //         if (testary[point] <= 50) {
+    //             return true;
+    //         }
+    //         return false;
+    //     },
+    //     end: function(point) {
+    //         console.log(point);
+    //     }
+    // });
 }());
 
