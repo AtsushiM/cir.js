@@ -60,7 +60,7 @@ function noIndexOf(str, needle) {
 }
 
 function splitSuffix(value) {
-    return (EMPTY + (value || EMPTY)).match(/^(.*?)([0-9\.]+)(.*)$/);
+    return (EMPTY + (value || EMPTY)).match(/^(.*?)(-?[0-9\.]+)(.*)$/);
 }
 
 function this_stop__super() {
@@ -310,11 +310,15 @@ function owner(ownerObj, methods, overrideObj /* varless */, i) {
 function binarySearch(arg) {
     arg = arg || NULLOBJ;
 
-    var compare = arg['compare'] || nullFunction,
-        end = arg['end'] || nullFunction,
-        low = arg['low'] || 0,
-        high = arg['high'],
-        middle;
+    return _binarySearch(
+        arg['low'] || 0,
+        arg['high'] || 0,
+        arg['compare'] || nullFunction,
+        arg['end'] || nullFunction
+    );
+}
+function _binarySearch(low, high, compare, end) {
+    var middle;
 
     while (TRUE) {
         middle = Math.floor((low + high) / 2);
@@ -3976,56 +3980,40 @@ C['Scroll'] = classExtendBase({
 C['LimitText'] = classExtendBase({
     _minfontsize: 8,
     _copyAppend: function(text) {
+        html(this._copyel, text);
         append(parent(this._el), this._copyel);
     },
     _copyRemove: function() {
-        html(this._copyel, '');
+        html(this._copyel, EMPTY);
         remove(this._copyel);
     },
-    _parseComputed: function(computedPoint) {
-        return +computedPoint.split('px')[0];
-    },
-    _getComputed: function(text) {
-        html(this._copyel, text);
-
-        /* var computed = computedStyle(this._copyel); */
-
-        return {
-            'width': this._parseComputed(this._computed['width']),
-            'height': this._parseComputed(this._computed['height']),
-            'font-size': this._parseComputed(this._computed['font-size'])
-        };
-    },
     'init': function(config) {
+        var el = this._el = config['el'],
+            copyel = this._copyel = create(el.tagName, {
+                'class': attr(el, 'class'),
+                'id': attr(el, 'id'),
+                'style': attr(el, 'style')
+            }),
+            computed = this._computed = computedStyle(copyel);
+
         this._width = config['width'];
         this._height = config['height'];
-        this._el = config['el'];
-        this._copyel = create(this._el.tagName, {
-            'class': attr(this._el, 'class'),
-            'id': attr(this._el, 'id'),
-            'style': attr(this._el, 'style')
-        });
 
-        css(this._copyel, {
+        css(copyel, {
             'position': 'fixed',
-            /* 'top': '-9999px', */
-            'top': '0',
-            'left': '0',
+            'top': 0,
+            'left': 0,
             'visibility': 'hidden'
         });
 
-        this._computed = computedStyle(this._copyel);
-
-        this._copyAppend();
-        this._fontsize = this._getComputed('a')['font-size'];
+        this._copyAppend(0);
+        this._fontsize = +splitSuffix(computed['fontSize'])[2];
         this._copyRemove();
     },
-    _limitCheck: function(text) {
-        var computed = this._getComputed(text);
-
+    _limitCheck: function() {
         if (
-            computed['width'] <= this._width &&
-            computed['height'] <= this._height
+            +splitSuffix(this._computed['width'])[2] <= this._width &&
+            +splitSuffix(this._computed['height'])[2] <= this._height
         ) {
             return TRUE;
         }
@@ -4033,34 +4021,35 @@ C['LimitText'] = classExtendBase({
         return FALSE;
     },
     'getLimitFontSize': function(text) {
-        text = '' + text;
+        text = EMPTY + text;
 
         var that = this,
-            high = this._fontsize;
+            high = that._fontsize,
+            answer;
 
         css(that._copyel, {
-            'font-size': high
+            'fontSize': high
         });
 
-        that._copyAppend();
+        that._copyAppend(text);
 
-        if (that._limitCheck(text)) {
+        if (that._limitCheck()) {
             answer = high;
         }
         else {
-            binarySearch({
-                'low': that._minfontsize - 1,
-                'high': high,
-                'compare': function(point) {
+            _binarySearch(
+                that._minfontsize - 1,
+                high,
+                function(point) {
                     css(that._copyel, {
-                        'font-size': point
+                        'fontSize': point
                     });
-                    return that._limitCheck(text);
+                    return that._limitCheck();
                 },
-                'end': function(point) {
+                function(point) {
                     answer = point;
                 }
-            });
+            );
         }
 
         that._copyRemove();
@@ -4072,28 +4061,29 @@ C['LimitText'] = classExtendBase({
         return answer;
     },
     'getLimitTextLength': function(text) {
-        text = '' + text;
+        text = EMPTY + text;
 
         var that = this,
             len = text.length,
             answer;
 
-        that._copyAppend();
+        that._copyAppend(text);
 
-        if (that._limitCheck(text)) {
+        if (that._limitCheck()) {
             answer = len;
         }
         else {
-            binarySearch({
-                'low': 0,
-                'high': len,
-                'compare': function(point) {
-                    return that._limitCheck(text.slice(0, point));
+            _binarySearch(
+                0,
+                len,
+                function(point) {
+                    html(that._copyel, text.slice(0, point));
+                    return that._limitCheck();
                 },
-                'end': function(point) {
+                function(point) {
                     answer = point;
                 }
-            });
+            );
         }
 
         that._copyRemove();

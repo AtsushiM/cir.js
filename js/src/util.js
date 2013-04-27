@@ -208,11 +208,15 @@ function owner(ownerObj, methods, overrideObj /* varless */, i) {
 function binarySearch(arg) {
     arg = arg || NULLOBJ;
 
-    var compare = arg['compare'] || nullFunction,
-        end = arg['end'] || nullFunction,
-        low = arg['low'] || 0,
-        high = arg['high'],
-        middle;
+    return _binarySearch(
+        arg['low'] || 0,
+        arg['high'] || 0,
+        arg['compare'] || nullFunction,
+        arg['end'] || nullFunction
+    );
+}
+function _binarySearch(low, high, compare, end) {
+    var middle;
 
     while (TRUE) {
         middle = Math.floor((low + high) / 2);

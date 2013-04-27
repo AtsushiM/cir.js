@@ -204,4 +204,31 @@ describe('utilは', function() {
 
         expect(proxyfunc()).to.be(1);
     });
+
+    it('binarySearch({low: number, high: number, compare: function, end: function})で二分探索で使うインデックスをcompareに渡し、最終的なインデックスをendに渡す', function() {
+        var ary = [
+            ],
+            i = 0,
+            len = 100,
+            answer;
+
+        for (; i < len; i++) {
+            ary[i] = i;
+        }
+
+        util.binarySearch({
+            low: 0,
+            high: 100,
+            compare: function(point) {
+                if (point < 50) {
+                    return true;
+                }
+            },
+            end: function(point) {
+                answer = point;
+            }
+        });
+
+        expect(answer).to.be(49);
+    });
 });

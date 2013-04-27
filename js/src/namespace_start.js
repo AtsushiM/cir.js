@@ -60,7 +60,7 @@ function noIndexOf(str, needle) {
 }
 
 function splitSuffix(value) {
-    return (EMPTY + (value || EMPTY)).match(/^(.*?)([0-9\.]+)(.*)$/);
+    return (EMPTY + (value || EMPTY)).match(/^(.*?)(-?[0-9\.]+)(.*)$/);
 }
 
 function this_stop__super() {
