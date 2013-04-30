@@ -1,4 +1,4 @@
-describe('DeviceOrientationは', function() {
+describe('C.DeviceOrientationは', function() {
     var c = window.C ? C : Global,
         deviceorientation;
 

@@ -1,4 +1,4 @@
-describe('Mobileは', function() {
+describe('C.Mobileは', function() {
     var c = window.C ? C : Global,
         mb;
 

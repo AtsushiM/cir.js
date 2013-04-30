@@ -1,4 +1,4 @@
-describe('Observerは', function() {
+describe('C.Observerは', function() {
     var c = window.C ? C : Global,
         observer;
 

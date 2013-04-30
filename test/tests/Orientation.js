@@ -1,5 +1,5 @@
 /* Class: "../../../../js/src/Orientation.js" */
-describe('Orientationは', function() {
+describe('C.Orientationは', function() {
     var orientation;
 
     beforeEach(function() {

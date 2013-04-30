@@ -1,4 +1,4 @@
-describe('ExternalInterface.IOSは', function() {
+describe('C.ExternalInterface.IOSは', function() {
     var c = window.C ? C : Global,
         external,
         orgHash = location.hash,

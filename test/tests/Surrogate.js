@@ -1,4 +1,4 @@
-describe('Surrogateは', function() {
+describe('C.Surrogateは', function() {
     var c = window.C ? C : Global,
         surrogate,
         dammy = {

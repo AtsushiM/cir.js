@@ -1,4 +1,4 @@
-describe('SessionStorageは', function() {
+describe('C.SessionStorageは', function() {
     var c = window.C ? C : Global,
         storage,
         storagecir,

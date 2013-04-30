@@ -1,4 +1,4 @@
-describe('domは', function() {
+describe('C.domは', function() {
     var dom;
 
     beforeEach(function() {

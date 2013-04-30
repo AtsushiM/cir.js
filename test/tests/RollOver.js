@@ -1,4 +1,4 @@
-describe('Rolloverは', function() {
+describe('C.Rolloverは', function() {
     var rollover;
 
     beforeEach(function() {

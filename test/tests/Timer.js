@@ -1,4 +1,4 @@
-describe('Timerは', function() {
+describe('C.Timerは', function() {
     var c = window.C ? C : Global,
         timer,
         dammy = {

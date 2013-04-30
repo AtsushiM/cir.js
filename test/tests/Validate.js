@@ -1,4 +1,4 @@
-describe('Validateは', function() {
+describe('C.Validateは', function() {
     var c = window.C ? C : Global,
         validate;
 

@@ -1,4 +1,4 @@
-// describe('Embedは', function() {
+// describe('C.Embedは', function() {
 //     var c = window.C ? C : Global,
 //         embed;
 //

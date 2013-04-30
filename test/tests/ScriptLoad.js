@@ -1,4 +1,4 @@
-describe('ScriptLoadは', function() {
+describe('C.ScriptLoadは', function() {
     var scriptload;
 
     beforeEach(function() {

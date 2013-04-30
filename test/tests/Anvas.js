@@ -1,4 +1,4 @@
-describe('Brushは', function() {
+describe('C.Anvasは', function() {
     var c = window.C ? C : Global,
         brush,
         body = document.body,
@@ -8,7 +8,7 @@ describe('Brushは', function() {
     beforeEach(function() {
         // init
         body.appendChild(canvas);
-        brush = new c.Brush({
+        brush = new c.Anvas({
             canvas: canvas,
             width: 300,
             height: 100

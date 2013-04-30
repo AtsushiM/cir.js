@@ -1,4 +1,4 @@
-describe('Mediaは', function() {
+describe('C.Mediaは', function() {
     var c = window.C ? C : Global,
         media;
 

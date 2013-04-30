@@ -1,4 +1,4 @@
-describe('SSAnimeは', function() {
+describe('C.SSAnimeは', function() {
     var c = window.C ? C : Global,
         animation,
         div;

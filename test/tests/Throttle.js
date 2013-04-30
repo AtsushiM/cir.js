@@ -1,4 +1,4 @@
-describe('Throttleは', function() {
+describe('C.Throttleは', function() {
     var c = window.C ? C : Global,
         throttle,
         retarg = null,

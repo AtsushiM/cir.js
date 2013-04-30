@@ -1,4 +1,4 @@
-describe('sseaseは', function() {
+describe('C.sseaseは', function() {
     var c = window.C ? C : Global,
         ease;
 

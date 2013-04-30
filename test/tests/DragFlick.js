@@ -1,4 +1,4 @@
-describe('DragFlickは', function() {
+describe('C.DragFlickは', function() {
     var c = window.C ? C : Global,
         dragflick;
 

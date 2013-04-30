@@ -1,4 +1,4 @@
-describe('ServerMetaは', function() {
+describe('C.ServerMetaは', function() {
     var c = window.C ? C : Global,
         servermeta;
 

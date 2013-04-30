@@ -1,4 +1,4 @@
-describe('Viewは', function() {
+describe('C.Viewは', function() {
     var c = window.C ? C : Global,
         view;
 

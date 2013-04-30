@@ -1,4 +1,4 @@
-describe('WebStorageは', function() {
+describe('C.WebStorageは', function() {
     var webstorage;
 
     beforeEach(function() {

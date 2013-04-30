@@ -1,4 +1,4 @@
-describe('Scrollは', function() {
+describe('C.Scrollは', function() {
     var scroll;
 
     beforeEach(function() {

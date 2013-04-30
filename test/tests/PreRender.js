@@ -1,4 +1,4 @@
-describe('PreRenderは', function() {
+describe('C.PreRenderは', function() {
     var c = window.C ? C : Global,
         prerender,
         $body = document.querySelector('body');

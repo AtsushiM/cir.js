@@ -1,4 +1,4 @@
-describe('SSTransは', function() {
+describe('C.SSTransは', function() {
     var c = window.C ? C : Global,
         transition,
         div;

@@ -1,4 +1,4 @@
-describe('DataStoreは', function() {
+describe('C.DataStoreは', function() {
     var c = window.C ? C : Global,
         storage;
 

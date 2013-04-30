@@ -1,4 +1,4 @@
-describe('Modelは', function() {
+describe('C.Modelは', function() {
     var c = window.C ? C : Global,
         model;
 

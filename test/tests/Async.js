@@ -1,4 +1,4 @@
-describe('Asyncは', function() {
+describe('C.Asyncは', function() {
     var async;
 
     beforeEach(function() {

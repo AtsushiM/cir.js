@@ -1,4 +1,4 @@
-describe('selector.methods.animateは', function() {
+describe('C.selector.methods.animateは', function() {
     var c = window.C ? C : Global,
         selector = c.$('body');
 

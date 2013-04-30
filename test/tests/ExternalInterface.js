@@ -1,4 +1,4 @@
-describe('ExternalInterfaceは', function() {
+describe('C.ExternalInterfaceは', function() {
     var c = window.C ? C : Global,
         extAndroid,
         extIOS,

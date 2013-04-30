@@ -1,4 +1,4 @@
-describe('Tweenerは', function() {
+describe('C.Tweenerは', function() {
     var c = window.C ? C : Global,
         tweener,
         element = document.createElement('div');

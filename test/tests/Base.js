@@ -1,4 +1,4 @@
-describe('Baseは', function() {
+describe('C.Baseは', function() {
     var c = window.C ? C : Global,
         base;
 

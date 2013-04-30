@@ -1,4 +1,4 @@
-describe('Ajaxは', function() {
+describe('C.Ajaxは', function() {
     var ajax;
 
     beforeEach(function() {

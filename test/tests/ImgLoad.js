@@ -1,4 +1,4 @@
-describe('ImgLoadは', function() {
+describe('C.ImgLoadは', function() {
     var c = window.C ? C : Global,
         imgload,
         progress = 0,

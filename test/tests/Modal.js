@@ -1,4 +1,4 @@
-describe('Modalは', function() {
+describe('C.Modalは', function() {
     var modal;
 
     beforeEach(function() {

@@ -1,4 +1,4 @@
-describe('LimitTextは', function() {
+describe('C.LimitTextは', function() {
     var limittext,
         el = C.dom.create('p');
 

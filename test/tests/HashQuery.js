@@ -1,4 +1,4 @@
-describe('HashQueryは', function() {
+describe('C.HashQueryは', function() {
     var c = window.C ? C : Global,
         hashquery,
         orgHash = location.hash;

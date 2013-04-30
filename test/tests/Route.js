@@ -1,4 +1,4 @@
-describe('Routeは', function() {
+describe('C.Routeは', function() {
     var c = window.C ? C : Global,
         route;
 

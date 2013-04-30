@@ -1,4 +1,4 @@
-describe('XMLは', function() {
+describe('C.XMLは', function() {
     var c = window.C ? C : Global,
         xml,
         data = '<?xml version="1.0" encoding="UTF-8"?><testdata><data>aaaa</data><data>bbbb</data></testdata>';

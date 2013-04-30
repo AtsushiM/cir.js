@@ -1,4 +1,4 @@
-describe('$は', function() {
+describe('C.$は', function() {
     var c = window.C ? C : Global,
         selector;
 

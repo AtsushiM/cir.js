@@ -1,4 +1,4 @@
-describe('Twitterは', function() {
+describe('C.Twitterは', function() {
     var c = window.C ? C : Global,
         twitter;
 

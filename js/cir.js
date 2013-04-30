@@ -2010,7 +2010,7 @@ C['Handle'] = classExtendBase({
         }
     }
 });
-C['Brush'] = classExtendBase({
+C['Anvas'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
 

@@ -1,4 +1,4 @@
-describe('FontImgは', function() {
+describe('C.FontImgは', function() {
     var c = window.C ? C : Global,
         numimg,
         args = {

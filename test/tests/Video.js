@@ -1,4 +1,4 @@
-describe('Videoは', function() {
+describe('C.Videoは', function() {
     var c = window.C ? C : Global,
         video;
 

@@ -1,4 +1,4 @@
-describe('utilは', function() {
+describe('C.utilは', function() {
     var util;
 
     beforeEach(function() {

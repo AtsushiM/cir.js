@@ -1,4 +1,4 @@
-describe('DeviceActionは', function() {
+describe('C.DeviceActionは', function() {
     /* var deviceaction; */
 
     beforeEach(function() {

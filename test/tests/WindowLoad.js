@@ -1,4 +1,4 @@
-describe('WindowLoadは', function() {
+describe('C.WindowLoadは', function() {
     var c = window.C ? C : Global,
         dammy = {
             before: {

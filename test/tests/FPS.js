@@ -1,4 +1,4 @@
-describe('FPSは', function() {
+describe('C.FPSは', function() {
     var c = window.C ? C : Global,
         fps,
         dammy,

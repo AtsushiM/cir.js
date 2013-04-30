@@ -1,4 +1,4 @@
-describe('selector.methodsは', function() {
+describe('C.selector.methodsは', function() {
     if (window.C) {
         Global = C;
     }

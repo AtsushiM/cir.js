@@ -1,4 +1,4 @@
-describe('LocalStorageは', function() {
+describe('C.LocalStorageは', function() {
     var c = window.C ? C : Global,
         storage,
         storagecir,

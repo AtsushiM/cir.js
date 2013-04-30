@@ -1,4 +1,4 @@
-describe('DeviceShakeは', function() {
+describe('C.DeviceShakeは', function() {
     var c = window.C ? C : Global,
         deviceshake;
 

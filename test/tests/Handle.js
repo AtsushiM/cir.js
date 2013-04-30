@@ -1,4 +1,4 @@
-describe('Handleは', function() {
+describe('C.Handleは', function() {
     var c = window.C ? C : Global,
         handle,
         eventHandeler;

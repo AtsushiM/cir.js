@@ -1,4 +1,4 @@
-describe('Ollectionは', function() {
+describe('C.Ollectionは', function() {
     var c = window.C ? C : Global,
         collection;
 
