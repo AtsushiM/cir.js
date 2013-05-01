@@ -33,11 +33,11 @@ C['Modal'] = classExtendBase({
             'class': 'cir-modal-bg'
         });
         css(mine._bg, override({
-            'z-ndex': 9998,
+            'z-index': '9998',
             'top': 0,
             'left': 0,
             'width': '100%',
-            'height': '300%'
+            'height': '200%'
         }, commoncss));
         append(body, mine._bg);
 
@@ -45,7 +45,7 @@ C['Modal'] = classExtendBase({
             'class': 'cir-modal-content'
         });
         css(mine._inner, override({
-            'z-index': 9999,
+            'z-index': '9999',
             'top': '50%',
             'left': '50%'
         }, commoncss));
