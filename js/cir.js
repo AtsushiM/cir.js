@@ -1130,6 +1130,52 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
 Mine['id'] = 0;
 Mine['duration'] = 500;
 }());
+var animeframeobj = {
+        'request': function(callback) {
+            return this._animeframe.call(win, callback);
+        },
+        'cancel': function(id) {
+            return this._cancelframe.call(win, id);
+        }
+    };
+
+(function() {
+    var check = ['webkit', 'moz', 'o', 'ms'],
+        len,
+        _animeframe,
+        _cancelframe;
+
+    if (win['requestAnimationFrame']) {
+        _animeframe = win['requestAnimationFrame'];
+        _cancelframe = win['cancelAnimationFrame'];
+    }
+    else {
+        for (len = check.length; len--; ) {
+            if (win[check[len] + 'RequestAnimationFrame']) {
+                _animeframe = win[check[len] + 'RequestAnimationFrame'];
+                _cancelframe = win[check[len] + 'CancelAnimationFrame'];
+                break;
+            }
+        }
+
+        if (!_animeframe) {
+            _animeframe = function(callback) {
+                return setTimeout(callback, 1000 / C['AnimeFrame']['fps']);
+            };
+            _cancelframe = function(id) {
+                clearTimeout(id);
+            };
+        }
+    }
+
+    animeframeobj._animeframe = _animeframe;
+    animeframeobj._cancelframe = _cancelframe;
+}());
+
+C['AnimeFrame'] = classExtendBase(animeframeobj);
+C['AnimeFrame']['fps'] = 30;
+
+C['animeframe'] = new C['AnimeFrame']();
 Tweener = C['Tweener'] = classExtendBase({
     'init': function(target, property, option /* varless */, name, prop, mine) {
         // var name,
@@ -1166,37 +1212,6 @@ Tweener = C['Tweener'] = classExtendBase({
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
-    _requestAnimationFrame: (function() {
-        if (win.requestAnimationFrame) {
-            return function(callback) {
-                requestAnimationFrame(callback);
-            };
-        }
-        if (win.webkitRequestAnimationFrame) {
-            return function(callback) {
-                webkitRequestAnimationFrame(callback);
-            };
-        }
-        if (win.mozRequestAnimationFrame) {
-            return function(callback) {
-                mozRequestAnimationFrame(callback);
-            };
-        }
-        if (win.oRequestAnimationFrame) {
-            return function(callback) {
-                oRequestAnimationFrame(callback);
-            };
-        }
-        if (win.msRequestAnimationFrame) {
-            return function(callback) {
-                msRequestAnimationFrame(callback);
-            };
-        }
-
-        return function(callback) {
-            setTimeout(callback, 1000 / Tweener.fps);
-        };
-    }()),
     _loop: function() {
         var mine = this,
             items = Tweener.Items,
@@ -1240,7 +1255,7 @@ Tweener = C['Tweener'] = classExtendBase({
         }
 
         if (items.length) {
-            mine._requestAnimationFrame(function() {
+            C['animeframe']['request'](function() {
                 mine._loop();
             });
 
@@ -1258,14 +1273,14 @@ Tweener = C['Tweener'] = classExtendBase({
         Tweener.Items.push(mine);
         if (!Tweener.timerId) {
             Tweener.timerId = 1;
-            mine._requestAnimationFrame(function() {
+            C['animeframe']['request'](function() {
                 mine._loop();
             });
         }
     },
     'stop': function() {
         Tweener.Items = [];
-        clearInterval(Tweener.timerId);
+        clearTimeout(Tweener.timerId);
         Tweener.timerId = NULL;
     }
 });
@@ -1274,7 +1289,6 @@ Tweener._setProp = function(target, prop, point) {
 };
 /* Tweener.timerId = NULL; */
 Tweener.Items = [];
-Tweener['fps'] = 30;
 Tweener['duration'] = 500;
 // var $base = function(){},
 //     checkQuerySelector = /^(.+[\#\.\s\[>:,]|[\[:])/;
@@ -3409,7 +3423,7 @@ C['Surrogate'] = classExtendBase({
         mine._callback(mine._args);
     },
     'clear': function() {
-        clearInterval(this._waitid);
+        clearTimeout(this._waitid);
     }
 });
 C['Throttle'] = classExtendBase({
@@ -3451,7 +3465,7 @@ C['Throttle'] = classExtendBase({
         mine = mine || this;
 
         mine._locked = FALSE;
-        clearInterval(mine._waitid);
+        clearTimeout(mine._waitid);
     }
 });
 C['Timer'] = function(config) {
@@ -3491,7 +3505,7 @@ C['Timer'] = function(config) {
                 _loop();
             },
             'stop': function() {
-                clearInterval(loopid);
+                clearTimeout(loopid);
             }
         };
 

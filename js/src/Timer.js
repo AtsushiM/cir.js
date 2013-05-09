@@ -35,7 +35,7 @@ C['Timer'] = function(config) {
                 _loop();
             },
             'stop': function() {
-                clearInterval(loopid);
+                clearTimeout(loopid);
             }
         };
 

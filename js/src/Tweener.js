@@ -34,37 +34,6 @@ Tweener = C['Tweener'] = classExtendBase({
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
-    _requestAnimationFrame: (function() {
-        if (win.requestAnimationFrame) {
-            return function(callback) {
-                requestAnimationFrame(callback);
-            };
-        }
-        if (win.webkitRequestAnimationFrame) {
-            return function(callback) {
-                webkitRequestAnimationFrame(callback);
-            };
-        }
-        if (win.mozRequestAnimationFrame) {
-            return function(callback) {
-                mozRequestAnimationFrame(callback);
-            };
-        }
-        if (win.oRequestAnimationFrame) {
-            return function(callback) {
-                oRequestAnimationFrame(callback);
-            };
-        }
-        if (win.msRequestAnimationFrame) {
-            return function(callback) {
-                msRequestAnimationFrame(callback);
-            };
-        }
-
-        return function(callback) {
-            setTimeout(callback, 1000 / Tweener.fps);
-        };
-    }()),
     _loop: function() {
         var mine = this,
             items = Tweener.Items,
@@ -108,7 +77,7 @@ Tweener = C['Tweener'] = classExtendBase({
         }
 
         if (items.length) {
-            mine._requestAnimationFrame(function() {
+            C['animeframe']['request'](function() {
                 mine._loop();
             });
 
@@ -126,14 +95,14 @@ Tweener = C['Tweener'] = classExtendBase({
         Tweener.Items.push(mine);
         if (!Tweener.timerId) {
             Tweener.timerId = 1;
-            mine._requestAnimationFrame(function() {
+            C['animeframe']['request'](function() {
                 mine._loop();
             });
         }
     },
     'stop': function() {
         Tweener.Items = [];
-        clearInterval(Tweener.timerId);
+        clearTimeout(Tweener.timerId);
         Tweener.timerId = NULL;
     }
 });
@@ -142,5 +111,4 @@ Tweener._setProp = function(target, prop, point) {
 };
 /* Tweener.timerId = NULL; */
 Tweener.Items = [];
-Tweener['fps'] = 30;
 Tweener['duration'] = 500;

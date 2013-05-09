@@ -125,10 +125,6 @@ describe('C.Tweenerは', function() {
         }, C.Tweener.duration);
     });
 
-    it('C.Tweener.fpsでFPSを調整する', function() {
-        expect(C.Tweener.fps).not.to.be(undefined);
-    });
-
     it('C.Tweener.durationでデフォルトのアニメーション実行時間を設定する', function() {
         expect(C.Tweener.duration).not.to.be(undefined);
     });

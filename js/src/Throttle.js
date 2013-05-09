@@ -37,6 +37,6 @@ C['Throttle'] = classExtendBase({
         mine = mine || this;
 
         mine._locked = FALSE;
-        clearInterval(mine._waitid);
+        clearTimeout(mine._waitid);
     }
 });

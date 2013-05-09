@@ -22,6 +22,6 @@ C['Surrogate'] = classExtendBase({
         mine._callback(mine._args);
     },
     'clear': function() {
-        clearInterval(this._waitid);
+        clearTimeout(this._waitid);
     }
 });
