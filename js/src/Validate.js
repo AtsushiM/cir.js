@@ -27,10 +27,10 @@ C['Validate'] = classExtendBase({
             case 'off':
                 return FALSE;
             /* case 'warn': */
-            default:
+            /* default: */
+        }
                 console.warn(text);
                 return FALSE;
-        }
     },
     'isObject': function(key, value) {
         return this._check(isObject, key, value, 'Object');

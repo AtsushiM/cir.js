@@ -43,6 +43,14 @@ function typeCast(str /* varless */, matchstr) {
 
     return str;
 }
+function toArray(obj) {
+    var ary = [];
+
+    ary.push.apply(ary, obj);
+
+    return ary;
+}
+
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
@@ -219,7 +227,7 @@ function _binarySearch(low, high, compare, end) {
     var middle;
 
     while (TRUE) {
-        middle = Math.floor((low + high) / 2);
+        middle = ~~((low + high) / 2);
 
         if (low == middle) {
             return end(middle);
@@ -263,5 +271,6 @@ C['util'] = {
     'checkUserAgent': checkUserAgent,
     'proxy': proxy,
     'owner': owner,
-    'binarySearch': binarySearch
+    'binarySearch': binarySearch,
+    'toArray': toArray
 };

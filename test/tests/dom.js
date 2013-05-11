@@ -302,4 +302,21 @@ describe('C.domは', function() {
         dom.reflow(document.body);
         expect(1).to.be(1);
     });
+
+    it('toElement(tagtext)で"<p>AB</p>"などのストリング型のタグをHTML要素を返す', function() {
+        var els = dom.toElement('<p>A</p><p>B</p><div class="test"><span>C</span></div>');
+
+        expect(els.innerHTML).to.be('A');
+        expect(els.tagName).to.be('P');
+    });
+
+    it('toElements(tagtext)で"<p>AB</p><p>C</p>"などのストリング型のタグをHTML要素に変換し、配列に入れて返す', function() {
+        var els = dom.toElements('<p>A</p><p>B</p><div class="test"><span>C</span></div>');
+
+        expect(els).to.be.a('array');
+        expect(els[0].innerHTML).to.be('A');
+        expect(els[1].innerHTML).to.be('B');
+        expect(els[2].innerHTML).to.be('<span>C</span>');
+        expect(els[2].className).to.be('test');
+    });
 });

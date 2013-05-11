@@ -7,15 +7,8 @@ function $$(selector) {
 function $child(selector, el) {
     return el.querySelector(selector);
 }
-function $$child(selector, el /* varless */, eles, ary) {
-    // var eles = el.querySelectorAll(selector),
-    //     ary = [];
-    eles = el.querySelectorAll(selector),
-    ary = [];
-
-    ary.push.apply(ary, eles);
-
-    return ary;
+function $$child(selector, el) {
+    return toArray(el.querySelectorAll(selector));
 }
 function $id(id) {
     return doc.getElementById(id);
@@ -95,13 +88,23 @@ function removeAttr(el, key) {
 
 function create(tagname, attribute /* varless */, el) {
     /* var el= doc.createElement(tagname); */
-    el= doc.createElement(tagname);
+    el = doc.createElement(tagname);
 
     if (attribute) {
         attr(el, attribute);
     }
 
     return el;
+}
+function toElements(txt) {
+    var div = create('div');
+
+    html(div, txt);
+
+    return toArray(div.children);
+}
+function toElement(txt) {
+    return toElements(txt)[0];
 }
 
 function on(el, eventname, handler) {
@@ -225,5 +228,7 @@ C['dom'] = {
     'removeAttr': removeAttr,
     'html': html,
     'val': val,
-    'reflow': reflow
+    'reflow': reflow,
+    'toElement': toElement,
+    'toElements': toElements
 };
