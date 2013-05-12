@@ -21,7 +21,7 @@ describe('C.SSTransは', function() {
         transition = new c.SSTrans(div, {
             opacity: '0'
         }, {
-            onComplete: function() {
+            oncomplete: function() {
                 count = 1;
             }
         });
@@ -37,7 +37,7 @@ describe('C.SSTransは', function() {
         transition = new c.SSTrans(div, {
             opacity: '0'
         }, {
-            onComplete: function() {
+            oncomplete: function() {
                 count = 1;
             }
         });
@@ -49,7 +49,7 @@ describe('C.SSTransは', function() {
             opacity: '0'
         }, {
             manual: true,
-            onComplete: function() {
+            oncomplete: function() {
             }
         });
 
@@ -62,7 +62,7 @@ describe('C.SSTransは', function() {
         transition = new c.SSTrans(div, {
             opacity: '0'
         }, {
-            onComplete: function() {
+            oncomplete: function() {
                 count = 1;
             }
         });

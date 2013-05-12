@@ -56,7 +56,7 @@ function animate(el, params, duration, ease, callback) {
     option = {
         'duration': duration,
         'ease': ease,
-        'onComplete': callback
+        'oncomplete': callback
     };
 
     if (csssupport) {

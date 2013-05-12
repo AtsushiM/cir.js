@@ -33,7 +33,7 @@ describe('C.Tweenerは', function() {
             {
                 duration: 500,
                 ease: c.ease.outExpo,
-                onComplete: function() {
+                oncomplete: function() {
                 }
             }
         );
@@ -66,7 +66,7 @@ describe('C.Tweenerは', function() {
             },
             {
                 ease: c.ease.outExpo,
-                onComplete: function() {
+                oncomplete: function() {
                     comp = true;
                 }
             }
@@ -106,7 +106,7 @@ describe('C.Tweenerは', function() {
             },
             {
                 ease: null,
-                onComplete: function() {
+                oncomplete: function() {
                     comp = true;
                 }
             }

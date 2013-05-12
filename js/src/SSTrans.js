@@ -39,7 +39,7 @@ Mine = C['SSTrans'] =
 
         mine._el = el;
         mine._property = property;
-        mine._onComplete = option['onComplete'] || nullFunction;
+        mine._oncomplete = option['oncomplete'] || nullFunction;
 
         if (!option['manual']) {
             mine['start']();
@@ -53,7 +53,7 @@ Mine = C['SSTrans'] =
         mine._endfunc = function(e) {
             mine['stop']();
             setTimeout(function() {
-                mine._onComplete(e);
+                mine._oncomplete(e);
             }, 1);
         };
 

@@ -931,7 +931,7 @@ classExtendBase({
 
         option = option || NULLOBJ;
 
-        mine._onComplete = option['onComplete'] || nullFunction;
+        mine._oncomplete = option['oncomplete'] || nullFunction;
 
         mine._el = el;
 
@@ -1007,7 +1007,7 @@ classExtendBase({
 
                 css(el, mine.property);
             }
-            mine._onComplete(e);
+            mine._oncomplete(e);
         }
     },
     'stop': function() {
@@ -1081,7 +1081,7 @@ Mine = C['SSTrans'] =
 
         mine._el = el;
         mine._property = property;
-        mine._onComplete = option['onComplete'] || nullFunction;
+        mine._oncomplete = option['oncomplete'] || nullFunction;
 
         if (!option['manual']) {
             mine['start']();
@@ -1095,7 +1095,7 @@ Mine = C['SSTrans'] =
         mine._endfunc = function(e) {
             mine['stop']();
             setTimeout(function() {
-                mine._onComplete(e);
+                mine._oncomplete(e);
             }, 1);
         };
 
@@ -1219,7 +1219,7 @@ Tweener = C['Tweener'] = classExtendBase({
 
         mine._duration = option['duration'] || Tweener['duration'];
         mine._ease = option['ease'] || mine.__ease;
-        mine._onComplete = option['onComplete'];
+        mine._oncomplete = option['oncomplete'];
 
         if (!option['manual']) {
             mine['start']();
@@ -1265,8 +1265,8 @@ Tweener = C['Tweener'] = classExtendBase({
 
                     Tweener._setProp(item._target, prop, prop['to']);
                 }
-                if (item._onComplete) {
-                    item._onComplete();
+                if (item._oncomplete) {
+                    item._oncomplete();
                 }
                 items.splice(n, 1);
             }
@@ -1575,7 +1575,7 @@ function animate(el, params, duration, ease, callback) {
     option = {
         'duration': duration,
         'ease': ease,
-        'onComplete': callback
+        'oncomplete': callback
     };
 
     if (csssupport) {

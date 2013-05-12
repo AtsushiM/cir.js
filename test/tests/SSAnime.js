@@ -20,7 +20,7 @@ describe('C.SSAnimeは', function() {
         animation = new c.SSAnime(div, {
             opacity: '0'
         }, {
-            onComplete: function() {
+            oncomplete: function() {
                 count = 1;
             }
         });
@@ -37,7 +37,7 @@ describe('C.SSAnimeは', function() {
         animation = new c.SSAnime(div, {
             opacity: '0'
         }, {
-            onComplete: function() {
+            oncomplete: function() {
                 count = 1;
                 expect(count).to.be(1);
                 done();
@@ -54,7 +54,7 @@ describe('C.SSAnimeは', function() {
             opacity: '0'
         }, {
             manual: true,
-            onComplete: function() {
+            oncomplete: function() {
                 count = 1;
                 expect(count).to.be(1);
                 done();
@@ -73,7 +73,7 @@ describe('C.SSAnimeは', function() {
         animation = new c.SSAnime(div, {
             opacity: '0'
         }, {
-            onComplete: function() {
+            oncomplete: function() {
                 count = 1;
             }
         });

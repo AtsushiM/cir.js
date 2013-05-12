@@ -22,7 +22,7 @@ classExtendBase({
 
         option = option || NULLOBJ;
 
-        mine._onComplete = option['onComplete'] || nullFunction;
+        mine._oncomplete = option['oncomplete'] || nullFunction;
 
         mine._el = el;
 
@@ -98,7 +98,7 @@ classExtendBase({
 
                 css(el, mine.property);
             }
-            mine._onComplete(e);
+            mine._oncomplete(e);
         }
     },
     'stop': function() {
