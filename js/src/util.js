@@ -241,6 +241,9 @@ function _binarySearch(low, high, compare, end) {
         }
     }
 }
+function hasDeclaredArgument(func) {
+    return func.toString().match(/^\s*function.*\((.+)\)/);
+}
 
 C['util'] = {
     'win': win,
@@ -272,5 +275,6 @@ C['util'] = {
     'proxy': proxy,
     'owner': owner,
     'binarySearch': binarySearch,
-    'toArray': toArray
+    'toArray': toArray,
+    'hasDeclaredArgument': hasDeclaredArgument
 };
