@@ -6,7 +6,7 @@
         convert = {
             // d = 01 ~ 31
             'd': function(date) {
-                return digit2(convert.j(date));
+                return digit2(convert['j'](date));
             },
             // j = 1 ~ 31
             'j': function(date) {
@@ -30,7 +30,7 @@
             },
             // m = 01 ~ 12
             'm': function(date) {
-                return digit2(convert.n(date));
+                return digit2(convert['n'](date));
             },
             // n = 1 ~ 12
             'n': function(date) {
@@ -42,19 +42,19 @@
             },
             // y = 13
             'y': function(date) {
-                return lower2(convert.Y(date));
+                return lower2(convert['Y'](date));
             },
             // a = am || pm
             'a': function(date) {
-                return convert.A(date).toLowerCase();
+                return convert['A'](date).toLowerCase();
             },
             // A = AM || PM
             'A': function(date) {
-                return convert.G(date) < 12 ? 'AM' : 'PM';
+                return convert['G'](date) < 12 ? 'AM' : 'PM';
             },
             // g = 1 ~ 12
             'g': function(date) {
-                var hour = convert.G(date);
+                var hour = convert['G'](date);
 
                 if (hour == 12 || hour == 0 || hour == 24) {
                     return 12;
@@ -68,19 +68,19 @@
             },
             // h = 01 ~ 12
             'h': function(date) {
-                return digit2(convert.g(date));
+                return digit2(convert['g'](date));
             },
             // H = 00 ~ 24
             'H': function(date) {
-                return digit2(convert.G(date));
+                return digit2(convert['G'](date));
             },
             // i = 00 ~ 59
             'i': function(date) {
-                return digit2(convert.I(date));
+                return digit2(convert['I'](date));
             },
             // s = 00 ~ 59
             's': function(date) {
-                return digit2(convert.S(date));
+                return digit2(convert['S'](date));
             },
             // I = 0 ~ 59
             'I': function(date) {

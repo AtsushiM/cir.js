@@ -14,7 +14,7 @@ C['Task'] = classExtendBase({
         }
 
         this._queue = queue;
-        this._done = C.util.proxy(this, this._done);
+        this._done = proxy(this, this._done);
     },
     'start': function() {
         this._exeQueue(0);
@@ -31,13 +31,13 @@ C['Task'] = classExtendBase({
             org_action;
 
         if (task._exeQueue) {
-            org_action = C.util.proxy(task, task._oncomplete);
+            org_action = proxy(task, task._oncomplete);
 
             task._oncomplete = function() {
                 org_action();
                 that._done();
             };
-            task = C.util.proxy(task, task['start']);
+            task = proxy(task, task['start']);
         }
         else if (!hasDeclaredArgument(task)) {
             org_action = task;
