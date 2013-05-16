@@ -10,9 +10,9 @@ C['ScriptLoad'] = classExtendBase({
         var mine = this,
             i = 0,
             len = varary.length,
-            async = new Async({
+            progress = new Progress({
                 'waits': varary,
-                'callback': function() {
+                'oncomplete': function() {
                     callback(mine._els);
                 }
             }),
@@ -23,7 +23,7 @@ C['ScriptLoad'] = classExtendBase({
 
             varary[i]['callback'] = function(e) {
                 wrapback(e);
-                async['pass']();
+                progress['pass']();
             };
 
             mine['request'](varary[i]);

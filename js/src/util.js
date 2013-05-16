@@ -244,10 +244,15 @@ function _binarySearch(low, high, compare, end) {
 function hasDeclaredArgument(func) {
     return func.toString().match(/^\s*function.*\((.+)\)/);
 }
+function copyArray(ary) {
+    if (isArray(ary)) {
+        return ary.slice(0);
+    }
+
+    return ary;
+}
 
 C['util'] = {
-    'win': win,
-    'doc': doc,
     'pageTop': pageTop,
     'override': override,
     'replaceAll': replaceAll,
@@ -276,5 +281,6 @@ C['util'] = {
     'owner': owner,
     'binarySearch': binarySearch,
     'toArray': toArray,
+    'copyArray': copyArray,
     'hasDeclaredArgument': hasDeclaredArgument
 };

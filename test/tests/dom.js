@@ -10,6 +10,14 @@ describe('C.domは', function() {
         dom.show(dom.$('body'));
     });
 
+    it('windowをwinプロパティとして持つ', function() {
+        expect(dom.win).to.be(window);
+    });
+
+    it('documentをdocプロパティとして持つ', function() {
+        expect(dom.doc).to.be(document);
+    });
+
     it('$(selector)で対象のelement一つを返す', function() {
         expect(dom.$('body')).not.to.be(undefined);
     });

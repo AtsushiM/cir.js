@@ -5,10 +5,10 @@ C['ImgLoad'] = classExtendBase({
         mine._srcs = config['srcs'];
         mine._loadedsrcs = [];
         mine._contractid = [];
-        mine._async = new Async({
+        mine._progress = new Progress({
             'waits': mine._srcs,
             'onprogress': config['onprogress'],
-            'callback': function() {
+            'oncomplete': function() {
                 var i = mine._contractid.length;
 
                 for (; i--;) {
@@ -44,7 +44,7 @@ C['ImgLoad'] = classExtendBase({
         }
 
         function countup() {
-            mine._async['pass']();
+            mine._progress['pass']();
         }
     }
 });

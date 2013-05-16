@@ -201,6 +201,8 @@ on(doc, 'DOMContentLoaded', function() {
 });
 
 C['dom'] = {
+    'win': win,
+    'doc': doc,
     '$': $,
     '$$': $$,
     '$child': $child,

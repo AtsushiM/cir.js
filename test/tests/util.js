@@ -9,14 +9,6 @@ describe('C.utilは', function() {
         // clear
     });
 
-    it('windowをwinプロパティとして持つ', function() {
-        expect(util.win).to.be(window);
-    });
-
-    it('documentをdocプロパティとして持つ', function() {
-        expect(util.doc).to.be(document);
-    });
-
     it('abstraceFunction()は継承先のクラスで実装を強制したいメソッドがある場合に使用する', function(done) {
         expect(typeof util.abstraceFunction).to.be('function');
 
@@ -211,7 +203,29 @@ describe('C.utilは', function() {
         expect(util.toArray({length: 2, 0: 0, _: 11})).to.eql([0, undefined]);
     });
 
+    it('copyArray(ary)でaryをシャローコピーする。', function() {
+        var ary = [1, 2, 3];
+
+        expect(util.copyArray(ary)).to.eql(ary);
+        expect(util.copyArray(ary)).not.to.equal(ary);
+    });
+
+    it('hasDeclaredArgument(func)でfuncが宣言済み引数を持つかどうかboolで返す。', function() {
+        expect(util.hasDeclaredArgument(function() {})).to.be.false;
+        expect(util.hasDeclaredArgument(function(a) {})).to.be.true;
+    });
+
     it('proxy(target, func)でthisをtargetにしたfuncを実行する関数を返す', function() {
+        var target = {test: 1},
+            func = function() {
+                return this.test;
+            },
+            proxyfunc = util.proxy(target, func);
+
+        expect(proxyfunc()).to.be(1);
+    });
+
+    it('(target, func)でthisをtargetにしたfuncを実行する関数を返す', function() {
         var target = {test: 1},
             func = function() {
                 return this.test;

@@ -89,7 +89,7 @@ var win = window,
     easebackrate = 1.70158,
 
 ev,
-Async,
+Progress,
 WindowAction,
 ExternalAndroid,
 ExternalIOS,
@@ -346,10 +346,15 @@ function _binarySearch(low, high, compare, end) {
 function hasDeclaredArgument(func) {
     return func.toString().match(/^\s*function.*\((.+)\)/);
 }
+function copyArray(ary) {
+    if (isArray(ary)) {
+        return ary.slice(0);
+    }
+
+    return ary;
+}
 
 C['util'] = {
-    'win': win,
-    'doc': doc,
     'pageTop': pageTop,
     'override': override,
     'replaceAll': replaceAll,
@@ -378,6 +383,7 @@ C['util'] = {
     'owner': owner,
     'binarySearch': binarySearch,
     'toArray': toArray,
+    'copyArray': copyArray,
     'hasDeclaredArgument': hasDeclaredArgument
 };
 function $(selector) {
@@ -583,6 +589,8 @@ on(doc, 'DOMContentLoaded', function() {
 });
 
 C['dom'] = {
+    'win': win,
+    'doc': doc,
     '$': $,
     '$$': $$,
     '$child': $child,
@@ -1946,7 +1954,7 @@ C['Ajax'] = classExtendBase({
         this['request'](vars);
     }
 });
-Async = C['Async'] = classExtendBase({
+Progress = C['Progress'] = classExtendBase({
     _success: 0,
     _miss: 0,
     _progress: 0,
@@ -1971,8 +1979,8 @@ Async = C['Async'] = classExtendBase({
         }
 
         if (mine._success == mine._waits || mine._miss) {
-            mine._callback(state, mine._args);
-            mine._callback =
+            mine._oncomplete(state, mine._args);
+            mine._oncomplete =
             mine._onprogress = nullFunction;
         }
     },
@@ -1987,7 +1995,7 @@ Async = C['Async'] = classExtendBase({
         }
 
         mine._waits = waits;
-        mine._callback = config['callback'];
+        mine._oncomplete = config['oncomplete'];
         mine._onprogress = config['onprogress'] || nullFunction;
 
         mine._args = [];
@@ -2011,6 +2019,113 @@ Async = C['Async'] = classExtendBase({
         mine._success = mine._waits;
 
         mine._check(vars);
+    }
+});
+// ExeQueue
+var ExeQueue =classExtendBase({
+    'init': function(config) {
+        config = config || NULLOBJ;
+
+        var queue = copyArray(config['queue']) || [],
+            len = queue.length;
+
+        this._onprogress = config['onprogress'] || nullFunction;
+        this._oncomplete = config['oncomplete'] || nullFunction;
+
+        this['resetQueue'](queue);
+        this._done = proxy(this, this._done);
+    },
+    'start': function() {
+        this['resetQueue']();
+        this._exeQueue();
+    },
+    'resetQueue': function(queue) {
+        if (queue) {
+            this._orgqueue = copyArray(queue);
+        }
+        this._queue = copyArray(this._orgqueue);
+    },
+    'setQueue': function(queue) {
+        this._queue = copyArray(queue);
+    },
+    'getQueue': function() {
+        return copyArray(this._queue);
+    },
+    'addTask': function(task, priority) {
+        if (
+            !isNumber(priority) ||
+            priority > this._queue.length
+        ) {
+            priority = this._queue.length;
+        }
+
+        this._queue.splice(priority, 0, task);
+    },
+    'removeTask': function(task) {
+        var i = this._queue.length;
+
+        for (; i--; ) {
+            if (this._queue[i] === task) {
+                this._queue.splice(i, 1);
+            }
+        }
+    },
+    _exeQueue: abstraceFunction,
+    _asyncAction: function(task) {
+        var that = this,
+            org_action;
+
+        if (task._exeQueue) {
+            org_action = proxy(task, task._oncomplete);
+
+            task._oncomplete = function() {
+                org_action();
+                that._done();
+            };
+            return proxy(task, task['start']);
+        }
+
+        if (hasDeclaredArgument(task)) {
+            return proxy(that, task);
+        }
+
+        org_action = task;
+
+        return function(done) {
+            org_action.call(that);
+            done();
+        };
+    },
+    _done: abstraceFunction
+});
+C['Async'] = classExtend(ExeQueue, {
+    _exeQueue: function() {
+        this._processcount = this._queue.length;
+
+        while (this._queue[0]) {
+            this._asyncAction(this._queue.shift())((this._done));
+        }
+    },
+    _done: function() {
+        this._onprogress();
+        this._processcount--;
+
+        if (this._processcount == 0) {
+            this._oncomplete();
+        }
+    }
+});
+C['Sync'] = classExtend(ExeQueue, {
+    _exeQueue: function() {
+        if (this._queue[0]) {
+            return this._asyncAction(this._queue.shift())((this._done));
+        }
+
+        this._oncomplete();
+    },
+    _done: function() {
+        this._onprogress();
+        this._exeQueue();
     }
 });
 C['Handle'] = classExtendBase({
@@ -2801,10 +2916,10 @@ C['ImgLoad'] = classExtendBase({
         mine._srcs = config['srcs'];
         mine._loadedsrcs = [];
         mine._contractid = [];
-        mine._async = new Async({
+        mine._progress = new Progress({
             'waits': mine._srcs,
             'onprogress': config['onprogress'],
-            'callback': function() {
+            'oncomplete': function() {
                 var i = mine._contractid.length;
 
                 for (; i--;) {
@@ -2840,7 +2955,7 @@ C['ImgLoad'] = classExtendBase({
         }
 
         function countup() {
-            mine._async['pass']();
+            mine._progress['pass']();
         }
     }
 });
@@ -3440,9 +3555,9 @@ C['ScriptLoad'] = classExtendBase({
         var mine = this,
             i = 0,
             len = varary.length,
-            async = new Async({
+            progress = new Progress({
                 'waits': varary,
-                'callback': function() {
+                'oncomplete': function() {
                     callback(mine._els);
                 }
             }),
@@ -3453,7 +3568,7 @@ C['ScriptLoad'] = classExtendBase({
 
             varary[i]['callback'] = function(e) {
                 wrapback(e);
-                async['pass']();
+                progress['pass']();
             };
 
             mine['request'](varary[i]);
@@ -4251,64 +4366,53 @@ C['LimitText'] = classExtendBase({
         return answer;
     }
 });
-C['Task'] = classExtendBase({
+C['Framework'] = classExtend(C['Observer'], {
     'init': function(config) {
         config = config || NULLOBJ;
 
-        var queue = config['queue'] || [],
-            len = queue.length;
+        this['_super']();
 
-        this._onprogress = config['onprogress'] || nullFunction;
-        this._oncomplete = config['oncomplete'] || nullFunction;
-        this._queueno = 0;
+        this._config = config;
 
-        for (len = queue.length; len--; ) {
-            queue[len] = this._asyncAction(queue[len]);
+        if (config['router']) {
+            owner(this, config['router']['action']);
+
+            this._router = new C['Route'](config['router']);
         }
 
-        this._queue = queue;
-        this._done = proxy(this, this._done);
+        if (!config['manual']) {
+            this['exeTask']('init');
+        }
     },
-    'start': function() {
-        this._exeQueue(0);
+    'route': function(action) {
+        this._router['fire'](action);
     },
-    _exeQueue: function(no) {
-        if (this._queue[no]) {
-            return this._queue[no](this._done);
+    'addTask': function(taskname, task) {
+        this[taskname] = task;
+    },
+    'removeTask': function(taskname) {
+        if (!this[taskname]) {
+            return;
         }
 
-        this._oncomplete();
-    },
-    _asyncAction: function(task) {
-        var that = this,
-            org_action;
-
-        if (task._exeQueue) {
-            org_action = proxy(task, task._oncomplete);
-
-            task._oncomplete = function() {
-                org_action();
-                that._done();
-            };
-            task = proxy(task, task['start']);
-        }
-        else if (!hasDeclaredArgument(task)) {
-            org_action = task;
-
-            task = function(done) {
-                org_action();
-                done();
-            };
+        if (this[taskname]['dispose']) {
+            this[taskname]['dispose']();
         }
 
-        return task;
+        delete this[taskname];
     },
-    _done: function() {
-        this._onprogress();
+    'exeTask': function(taskname) {
+        var task = this._config[taskname];
 
-        this._queueno++;
+        if (!task) {
+            return;
+        }
 
-        this._exeQueue(this._queueno);
+        if (isFunction(task)) {
+            return task.call(this);
+        }
+
+        task['start']();
     }
 });
 if ($_methods) {

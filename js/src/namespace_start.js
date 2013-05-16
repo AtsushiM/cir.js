@@ -89,7 +89,7 @@ var win = window,
     easebackrate = 1.70158,
 
 ev,
-Async,
+Progress,
 WindowAction,
 ExternalAndroid,
 ExternalIOS,
