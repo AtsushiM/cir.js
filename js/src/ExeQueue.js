@@ -1,5 +1,5 @@
 // ExeQueue
-var ExeQueue =classExtendBase({
+var ExeQueue =classExtend(C['Observer'], {
     'init': function(config) {
         config = config || NULLOBJ;
 
@@ -13,8 +13,24 @@ var ExeQueue =classExtendBase({
         this._done = proxy(this, this._done);
     },
     'start': function() {
-        this['resetQueue']();
+        this._paused = FALSE;
         this._exeQueue();
+    },
+    'restart': function(queue) {
+        this['resetQueue'](queue);
+        this['start']();
+    },
+    'stop': function() {
+        this._queue = NULL;
+    },
+    'pause': function() {
+        this._paused = TRUE;
+    },
+    'resume': function() {
+        if (this._paused) {
+            this._paused = FALSE;
+            this._exeQueue();
+        }
     },
     'resetQueue': function(queue) {
         if (queue) {
@@ -47,7 +63,12 @@ var ExeQueue =classExtendBase({
             }
         }
     },
-    _exeQueue: abstraceFunction,
+    _exe: abstraceFunction,
+    _exeQueue: function() {
+        if (!this._paused) {
+            this._exe();
+        }
+    },
     _asyncAction: function(task) {
         var that = this,
             org_action;

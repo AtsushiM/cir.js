@@ -1,8 +1,12 @@
 C['Async'] = classExtend(ExeQueue, {
-    _exeQueue: function() {
+    _exe: function() {
+        if (!this._queue) {
+            return;
+        }
+
         this._processcount = this._queue.length;
 
-        while (this._queue[0]) {
+        while (!this._paused && this._queue && this._queue[0]) {
             this._asyncAction(this._queue.shift())((this._done));
         }
     },

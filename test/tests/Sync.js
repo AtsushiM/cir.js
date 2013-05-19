@@ -92,7 +92,25 @@ describe('C.Syncは', function() {
         task.start();
     });
 
-    it('start()はqueueを初期状態に戻してからqueueの順序通りにタスクを実行する', function() {
+    it('start()はqueueの順序通りにタスクを実行する', function() {
+        var result = [];
+
+        task = new C.Sync({
+            queue: [
+                function() {
+                    result.push(1);
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        task.start();
+        expect(result).to.eql([1, 2]);
+    });
+
+    it('restart([queue])はキューを初期状態、もしくはqueueにしてからstart()する', function() {
         var result = [];
 
         task = new C.Sync({
@@ -110,7 +128,51 @@ describe('C.Syncは', function() {
         expect(result).to.eql([1, 2]);
 
         result = [];
+        task.restart();
+        expect(result).to.eql([1, 2]);
+    });
+
+    it('stop()はキューを削除し、処理を停止する', function() {
+        var result = [];
+
+        task = new C.Sync({
+            queue: [
+                function() {
+                    result.push(1);
+                    this.stop();
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
         task.start();
+
+        expect(result).to.eql([1]);
+    });
+
+    it('pause()は処理を一時停止し、resume()は処理を再開する', function() {
+        var result = [];
+
+        task = new C.Sync({
+            queue: [
+                function() {
+                    result.push(1);
+                    this.pause();
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        task.start();
+
+        expect(result).to.eql([1]);
+
+        task.resume();
+
         expect(result).to.eql([1, 2]);
     });
 

@@ -756,6 +756,77 @@ C['Base'] = classExtend(UNDEFINED, {
         }
     }
 });
+C['Observer'] = classExtendBase({
+    'init': function() {
+        this._observed = {};
+    },
+    'on': function(key, func /* varless */, mine, observed) {
+        mine = this;
+        observed = mine._observed;
+
+        if (!observed[key]) {
+            observed[key] = [];
+        }
+
+        observed[key].push(func);
+    },
+    'one': function(key, func /* varless */, mine) {
+        /* var mine = this; */
+        mine = this;
+
+        mine['on'](key, wrapfunc);
+
+        function wrapfunc(vars) {
+            func(vars);
+            mine['off'](key, wrapfunc);
+        }
+    },
+    'off': function(key, func /* varless */, mine) {
+        mine = this;
+
+        var observed = mine._observed,
+            target = observed[key],
+            i;
+
+        if (!func) {
+            return delete observed[key];
+        }
+
+        if (target) {
+            for (i = target.length; i--;) {
+                if (func == target[i]) {
+                    target.splice(i, 1);
+
+                    if (target.length == 0) {
+                        delete observed[key];
+                    }
+
+                    return TRUE;
+                }
+            }
+        }
+
+        return FALSE;
+    },
+    'fire': function(key, args___) {
+        var target = this._observed[key],
+            args = [],
+            func,
+            i;
+
+        if (target) {
+            args.push.apply(args, arguments);
+            args = args.slice(1);
+
+            for (i = target.length; i--;) {
+                func = target[i];
+                if (func) {
+                    func.apply(null, args);
+                }
+            }
+        }
+    }
+});
 ev = C['Event'] = classExtendBase({
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',
     'SWITCHDOWN': isTouch ? 'touchstart' : 'mousedown',
@@ -2022,7 +2093,7 @@ Progress = C['Progress'] = classExtendBase({
     }
 });
 // ExeQueue
-var ExeQueue =classExtendBase({
+var ExeQueue =classExtend(C['Observer'], {
     'init': function(config) {
         config = config || NULLOBJ;
 
@@ -2036,8 +2107,24 @@ var ExeQueue =classExtendBase({
         this._done = proxy(this, this._done);
     },
     'start': function() {
-        this['resetQueue']();
+        this._paused = FALSE;
         this._exeQueue();
+    },
+    'restart': function(queue) {
+        this['resetQueue'](queue);
+        this['start']();
+    },
+    'stop': function() {
+        this._queue = NULL;
+    },
+    'pause': function() {
+        this._paused = TRUE;
+    },
+    'resume': function() {
+        if (this._paused) {
+            this._paused = FALSE;
+            this._exeQueue();
+        }
     },
     'resetQueue': function(queue) {
         if (queue) {
@@ -2070,7 +2157,12 @@ var ExeQueue =classExtendBase({
             }
         }
     },
-    _exeQueue: abstraceFunction,
+    _exe: abstraceFunction,
+    _exeQueue: function() {
+        if (!this._paused) {
+            this._exe();
+        }
+    },
     _asyncAction: function(task) {
         var that = this,
             org_action;
@@ -2099,10 +2191,14 @@ var ExeQueue =classExtendBase({
     _done: abstraceFunction
 });
 C['Async'] = classExtend(ExeQueue, {
-    _exeQueue: function() {
+    _exe: function() {
+        if (!this._queue) {
+            return;
+        }
+
         this._processcount = this._queue.length;
 
-        while (this._queue[0]) {
+        while (!this._paused && this._queue && this._queue[0]) {
             this._asyncAction(this._queue.shift())((this._done));
         }
     },
@@ -2116,7 +2212,11 @@ C['Async'] = classExtend(ExeQueue, {
     }
 });
 C['Sync'] = classExtend(ExeQueue, {
-    _exeQueue: function() {
+    _exe: function() {
+        if (!this._queue || this._paused) {
+            return;
+        }
+
         if (this._queue[0]) {
             return this._asyncAction(this._queue.shift())((this._done));
         }
@@ -2125,7 +2225,7 @@ C['Sync'] = classExtend(ExeQueue, {
     },
     _done: function() {
         this._onprogress();
-        this._exeQueue();
+        this._exe();
     }
 });
 C['Handle'] = classExtendBase({
@@ -3386,77 +3486,6 @@ C['FontImg'] = classExtendBase({
         }
 
         return tags;
-    }
-});
-C['Observer'] = classExtendBase({
-    'init': function() {
-        this._observed = {};
-    },
-    'on': function(key, func /* varless */, mine, observed) {
-        mine = this;
-        observed = mine._observed;
-
-        if (!observed[key]) {
-            observed[key] = [];
-        }
-
-        observed[key].push(func);
-    },
-    'one': function(key, func /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
-
-        mine['on'](key, wrapfunc);
-
-        function wrapfunc(vars) {
-            func(vars);
-            mine['off'](key, wrapfunc);
-        }
-    },
-    'off': function(key, func /* varless */, mine) {
-        mine = this;
-
-        var observed = mine._observed,
-            target = observed[key],
-            i;
-
-        if (!func) {
-            return delete observed[key];
-        }
-
-        if (target) {
-            for (i = target.length; i--;) {
-                if (func == target[i]) {
-                    target.splice(i, 1);
-
-                    if (target.length == 0) {
-                        delete observed[key];
-                    }
-
-                    return TRUE;
-                }
-            }
-        }
-
-        return FALSE;
-    },
-    'fire': function(key, args___) {
-        var target = this._observed[key],
-            args = [],
-            func,
-            i;
-
-        if (target) {
-            args.push.apply(args, arguments);
-            args = args.slice(1);
-
-            for (i = target.length; i--;) {
-                func = target[i];
-                if (func) {
-                    func.apply(null, args);
-                }
-            }
-        }
     }
 });
 C['PreRender'] = classExtendBase({

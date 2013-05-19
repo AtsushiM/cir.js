@@ -107,9 +107,71 @@ describe('C.Asyncは', function() {
 
         async.start();
         expect(result).to.eql([1, 2]);
+    });
+
+    it('restart([queue])はキューを初期状態、もしくはqueueにしてからstart()する', function() {
+        var result = [];
+
+        async = new C.Async({
+            queue: [
+                function() {
+                    result.push(1);
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        async.start();
+        expect(result).to.eql([1, 2]);
 
         result = [];
+        async.restart();
+        expect(result).to.eql([1, 2]);
+    });
+
+    it('stop()はキューを削除し、処理を停止する', function() {
+        var result = [];
+
+        async = new C.Async({
+            queue: [
+                function() {
+                    result.push(1);
+                    this.stop();
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
         async.start();
+
+        expect(result).to.eql([1]);
+    });
+
+    it('pause()は処理を一時停止し、resume()は処理を再開する', function() {
+        var result = [];
+
+        async = new C.Async({
+            queue: [
+                function() {
+                    result.push(1);
+                    this.pause();
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        async.start();
+
+        expect(result).to.eql([1]);
+
+        async.resume();
+
         expect(result).to.eql([1, 2]);
     });
 
