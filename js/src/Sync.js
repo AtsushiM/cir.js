@@ -8,10 +8,10 @@ C['Sync'] = classExtend(ExeQueue, {
             return this._asyncAction(this._queue.shift())((this._done));
         }
 
-        this._oncomplete();
+        this['fire']('complete');
     },
     _done: function() {
-        this._onprogress();
+        this['fire']('progress');
         this._exe();
     }
 });

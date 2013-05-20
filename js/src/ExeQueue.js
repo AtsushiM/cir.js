@@ -1,18 +1,26 @@
 // ExeQueue
 var ExeQueue =classExtend(C['Observer'], {
     'init': function(config) {
+        this['_super']();
+
         config = config || NULLOBJ;
 
         var queue = copyArray(config['queue']) || [],
-            len = queue.length;
+            len = queue.length,
+            i, temp;
 
-        this._onprogress = config['onprogress'] || nullFunction;
-        this._oncomplete = config['oncomplete'] || nullFunction;
+        for (i in config) {
+            temp = i.match(/^on(.+)$/);
+            if (temp) {
+                this['on'](temp[1], proxy(this, config[i]));
+            }
+        }
 
         this['resetQueue'](queue);
         this._done = proxy(this, this._done);
     },
     'start': function() {
+        this['fire']('start');
         this._paused = FALSE;
         this._exeQueue();
     },
@@ -22,12 +30,15 @@ var ExeQueue =classExtend(C['Observer'], {
     },
     'stop': function() {
         this._queue = NULL;
+        this['fire']('stop');
     },
     'pause': function() {
         this._paused = TRUE;
+        this['fire']('pause');
     },
     'resume': function() {
         if (this._paused) {
+            this['fire']('resume');
             this._paused = FALSE;
             this._exeQueue();
         }
@@ -36,10 +47,21 @@ var ExeQueue =classExtend(C['Observer'], {
         if (queue) {
             this._orgqueue = copyArray(queue);
         }
-        this._queue = copyArray(this._orgqueue);
+
+        var _queue = this._queue = copyArray(this._orgqueue),
+            i;
+
+        for (i in _queue) {
+            if (_queue[i]['resetQueue']) {
+                _queue[i]['resetQueue']();
+            }
+        }
+
+        this['fire']('reset');
     },
     'setQueue': function(queue) {
         this._queue = copyArray(queue);
+        this['fire']('change', this['getQueue']());
     },
     'getQueue': function() {
         return copyArray(this._queue);
@@ -53,13 +75,19 @@ var ExeQueue =classExtend(C['Observer'], {
         }
 
         this._queue.splice(priority, 0, task);
+
+        this['fire']('change', this['getQueue']());
     },
     'removeTask': function(task) {
-        var i = this._queue.length;
+        var i = 0,
+            len = this._queue.length;
 
-        for (; i--; ) {
+        for (; i < len; i++ ) {
             if (this._queue[i] === task) {
                 this._queue.splice(i, 1);
+                this['fire']('change', this['getQueue']());
+
+                break;
             }
         }
     },
@@ -74,12 +102,7 @@ var ExeQueue =classExtend(C['Observer'], {
             org_action;
 
         if (task._exeQueue) {
-            org_action = proxy(task, task._oncomplete);
-
-            task._oncomplete = function() {
-                org_action();
-                that._done();
-            };
+            task['one']('complete', proxy(that, that._done));
             return proxy(task, task['start']);
         }
 

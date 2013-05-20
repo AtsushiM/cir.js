@@ -35,7 +35,7 @@
                 }
             ],
             oncomplete: function() {
-                this.restart();
+                /* this.restart(); */
             }
         }),
         taskElementStop= new C.Sync({
@@ -54,16 +54,17 @@
                 }
             ],
             oncomplete: function() {
-                this.restart();
+                /* this.restart(); */
             }
         }),
-        taskAnime = new C.Async({
+        taskAnime = new C.Sync({
             queue: [
                 taskElementMove,
                 taskElementStop
             ],
             oncomplete: function() {
                 console.log('exe end');
+                this.restart();
             }
         });
 

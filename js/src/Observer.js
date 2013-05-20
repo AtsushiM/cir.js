@@ -52,15 +52,15 @@ C['Observer'] = classExtendBase({
     },
     'fire': function(key, args___) {
         var target = this._observed[key],
-            args = [],
+            args,
             func,
-            i;
+            i,
+            len;
 
         if (target) {
-            args.push.apply(args, arguments);
-            args = args.slice(1);
+            args = toArray(arguments).slice(1);
 
-            for (i = target.length; i--;) {
+            for (i = 0, len = target.length; i < len; i++) {
                 func = target[i];
                 if (func) {
                     func.apply(null, args);

@@ -274,6 +274,165 @@ describe('C.Syncは', function() {
         task.removeTask(task1);
         expect(task.getQueue()).to.eql([task2, task3, task2, task3, task3]);
         task.removeTask(task3);
-        expect(task.getQueue()).to.eql([task2, task2]);
+        expect(task.getQueue()).to.eql([task2, task2, task3, task3]);
+    });
+
+    it('start()実行時にstartイベントが発火する', function(done) {
+        task = new C.Sync({});
+
+        task.on('start', function() {
+            done();
+        });
+
+        task.start();
+    });
+
+    it('restart()実行時にresetイベント、startイベントが発火する', function(done) {
+        var result = [];
+
+        task = new C.Sync({});
+
+        task.on('reset', function() {
+            result.push('reset');
+        });
+
+        task.on('start', function() {
+            result.push('start');
+        });
+
+        task.restart();
+
+        expect(result).to.eql(['reset', 'start']);
+
+        done();
+    });
+
+    it('stop()実行時にstopイベントが発火する', function(done) {
+        task = new C.Sync({});
+
+        task.on('stop', function() {
+            done();
+        });
+
+        task.stop();
+    });
+
+    it('pause()実行時にpauseイベントが発火する', function(done) {
+        task = new C.Sync({});
+
+        task.on('pause', function() {
+            done();
+        });
+
+        task.pause();
+    });
+
+    it('resume()実行時にresumeイベントが発火する', function(done) {
+        task = new C.Sync({});
+
+        task.on('resume', function() {
+            done();
+        });
+
+        task.pause();
+        task.resume();
+    });
+
+    it('resetQueue()実行時にresetイベントが発火する', function(done) {
+        task = new C.Sync({});
+
+        task.on('reset', function() {
+            done();
+        });
+
+        task.resetQueue();
+    });
+
+    it('setQueue()実行時にchangeイベントが発火する', function(done) {
+        task = new C.Sync({});
+
+        task.on('change', function() {
+            done();
+        });
+
+        task.setQueue([]);
+    });
+
+    it('addTask()実行時にchangeイベントが発火する', function(done) {
+        task = new C.Sync({});
+
+        task.on('change', function() {
+            done();
+        });
+
+        task.addTask(function() {
+        });
+    });
+
+    it('remove()実行時にresetイベント、startイベントが発火する', function(done) {
+        var func1 = function() {
+            };
+
+        task = new C.Sync({
+            queue: [
+                func1
+            ]
+        });
+
+        task.on('change', function() {
+            done();
+        });
+
+        task.removeTask(func1);
+    });
+
+    it('タスク実行ごとにprogressイベントが発火する', function(done) {
+        var result = [],
+            count = 0;
+
+        task = new C.Sync({
+            queue: [
+                function() {
+                    result.push(1);
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        task.on('progress', function() {
+            count++;
+            result.push('progress:' + count);
+        });
+
+        task.start();
+
+        expect(result).to.eql([1, 'progress:1', 2, 'progress:2']);
+
+        done();
+    });
+
+    it('キューの処理が全て完了した場合、completeイベントが発火する', function(done) {
+        var result = [];
+
+        task = new C.Sync({
+            queue: [
+                function() {
+                    result.push(1);
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        task.on('complete', function() {
+            expect(result).to.eql([1, 2]);
+
+            done();
+        });
+
+        task.start();
     });
 });

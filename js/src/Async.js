@@ -11,11 +11,12 @@ C['Async'] = classExtend(ExeQueue, {
         }
     },
     _done: function() {
-        this._onprogress();
+        this['fire']('progress');
+        /* this._onprogress(); */
         this._processcount--;
 
         if (this._processcount == 0) {
-            this._oncomplete();
+            this['fire']('complete');
         }
     }
 });

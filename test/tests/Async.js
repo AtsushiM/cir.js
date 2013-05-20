@@ -277,6 +277,165 @@ describe('C.Asyncは', function() {
         async.removeTask(task1);
         expect(async.getQueue()).to.eql([task2, task3, task2, task3, task3]);
         async.removeTask(task3);
-        expect(async.getQueue()).to.eql([task2, task2]);
+        expect(async.getQueue()).to.eql([task2, task2, task3, task3]);
+    });
+
+    it('start()実行時にstartイベントが発火する', function(done) {
+        async = new C.Async({});
+
+        async.on('start', function() {
+            done();
+        });
+
+        async.start();
+    });
+
+    it('restart()実行時にresetイベント、startイベントが発火する', function(done) {
+        var result = [];
+
+        async = new C.Async({});
+
+        async.on('reset', function() {
+            result.push('reset');
+        });
+
+        async.on('start', function() {
+            result.push('start');
+        });
+
+        async.restart();
+
+        expect(result).to.eql(['reset', 'start']);
+
+        done();
+    });
+
+    it('stop()実行時にstopイベントが発火する', function(done) {
+        async = new C.Async({});
+
+        async.on('stop', function() {
+            done();
+        });
+
+        async.stop();
+    });
+
+    it('pause()実行時にpauseイベントが発火する', function(done) {
+        async = new C.Async({});
+
+        async.on('pause', function() {
+            done();
+        });
+
+        async.pause();
+    });
+
+    it('resume()実行時にresumeイベントが発火する', function(done) {
+        async = new C.Async({});
+
+        async.on('resume', function() {
+            done();
+        });
+
+        async.pause();
+        async.resume();
+    });
+
+    it('resetQueue()実行時にresetイベントが発火する', function(done) {
+        async = new C.Async({});
+
+        async.on('reset', function() {
+            done();
+        });
+
+        async.resetQueue();
+    });
+
+    it('setQueue()実行時にchangeイベントが発火する', function(done) {
+        async = new C.Async({});
+
+        async.on('change', function() {
+            done();
+        });
+
+        async.setQueue([]);
+    });
+
+    it('addTask()実行時にchangeイベントが発火する', function(done) {
+        async = new C.Async({});
+
+        async.on('change', function() {
+            done();
+        });
+
+        async.addTask(function() {
+        });
+    });
+
+    it('remove()実行時にresetイベント、startイベントが発火する', function(done) {
+        var func1 = function() {
+            };
+
+        async = new C.Async({
+            queue: [
+                func1
+            ]
+        });
+
+        async.on('change', function() {
+            done();
+        });
+
+        async.removeTask(func1);
+    });
+
+    it('タスク実行ごとにprogressイベントが発火する', function(done) {
+        var result = [],
+            count = 0;
+
+        async = new C.Async({
+            queue: [
+                function() {
+                    result.push(1);
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        async.on('progress', function() {
+            count++;
+            result.push('progress:' + count);
+        });
+
+        async.start();
+
+        expect(result).to.eql([1, 'progress:1', 2, 'progress:2']);
+
+        done();
+    });
+
+    it('キューの処理が全て完了した場合、completeイベントが発火する', function(done) {
+        var result = [];
+
+        async = new C.Async({
+            queue: [
+                function() {
+                    result.push(1);
+                },
+                function() {
+                    result.push(2);
+                }
+            ]
+        });
+
+        async.on('complete', function() {
+            expect(result).to.eql([1, 2]);
+
+            done();
+        });
+
+        async.start();
     });
 });
