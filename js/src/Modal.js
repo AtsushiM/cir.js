@@ -39,7 +39,7 @@ C['Modal'] = classExtendBase({
             'width': '100%',
             'height': '200%'
         }, commoncss));
-        append(body, mine._bg);
+        append(doc.body, mine._bg);
 
         mine._inner = create('div', {
             'class': 'cir-modal-content'
@@ -49,7 +49,7 @@ C['Modal'] = classExtendBase({
             'top': '50%',
             'left': '50%'
         }, commoncss));
-        append(body, mine._inner);
+        append(doc.body, mine._inner);
 
         if (!config['manual']) {
             mine['open']();
@@ -69,7 +69,7 @@ C['Modal'] = classExtendBase({
 
         mine._scroll['kill']();
         css(mine._bg, {
-            'top': body.scrollTop
+            'top': doc.body.scrollTop
         });
 
         show(mine._bg);
@@ -104,7 +104,7 @@ C['Modal'] = classExtendBase({
 
         css(mine._inner, {
             'margin-top':
-            body.scrollTop - splitSuffix(computed.height)[2] / 2,
+            doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 

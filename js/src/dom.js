@@ -192,13 +192,9 @@ function val(el, value) {
 }
 
 function reflow(el) {
-    el = el || body;
+    el = el || doc.body;
     el.offsetTop;
 }
-
-on(doc, 'DOMContentLoaded', function() {
-    body = doc.body;
-});
 
 C['dom'] = {
     'win': win,

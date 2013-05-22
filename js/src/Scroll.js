@@ -13,7 +13,7 @@ C['Scroll'] = classExtendBase({
     'scrollY': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
-        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
+        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
     'smooth': function(target, callback /* varless */, mine, max) {
         // var mine = this,
@@ -57,7 +57,7 @@ C['Scroll'] = classExtendBase({
         mine = this;
 
         if (!mine._killscrollid) {
-            css(body, {
+            css(doc.body, {
                 'overflow': 'hidden'
             });
             mine._killscrollid = mine['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
@@ -67,7 +67,7 @@ C['Scroll'] = classExtendBase({
         mine = this;
 
         if (mine._killscrollid) {
-            css(body, {
+            css(doc.body, {
                 'overflow': 'auto'
             });
             mine['uncontract'](mine._killscrollid);

@@ -17,16 +17,21 @@ describe('C.Modelは', function() {
                     return false;
                 }
             },
-            on: {
+            events: {
                 'change': function(vars) {
+                    console.log('change');
                 },
                 'change:test': function(vars) {
+                    console.log('change:test');
                 },
                 'remove': function(vars) {
+                    console.log('remove');
                 },
                 'remove:test2': function(vars) {
+                    console.log('remove:test2');
                 },
                 'reset': function(vars) {
+                    console.log('reset');
                 }
             }
         });

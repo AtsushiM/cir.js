@@ -36,7 +36,7 @@ C['ScriptLoad'] = classExtendBase({
 
         /* script.type = 'text/javascript'; */
         script.src = vars['src'];
-        append(body, script);
+        append(doc.body, script);
         mine._els.push(script);
 
         if (vars['callback']) {

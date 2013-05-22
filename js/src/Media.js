@@ -5,7 +5,7 @@ Media = classExtendBase({
             loop = config['loop'],
             media,
             ev_canplay = 'canplay',
-            _parent = config['el'] || body;
+            _parent = config['el'] || doc.body;
 
         config['preload'] = 'auto';
         config['autoplay'] =

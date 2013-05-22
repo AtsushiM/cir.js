@@ -1,6 +1,6 @@
 mb = C['Mobile'] = classExtendBase({
     'getZoom': function() {
-        return body.clientWidth / win.innerWidth;
+        return doc.body.clientWidth / win.innerWidth;
     },
     'isAndroid': function(ua) {
         return checkUserAgent(/Android/i, ua);

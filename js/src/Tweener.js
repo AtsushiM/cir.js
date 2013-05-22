@@ -16,7 +16,8 @@ Tweener = C['Tweener'] = classExtendBase({
 
             prop.distance = prop['to'] - prop['from'];
             prop['prefix'] = prop['prefix'] || EMPTY;
-            prop['suffix'] = prop['suffix'] || 'px';
+            prop['suffix'] = prop['suffix'] ||
+                (prop['suffix'] === EMPTY ? EMPTY : 'px');
 
             mine._property.push(prop);
         }
@@ -102,12 +103,17 @@ Tweener = C['Tweener'] = classExtendBase({
     },
     'stop': function() {
         Tweener.Items = [];
-        clearTimeout(Tweener.timerId);
+        C['animeframe']['cancel'](Tweener.timerId);
         Tweener.timerId = NULL;
     }
 });
 Tweener._setProp = function(target, prop, point) {
-    target[prop['name']] = prop['prefix'] + point + prop['suffix'];
+    if (prop['prefix'] || prop['suffix']) {
+        target[prop['name']] = prop['prefix'] + point + prop['suffix'];
+    }
+    else {
+        target[prop['name']] = point;
+    }
 };
 /* Tweener.timerId = NULL; */
 Tweener.Items = [];

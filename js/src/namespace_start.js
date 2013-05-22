@@ -73,7 +73,6 @@ function this_detach() {
 
 var win = window,
     doc = document,
-    body,
     TRUE = true,
     FALSE = false,
     NULL = null,

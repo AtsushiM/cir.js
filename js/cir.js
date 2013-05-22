@@ -73,7 +73,6 @@ function this_detach() {
 
 var win = window,
     doc = document,
-    body,
     TRUE = true,
     FALSE = false,
     NULL = null,
@@ -580,13 +579,9 @@ function val(el, value) {
 }
 
 function reflow(el) {
-    el = el || body;
+    el = el || doc.body;
     el.offsetTop;
 }
-
-on(doc, 'DOMContentLoaded', function() {
-    body = doc.body;
-});
 
 C['dom'] = {
     'win': win,
@@ -1291,7 +1286,8 @@ Tweener = C['Tweener'] = classExtendBase({
 
             prop.distance = prop['to'] - prop['from'];
             prop['prefix'] = prop['prefix'] || EMPTY;
-            prop['suffix'] = prop['suffix'] || 'px';
+            prop['suffix'] = prop['suffix'] ||
+                (prop['suffix'] === EMPTY ? EMPTY : 'px');
 
             mine._property.push(prop);
         }
@@ -1377,12 +1373,17 @@ Tweener = C['Tweener'] = classExtendBase({
     },
     'stop': function() {
         Tweener.Items = [];
-        clearTimeout(Tweener.timerId);
+        C['animeframe']['cancel'](Tweener.timerId);
         Tweener.timerId = NULL;
     }
 });
 Tweener._setProp = function(target, prop, point) {
-    target[prop['name']] = prop['prefix'] + point + prop['suffix'];
+    if (prop['prefix'] || prop['suffix']) {
+        target[prop['name']] = prop['prefix'] + point + prop['suffix'];
+    }
+    else {
+        target[prop['name']] = point;
+    }
 };
 /* Tweener.timerId = NULL; */
 Tweener.Items = [];
@@ -1822,7 +1823,7 @@ Media = classExtendBase({
             loop = config['loop'],
             media,
             ev_canplay = 'canplay',
-            _parent = config['el'] || body;
+            _parent = config['el'] || doc.body;
 
         config['preload'] = 'auto';
         config['autoplay'] =
@@ -2299,7 +2300,8 @@ C['Anvas'] = classExtendBase({
         }
     },
     'pigment': function(vars) {
-        var canv = create('canvas'),
+        var mine = this,
+            canv = create('canvas'),
             img = create('img');
 
         img.onload = function() {
@@ -2307,7 +2309,7 @@ C['Anvas'] = classExtendBase({
             canv.height = vars['height'];
             canv.getContext('2d').drawImage(img, 0, 0);
 
-            vars.onload(canv, img);
+            vars.onload.apply(mine, [canv, img]);
         };
         img.src = vars['src'];
 
@@ -2333,7 +2335,7 @@ C['Anvas'] = classExtendBase({
                 count--;
 
                 if (count == 0) {
-                    callback(ret);
+                    callback.call(mine, ret);
                 }
             };
 
@@ -2353,7 +2355,10 @@ C['Anvas'] = classExtendBase({
 
         for (; i < len; i++) {
             temp = layer[i];
-            ctx.drawImage(temp['image'], temp['x'], temp['y']);
+
+            if (temp) {
+                ctx.drawImage(temp['image'], temp['x'], temp['y']);
+            }
         }
     }
 }, !!win['HTMLCanvasElement']);
@@ -3106,7 +3111,7 @@ C['WindowLoad'] = classExtendBase({
 });
 mb = C['Mobile'] = classExtendBase({
     'getZoom': function() {
-        return body.clientWidth / win.innerWidth;
+        return doc.body.clientWidth / win.innerWidth;
     },
     'isAndroid': function(ua) {
         return checkUserAgent(/Android/i, ua);
@@ -3299,7 +3304,7 @@ C['Modal'] = classExtendBase({
             'width': '100%',
             'height': '200%'
         }, commoncss));
-        append(body, mine._bg);
+        append(doc.body, mine._bg);
 
         mine._inner = create('div', {
             'class': 'cir-modal-content'
@@ -3309,7 +3314,7 @@ C['Modal'] = classExtendBase({
             'top': '50%',
             'left': '50%'
         }, commoncss));
-        append(body, mine._inner);
+        append(doc.body, mine._inner);
 
         if (!config['manual']) {
             mine['open']();
@@ -3329,7 +3334,7 @@ C['Modal'] = classExtendBase({
 
         mine._scroll['kill']();
         css(mine._bg, {
-            'top': body.scrollTop
+            'top': doc.body.scrollTop
         });
 
         show(mine._bg);
@@ -3364,7 +3369,7 @@ C['Modal'] = classExtendBase({
 
         css(mine._inner, {
             'margin-top':
-            body.scrollTop - splitSuffix(computed.height)[2] / 2,
+            doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
@@ -3634,7 +3639,7 @@ C['ScriptLoad'] = classExtendBase({
 
         /* script.type = 'text/javascript'; */
         script.src = vars['src'];
-        append(body, script);
+        append(doc.body, script);
         mine._els.push(script);
 
         if (vars['callback']) {
@@ -4243,7 +4248,7 @@ C['Scroll'] = classExtendBase({
     'scrollY': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
-        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || body.parentNode || body).scrollTop;
+        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
     'smooth': function(target, callback /* varless */, mine, max) {
         // var mine = this,
@@ -4287,7 +4292,7 @@ C['Scroll'] = classExtendBase({
         mine = this;
 
         if (!mine._killscrollid) {
-            css(body, {
+            css(doc.body, {
                 'overflow': 'hidden'
             });
             mine._killscrollid = mine['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
@@ -4297,7 +4302,7 @@ C['Scroll'] = classExtendBase({
         mine = this;
 
         if (mine._killscrollid) {
-            css(body, {
+            css(doc.body, {
                 'overflow': 'auto'
             });
             mine['uncontract'](mine._killscrollid);

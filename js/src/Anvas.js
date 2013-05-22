@@ -16,7 +16,8 @@ C['Anvas'] = classExtendBase({
         }
     },
     'pigment': function(vars) {
-        var canv = create('canvas'),
+        var mine = this,
+            canv = create('canvas'),
             img = create('img');
 
         img.onload = function() {
@@ -24,7 +25,7 @@ C['Anvas'] = classExtendBase({
             canv.height = vars['height'];
             canv.getContext('2d').drawImage(img, 0, 0);
 
-            vars.onload(canv, img);
+            vars.onload.apply(mine, [canv, img]);
         };
         img.src = vars['src'];
 
@@ -50,7 +51,7 @@ C['Anvas'] = classExtendBase({
                 count--;
 
                 if (count == 0) {
-                    callback(ret);
+                    callback.call(mine, ret);
                 }
             };
 
@@ -70,7 +71,10 @@ C['Anvas'] = classExtendBase({
 
         for (; i < len; i++) {
             temp = layer[i];
-            ctx.drawImage(temp['image'], temp['x'], temp['y']);
+
+            if (temp) {
+                ctx.drawImage(temp['image'], temp['x'], temp['y']);
+            }
         }
     }
 }, !!win['HTMLCanvasElement']);
