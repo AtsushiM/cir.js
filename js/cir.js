@@ -2220,6 +2220,10 @@ C['Async'] = classExtend(ExeQueue, {
             return;
         }
 
+        if (this._queue.length === 0) {
+            return this['fire']('complete');
+        }
+
         this._processcount = this._queue.length;
 
         while (!this._paused && this._queue && this._queue[0]) {
