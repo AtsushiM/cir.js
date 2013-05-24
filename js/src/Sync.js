@@ -1,4 +1,4 @@
-C['Sync'] = classExtend(ExeQueue, {
+C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
     _exe: function() {
         if (!this._queue || this._paused) {
             return;

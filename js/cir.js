@@ -2093,8 +2093,7 @@ Progress = C['Progress'] = classExtendBase({
         mine._check(vars);
     }
 });
-// ExeQueue
-var ExeQueue =classExtend(C['Observer'], {
+var AbstractTask = classExtend(C['Observer'], {
     'init': function(config) {
         this['_super']();
 
@@ -2214,7 +2213,7 @@ var ExeQueue =classExtend(C['Observer'], {
     },
     _done: abstraceFunction
 });
-C['Async'] = classExtend(ExeQueue, {
+C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
     _exe: function() {
         if (!this._queue) {
             return;
@@ -2240,7 +2239,7 @@ C['Async'] = classExtend(ExeQueue, {
         }
     }
 });
-C['Sync'] = classExtend(ExeQueue, {
+C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
     _exe: function() {
         if (!this._queue || this._paused) {
             return;
@@ -4326,15 +4325,22 @@ C['LimitText'] = classExtendBase({
     },
     'init': function(config) {
         var el = this._el = config['el'],
+            orgcomputed = computedStyle(el),
             copyel = this._copyel = create(el.tagName, {
                 'class': attr(el, 'class'),
-                'id': attr(el, 'id'),
                 'style': attr(el, 'style')
             }),
             computed = this._computed = computedStyle(copyel);
 
         this._width = config['width'];
         this._height = config['height'];
+
+        if (!isDefined(config['width'])) {
+            this._width = +splitSuffix(orgcomputed['width'])[2];
+        }
+        if (!isDefined(config['height'])) {
+            this._height = +splitSuffix(orgcomputed['height'])[2];
+        }
 
         css(copyel, {
             'position': 'fixed',
@@ -4426,55 +4432,6 @@ C['LimitText'] = classExtendBase({
         that._copyRemove();
 
         return answer;
-    }
-});
-C['Framework'] = classExtend(C['Observer'], {
-    'init': function(config) {
-        config = config || NULLOBJ;
-
-        this['_super']();
-
-        this._config = config;
-
-        if (config['router']) {
-            owner(this, config['router']['action']);
-
-            this._router = new C['Route'](config['router']);
-        }
-
-        if (!config['manual']) {
-            this['exeTask']('init');
-        }
-    },
-    'route': function(action) {
-        this._router['fire'](action);
-    },
-    'addTask': function(taskname, task) {
-        this[taskname] = task;
-    },
-    'removeTask': function(taskname) {
-        if (!this[taskname]) {
-            return;
-        }
-
-        if (this[taskname]['dispose']) {
-            this[taskname]['dispose']();
-        }
-
-        delete this[taskname];
-    },
-    'exeTask': function(taskname) {
-        var task = this._config[taskname];
-
-        if (!task) {
-            return;
-        }
-
-        if (isFunction(task)) {
-            return task.call(this);
-        }
-
-        task['start']();
     }
 });
 if ($_methods) {

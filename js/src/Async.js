@@ -1,4 +1,4 @@
-C['Async'] = classExtend(ExeQueue, {
+C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
     _exe: function() {
         if (!this._queue) {
             return;

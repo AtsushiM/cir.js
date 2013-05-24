@@ -10,15 +10,22 @@ C['LimitText'] = classExtendBase({
     },
     'init': function(config) {
         var el = this._el = config['el'],
+            orgcomputed = computedStyle(el),
             copyel = this._copyel = create(el.tagName, {
                 'class': attr(el, 'class'),
-                'id': attr(el, 'id'),
                 'style': attr(el, 'style')
             }),
             computed = this._computed = computedStyle(copyel);
 
         this._width = config['width'];
         this._height = config['height'];
+
+        if (!isDefined(config['width'])) {
+            this._width = +splitSuffix(orgcomputed['width'])[2];
+        }
+        if (!isDefined(config['height'])) {
+            this._height = +splitSuffix(orgcomputed['height'])[2];
+        }
 
         css(copyel, {
             'position': 'fixed',

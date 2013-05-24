@@ -1,5 +1,4 @@
-// ExeQueue
-var ExeQueue =classExtend(C['Observer'], {
+var AbstractTask = classExtend(C['Observer'], {
     'init': function(config) {
         this['_super']();
 
