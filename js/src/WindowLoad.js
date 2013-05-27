@@ -1,21 +1,41 @@
-C['WindowLoad'] = classExtendBase({
-    _onload: function(func /* varless */, mine, disposeid, loaded) {
-        // var mine = this,
-        //     disposeid,
-        //     loaded = function() {
-        //         mine['uncontract'](disposeid);
-        //         func();
-        //     };
-        mine = this;
+(function() {
+var loaded = FALSE,
+    winload = function() {
+        loaded = TRUE;
+        off(win, ev['LOAD'], winload);
+    };
 
-        disposeid = mine['contract'](win, ev['LOAD'], function() {
-            mine['uncontract'](disposeid);
-            func();
-        });
-    },
+on(win, ev['LOAD'], winload);
+
+C['WindowLoad'] = classExtend(C['Observer'], {
     'init': function(config) {
-        if (config) {
-            this._onload(config['onload']);
+        this['_super']();
+
+        bindOnProp(this, config);
+
+        if (!config['manual']) {
+            this['start']();
+        }
+    },
+    'start': function() {
+        var that = this;
+
+        that['fire']('start');
+
+        if (that.started) {
+            return;
+        }
+        that.started = TRUE;
+
+        if (loaded) {
+            that.fire('complete');
+        }
+        else {
+            var disposeid = that['contract'](win, ev['LOAD'], function() {
+                that['uncontract'](disposeid);
+                that['fire']('complete');
+            });
         }
     }
 });
+}());

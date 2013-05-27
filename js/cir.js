@@ -63,6 +63,18 @@ function splitSuffix(value) {
     return (EMPTY + (value || EMPTY)).match(/^(.*?)(-?[0-9\.]+)(.*)$/);
 }
 
+function bindOnProp(that, config) {
+    var i,
+        temp;
+
+    for (i in config) {
+        temp = i.match(/^on(.+)$/);
+        if (temp) {
+            that['on'](temp[1], proxy(that, config[i]));
+        }
+    }
+}
+
 function this_stop__super() {
     this['stop']();
     this['_super']();
@@ -1938,39 +1950,34 @@ C['Movie'] = function(config) {
     return new Media(config);
 };
 C['Movie']['support'] = C['Video']['support'];
-C['Ajax'] = classExtendBase({
-    'init': function(config) {
-        if (config) {
-            this['request'](config);
-        }
+// Ajax
+C['Ajax'] = classExtend(C['Observer'], {
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
     },
-    'request': function(vars) {
-        var url = vars['url'],
-            callback = vars['callback'] || nullFunction,
-            error = vars['error'] || nullFunction,
-            type = vars['type'] || 'GET',
+    'init': function(config) {
+        this['_super'](config);
+        config = override({}, config);
+
+        var that = this,
+            url = config['url'],
+            type = config['type'] || 'GET',
             query = EMPTY,
-            xhr = this._xhr = new XMLHttpRequest();
+            xhr = that._xhr = new XMLHttpRequest(),
+            i;
 
-        if (vars.dataType == 'json') {
-            delete vars.dataType;
-
-            return this['json'](vars);
+        if (config.dataType == 'json') {
+            that._json(config);
         }
 
-        if (!vars['cash']) {
-            if (!vars['query']) {
-                vars['query'] = {};
-            }
+        bindOnProp(that, config);
 
-            vars['query']['cir' + dateNow()] = '0';
+        if (!config['cache']) {
+            that._cache(config);
         }
-        if (vars['query']) {
-            query = vars['query'];
-
-            if (isObject(query)) {
-                query = encodeURI(makeQueryString(query));
-            }
+        if (config['query']) {
+            query = that._query(config);
         }
 
         xhr.onreadystatechange = function() {
@@ -1979,11 +1986,11 @@ C['Ajax'] = classExtendBase({
             }
 
             if (xhr.status == 200) {
-                return callback(xhr.responseText, xhr);
+                return that['fire']('complete', xhr.responseText, xhr);
             }
 
-            error(xhr);
-        }
+            that['fire']('error', xhr);
+        };
 
         if (type == 'GET') {
             if (noIndexOf(url, '?')) {
@@ -1997,33 +2004,57 @@ C['Ajax'] = classExtendBase({
             query = EMPTY;
         }
 
+        this._query = query;
+
         xhr.open(type, url);
 
         if (type == 'POST') {
             xhr.setRequestHeader('Content-Type',
                     'application/x-www-form-urlencoded');
         }
-        xhr.send(query);
-    },
-    'abort': function() {
-        if (this._xhr) {
-            this._xhr.abort();
+
+        if (!config['manual']) {
+            that['start']();
         }
     },
-    'json': function(vars) {
-        var callback = vars['callback'],
-            error = vars['error'];
+    'start': function() {
+        this['fire']('start');
+        this._xhr.send(this._query);
+    },
+    'stop': function() {
+        this._xhr.abort();
+        this['fire']('stop', this._xhr);
+    },
+    _query: function(config) {
+        var query = config['query'];
 
-        vars['callback'] = function(data) {
-            callback(jsonParse(data));
-        };
-        vars['error'] = function(data) {
-            if (error) {
-                error(data);
-            }
-        };
+        if (isObject(query)) {
+            query = encodeURI(makeQueryString(query));
+        }
 
-        this['request'](vars);
+        return query;
+    },
+    _cache: function(config) {
+        if (!config['query']) {
+            config['query'] = {};
+        }
+
+        config['query']['cir' + dateNow()] = '0';
+    },
+    _json: function(config) {
+        var oncomplete = config['oncomplete'],
+            onerror = config['onerror'];
+
+        if (oncomplete) {
+            config['oncomplete'] = function(data) {
+                oncomplete(jsonParse(data));
+            };
+        }
+        if (onerror) {
+            config['onerror'] = function(data) {
+                onerror(data);
+            };
+        }
     }
 });
 Progress = C['Progress'] = classExtendBase({
@@ -2103,12 +2134,7 @@ var AbstractTask = classExtend(C['Observer'], {
             len = queue.length,
             i, temp;
 
-        for (i in config) {
-            temp = i.match(/^on(.+)$/);
-            if (temp) {
-                this['on'](temp[1], proxy(this, config[i]));
-            }
-        }
+        bindOnProp(this, config);
 
         this['resetQueue'](queue);
         this._done = proxy(this, this._done);
@@ -2195,7 +2221,7 @@ var AbstractTask = classExtend(C['Observer'], {
         var that = this,
             org_action;
 
-        if (task._exeQueue) {
+        if (task['one'] && task['start']) {
             task['one']('complete', proxy(that, that._done));
             return proxy(task, task['start']);
         }
@@ -3041,77 +3067,120 @@ C['FPS'] = classExtendBase({
         clearInterval(this._loopid);
     }
 });
-C['ImgLoad'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+// ElementLoad
+var ElementLoad = classExtend(C['Observer'], {
+    _tagname: '',
+    'init': function(config /* varless */, that) {
+        this['_super'](config);
 
-        mine._srcs = config['srcs'];
-        mine._loadedsrcs = [];
-        mine._contractid = [];
-        mine._progress = new Progress({
-            'waits': mine._srcs,
-            'onprogress': config['onprogress'],
+        that = this;
+
+        that._srcs = config['srcs'];
+        that._loadedsrcs = [];
+        that._contractid = [];
+        that._progress = new Progress({
+            'waits': that._srcs,
+            'onprogress': function(progress) {
+                that['fire']('progress', progress);
+            },
             'oncomplete': function() {
-                var i = mine._contractid.length;
+                var i = that._contractid.length;
 
                 for (; i--;) {
-                    mine['uncontract'](mine._contractid[i]);
+                    that['uncontract'](that._contractid[i]);
                 }
-                mine._contractid = [];
+                that._contractid = [];
 
-                (config['onload'] || nullFunction)(mine._loadedsrcs);
+                that['fire']('complete', that._loadedsrcs);
             }
         });
 
+        bindOnProp(that, config);
+
         if (!config['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'start': function() {
-        var mine = this,
-            img,
-            i = mine._srcs.length;
+        var that = this,
+            el,
+            i = 0,
+            len = that._srcs.length;
 
-        if (mine._started) {
+        this['fire']('start');
+
+        if (that._started) {
             return;
         }
 
-        mine._started = TRUE;
+        that._started = TRUE;
 
-        for (; i--;) {
-            img = create('img');
-            img.src = mine._srcs[i];
+        for (; i < len; i++) {
+            el = create(that._tagname);
+            el.src = that._srcs[i];
 
-            mine._contractid.push(mine['contract'](img, ev['LOAD'], countup));
-            mine._loadedsrcs.push(img);
+            that._contractid.push(that['contract'](el, ev['LOAD'], countup));
+            that._loadedsrcs.push(el);
+            that._loadloop(el);
         }
 
         function countup() {
-            mine._progress['pass']();
+            that._progress['pass']();
         }
-    }
-});
-C['WindowLoad'] = classExtendBase({
-    _onload: function(func /* varless */, mine, disposeid, loaded) {
-        // var mine = this,
-        //     disposeid,
-        //     loaded = function() {
-        //         mine['uncontract'](disposeid);
-        //         func();
-        //     };
-        mine = this;
-
-        disposeid = mine['contract'](win, ev['LOAD'], function() {
-            mine['uncontract'](disposeid);
-            func();
-        });
     },
+    _loadloop: nullFunction
+});
+
+C['ImgLoad'] = classExtend(ElementLoad, {
+    _tagname: 'img'
+});
+C['ScriptLoad'] = classExtend(ElementLoad, {
+    _tagname: 'script',
+    _loadloop: function(el) {
+        append(doc.body, el);
+    }
+});
+(function() {
+var loaded = FALSE,
+    winload = function() {
+        loaded = TRUE;
+        off(win, ev['LOAD'], winload);
+    };
+
+on(win, ev['LOAD'], winload);
+
+C['WindowLoad'] = classExtend(C['Observer'], {
     'init': function(config) {
-        if (config) {
-            this._onload(config['onload']);
+        this['_super']();
+
+        bindOnProp(this, config);
+
+        if (!config['manual']) {
+            this['start']();
+        }
+    },
+    'start': function() {
+        var that = this;
+
+        that['fire']('start');
+
+        if (that.started) {
+            return;
+        }
+        that.started = TRUE;
+
+        if (loaded) {
+            that.fire('complete');
+        }
+        else {
+            var disposeid = that['contract'](win, ev['LOAD'], function() {
+                that['uncontract'](disposeid);
+                that['fire']('complete');
+            });
         }
     }
 });
+}());
 mb = C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
@@ -3520,19 +3589,22 @@ C['FontImg'] = classExtendBase({
         return tags;
     }
 });
-C['PreRender'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+C['PreRender'] = classExtend(C['Observer'], {
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._els = config['els'];
-        mine._guesslimit = config['guesslimit'] || 30;
-        mine._onrendered = config['onrendered'];
-        mine._looptime = config['looptime'] || 100;
-        mine._loopblur = mine._looptime + (config['loopblur'] || 20);
-        /* mine._loopid = mine.prevtime = NULL; */
+        that['_super']();
+
+        that._els = config['els'];
+        that._guesslimit = config['guesslimit'] || 30;
+        that._looptime = config['looptime'] || 100;
+        that._loopblur = that._looptime + (config['loopblur'] || 20);
+        /* that._loopid = that.prevtime = NULL; */
+
+        bindOnProp(that, config);
 
         if (!config['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': function() {
@@ -3541,13 +3613,15 @@ C['PreRender'] = classExtendBase({
     },
     'start': function() {
         var i,
-            mine = this,
+            that = this,
             prevtime = dateNow();
 
-        for (i = mine._els.length; i--;) {
-            show(mine._els[i]);
+        that['fire']('start');
+
+        for (i = that._els.length; i--;) {
+            show(that._els[i]);
         }
-        mine._loopid = setInterval(check, mine._looptime, mine);
+        that._loopid = setInterval(check, that._looptime, that);
 
         function check() {
             var gettime = dateNow(),
@@ -3556,17 +3630,17 @@ C['PreRender'] = classExtendBase({
 
             prevtime = gettime;
 
-            if (difftime < mine._loopblur) {
-                mine._guesslimit--;
+            if (difftime < that._loopblur) {
+                that._guesslimit--;
 
-                if (mine._guesslimit < 1) {
-                    clearInterval(mine._loopid);
+                if (that._guesslimit < 1) {
+                    clearInterval(that._loopid);
 
-                    for (i = mine._els.length; i--;) {
-                        hide(mine._els[i]);
+                    for (i = that._els.length; i--;) {
+                        hide(that._els[i]);
                     }
 
-                    mine._onrendered();
+                    that['fire']('complete');
                 }
             }
         }
@@ -3601,55 +3675,6 @@ C['Route'] = classExtendBase({
             if (action.match(i)) {
                 config_action[i](i);
             }
-        }
-    }
-});
-C['ScriptLoad'] = classExtendBase({
-    'init': function(config) {
-        this._els = [];
-
-        if (config) {
-            this['requests'](config);
-        }
-    },
-    'requests': function(varary, callback) {
-        var mine = this,
-            i = 0,
-            len = varary.length,
-            progress = new Progress({
-                'waits': varary,
-                'oncomplete': function() {
-                    callback(mine._els);
-                }
-            }),
-            wrapback;
-
-        for (; i < len; i++) {
-            wrapback = varary[i]['callback'];
-
-            varary[i]['callback'] = function(e) {
-                wrapback(e);
-                progress['pass']();
-            };
-
-            mine['request'](varary[i]);
-        }
-    },
-    'request': function(vars) {
-        var mine = this,
-            script = create('script'),
-            disposeid;
-
-        /* script.type = 'text/javascript'; */
-        script.src = vars['src'];
-        append(doc.body, script);
-        mine._els.push(script);
-
-        if (vars['callback']) {
-            disposeid = mine['contract'](script, ev['LOAD'], function() {
-                mine['uncontract'](disposeid);
-                vars['callback'].apply(this, arguments);
-            });
         }
     }
 });

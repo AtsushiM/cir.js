@@ -1,49 +1,6 @@
-C['ScriptLoad'] = classExtendBase({
-    'init': function(config) {
-        this._els = [];
-
-        if (config) {
-            this['requests'](config);
-        }
-    },
-    'requests': function(varary, callback) {
-        var mine = this,
-            i = 0,
-            len = varary.length,
-            progress = new Progress({
-                'waits': varary,
-                'oncomplete': function() {
-                    callback(mine._els);
-                }
-            }),
-            wrapback;
-
-        for (; i < len; i++) {
-            wrapback = varary[i]['callback'];
-
-            varary[i]['callback'] = function(e) {
-                wrapback(e);
-                progress['pass']();
-            };
-
-            mine['request'](varary[i]);
-        }
-    },
-    'request': function(vars) {
-        var mine = this,
-            script = create('script'),
-            disposeid;
-
-        /* script.type = 'text/javascript'; */
-        script.src = vars['src'];
-        append(doc.body, script);
-        mine._els.push(script);
-
-        if (vars['callback']) {
-            disposeid = mine['contract'](script, ev['LOAD'], function() {
-                mine['uncontract'](disposeid);
-                vars['callback'].apply(this, arguments);
-            });
-        }
+C['ScriptLoad'] = classExtend(ElementLoad, {
+    _tagname: 'script',
+    _loadloop: function(el) {
+        append(doc.body, el);
     }
 });

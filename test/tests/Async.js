@@ -372,7 +372,7 @@ describe('C.Asyncは', function() {
         });
     });
 
-    it('remove()実行時にresetイベント、startイベントが発火する', function(done) {
+    it('removeTask()実行時にchangeイベントが発火する', function(done) {
         var func1 = function() {
             };
 

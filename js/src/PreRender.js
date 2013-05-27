@@ -1,16 +1,19 @@
-C['PreRender'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+C['PreRender'] = classExtend(C['Observer'], {
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._els = config['els'];
-        mine._guesslimit = config['guesslimit'] || 30;
-        mine._onrendered = config['onrendered'];
-        mine._looptime = config['looptime'] || 100;
-        mine._loopblur = mine._looptime + (config['loopblur'] || 20);
-        /* mine._loopid = mine.prevtime = NULL; */
+        that['_super']();
+
+        that._els = config['els'];
+        that._guesslimit = config['guesslimit'] || 30;
+        that._looptime = config['looptime'] || 100;
+        that._loopblur = that._looptime + (config['loopblur'] || 20);
+        /* that._loopid = that.prevtime = NULL; */
+
+        bindOnProp(that, config);
 
         if (!config['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': function() {
@@ -19,13 +22,15 @@ C['PreRender'] = classExtendBase({
     },
     'start': function() {
         var i,
-            mine = this,
+            that = this,
             prevtime = dateNow();
 
-        for (i = mine._els.length; i--;) {
-            show(mine._els[i]);
+        that['fire']('start');
+
+        for (i = that._els.length; i--;) {
+            show(that._els[i]);
         }
-        mine._loopid = setInterval(check, mine._looptime, mine);
+        that._loopid = setInterval(check, that._looptime, that);
 
         function check() {
             var gettime = dateNow(),
@@ -34,17 +39,17 @@ C['PreRender'] = classExtendBase({
 
             prevtime = gettime;
 
-            if (difftime < mine._loopblur) {
-                mine._guesslimit--;
+            if (difftime < that._loopblur) {
+                that._guesslimit--;
 
-                if (mine._guesslimit < 1) {
-                    clearInterval(mine._loopid);
+                if (that._guesslimit < 1) {
+                    clearInterval(that._loopid);
 
-                    for (i = mine._els.length; i--;) {
-                        hide(mine._els[i]);
+                    for (i = that._els.length; i--;) {
+                        hide(that._els[i]);
                     }
 
-                    mine._onrendered();
+                    that['fire']('complete');
                 }
             }
         }

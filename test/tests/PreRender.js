@@ -10,7 +10,7 @@ describe('C.PreRenderは', function() {
             guesslimit: 10,
             looptime: 10,
             loopblur: 5,
-            onrendered: function() {
+            oncomplete: function() {
                 $body.style.display = 'block';
             }
         });
@@ -31,5 +31,40 @@ describe('C.PreRenderは', function() {
     it('start()でelsで指定したエレメントのプリレンダリングを開始する', function() {
         prerender.start();
         expect(0).to.be(0);
+    });
+
+    it('start()でローディングを開始した場合、startイベントを発火する', function(done) {
+        prerender = new c.PreRender({
+            manual: true,
+            els: [$body],
+            guesslimit: 10,
+            looptime: 10,
+            loopblur: 5,
+            oncomplete: function() {
+                $body.style.display = 'block';
+            }
+        });
+
+        prerender.on('start', function() {
+            done();
+        });
+
+        prerender.start();
+    });
+
+    it('ローディング完了時、completeイベントを発火する', function(done) {
+        prerender = new c.PreRender({
+            els: [$body],
+            guesslimit: 10,
+            looptime: 10,
+            loopblur: 5,
+            oncomplete: function() {
+                $body.style.display = 'block';
+            }
+        });
+
+        prerender.on('complete', function() {
+            done();
+        });
     });
 });

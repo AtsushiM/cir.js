@@ -1,73 +1,43 @@
 // task
 (function() {
     var $test = C.$('#test'),
-        taskElementMove = new C.Sync({
+        task = new C.Async({
             queue: [
-                function(done) {
-                    $test.animate({
-                        top: 100
-                    }, done);
-                },
-                function(done) {
-                    $test.animate({
-                        top: 200
-                    }, done);
-                },
-                function(done) {
-                    $test.animate({
-                        top: 300
-                    }, done);
-                },
-                function(done) {
-                    $test.animate({
-                        top: 400
-                    }, done);
-                },
-                function(done) {
-                    $test.animate({
-                        top: 500
-                    }, done);
-                },
-                function(done) {
-                    $test.animate({
-                        top: 0
-                    }, done);
-                }
+                new C.WindowLoad({
+                    manual: true,
+                    oncomplete: function() {
+                        console.log('windowloaded');
+                    }
+                }),
+                new C.Ajax({
+                    manual: true,
+                    url: './task.html',
+                    oncomplete: function(src) {
+                        console.log(src);
+                    }
+                }),
+                new C.ImgLoad({
+                    manual: true,
+                    srcs: [
+                        'r.png',
+                        'g.png',
+                        'b.png'
+                    ],
+                    oncomplete: function(a) {
+                        console.log(a);
+                    }
+                })
             ],
             oncomplete: function() {
-                /* this.restart(); */
+                console.log('complete', Date.now() - diff);
             }
         }),
-        taskElementStop= new C.Sync({
-            queue: [
-                function(done) {
-                    setTimeout(function() {
-                        taskElementMove.pause();
-                        done();
-                    }, 2000);
-                },
-                function(done) {
-                    setTimeout(function() {
-                        taskElementMove.resume();
-                        done();
-                    }, 2000);
-                }
-            ],
-            oncomplete: function() {
-                /* this.restart(); */
-            }
-        }),
-        taskAnime = new C.Sync({
-            queue: [
-                taskElementMove,
-                taskElementStop
-            ],
-            oncomplete: function() {
-                console.log('exe end');
-                this.restart();
-            }
-        });
+        diff;
 
-    taskAnime.start();
+    task.on('start', function() {
+        diff = Date.now();
+    });
+
+    task.start();
 }());
 

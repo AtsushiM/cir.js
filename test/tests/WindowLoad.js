@@ -1,31 +1,43 @@
 describe('C.WindowLoadは', function() {
     var c = window.C ? C : Global,
-        dammy = {
-            before: {
-                onloadret: false,
-                onload: function() {
-                    dammy.before.onloadret = true;
-                }
-            },
-            after: {
-                onloadret: false,
-                onload: function() {
-                    dammy.after.onloadret = true;
-                }
-            }
-        },
-        loading_before = new c.WindowLoad({
-            onload: dammy.before.onload
-        });
+        winload,
+        loadend = false;
 
-    it('ページ読み込み時にローディング処理を実行する', function() {
-        setTimeout(function() {
-            expect(dammy.before.onloadret).to.be(true);
-        }, 100);
+    beforeEach(function() {
+        // init
+    });
+    afterEach(function() {
+        // clear
+        if (winload.dispose) {
+            winload.dispose();
+        }
     });
 
     it('dispose()でインスタンスを解放する', function() {
-        loading_before.dispose();
-        expect(loading_before).to.eql({});
+        winload = new C.WindowLoad({
+        });
+
+        winload.dispose();
+        expect(winload).to.eql({});
+    });
+
+    it('ページ読み込み完了時、completeイベントを発火する', function(done) {
+        winload = new C.WindowLoad({
+            oncomplete: function() {
+                done();
+            }
+        });
+    });
+
+    it('start()でstartイベントを発火する', function(done) {
+        winload = new C.WindowLoad({
+            manual: true
+        });
+
+        winload.on('start', function() {
+            done();
+        });
+
+        winload.start();
     });
 });

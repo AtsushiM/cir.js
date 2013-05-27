@@ -63,6 +63,18 @@ function splitSuffix(value) {
     return (EMPTY + (value || EMPTY)).match(/^(.*?)(-?[0-9\.]+)(.*)$/);
 }
 
+function bindOnProp(that, config) {
+    var i,
+        temp;
+
+    for (i in config) {
+        temp = i.match(/^on(.+)$/);
+        if (temp) {
+            that['on'](temp[1], proxy(that, config[i]));
+        }
+    }
+}
+
 function this_stop__super() {
     this['stop']();
     this['_super']();

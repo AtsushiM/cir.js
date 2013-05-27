@@ -8,12 +8,7 @@ var AbstractTask = classExtend(C['Observer'], {
             len = queue.length,
             i, temp;
 
-        for (i in config) {
-            temp = i.match(/^on(.+)$/);
-            if (temp) {
-                this['on'](temp[1], proxy(this, config[i]));
-            }
-        }
+        bindOnProp(this, config);
 
         this['resetQueue'](queue);
         this._done = proxy(this, this._done);
@@ -100,7 +95,7 @@ var AbstractTask = classExtend(C['Observer'], {
         var that = this,
             org_action;
 
-        if (task._exeQueue) {
+        if (task['one'] && task['start']) {
             task['one']('complete', proxy(that, that._done));
             return proxy(task, task['start']);
         }

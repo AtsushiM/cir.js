@@ -1,36 +1,31 @@
-C['Ajax'] = classExtendBase({
-    'init': function(config) {
-        if (config) {
-            this['request'](config);
-        }
+// Ajax
+C['Ajax'] = classExtend(C['Observer'], {
+    'dispose': function() {
+        this['stop']();
+        this['_super']();
     },
-    'request': function(vars) {
-        var url = vars['url'],
-            callback = vars['callback'] || nullFunction,
-            error = vars['error'] || nullFunction,
-            type = vars['type'] || 'GET',
+    'init': function(config) {
+        this['_super'](config);
+        config = override({}, config);
+
+        var that = this,
+            url = config['url'],
+            type = config['type'] || 'GET',
             query = EMPTY,
-            xhr = this._xhr = new XMLHttpRequest();
+            xhr = that._xhr = new XMLHttpRequest(),
+            i;
 
-        if (vars.dataType == 'json') {
-            delete vars.dataType;
-
-            return this['json'](vars);
+        if (config.dataType == 'json') {
+            that._json(config);
         }
 
-        if (!vars['cash']) {
-            if (!vars['query']) {
-                vars['query'] = {};
-            }
+        bindOnProp(that, config);
 
-            vars['query']['cir' + dateNow()] = '0';
+        if (!config['cache']) {
+            that._cache(config);
         }
-        if (vars['query']) {
-            query = vars['query'];
-
-            if (isObject(query)) {
-                query = encodeURI(makeQueryString(query));
-            }
+        if (config['query']) {
+            query = that._query(config);
         }
 
         xhr.onreadystatechange = function() {
@@ -39,11 +34,11 @@ C['Ajax'] = classExtendBase({
             }
 
             if (xhr.status == 200) {
-                return callback(xhr.responseText, xhr);
+                return that['fire']('complete', xhr.responseText, xhr);
             }
 
-            error(xhr);
-        }
+            that['fire']('error', xhr);
+        };
 
         if (type == 'GET') {
             if (noIndexOf(url, '?')) {
@@ -57,32 +52,56 @@ C['Ajax'] = classExtendBase({
             query = EMPTY;
         }
 
+        this._query = query;
+
         xhr.open(type, url);
 
         if (type == 'POST') {
             xhr.setRequestHeader('Content-Type',
                     'application/x-www-form-urlencoded');
         }
-        xhr.send(query);
-    },
-    'abort': function() {
-        if (this._xhr) {
-            this._xhr.abort();
+
+        if (!config['manual']) {
+            that['start']();
         }
     },
-    'json': function(vars) {
-        var callback = vars['callback'],
-            error = vars['error'];
+    'start': function() {
+        this['fire']('start');
+        this._xhr.send(this._query);
+    },
+    'stop': function() {
+        this._xhr.abort();
+        this['fire']('stop', this._xhr);
+    },
+    _query: function(config) {
+        var query = config['query'];
 
-        vars['callback'] = function(data) {
-            callback(jsonParse(data));
-        };
-        vars['error'] = function(data) {
-            if (error) {
-                error(data);
-            }
-        };
+        if (isObject(query)) {
+            query = encodeURI(makeQueryString(query));
+        }
 
-        this['request'](vars);
+        return query;
+    },
+    _cache: function(config) {
+        if (!config['query']) {
+            config['query'] = {};
+        }
+
+        config['query']['cir' + dateNow()] = '0';
+    },
+    _json: function(config) {
+        var oncomplete = config['oncomplete'],
+            onerror = config['onerror'];
+
+        if (oncomplete) {
+            config['oncomplete'] = function(data) {
+                oncomplete(jsonParse(data));
+            };
+        }
+        if (onerror) {
+            config['onerror'] = function(data) {
+                onerror(data);
+            };
+        }
     }
 });
