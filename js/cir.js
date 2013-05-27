@@ -3170,7 +3170,7 @@ C['WindowLoad'] = classExtend(C['Observer'], {
         that.started = TRUE;
 
         if (loaded) {
-            that.fire('complete');
+            that['fire']('complete');
         }
         else {
             var disposeid = that['contract'](win, ev['LOAD'], function() {
