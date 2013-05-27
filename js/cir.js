@@ -4248,6 +4248,18 @@ C['Scroll'] = classExtendBase({
     'toBottom': function() {
         scrollTo(doc.height);
     },
+    'checkBottom': function(offset) {
+        offset = offset || 0;
+
+        var remain = doc.body.scrollHeight -
+                win.innerHeight - doc.body.scrollTop;
+
+        if (remain <= offset) {
+            return TRUE;
+        }
+
+        return FALSE;
+    },
     'scrollY': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
@@ -4272,10 +4284,10 @@ C['Scroll'] = classExtendBase({
                 target = max;
             }
 
-            mine._before = mine.scrollY();
+            mine._before = mine['scrollY']();
             mine._smoothid = setInterval(function(/* varless */ position) {
                 /* var position = mine.scrollY(); */
-                position = mine.scrollY();
+                position = mine['scrollY']();
 
                 position = (target - position) * 0.3 + position;
 
