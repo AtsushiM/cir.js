@@ -2316,35 +2316,6 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
         this._exe();
     }
 });
-C['Handle'] = classExtendBase({
-    'init': function(config) {
-        this._config = config;
-        this['attach']();
-    },
-    'dispose': function() {
-        this['detach']();
-        this['_super']();
-    },
-    'attach': function() {
-        this._e(on);
-    },
-    'detach': function() {
-        this._e(off);
-    },
-    _e: function(onoff) {
-        var i,
-            config = this._config,
-            events = config['events'];
-
-        for (i in events) {
-            onoff(
-                config['el'],
-                i,
-                events[i]
-            );
-        }
-    }
-});
 C['Anvas'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -2761,39 +2732,6 @@ C['SessionStorage'] = function(config) {
     config['type'] = 'session';
     return new WebStorage(config);
 };
-C['Deferred'] = classExtendBase({
-    'init': function() {
-        this._queue = [];
-    },
-    'isResolve': function() {
-        return !this._queue;
-    },
-    'resolve': function(data /* varless */, mine) {
-        mine = this;
-
-        if (mine['isResolve']()) {
-            return mine;
-        }
-
-        var arr = mine._queue,
-            len = arr.length,
-            i = 0;
-
-        mine._queue = NULL;
-        mine._data = data;
-        for (; i < len; ++i) {
-            arr[i](data);
-        }
-
-        return mine;
-    },
-    'done': function(func /* varless */, mine) {
-        mine = this;
-        mine._queue ? mine._queue.push(func) : func(mine._data);
-
-        return mine;
-    }
-});
 C['DragFlick'] = classExtendBase({
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
