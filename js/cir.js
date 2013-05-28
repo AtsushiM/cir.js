@@ -1003,8 +1003,8 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-Mine = C['SSAnime'] =
-classExtendBase({
+That = C['SSAnime'] =
+classExtend(C['Observer'], {
     _off: function() {
         var el = this._el,
             end = this._end;
@@ -1012,19 +1012,23 @@ classExtendBase({
         off(el, event_key + 'End', end);
         off(el, 'animationend', end);
     },
-    'init': function(el, property, option /* varless */, mine) {
-        mine = this;
+    'init': function(el, property, option /* varless */, that) {
+        that = this;
+
+        that['_super']();
+
+        bindOnProp(that, option);
 
         option = option || NULLOBJ;
 
-        mine._oncomplete = option['oncomplete'] || nullFunction;
+        that._oncomplete = option['oncomplete'] || nullFunction;
 
-        mine._el = el;
+        that._el = el;
 
-        Mine['id']++;
-        mine._id = 'ciranim' + Mine['id'];
+        That['id']++;
+        that._id = 'ciranim' + That['id'];
 
-        var duration = option['duration'] || Mine['duration'],
+        var duration = option['duration'] || That['duration'],
             // easeOutExpo
             ease = option['ease'] || csseaseOutExpo,
             i,
@@ -1037,7 +1041,7 @@ classExtendBase({
             }
         }
 
-        mine.property = prop;
+        that.property = prop;
 
         prop = replaceAll(
             replaceAll(jsonStringify(prop), '"', EMPTY),
@@ -1046,38 +1050,40 @@ classExtendBase({
         );
 
         sheet.insertRule(
-            '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
+            '@' + css_prefix + 'keyframes ' + that._id + '{to' + prop + '}',
             sheet.cssRules.length);
 
         if (!isArray(ease)) {
             ease = [ease];
         }
 
-        addCSSRule(mine._id, css_prefix, duration, ease);
+        addCSSRule(that._id, css_prefix, duration, ease);
 
         if (!option['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
-    'start': function(/* varless */ mine, el) {
-        // var mine = this,
-        //     el = mine._el;
-        mine = this,
-        el = mine._el;
+    'start': function(/* varless */ that, el) {
+        // var that = this,
+        //     el = that._el;
+        that = this,
+        el = that._el;
 
-        mine._end = endaction;
+        that['fire']('start');
+
+        that._end = endaction;
         on(el, event_key + 'End', endaction);
         on(el, 'animationend', endaction);
 
-        addClass(el, mine._id);
+        addClass(el, that._id);
 
         function endaction(e) {
             var rule = sheet.cssRules,
                 len = rule.length,
                 name;
 
-            mine._off();
+            that._off();
 
 
             if (prefix == 'webkit') {
@@ -1085,19 +1091,21 @@ classExtendBase({
                     name = rule[len].name ||
                         (EMPTY + rule[len].selectorText).split('.')[1];
 
-                    if (name == mine._id) {
+                    if (name == that._id) {
                         sheet.deleteRule(len);
                     }
                 }
-                removeClass(el, mine._id);
+                removeClass(el, that._id);
 
-                css(el, mine.property);
+                css(el, that.property);
             }
-            mine._oncomplete(e);
+            that['fire']('complete', e);
         }
     },
     'stop': function() {
         var stopobj = {};
+
+        this['fire']('stop');
 
         stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
@@ -1123,8 +1131,8 @@ function addCSSRule(id, css_prefix, duration, eases) {
         sheet.cssRules.length);
 }
 
-Mine['id'] = 0;
-Mine['duration'] = 500;
+That['id'] = 0;
+That['duration'] = 500;
 }());
 (function() {
 var ret = checkCSSAnimTranCheck([
@@ -1136,22 +1144,26 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-    Mine;
+    That;
 
-Mine = C['SSTrans'] =
-    classExtendBase({
-    'init': function(el, property, option /* varless */, mine) {
-        mine = this;
+That = C['SSTrans'] =
+    classExtend(C['Observer'], {
+    'init': function(el, property, option /* varless */, that) {
+        that = this;
+
+        that['_super']();
+
+        bindOnProp(that, option);
 
         option = option || NULLOBJ;
 
-        Mine['id']++;
-        mine._id = 'cirtrans' + Mine['id'];
+        That['id']++;
+        that._id = 'cirtrans' + That['id'];
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option['duration'] || Mine['duration'],
+            duration = option['duration'] || That['duration'],
             // easeOutExpo
             ease = option['ease'] || csseaseOutExpo;
 
@@ -1163,53 +1175,61 @@ Mine = C['SSTrans'] =
             transProp.push(i);
         }
 
-        addCSSRule(mine._id, css_prefix, duration, ease, transProp);
+        addCSSRule(that._id, css_prefix, duration, ease, transProp);
 
-        mine._el = el;
-        mine._property = property;
-        mine._oncomplete = option['oncomplete'] || nullFunction;
+        that._el = el;
+        that._property = property;
 
         if (!option['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
-    'start': function(/* varless */ mine) {
-        /* var mine = this; */
-        mine = this;
+    'start': function(/* varless */ that) {
+        that = this;
 
-        mine._endfunc = function(e) {
-            mine['stop']();
+        that['fire']('start');
+
+        that._endfunc = function(e) {
+            that._stop();
             setTimeout(function() {
-                mine._oncomplete(e);
+                if (!that._isStoped) {
+                    that['fire']('complete', e);
+                }
             }, 1);
         };
 
-        on(mine._el, event_key + 'End', mine._endfunc);
-        on(mine._el, 'transitionend', mine._endfunc);
-        addClass(mine._el, mine._id);
-        css(mine._el, mine._property);
+        on(that._el, event_key + 'End', that._endfunc);
+        on(that._el, 'transitionend', that._endfunc);
+        addClass(that._el, that._id);
+        css(that._el, that._property);
     },
-    'stop': function(/* varless */ mine) {
-        mine = this;
+    _stop: function(/* varless */ that) {
+        that = this;
 
         var rule = sheet.cssRules,
             len = rule.length,
             name;
 
-        off(mine._el, event_key + 'End', mine._endfunc);
-        off(mine._el, 'transitionend', mine._endfunc);
-        removeClass(mine._el, mine._id);
+        off(that._el, event_key + 'End', that._endfunc);
+        off(that._el, 'transitionend', that._endfunc);
+        removeClass(that._el, that._id);
 
         for (; len--;) {
             name = rule[len].name ||
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
-            if (name == mine._id) {
+            if (name == that._id) {
                 sheet.deleteRule(len);
                 break;
             }
         }
+    },
+    _isStoped: FALSE,
+    'stop': function() {
+        this._isStoped = TRUE;
+        this['fire']('stop');
+        this._stop();
     }
 }, support);
 
@@ -1231,8 +1251,8 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
         sheet.cssRules.length);
 }
 
-Mine['id'] = 0;
-Mine['duration'] = 500;
+That['id'] = 0;
+That['duration'] = 500;
 }());
 var animeframeobj = {
         'request': function(callback) {
@@ -1280,17 +1300,21 @@ C['AnimeFrame'] = classExtendBase(animeframeobj);
 C['AnimeFrame']['fps'] = 30;
 
 C['animeframe'] = new C['AnimeFrame']();
-Tweener = C['Tweener'] = classExtendBase({
-    'init': function(target, property, option /* varless */, name, prop, mine) {
+Tweener = C['Tweener'] = classExtend(C['Observer'], {
+    'init': function(target, property, option /* varless */, name, prop, that) {
         // var name,
         //     prop;
 
-        mine = this;
+        that = this;
+
+        that['_super']();
+
+        bindOnProp(that, option);
 
         option = option || NULLOBJ;
 
-        mine._target = target;
-        mine._property = [];
+        that._target = target;
+        that._property = [];
 
         for (name in property) {
             prop = property[name];
@@ -1301,15 +1325,15 @@ Tweener = C['Tweener'] = classExtendBase({
             prop['suffix'] = prop['suffix'] ||
                 (prop['suffix'] === EMPTY ? EMPTY : 'px');
 
-            mine._property.push(prop);
+            that._property.push(prop);
         }
 
-        mine._duration = option['duration'] || Tweener['duration'];
-        mine._ease = option['ease'] || mine.__ease;
-        mine._oncomplete = option['oncomplete'];
+        that._duration = option['duration'] || Tweener['duration'];
+        that._ease = option['ease'] || that.__ease;
+        /* that._oncomplete = option['oncomplete']; */
 
         if (!option['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
@@ -1318,7 +1342,7 @@ Tweener = C['Tweener'] = classExtendBase({
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
     _loop: function() {
-        var mine = this,
+        var that = this,
             items = Tweener.Items,
             item,
             now = dateNow(),
@@ -1352,41 +1376,51 @@ Tweener = C['Tweener'] = classExtendBase({
 
                     Tweener._setProp(item._target, prop, prop['to']);
                 }
-                if (item._oncomplete) {
-                    item._oncomplete();
-                }
+
+                item['fire']('complete');
+                // if (item._oncomplete) {
+                //     item._oncomplete();
+                // }
                 items.splice(n, 1);
             }
         }
 
         if (items.length) {
             C['animeframe']['request'](function() {
-                mine._loop();
+                that._loop();
             });
 
             return;
         }
 
-        mine['stop']();
+        that._stop();
     },
-    'start': function(/* varless */ mine) {
-        /* var mine = this; */
-        mine = this;
+    'start': function(/* varless */ that) {
+        /* var that = this; */
+        that = this;
 
-        mine.begin = dateNow();
+        that['fire']('start');
 
-        Tweener.Items.push(mine);
+        that.begin = dateNow();
+
+        Tweener.Items.push(that);
         if (!Tweener.timerId) {
             Tweener.timerId = 1;
             C['animeframe']['request'](function() {
-                mine._loop();
+                if (that._loop) {
+                    that._loop();
+                }
             });
         }
     },
-    'stop': function() {
+    _stop: function() {
         Tweener.Items = [];
         C['animeframe']['cancel'](Tweener.timerId);
         Tweener.timerId = NULL;
+    },
+    'stop': function() {
+        this['fire']('stop');
+        this._stop();
     }
 });
 Tweener._setProp = function(target, prop, point) {

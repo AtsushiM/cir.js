@@ -8,8 +8,8 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-Mine = C['SSAnime'] =
-classExtendBase({
+That = C['SSAnime'] =
+classExtend(C['Observer'], {
     _off: function() {
         var el = this._el,
             end = this._end;
@@ -17,19 +17,23 @@ classExtendBase({
         off(el, event_key + 'End', end);
         off(el, 'animationend', end);
     },
-    'init': function(el, property, option /* varless */, mine) {
-        mine = this;
+    'init': function(el, property, option /* varless */, that) {
+        that = this;
+
+        that['_super']();
+
+        bindOnProp(that, option);
 
         option = option || NULLOBJ;
 
-        mine._oncomplete = option['oncomplete'] || nullFunction;
+        that._oncomplete = option['oncomplete'] || nullFunction;
 
-        mine._el = el;
+        that._el = el;
 
-        Mine['id']++;
-        mine._id = 'ciranim' + Mine['id'];
+        That['id']++;
+        that._id = 'ciranim' + That['id'];
 
-        var duration = option['duration'] || Mine['duration'],
+        var duration = option['duration'] || That['duration'],
             // easeOutExpo
             ease = option['ease'] || csseaseOutExpo,
             i,
@@ -42,7 +46,7 @@ classExtendBase({
             }
         }
 
-        mine.property = prop;
+        that.property = prop;
 
         prop = replaceAll(
             replaceAll(jsonStringify(prop), '"', EMPTY),
@@ -51,38 +55,40 @@ classExtendBase({
         );
 
         sheet.insertRule(
-            '@' + css_prefix + 'keyframes ' + mine._id + '{to' + prop + '}',
+            '@' + css_prefix + 'keyframes ' + that._id + '{to' + prop + '}',
             sheet.cssRules.length);
 
         if (!isArray(ease)) {
             ease = [ease];
         }
 
-        addCSSRule(mine._id, css_prefix, duration, ease);
+        addCSSRule(that._id, css_prefix, duration, ease);
 
         if (!option['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
-    'start': function(/* varless */ mine, el) {
-        // var mine = this,
-        //     el = mine._el;
-        mine = this,
-        el = mine._el;
+    'start': function(/* varless */ that, el) {
+        // var that = this,
+        //     el = that._el;
+        that = this,
+        el = that._el;
 
-        mine._end = endaction;
+        that['fire']('start');
+
+        that._end = endaction;
         on(el, event_key + 'End', endaction);
         on(el, 'animationend', endaction);
 
-        addClass(el, mine._id);
+        addClass(el, that._id);
 
         function endaction(e) {
             var rule = sheet.cssRules,
                 len = rule.length,
                 name;
 
-            mine._off();
+            that._off();
 
 
             if (prefix == 'webkit') {
@@ -90,19 +96,21 @@ classExtendBase({
                     name = rule[len].name ||
                         (EMPTY + rule[len].selectorText).split('.')[1];
 
-                    if (name == mine._id) {
+                    if (name == that._id) {
                         sheet.deleteRule(len);
                     }
                 }
-                removeClass(el, mine._id);
+                removeClass(el, that._id);
 
-                css(el, mine.property);
+                css(el, that.property);
             }
-            mine._oncomplete(e);
+            that['fire']('complete', e);
         }
     },
     'stop': function() {
         var stopobj = {};
+
+        this['fire']('stop');
 
         stopobj[css_prefix + 'animation-play-state'] = 'paused';
 
@@ -128,6 +136,6 @@ function addCSSRule(id, css_prefix, duration, eases) {
         sheet.cssRules.length);
 }
 
-Mine['id'] = 0;
-Mine['duration'] = 500;
+That['id'] = 0;
+That['duration'] = 500;
 }());

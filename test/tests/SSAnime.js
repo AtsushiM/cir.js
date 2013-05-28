@@ -11,9 +11,9 @@ describe('C.SSAnimeは', function() {
     afterEach(function() {
         // clear
         c.dom.remove(div);
-        if (animation.dispose) {
-            animation.dispose();
-        }
+        // if (animation.dispose) {
+        //     animation.dispose();
+        // }
     });
 
     it('dispose()でインスタンスを解放する', function() {
@@ -67,7 +67,7 @@ describe('C.SSAnimeは', function() {
         }, c.SSAnime.duration + 200);
     });
 
-    it('stop()でアニメーションを開始する', function() {
+    it('stop()でアニメーションを停止する', function() {
         var count = 0;
 
         animation = new c.SSAnime(div, {
@@ -83,5 +83,41 @@ describe('C.SSAnimeは', function() {
         setTimeout(function() {
             expect(count).to.be(0);
         }, c.SSAnime.duration + 200);
+    });
+
+    it('start()でstartイベントを発火する', function(done) {
+        animation = new c.SSAnime(div, {
+            opacity: '0'
+        }, {
+            manual: true,
+        });
+
+        animation.on('start', function() {
+            done();
+        });
+
+        animation.start();
+    });
+
+    it('stop()でstopイベントを発火する', function(done) {
+        animation = new c.SSAnime(div, {
+            opacity: '0'
+        });
+
+        animation.on('stop', function() {
+            done();
+        });
+
+        animation.stop();
+    });
+
+    it('アニメーション終了時にcompleteイベントを発火する', function(done) {
+        animation = new c.SSAnime(div, {
+            opacity: '0'
+        });
+
+        animation.on('complete', function() {
+            done();
+        });
     });
 });

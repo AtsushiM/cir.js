@@ -3,6 +3,24 @@
     var $test = C.$('#test'),
         task = new C.Async({
             queue: [
+                new C.Tweener(
+                    $test[0].style,
+                    {
+                        opacity: {
+                            from: 1,
+                            to: 0,
+                            suffix: ''
+                        }
+                    },
+                    {
+                        manual: true,
+                        oncomplete: function() {
+                            C.dom.css($test[0], {
+                                opacity: '1'
+                            });
+                        }
+                    }
+                ),
                 new C.WindowLoad({
                     manual: true,
                     oncomplete: function() {

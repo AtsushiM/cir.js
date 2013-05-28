@@ -8,22 +8,26 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-    Mine;
+    That;
 
-Mine = C['SSTrans'] =
-    classExtendBase({
-    'init': function(el, property, option /* varless */, mine) {
-        mine = this;
+That = C['SSTrans'] =
+    classExtend(C['Observer'], {
+    'init': function(el, property, option /* varless */, that) {
+        that = this;
+
+        that['_super']();
+
+        bindOnProp(that, option);
 
         option = option || NULLOBJ;
 
-        Mine['id']++;
-        mine._id = 'cirtrans' + Mine['id'];
+        That['id']++;
+        that._id = 'cirtrans' + That['id'];
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option['duration'] || Mine['duration'],
+            duration = option['duration'] || That['duration'],
             // easeOutExpo
             ease = option['ease'] || csseaseOutExpo;
 
@@ -35,53 +39,61 @@ Mine = C['SSTrans'] =
             transProp.push(i);
         }
 
-        addCSSRule(mine._id, css_prefix, duration, ease, transProp);
+        addCSSRule(that._id, css_prefix, duration, ease, transProp);
 
-        mine._el = el;
-        mine._property = property;
-        mine._oncomplete = option['oncomplete'] || nullFunction;
+        that._el = el;
+        that._property = property;
 
         if (!option['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
-    'start': function(/* varless */ mine) {
-        /* var mine = this; */
-        mine = this;
+    'start': function(/* varless */ that) {
+        that = this;
 
-        mine._endfunc = function(e) {
-            mine['stop']();
+        that['fire']('start');
+
+        that._endfunc = function(e) {
+            that._stop();
             setTimeout(function() {
-                mine._oncomplete(e);
+                if (!that._isStoped) {
+                    that['fire']('complete', e);
+                }
             }, 1);
         };
 
-        on(mine._el, event_key + 'End', mine._endfunc);
-        on(mine._el, 'transitionend', mine._endfunc);
-        addClass(mine._el, mine._id);
-        css(mine._el, mine._property);
+        on(that._el, event_key + 'End', that._endfunc);
+        on(that._el, 'transitionend', that._endfunc);
+        addClass(that._el, that._id);
+        css(that._el, that._property);
     },
-    'stop': function(/* varless */ mine) {
-        mine = this;
+    _stop: function(/* varless */ that) {
+        that = this;
 
         var rule = sheet.cssRules,
             len = rule.length,
             name;
 
-        off(mine._el, event_key + 'End', mine._endfunc);
-        off(mine._el, 'transitionend', mine._endfunc);
-        removeClass(mine._el, mine._id);
+        off(that._el, event_key + 'End', that._endfunc);
+        off(that._el, 'transitionend', that._endfunc);
+        removeClass(that._el, that._id);
 
         for (; len--;) {
             name = rule[len].name ||
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
-            if (name == mine._id) {
+            if (name == that._id) {
                 sheet.deleteRule(len);
                 break;
             }
         }
+    },
+    _isStoped: FALSE,
+    'stop': function() {
+        this._isStoped = TRUE;
+        this['fire']('stop');
+        this._stop();
     }
 }, support);
 
@@ -103,6 +115,6 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
         sheet.cssRules.length);
 }
 
-Mine['id'] = 0;
-Mine['duration'] = 500;
+That['id'] = 0;
+That['duration'] = 500;
 }());

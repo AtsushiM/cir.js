@@ -1,14 +1,18 @@
-Tweener = C['Tweener'] = classExtendBase({
-    'init': function(target, property, option /* varless */, name, prop, mine) {
+Tweener = C['Tweener'] = classExtend(C['Observer'], {
+    'init': function(target, property, option /* varless */, name, prop, that) {
         // var name,
         //     prop;
 
-        mine = this;
+        that = this;
+
+        that['_super']();
+
+        bindOnProp(that, option);
 
         option = option || NULLOBJ;
 
-        mine._target = target;
-        mine._property = [];
+        that._target = target;
+        that._property = [];
 
         for (name in property) {
             prop = property[name];
@@ -19,15 +23,15 @@ Tweener = C['Tweener'] = classExtendBase({
             prop['suffix'] = prop['suffix'] ||
                 (prop['suffix'] === EMPTY ? EMPTY : 'px');
 
-            mine._property.push(prop);
+            that._property.push(prop);
         }
 
-        mine._duration = option['duration'] || Tweener['duration'];
-        mine._ease = option['ease'] || mine.__ease;
-        mine._oncomplete = option['oncomplete'];
+        that._duration = option['duration'] || Tweener['duration'];
+        that._ease = option['ease'] || that.__ease;
+        /* that._oncomplete = option['oncomplete']; */
 
         if (!option['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
@@ -36,7 +40,7 @@ Tweener = C['Tweener'] = classExtendBase({
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
     _loop: function() {
-        var mine = this,
+        var that = this,
             items = Tweener.Items,
             item,
             now = dateNow(),
@@ -70,41 +74,51 @@ Tweener = C['Tweener'] = classExtendBase({
 
                     Tweener._setProp(item._target, prop, prop['to']);
                 }
-                if (item._oncomplete) {
-                    item._oncomplete();
-                }
+
+                item['fire']('complete');
+                // if (item._oncomplete) {
+                //     item._oncomplete();
+                // }
                 items.splice(n, 1);
             }
         }
 
         if (items.length) {
             C['animeframe']['request'](function() {
-                mine._loop();
+                that._loop();
             });
 
             return;
         }
 
-        mine['stop']();
+        that._stop();
     },
-    'start': function(/* varless */ mine) {
-        /* var mine = this; */
-        mine = this;
+    'start': function(/* varless */ that) {
+        /* var that = this; */
+        that = this;
 
-        mine.begin = dateNow();
+        that['fire']('start');
 
-        Tweener.Items.push(mine);
+        that.begin = dateNow();
+
+        Tweener.Items.push(that);
         if (!Tweener.timerId) {
             Tweener.timerId = 1;
             C['animeframe']['request'](function() {
-                mine._loop();
+                if (that._loop) {
+                    that._loop();
+                }
             });
         }
     },
-    'stop': function() {
+    _stop: function() {
         Tweener.Items = [];
         C['animeframe']['cancel'](Tweener.timerId);
         Tweener.timerId = NULL;
+    },
+    'stop': function() {
+        this['fire']('stop');
+        this._stop();
     }
 });
 Tweener._setProp = function(target, prop, point) {

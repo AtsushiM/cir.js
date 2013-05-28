@@ -10,7 +10,6 @@ describe('C.Tweenerは', function() {
         // clear
         element.removeAttribute('style');
         if (tweener.dispose) {
-            tweener.stop();
             tweener.dispose();
         }
     });
@@ -127,5 +126,88 @@ describe('C.Tweenerは', function() {
 
     it('C.Tweener.durationでデフォルトのアニメーション実行時間を設定する', function() {
         expect(C.Tweener.duration).not.to.be(undefined);
+    });
+
+    it('start()でstartイベントを発火する', function(done) {
+        tweener = new c.Tweener(element.style,
+            {
+                width: {
+                    from: 0,
+                    to: 100
+                },
+                height: {
+                    from: 0,
+                    to: 100,
+                    prefix: '',
+                    suffix: 'px'
+                }
+            },
+            {
+                manual: true,
+                oncomplete: function() {
+                    comp = true;
+                }
+            }
+        );
+
+        tweener.on('start', function() {
+            tweener.stop();
+            done();
+        });
+
+        tweener.start();
+    });
+
+    it('stop()でstopイベントを発火する', function(done) {
+        tweener = new c.Tweener(element.style,
+            {
+                width: {
+                    from: 0,
+                    to: 100
+                },
+                height: {
+                    from: 0,
+                    to: 100,
+                    prefix: '',
+                    suffix: 'px'
+                }
+            },
+            {
+                oncomplete: function() {
+                    comp = true;
+                }
+            }
+        );
+
+        tweener.one('stop', function() {
+            done();
+        });
+
+        tweener.stop();
+    });
+
+    it('アニメーション終了時にcompleteイベントを発火する', function(done) {
+        tweener = new c.Tweener(element.style,
+            {
+                width: {
+                    from: 0,
+                    to: 100
+                },
+                height: {
+                    from: 0,
+                    to: 100,
+                    prefix: '',
+                    suffix: 'px'
+                }
+            },
+            {
+                oncomplete: function() {
+                    done();
+                }
+            }
+        );
+
+        tweener.on('complete', function() {
+        });
     });
 });
