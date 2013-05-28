@@ -1,11 +1,12 @@
 C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
+    _fire_complete: this_fire_complete,
     _exe: function() {
         if (!this._queue) {
             return;
         }
 
         if (this._queue.length === 0) {
-            return this['fire']('complete');
+            return this._fire_complete();
         }
 
         this._processcount = this._queue.length;
@@ -14,13 +15,13 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
             this._asyncAction(this._queue.shift())((this._done));
         }
     },
+    _fire_progress: this_fire_progress,
     _done: function() {
-        this['fire']('progress');
-        /* this._onprogress(); */
+        this._fire_progress();
         this._processcount--;
 
         if (this._processcount == 0) {
-            this['fire']('complete');
+            this._fire_complete();
         }
     }
 });

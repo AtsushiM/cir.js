@@ -9,7 +9,7 @@ var ret = checkCSSAnimTranCheck([
     event_key = ret.event_key,
     sheet = ret.sheet,
 That = C['SSAnime'] =
-classExtend(C['Observer'], {
+classExtendObserver({
     _off: function() {
         var el = this._el,
             end = this._end;
@@ -69,13 +69,15 @@ classExtend(C['Observer'], {
         }
     },
     'dispose': this_stop__super,
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function(/* varless */ that, el) {
         // var that = this,
         //     el = that._el;
         that = this,
         el = that._el;
 
-        that['fire']('start');
+        that._fire_start();
 
         that._end = endaction;
         on(el, event_key + 'End', endaction);
@@ -104,7 +106,7 @@ classExtend(C['Observer'], {
 
                 css(el, that.property);
             }
-            that['fire']('complete', e);
+            that._fire_complete(e);
         }
     },
     'stop': function() {

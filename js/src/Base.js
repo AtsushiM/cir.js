@@ -13,7 +13,7 @@ C['Base'] = classExtend(UNDEFINED, {
         for (i in mine) {
             temp = mine[i];
 
-            if (temp && isFunction(temp['dispose'])) {
+            if (temp && temp['dispose']) {
                 temp['dispose']();
             }
         }
@@ -27,28 +27,8 @@ C['Base'] = classExtend(UNDEFINED, {
 
         return NULL;
     },
-    'contract': function(el, e, handler /* varless */, mine, id) {
-        mine = this;
-
-        if (!mine._disposestore) {
-            mine._disposestore = {};
-        }
-        /* var id = ++this._disposecountid; */
-        id = ++mine._disposecountid;
-
-        on(el, e, handler);
-        mine._disposestore[id] = [el, e, handler];
-
-        return id;
-    },
-    'uncontract': function(id) {
-        if (id) {
-            var temp = this._disposestore,
-                arg = temp[id];
-
-            delete temp[id];
-
-            off(arg[0], arg[1], arg[2]);
-        }
-    }
+    _contract: this_contract,
+    'contract': this_contract,
+    _uncontract: this_uncontract,
+    'uncontract': this_uncontract
 });

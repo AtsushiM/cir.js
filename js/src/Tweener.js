@@ -1,4 +1,4 @@
-Tweener = C['Tweener'] = classExtend(C['Observer'], {
+Tweener = C['Tweener'] = classExtendObserver({
     'init': function(target, property, option /* varless */, name, prop, that) {
         // var name,
         //     prop;
@@ -39,6 +39,7 @@ Tweener = C['Tweener'] = classExtend(C['Observer'], {
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
+    _fire_complete: this_fire_complete,
     _loop: function() {
         var that = this,
             items = Tweener.Items,
@@ -75,10 +76,7 @@ Tweener = C['Tweener'] = classExtend(C['Observer'], {
                     Tweener._setProp(item._target, prop, prop['to']);
                 }
 
-                item['fire']('complete');
-                // if (item._oncomplete) {
-                //     item._oncomplete();
-                // }
+                item._fire_complete();
                 items.splice(n, 1);
             }
         }
@@ -93,11 +91,12 @@ Tweener = C['Tweener'] = classExtend(C['Observer'], {
 
         that._stop();
     },
+    _fire_start: this_fire_start,
     'start': function(/* varless */ that) {
         /* var that = this; */
         that = this;
 
-        that['fire']('start');
+        that._fire_start();
 
         that.begin = dateNow();
 

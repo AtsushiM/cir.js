@@ -1,11 +1,11 @@
 // Ajax
-C['Ajax'] = classExtend(C['Observer'], {
+C['Ajax'] = classExtendObserver({
     'dispose': function() {
         this['stop']();
         this['_super']();
     },
     'init': function(config) {
-        this['_super'](config);
+        this['_super']();
         config = override({}, config);
 
         var that = this,
@@ -65,8 +65,9 @@ C['Ajax'] = classExtend(C['Observer'], {
             that['start']();
         }
     },
+    _fire_start: this_fire_start,
     'start': function() {
-        this['fire']('start');
+        this._fire_start();
         this._xhr.send(this._query);
     },
     'stop': function() {

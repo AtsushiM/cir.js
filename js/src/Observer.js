@@ -63,7 +63,7 @@ C['Observer'] = classExtendBase({
             for (i = 0, len = target.length; i < len; i++) {
                 func = target[i];
                 if (func) {
-                    func.apply(null, args);
+                    func.apply(NULL, args);
                 }
             }
         }

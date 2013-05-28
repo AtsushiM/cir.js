@@ -82,6 +82,39 @@ function this_stop__super() {
 function this_detach() {
     this['detach']();
 }
+function this_fire_complete(arg) {
+    this['fire']('complete', arg);
+}
+function this_fire_start() {
+    this['fire']('start');
+}
+function this_fire_progress(arg) {
+    this['fire']('progress', arg);
+}
+function this_uncontract(id) {
+    if (id) {
+        var temp = this._disposestore,
+            arg = temp[id];
+
+        delete temp[id];
+
+        off(arg[0], arg[1], arg[2]);
+    }
+}
+function this_contract(el, e, handler /* varless */, mine, id) {
+    mine = this;
+
+    if (!mine._disposestore) {
+        mine._disposestore = {};
+    }
+    /* var id = ++this._disposecountid; */
+    id = ++mine._disposecountid;
+
+    on(el, e, handler);
+    mine._disposestore[id] = [el, e, handler];
+
+    return id;
+}
 
 var win = window,
     doc = document,
@@ -110,4 +143,3 @@ WebStorage,
 mb,
 pc,
 $_methods;
-

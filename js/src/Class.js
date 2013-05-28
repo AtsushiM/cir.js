@@ -78,3 +78,6 @@ function classExtend(cls, prop, support) {
 function classExtendBase(prop, support) {
     return classExtend(C['Base'], prop, support);
 }
+function classExtendObserver(prop, support) {
+    return classExtend(C['Observer'], prop, support);
+}

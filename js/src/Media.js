@@ -25,21 +25,21 @@ Media = classExtendBase({
             if (autoplay) {
                 var autoplayid;
                 autoplay = function() {
-                    mine['uncontract'](autoplayid);
+                    mine._uncontract(autoplayid);
                     mine['play']();
                 };
 
-                autoplayid = mine['contract'](media, ev_canplay, autoplay);
+                autoplayid = mine._contract(media, ev_canplay, autoplay);
             }
             if (loop) {
                 mine['loop'](TRUE);
             }
 
             if (config['oncanplay']) {
-                mine['contract'](media, ev_canplay, config['oncanplay']);
+                mine._contract(media, ev_canplay, config['oncanplay']);
             }
             if (config['onended']) {
-                mine['contract'](media, ev_ended, config['onended']);
+                mine._contract(media, ev_ended, config['onended']);
             }
 
             append(_parent, media);
@@ -66,13 +66,13 @@ Media = classExtendBase({
         mine = this;
 
         if (mine._loopid) {
-            mine['uncontract'](mine._loopid);
+            mine._uncontract(mine._loopid);
             delete mine._loopid;
         }
 
         if (bool) {
             mine._loopid =
-            mine['contract'](mine._el, ev_ended, function() {
+            mine._contract(mine._el, ev_ended, function() {
                 mine['stop']();
                 mine['play']();
             });

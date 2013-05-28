@@ -82,6 +82,39 @@ function this_stop__super() {
 function this_detach() {
     this['detach']();
 }
+function this_fire_complete(arg) {
+    this['fire']('complete', arg);
+}
+function this_fire_start() {
+    this['fire']('start');
+}
+function this_fire_progress(arg) {
+    this['fire']('progress', arg);
+}
+function this_uncontract(id) {
+    if (id) {
+        var temp = this._disposestore,
+            arg = temp[id];
+
+        delete temp[id];
+
+        off(arg[0], arg[1], arg[2]);
+    }
+}
+function this_contract(el, e, handler /* varless */, mine, id) {
+    mine = this;
+
+    if (!mine._disposestore) {
+        mine._disposestore = {};
+    }
+    /* var id = ++this._disposecountid; */
+    id = ++mine._disposecountid;
+
+    on(el, e, handler);
+    mine._disposestore[id] = [el, e, handler];
+
+    return id;
+}
 
 var win = window,
     doc = document,
@@ -110,7 +143,6 @@ WebStorage,
 mb,
 pc,
 $_methods;
-
 if (!Date['now']) {
     Date['now'] = function() {
         return +new Date;
@@ -709,6 +741,9 @@ function classExtend(cls, prop, support) {
 function classExtendBase(prop, support) {
     return classExtend(C['Base'], prop, support);
 }
+function classExtendObserver(prop, support) {
+    return classExtend(C['Observer'], prop, support);
+}
 C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
     'dispose': function(/* varless */ mine) {
@@ -724,7 +759,7 @@ C['Base'] = classExtend(UNDEFINED, {
         for (i in mine) {
             temp = mine[i];
 
-            if (temp && isFunction(temp['dispose'])) {
+            if (temp && temp['dispose']) {
                 temp['dispose']();
             }
         }
@@ -738,30 +773,10 @@ C['Base'] = classExtend(UNDEFINED, {
 
         return NULL;
     },
-    'contract': function(el, e, handler /* varless */, mine, id) {
-        mine = this;
-
-        if (!mine._disposestore) {
-            mine._disposestore = {};
-        }
-        /* var id = ++this._disposecountid; */
-        id = ++mine._disposecountid;
-
-        on(el, e, handler);
-        mine._disposestore[id] = [el, e, handler];
-
-        return id;
-    },
-    'uncontract': function(id) {
-        if (id) {
-            var temp = this._disposestore,
-                arg = temp[id];
-
-            delete temp[id];
-
-            off(arg[0], arg[1], arg[2]);
-        }
-    }
+    _contract: this_contract,
+    'contract': this_contract,
+    _uncontract: this_uncontract,
+    'uncontract': this_uncontract
 });
 C['Observer'] = classExtendBase({
     'init': function() {
@@ -828,7 +843,7 @@ C['Observer'] = classExtendBase({
             for (i = 0, len = target.length; i < len; i++) {
                 func = target[i];
                 if (func) {
-                    func.apply(null, args);
+                    func.apply(NULL, args);
                 }
             }
         }
@@ -1004,7 +1019,7 @@ var ret = checkCSSAnimTranCheck([
     event_key = ret.event_key,
     sheet = ret.sheet,
 That = C['SSAnime'] =
-classExtend(C['Observer'], {
+classExtendObserver({
     _off: function() {
         var el = this._el,
             end = this._end;
@@ -1064,13 +1079,15 @@ classExtend(C['Observer'], {
         }
     },
     'dispose': this_stop__super,
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function(/* varless */ that, el) {
         // var that = this,
         //     el = that._el;
         that = this,
         el = that._el;
 
-        that['fire']('start');
+        that._fire_start();
 
         that._end = endaction;
         on(el, event_key + 'End', endaction);
@@ -1099,7 +1116,7 @@ classExtend(C['Observer'], {
 
                 css(el, that.property);
             }
-            that['fire']('complete', e);
+            that._fire_complete(e);
         }
     },
     'stop': function() {
@@ -1147,7 +1164,7 @@ var ret = checkCSSAnimTranCheck([
     That;
 
 That = C['SSTrans'] =
-    classExtend(C['Observer'], {
+    classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
         that = this;
 
@@ -1185,16 +1202,18 @@ That = C['SSTrans'] =
         }
     },
     'dispose': this_stop__super,
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function(/* varless */ that) {
         that = this;
 
-        that['fire']('start');
+        that._fire_start();
 
         that._endfunc = function(e) {
             that._stop();
             setTimeout(function() {
                 if (!that._isStoped) {
-                    that['fire']('complete', e);
+                    that._fire_complete(e);
                 }
             }, 1);
         };
@@ -1300,7 +1319,7 @@ C['AnimeFrame'] = classExtendBase(animeframeobj);
 C['AnimeFrame']['fps'] = 30;
 
 C['animeframe'] = new C['AnimeFrame']();
-Tweener = C['Tweener'] = classExtend(C['Observer'], {
+Tweener = C['Tweener'] = classExtendObserver({
     'init': function(target, property, option /* varless */, name, prop, that) {
         // var name,
         //     prop;
@@ -1341,6 +1360,7 @@ Tweener = C['Tweener'] = classExtend(C['Observer'], {
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
+    _fire_complete: this_fire_complete,
     _loop: function() {
         var that = this,
             items = Tweener.Items,
@@ -1377,10 +1397,7 @@ Tweener = C['Tweener'] = classExtend(C['Observer'], {
                     Tweener._setProp(item._target, prop, prop['to']);
                 }
 
-                item['fire']('complete');
-                // if (item._oncomplete) {
-                //     item._oncomplete();
-                // }
+                item._fire_complete();
                 items.splice(n, 1);
             }
         }
@@ -1395,11 +1412,12 @@ Tweener = C['Tweener'] = classExtend(C['Observer'], {
 
         that._stop();
     },
+    _fire_start: this_fire_start,
     'start': function(/* varless */ that) {
         /* var that = this; */
         that = this;
 
-        that['fire']('start');
+        that._fire_start();
 
         that.begin = dateNow();
 
@@ -1645,9 +1663,9 @@ $_methods = C['$'].methods = {
 };
 (function() {
 var methods = $_methods,
-    Animation = C['SSAnime'] || {},
+    Animation = C['SSAnime'] || NULLOBJ,
     csssupport = Animation['support'],
-    EASE = {};
+    EASE = NULLOBJ;
 
 if (csssupport && C['cssease']) {
     EASE = C['cssease'];
@@ -1889,21 +1907,21 @@ Media = classExtendBase({
             if (autoplay) {
                 var autoplayid;
                 autoplay = function() {
-                    mine['uncontract'](autoplayid);
+                    mine._uncontract(autoplayid);
                     mine['play']();
                 };
 
-                autoplayid = mine['contract'](media, ev_canplay, autoplay);
+                autoplayid = mine._contract(media, ev_canplay, autoplay);
             }
             if (loop) {
                 mine['loop'](TRUE);
             }
 
             if (config['oncanplay']) {
-                mine['contract'](media, ev_canplay, config['oncanplay']);
+                mine._contract(media, ev_canplay, config['oncanplay']);
             }
             if (config['onended']) {
-                mine['contract'](media, ev_ended, config['onended']);
+                mine._contract(media, ev_ended, config['onended']);
             }
 
             append(_parent, media);
@@ -1930,13 +1948,13 @@ Media = classExtendBase({
         mine = this;
 
         if (mine._loopid) {
-            mine['uncontract'](mine._loopid);
+            mine._uncontract(mine._loopid);
             delete mine._loopid;
         }
 
         if (bool) {
             mine._loopid =
-            mine['contract'](mine._el, ev_ended, function() {
+            mine._contract(mine._el, ev_ended, function() {
                 mine['stop']();
                 mine['play']();
             });
@@ -1985,13 +2003,13 @@ C['Movie'] = function(config) {
 };
 C['Movie']['support'] = C['Video']['support'];
 // Ajax
-C['Ajax'] = classExtend(C['Observer'], {
+C['Ajax'] = classExtendObserver({
     'dispose': function() {
         this['stop']();
         this['_super']();
     },
     'init': function(config) {
-        this['_super'](config);
+        this['_super']();
         config = override({}, config);
 
         var that = this,
@@ -2051,8 +2069,9 @@ C['Ajax'] = classExtend(C['Observer'], {
             that['start']();
         }
     },
+    _fire_start: this_fire_start,
     'start': function() {
-        this['fire']('start');
+        this._fire_start();
         this._xhr.send(this._query);
     },
     'stop': function() {
@@ -2158,7 +2177,7 @@ Progress = C['Progress'] = classExtendBase({
         mine._check(vars);
     }
 });
-var AbstractTask = classExtend(C['Observer'], {
+var AbstractTask = classExtendObserver({
     'init': function(config) {
         this['_super']();
 
@@ -2173,8 +2192,9 @@ var AbstractTask = classExtend(C['Observer'], {
         this['resetQueue'](queue);
         this._done = proxy(this, this._done);
     },
+    _fire_start: this_fire_start,
     'start': function() {
-        this['fire']('start');
+        this._fire_start();
         this._paused = FALSE;
         this._exeQueue();
     },
@@ -2213,9 +2233,12 @@ var AbstractTask = classExtend(C['Observer'], {
 
         this['fire']('reset');
     },
+    _noticeChange: function() {
+        this['fire']('change', this['getQueue']());
+    },
     'setQueue': function(queue) {
         this._queue = copyArray(queue);
-        this['fire']('change', this['getQueue']());
+        this._noticeChange();
     },
     'getQueue': function() {
         return copyArray(this._queue);
@@ -2230,7 +2253,7 @@ var AbstractTask = classExtend(C['Observer'], {
 
         this._queue.splice(priority, 0, task);
 
-        this['fire']('change', this['getQueue']());
+        this._noticeChange();
     },
     'removeTask': function(task) {
         var i = 0,
@@ -2239,13 +2262,13 @@ var AbstractTask = classExtend(C['Observer'], {
         for (; i < len; i++ ) {
             if (this._queue[i] === task) {
                 this._queue.splice(i, 1);
-                this['fire']('change', this['getQueue']());
+                this._noticeChange();
 
                 break;
             }
         }
     },
-    _exe: abstraceFunction,
+    /* _exe: abstraceFunction, */
     _exeQueue: function() {
         if (!this._paused) {
             this._exe();
@@ -2270,17 +2293,18 @@ var AbstractTask = classExtend(C['Observer'], {
             org_action.call(that);
             done();
         };
-    },
-    _done: abstraceFunction
+    } //,
+    /* _done: abstraceFunction */
 });
 C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
+    _fire_complete: this_fire_complete,
     _exe: function() {
         if (!this._queue) {
             return;
         }
 
         if (this._queue.length === 0) {
-            return this['fire']('complete');
+            return this._fire_complete();
         }
 
         this._processcount = this._queue.length;
@@ -2289,17 +2313,18 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
             this._asyncAction(this._queue.shift())((this._done));
         }
     },
+    _fire_progress: this_fire_progress,
     _done: function() {
-        this['fire']('progress');
-        /* this._onprogress(); */
+        this._fire_progress();
         this._processcount--;
 
         if (this._processcount == 0) {
-            this['fire']('complete');
+            this._fire_complete();
         }
     }
 });
 C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
+    _fire_complete: this_fire_complete,
     _exe: function() {
         if (!this._queue || this._paused) {
             return;
@@ -2309,10 +2334,12 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
             return this._asyncAction(this._queue.shift())((this._done));
         }
 
-        this['fire']('complete');
+        /* this['fire']('complete'); */
+        this._fire_complete();
     },
+    _fire_progress: this_fire_progress,
     _done: function() {
-        this['fire']('progress');
+        this._fire_progress();
         this._exe();
     }
 });
@@ -2502,10 +2529,10 @@ function digit2(num) {
         num = '0' + num;
     }
 
-    return '' + num;
+    return EMPTY + num;
 }
 function lower2(num) {
-    num = '' + num;
+    num = EMPTY + num;
 
     return num.slice(num.length - 2);
 }
@@ -2607,7 +2634,8 @@ C['DataStore'] = classExtendBase({
     'set': function(key, val) {
         var i;
 
-        if (typeof key !== 'object') {
+        /* if (typeof key !== 'object') { */
+        if (!isObject(key)) {
             i = {};
             i[key] = val;
             key = i;
@@ -2662,7 +2690,8 @@ WebStorage = classExtendBase({
     'set': function(key, val) {
         var i;
 
-        if (typeof key !== 'object') {
+        /* if (typeof key !== 'object') { */
+        if (!isObject(key)) {
             i = {};
             i[key] = val;
             key = i;
@@ -2743,8 +2772,8 @@ C['DragFlick'] = classExtendBase({
             dragflg = FALSE;
 
         mine._contractid.push(
-            mine['contract'](vars['el'], ev['SWITCHDOWN'], start),
-            mine['contract'](win, ev['SWITCHUP'], end)
+            mine._contract(vars['el'], ev['SWITCHDOWN'], start),
+            mine._contract(win, ev['SWITCHUP'], end)
         );
 
         function start(e) {
@@ -2882,7 +2911,7 @@ C['DragFlick'] = classExtendBase({
 
         function eventProxy(el, ev, callback) {
             mine._contractid.push(
-                mine['contract'](el, ev, handler)
+                mine._contract(el, ev, handler)
             );
 
             function handler(e) {
@@ -2897,7 +2926,7 @@ C['DragFlick'] = classExtendBase({
             i = ary.length;
 
         for (; i--;) {
-            mine['uncontract'](ary[i]);
+            mine._uncontract(ary[i]);
         }
 
         mine._contractid = [];
@@ -3040,12 +3069,14 @@ C['FPS'] = classExtendBase({
     }
 });
 // ElementLoad
-var ElementLoad = classExtend(C['Observer'], {
-    _tagname: '',
+var ElementLoad = classExtendObserver({
+    _tagname: EMPTY,
+    _fire_complete: this_fire_complete,
+    _fire_progress: this_fire_progress,
     'init': function(config /* varless */, that) {
-        this['_super'](config);
-
         that = this;
+
+        that['_super']();
 
         that._srcs = config['srcs'];
         that._loadedsrcs = [];
@@ -3053,17 +3084,17 @@ var ElementLoad = classExtend(C['Observer'], {
         that._progress = new Progress({
             'waits': that._srcs,
             'onprogress': function(progress) {
-                that['fire']('progress', progress);
+                that._fire_progress(progress);
             },
             'oncomplete': function() {
                 var i = that._contractid.length;
 
                 for (; i--;) {
-                    that['uncontract'](that._contractid[i]);
+                    that._uncontract(that._contractid[i]);
                 }
                 that._contractid = [];
 
-                that['fire']('complete', that._loadedsrcs);
+                that._fire_complete(that._loadedsrcs);
             }
         });
 
@@ -3073,13 +3104,14 @@ var ElementLoad = classExtend(C['Observer'], {
             that['start']();
         }
     },
+    _fire_start: this_fire_start,
     'start': function() {
         var that = this,
             el,
             i = 0,
             len = that._srcs.length;
 
-        this['fire']('start');
+        that._fire_start();
 
         if (that._started) {
             return;
@@ -3091,7 +3123,7 @@ var ElementLoad = classExtend(C['Observer'], {
             el = create(that._tagname);
             el.src = that._srcs[i];
 
-            that._contractid.push(that['contract'](el, ev['LOAD'], countup));
+            that._contractid.push(that._contract(el, ev['LOAD'], countup));
             that._loadedsrcs.push(el);
             that._loadloop(el);
         }
@@ -3121,7 +3153,7 @@ var loaded = FALSE,
 
 on(win, ev['LOAD'], winload);
 
-C['WindowLoad'] = classExtend(C['Observer'], {
+C['WindowLoad'] = classExtendObserver({
     'init': function(config) {
         this['_super']();
 
@@ -3131,10 +3163,12 @@ C['WindowLoad'] = classExtend(C['Observer'], {
             this['start']();
         }
     },
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function() {
         var that = this;
 
-        that['fire']('start');
+        that._fire_start();
 
         if (that.started) {
             return;
@@ -3142,12 +3176,12 @@ C['WindowLoad'] = classExtend(C['Observer'], {
         that.started = TRUE;
 
         if (loaded) {
-            that['fire']('complete');
+            that._fire_complete();
         }
         else {
-            var disposeid = that['contract'](win, ev['LOAD'], function() {
-                that['uncontract'](disposeid);
-                that['fire']('complete');
+            var disposeid = that._contract(win, ev['LOAD'], function() {
+                that._uncontract(disposeid);
+                that._fire_complete();
             });
         }
     }
@@ -3180,8 +3214,8 @@ mb = C['Mobile'] = classExtendBase({
         );
     },
     'hideAddress': function() {
-        this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
-        this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
+        this._contract(win, ev['LOAD'], hideAddressHandler, FALSE);
+        this._contract(win, ev_orientationchange, hideAddressHandler, FALSE);
 
         function doScroll() {
             if (win.pageYOffset == 0) {
@@ -3290,9 +3324,9 @@ C['Orientation'] = classExtendBase({
 
         var proxyed = proxy(mine, mine['fire']);
         mine._contractid.push(
-            mine['contract'](win, ev['LOAD'], proxyed),
-            mine['contract'](win, ev_orientationchange, proxyed),
-            mine['contract'](win, ev['RESIZE'], proxyed)
+            mine._contract(win, ev['LOAD'], proxyed),
+            mine._contract(win, ev_orientationchange, proxyed),
+            mine._contract(win, ev['RESIZE'], proxyed)
         );
     },
     'detach': function(/* varless */ mine) {
@@ -3301,7 +3335,7 @@ C['Orientation'] = classExtendBase({
         var i = mine._contractid.length;
 
         for (; i--;) {
-            mine['uncontract'](mine._contractid[i]);
+            mine._uncontract(mine._contractid[i]);
         }
 
         mine._contractid = [];
@@ -3314,7 +3348,7 @@ C['Modal'] = classExtendBase({
         var i = mine._contractid.length;
 
         for (; i--;) {
-            mine['uncontract'](mine._contractid[i]);
+            mine._uncontract(mine._contractid[i]);
         }
 
         mine._contractid = [];
@@ -3418,7 +3452,7 @@ C['Modal'] = classExtendBase({
         });
 
         if (mine._config['bgClose']) {
-            mine['contract'](mine._bg, ev['CLICK'], proxy(mine, mine['close']));
+            mine._contract(mine._bg, ev['CLICK'], proxy(mine, mine['close']));
         }
 
         if (mine._config['closeSelector']) {
@@ -3427,7 +3461,7 @@ C['Modal'] = classExtendBase({
 
             for (; i--;) {
                 mine._contractid.push(
-                    mine['contract'](close[i],
+                    mine._contract(close[i],
                     ev['CLICK'],
                     proxy(mine, mine['close']))
                 );
@@ -3449,10 +3483,10 @@ WindowAction = classExtendBase({
         mine = this;
 
         mine['detach']();
-        mine._attachid = mine['contract'](win, mine._config['e'], mine._config['callback']);
+        mine._attachid = mine._contract(win, mine._config['e'], mine._config['callback']);
     },
     'detach': function() {
-        this['uncontract'](this._attachid);
+        this._uncontract(this._attachid);
     }
 });
 C['DeviceOrientation'] = function(config) {
@@ -3561,7 +3595,7 @@ C['FontImg'] = classExtendBase({
         return tags;
     }
 });
-C['PreRender'] = classExtend(C['Observer'], {
+C['PreRender'] = classExtendObserver({
     'init': function(config /* varless */, that) {
         that = this;
 
@@ -3583,12 +3617,14 @@ C['PreRender'] = classExtend(C['Observer'], {
         clearInterval(this._loopid);
         this['_super']();
     },
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function() {
         var i,
             that = this,
             prevtime = dateNow();
 
-        that['fire']('start');
+        that._fire_start();
 
         for (i = that._els.length; i--;) {
             show(that._els[i]);
@@ -3612,7 +3648,7 @@ C['PreRender'] = classExtend(C['Observer'], {
                         hide(that._els[i]);
                     }
 
-                    that['fire']('complete');
+                    that._fire_complete();
                 }
             }
         }
@@ -3970,7 +4006,7 @@ C['Model'] = classExtendBase({
         config = config || NULLOBJ;
 
         var i,
-            defaults = config['defaults'] || mine['defaults'] || {},
+            defaults = config['defaults'] || mine['defaults'] || NULLOBJ,
             events = config['events'] || mine['events'];
 
         mine._validate = config['validate'] || mine['validate'] || {};
@@ -3989,7 +4025,8 @@ C['Model'] = classExtendBase({
 
         var i;
 
-        if (typeof key !== 'object') {
+        /* if (typeof key !== 'object') { */
+        if (!isObject(key)) {
             i = {};
             i[key] = val;
             key = i;
@@ -4136,7 +4173,8 @@ C['Ollection'] = classExtend(C['Model'], {
 
         var i;
 
-        if (typeof key !== 'object') {
+        /* if (typeof key !== 'object') { */
+        if (!isObject(key)) {
             i = {};
             i[key] = val;
             key = i;
@@ -4307,7 +4345,7 @@ C['Scroll'] = classExtendBase({
             css(doc.body, {
                 'overflow': 'hidden'
             });
-            mine._killscrollid = mine['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
+            mine._killscrollid = mine._contract(doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
     'revival': function(/* varless */ mine) {
@@ -4317,7 +4355,7 @@ C['Scroll'] = classExtendBase({
             css(doc.body, {
                 'overflow': 'auto'
             });
-            mine['uncontract'](mine._killscrollid);
+            mine._uncontract(mine._killscrollid);
             delete mine._killscrollid;
         }
     }

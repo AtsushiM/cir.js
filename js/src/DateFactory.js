@@ -104,10 +104,10 @@ function digit2(num) {
         num = '0' + num;
     }
 
-    return '' + num;
+    return EMPTY + num;
 }
 function lower2(num) {
-    num = '' + num;
+    num = EMPTY + num;
 
     return num.slice(num.length - 2);
 }

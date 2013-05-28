@@ -1,4 +1,4 @@
-var AbstractTask = classExtend(C['Observer'], {
+var AbstractTask = classExtendObserver({
     'init': function(config) {
         this['_super']();
 
@@ -13,8 +13,9 @@ var AbstractTask = classExtend(C['Observer'], {
         this['resetQueue'](queue);
         this._done = proxy(this, this._done);
     },
+    _fire_start: this_fire_start,
     'start': function() {
-        this['fire']('start');
+        this._fire_start();
         this._paused = FALSE;
         this._exeQueue();
     },
@@ -53,9 +54,12 @@ var AbstractTask = classExtend(C['Observer'], {
 
         this['fire']('reset');
     },
+    _noticeChange: function() {
+        this['fire']('change', this['getQueue']());
+    },
     'setQueue': function(queue) {
         this._queue = copyArray(queue);
-        this['fire']('change', this['getQueue']());
+        this._noticeChange();
     },
     'getQueue': function() {
         return copyArray(this._queue);
@@ -70,7 +74,7 @@ var AbstractTask = classExtend(C['Observer'], {
 
         this._queue.splice(priority, 0, task);
 
-        this['fire']('change', this['getQueue']());
+        this._noticeChange();
     },
     'removeTask': function(task) {
         var i = 0,
@@ -79,13 +83,13 @@ var AbstractTask = classExtend(C['Observer'], {
         for (; i < len; i++ ) {
             if (this._queue[i] === task) {
                 this._queue.splice(i, 1);
-                this['fire']('change', this['getQueue']());
+                this._noticeChange();
 
                 break;
             }
         }
     },
-    _exe: abstraceFunction,
+    /* _exe: abstraceFunction, */
     _exeQueue: function() {
         if (!this._paused) {
             this._exe();
@@ -110,6 +114,6 @@ var AbstractTask = classExtend(C['Observer'], {
             org_action.call(that);
             done();
         };
-    },
-    _done: abstraceFunction
+    } //,
+    /* _done: abstraceFunction */
 });

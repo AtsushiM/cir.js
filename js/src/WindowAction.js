@@ -12,9 +12,9 @@ WindowAction = classExtendBase({
         mine = this;
 
         mine['detach']();
-        mine._attachid = mine['contract'](win, mine._config['e'], mine._config['callback']);
+        mine._attachid = mine._contract(win, mine._config['e'], mine._config['callback']);
     },
     'detach': function() {
-        this['uncontract'](this._attachid);
+        this._uncontract(this._attachid);
     }
 });

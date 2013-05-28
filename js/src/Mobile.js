@@ -25,8 +25,8 @@ mb = C['Mobile'] = classExtendBase({
         );
     },
     'hideAddress': function() {
-        this['contract'](win, ev['LOAD'], hideAddressHandler, FALSE);
-        this['contract'](win, ev_orientationchange, hideAddressHandler, FALSE);
+        this._contract(win, ev['LOAD'], hideAddressHandler, FALSE);
+        this._contract(win, ev_orientationchange, hideAddressHandler, FALSE);
 
         function doScroll() {
             if (win.pageYOffset == 0) {

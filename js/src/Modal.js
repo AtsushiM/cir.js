@@ -5,7 +5,7 @@ C['Modal'] = classExtendBase({
         var i = mine._contractid.length;
 
         for (; i--;) {
-            mine['uncontract'](mine._contractid[i]);
+            mine._uncontract(mine._contractid[i]);
         }
 
         mine._contractid = [];
@@ -109,7 +109,7 @@ C['Modal'] = classExtendBase({
         });
 
         if (mine._config['bgClose']) {
-            mine['contract'](mine._bg, ev['CLICK'], proxy(mine, mine['close']));
+            mine._contract(mine._bg, ev['CLICK'], proxy(mine, mine['close']));
         }
 
         if (mine._config['closeSelector']) {
@@ -118,7 +118,7 @@ C['Modal'] = classExtendBase({
 
             for (; i--;) {
                 mine._contractid.push(
-                    mine['contract'](close[i],
+                    mine._contract(close[i],
                     ev['CLICK'],
                     proxy(mine, mine['close']))
                 );

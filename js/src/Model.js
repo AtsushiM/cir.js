@@ -14,7 +14,7 @@ C['Model'] = classExtendBase({
         config = config || NULLOBJ;
 
         var i,
-            defaults = config['defaults'] || mine['defaults'] || {},
+            defaults = config['defaults'] || mine['defaults'] || NULLOBJ,
             events = config['events'] || mine['events'];
 
         mine._validate = config['validate'] || mine['validate'] || {};
@@ -33,7 +33,8 @@ C['Model'] = classExtendBase({
 
         var i;
 
-        if (typeof key !== 'object') {
+        /* if (typeof key !== 'object') { */
+        if (!isObject(key)) {
             i = {};
             i[key] = val;
             key = i;

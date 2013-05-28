@@ -1,8 +1,8 @@
 (function() {
 var methods = $_methods,
-    Animation = C['SSAnime'] || {},
+    Animation = C['SSAnime'] || NULLOBJ,
     csssupport = Animation['support'],
-    EASE = {};
+    EASE = NULLOBJ;
 
 if (csssupport && C['cssease']) {
     EASE = C['cssease'];

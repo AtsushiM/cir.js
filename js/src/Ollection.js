@@ -29,7 +29,8 @@ C['Ollection'] = classExtend(C['Model'], {
 
         var i;
 
-        if (typeof key !== 'object') {
+        /* if (typeof key !== 'object') { */
+        if (!isObject(key)) {
             i = {};
             i[key] = val;
             key = i;

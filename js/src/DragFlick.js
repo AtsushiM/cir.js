@@ -9,8 +9,8 @@ C['DragFlick'] = classExtendBase({
             dragflg = FALSE;
 
         mine._contractid.push(
-            mine['contract'](vars['el'], ev['SWITCHDOWN'], start),
-            mine['contract'](win, ev['SWITCHUP'], end)
+            mine._contract(vars['el'], ev['SWITCHDOWN'], start),
+            mine._contract(win, ev['SWITCHUP'], end)
         );
 
         function start(e) {
@@ -148,7 +148,7 @@ C['DragFlick'] = classExtendBase({
 
         function eventProxy(el, ev, callback) {
             mine._contractid.push(
-                mine['contract'](el, ev, handler)
+                mine._contract(el, ev, handler)
             );
 
             function handler(e) {
@@ -163,7 +163,7 @@ C['DragFlick'] = classExtendBase({
             i = ary.length;
 
         for (; i--;) {
-            mine['uncontract'](ary[i]);
+            mine._uncontract(ary[i]);
         }
 
         mine._contractid = [];

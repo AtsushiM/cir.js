@@ -1,4 +1,4 @@
-C['PreRender'] = classExtend(C['Observer'], {
+C['PreRender'] = classExtendObserver({
     'init': function(config /* varless */, that) {
         that = this;
 
@@ -20,12 +20,14 @@ C['PreRender'] = classExtend(C['Observer'], {
         clearInterval(this._loopid);
         this['_super']();
     },
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function() {
         var i,
             that = this,
             prevtime = dateNow();
 
-        that['fire']('start');
+        that._fire_start();
 
         for (i = that._els.length; i--;) {
             show(that._els[i]);
@@ -49,7 +51,7 @@ C['PreRender'] = classExtend(C['Observer'], {
                         hide(that._els[i]);
                     }
 
-                    that['fire']('complete');
+                    that._fire_complete();
                 }
             }
         }

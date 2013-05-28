@@ -72,7 +72,7 @@ C['Scroll'] = classExtendBase({
             css(doc.body, {
                 'overflow': 'hidden'
             });
-            mine._killscrollid = mine['contract'](doc, ev['TOUCHMOVE'], eventPrevent);
+            mine._killscrollid = mine._contract(doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
     'revival': function(/* varless */ mine) {
@@ -82,7 +82,7 @@ C['Scroll'] = classExtendBase({
             css(doc.body, {
                 'overflow': 'auto'
             });
-            mine['uncontract'](mine._killscrollid);
+            mine._uncontract(mine._killscrollid);
             delete mine._killscrollid;
         }
     }

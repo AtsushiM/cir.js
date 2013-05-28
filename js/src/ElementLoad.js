@@ -1,10 +1,12 @@
 // ElementLoad
-var ElementLoad = classExtend(C['Observer'], {
-    _tagname: '',
+var ElementLoad = classExtendObserver({
+    _tagname: EMPTY,
+    _fire_complete: this_fire_complete,
+    _fire_progress: this_fire_progress,
     'init': function(config /* varless */, that) {
-        this['_super'](config);
-
         that = this;
+
+        that['_super']();
 
         that._srcs = config['srcs'];
         that._loadedsrcs = [];
@@ -12,17 +14,17 @@ var ElementLoad = classExtend(C['Observer'], {
         that._progress = new Progress({
             'waits': that._srcs,
             'onprogress': function(progress) {
-                that['fire']('progress', progress);
+                that._fire_progress(progress);
             },
             'oncomplete': function() {
                 var i = that._contractid.length;
 
                 for (; i--;) {
-                    that['uncontract'](that._contractid[i]);
+                    that._uncontract(that._contractid[i]);
                 }
                 that._contractid = [];
 
-                that['fire']('complete', that._loadedsrcs);
+                that._fire_complete(that._loadedsrcs);
             }
         });
 
@@ -32,13 +34,14 @@ var ElementLoad = classExtend(C['Observer'], {
             that['start']();
         }
     },
+    _fire_start: this_fire_start,
     'start': function() {
         var that = this,
             el,
             i = 0,
             len = that._srcs.length;
 
-        this['fire']('start');
+        that._fire_start();
 
         if (that._started) {
             return;
@@ -50,7 +53,7 @@ var ElementLoad = classExtend(C['Observer'], {
             el = create(that._tagname);
             el.src = that._srcs[i];
 
-            that._contractid.push(that['contract'](el, ev['LOAD'], countup));
+            that._contractid.push(that._contract(el, ev['LOAD'], countup));
             that._loadedsrcs.push(el);
             that._loadloop(el);
         }

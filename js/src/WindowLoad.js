@@ -7,7 +7,7 @@ var loaded = FALSE,
 
 on(win, ev['LOAD'], winload);
 
-C['WindowLoad'] = classExtend(C['Observer'], {
+C['WindowLoad'] = classExtendObserver({
     'init': function(config) {
         this['_super']();
 
@@ -17,10 +17,12 @@ C['WindowLoad'] = classExtend(C['Observer'], {
             this['start']();
         }
     },
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function() {
         var that = this;
 
-        that['fire']('start');
+        that._fire_start();
 
         if (that.started) {
             return;
@@ -28,12 +30,12 @@ C['WindowLoad'] = classExtend(C['Observer'], {
         that.started = TRUE;
 
         if (loaded) {
-            that['fire']('complete');
+            that._fire_complete();
         }
         else {
-            var disposeid = that['contract'](win, ev['LOAD'], function() {
-                that['uncontract'](disposeid);
-                that['fire']('complete');
+            var disposeid = that._contract(win, ev['LOAD'], function() {
+                that._uncontract(disposeid);
+                that._fire_complete();
             });
         }
     }

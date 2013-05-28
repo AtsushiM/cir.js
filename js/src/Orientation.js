@@ -51,9 +51,9 @@ C['Orientation'] = classExtendBase({
 
         var proxyed = proxy(mine, mine['fire']);
         mine._contractid.push(
-            mine['contract'](win, ev['LOAD'], proxyed),
-            mine['contract'](win, ev_orientationchange, proxyed),
-            mine['contract'](win, ev['RESIZE'], proxyed)
+            mine._contract(win, ev['LOAD'], proxyed),
+            mine._contract(win, ev_orientationchange, proxyed),
+            mine._contract(win, ev['RESIZE'], proxyed)
         );
     },
     'detach': function(/* varless */ mine) {
@@ -62,7 +62,7 @@ C['Orientation'] = classExtendBase({
         var i = mine._contractid.length;
 
         for (; i--;) {
-            mine['uncontract'](mine._contractid[i]);
+            mine._uncontract(mine._contractid[i]);
         }
 
         mine._contractid = [];

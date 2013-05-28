@@ -27,7 +27,7 @@ describe('C.selector.methods.animateは', function() {
         selector.animate({
             width: 50,
             height: 100
-        }, 100, c.ease.outExpo, function() {
+        }, 500, c.ease.outExpo, function() {
             callback = true;
         });
 
@@ -39,6 +39,6 @@ describe('C.selector.methods.animateは', function() {
             expect(callback).to.be(false);
 
             done();
-        }, 150);
+        }, 1000);
     });
 });

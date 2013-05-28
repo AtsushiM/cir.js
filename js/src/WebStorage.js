@@ -14,7 +14,8 @@ WebStorage = classExtendBase({
     'set': function(key, val) {
         var i;
 
-        if (typeof key !== 'object') {
+        /* if (typeof key !== 'object') { */
+        if (!isObject(key)) {
             i = {};
             i[key] = val;
             key = i;

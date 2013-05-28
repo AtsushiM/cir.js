@@ -11,7 +11,7 @@ var ret = checkCSSAnimTranCheck([
     That;
 
 That = C['SSTrans'] =
-    classExtend(C['Observer'], {
+    classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
         that = this;
 
@@ -49,16 +49,18 @@ That = C['SSTrans'] =
         }
     },
     'dispose': this_stop__super,
+    _fire_complete: this_fire_complete,
+    _fire_start: this_fire_start,
     'start': function(/* varless */ that) {
         that = this;
 
-        that['fire']('start');
+        that._fire_start();
 
         that._endfunc = function(e) {
             that._stop();
             setTimeout(function() {
                 if (!that._isStoped) {
-                    that['fire']('complete', e);
+                    that._fire_complete(e);
                 }
             }, 1);
         };
