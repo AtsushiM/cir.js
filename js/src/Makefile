@@ -9,7 +9,7 @@ $(COMBINE) : $(SRC)
 
 	growlnotify -t 'auto-make' -m 'make start.'
 	((java -jar /Applications/gcc/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js $(COMBINE) --js_output_file $(COMPRESS)) && cat clouser_start.js $(COMPRESS) clouser_end.js > $(FINAL) && growlnotify -t 'auto-make' -m 'make complete.') || growlnotify -t 'auto-make' -m 'make error.'
-#	rm -f $(COMPRESS)
+	rm -f $(COMPRESS)
 
 .PHONY: clean
 clean :
