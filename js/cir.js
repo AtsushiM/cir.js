@@ -16,7 +16,7 @@ function checkCSSAnimTranCheck(prop, event_key) {
         regex = new RegExp('^(.*?)' + prop[0] + '$', 'i');
 
     for (; i--;) {
-        if (el.style[prop[i]] !== UNDEFINED) {
+        if (isDefined(el.style[prop[i]])) {
             support = TRUE;
             prefix = prop[i].match(regex)[1];
 
@@ -322,7 +322,7 @@ function isTouchable() {
 function nullFunction() {
 }
 function abstraceFunction() {
-    throw new Error('abstract-function was executed without being implemented.');
+    throw new Error('call abstract-function.');
 }
 function eventPrevent(e) {
     e.preventDefault();
@@ -695,8 +695,6 @@ C['dom'] = {
             var prop = props[key],
                 _super = SuperClass.prototype[key],
                 isMethodOverride = (
-                    // typeof prop === 'function' &&
-                    // typeof _super === 'function' &&
                     isFunction(prop) &&
                     isFunction(_super) &&
                     fnTest.test(prop)
@@ -2009,7 +2007,6 @@ C['Ajax'] = classExtendObserver({
         this['_super']();
     },
     'init': function(config) {
-        this['_super']();
         config = override({}, config);
 
         var that = this,
@@ -2018,6 +2015,8 @@ C['Ajax'] = classExtendObserver({
             query = EMPTY,
             xhr = that._xhr = new XMLHttpRequest(),
             i;
+
+        that['_super']();
 
         if (config.dataType == 'json') {
             that._json(config);
@@ -2303,7 +2302,7 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
             return;
         }
 
-        if (this._queue.length === 0) {
+        if (!this._queue.length) {
             return this._fire_complete();
         }
 
@@ -2318,7 +2317,7 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
         this._fire_progress();
         this._processcount--;
 
-        if (this._processcount == 0) {
+        if (!this._processcount) {
             this._fire_complete();
         }
     }
@@ -3170,10 +3169,10 @@ C['WindowLoad'] = classExtendObserver({
 
         that._fire_start();
 
-        if (that.started) {
+        if (that._started) {
             return;
         }
-        that.started = TRUE;
+        that._started = TRUE;
 
         if (loaded) {
             that._fire_complete();
@@ -3405,7 +3404,7 @@ C['Modal'] = classExtendBase({
         remove(mine._bg);
         remove(mine._inner);
 
-        this['_super']();
+        mine['_super']();
     },
     'open': function(text /* varless */, mine) {
         mine = this;
@@ -4298,7 +4297,7 @@ C['Scroll'] = classExtendBase({
     'scrollY': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
-        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
+        return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
     'smooth': function(target, callback /* varless */, mine, max) {
         // var mine = this,

@@ -32,8 +32,6 @@
             var prop = props[key],
                 _super = SuperClass.prototype[key],
                 isMethodOverride = (
-                    // typeof prop === 'function' &&
-                    // typeof _super === 'function' &&
                     isFunction(prop) &&
                     isFunction(_super) &&
                     fnTest.test(prop)

@@ -62,7 +62,7 @@ C['Modal'] = classExtendBase({
         remove(mine._bg);
         remove(mine._inner);
 
-        this['_super']();
+        mine['_super']();
     },
     'open': function(text /* varless */, mine) {
         mine = this;

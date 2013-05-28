@@ -25,7 +25,7 @@ C['Scroll'] = classExtendBase({
     'scrollY': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
-        return (pageYOffset !== UNDEFINED) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
+        return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
     'smooth': function(target, callback /* varless */, mine, max) {
         // var mine = this,

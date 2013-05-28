@@ -177,7 +177,7 @@ function isTouchable() {
 function nullFunction() {
 }
 function abstraceFunction() {
-    throw new Error('abstract-function was executed without being implemented.');
+    throw new Error('call abstract-function.');
 }
 function eventPrevent(e) {
     e.preventDefault();

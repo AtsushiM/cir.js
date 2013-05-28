@@ -16,7 +16,7 @@ function checkCSSAnimTranCheck(prop, event_key) {
         regex = new RegExp('^(.*?)' + prop[0] + '$', 'i');
 
     for (; i--;) {
-        if (el.style[prop[i]] !== UNDEFINED) {
+        if (isDefined(el.style[prop[i]])) {
             support = TRUE;
             prefix = prop[i].match(regex)[1];
 

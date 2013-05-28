@@ -5,7 +5,6 @@ C['Ajax'] = classExtendObserver({
         this['_super']();
     },
     'init': function(config) {
-        this['_super']();
         config = override({}, config);
 
         var that = this,
@@ -14,6 +13,8 @@ C['Ajax'] = classExtendObserver({
             query = EMPTY,
             xhr = that._xhr = new XMLHttpRequest(),
             i;
+
+        that['_super']();
 
         if (config.dataType == 'json') {
             that._json(config);

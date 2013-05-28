@@ -24,10 +24,10 @@ C['WindowLoad'] = classExtendObserver({
 
         that._fire_start();
 
-        if (that.started) {
+        if (that._started) {
             return;
         }
-        that.started = TRUE;
+        that._started = TRUE;
 
         if (loaded) {
             that._fire_complete();

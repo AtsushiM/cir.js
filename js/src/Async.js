@@ -5,7 +5,7 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
             return;
         }
 
-        if (this._queue.length === 0) {
+        if (!this._queue.length) {
             return this._fire_complete();
         }
 
@@ -20,7 +20,7 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
         this._fire_progress();
         this._processcount--;
 
-        if (this._processcount == 0) {
+        if (!this._processcount) {
             this._fire_complete();
         }
     }
