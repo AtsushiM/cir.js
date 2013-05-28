@@ -4406,21 +4406,19 @@ C['LimitText'] = classExtendBase({
         this._width = config['width'];
         this._height = config['height'];
 
+        this._copyAppend(0);
+
         if (!isDefined(config['width'])) {
-            this._width = +splitSuffix(orgcomputed['width'])[2];
+            this._width = +splitSuffix(computed['width'])[2];
         }
         if (!isDefined(config['height'])) {
-            this._height = +splitSuffix(orgcomputed['height'])[2];
+            this._height = +splitSuffix(computed['height'])[2];
         }
 
         css(copyel, {
-            'position': 'fixed',
-            'top': 0,
-            'left': 0,
-            'visibility': 'hidden'
+            'height': 'auto'
         });
 
-        this._copyAppend(0);
         this._fontsize = +splitSuffix(computed['fontSize'])[2];
         this._copyRemove();
     },
