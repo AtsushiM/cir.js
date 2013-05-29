@@ -1,5 +1,5 @@
 // Cool is Right.
-(function() {
+/* (function() { */
 C = {};
 
 function cssCubicBezierFormat(text) {
@@ -21,12 +21,12 @@ function checkCSSAnimTranCheck(prop, event_key) {
             prefix = prop[i].match(regex)[1];
 
             if (prefix) {
-                css_prefix = prefix.toLowerCase();
+                css_prefix = str2LowerCase(prefix);
                 event_key = css_prefix + event_key;
                 css_prefix = '-' + css_prefix + '-';
             }
             else {
-                event_key = event_key.toLowerCase();
+                event_key = str2LowerCase(event_key);
             }
 
             style = append($('head'),
@@ -55,6 +55,10 @@ function jsonStringify(json) {
     return JSON['stringify'](json);
 }
 
+function str2LowerCase(a) {
+    return a['toLowerCase']();
+}
+
 function noIndexOf(str, needle) {
     return str.indexOf(needle) != -1 ? TRUE : FALSE;
 }
@@ -73,6 +77,12 @@ function bindOnProp(that, config) {
             that['on'](temp[1], proxy(that, config[i]));
         }
     }
+}
+
+function sheetAddCSSRule(sheet, id, rule) {
+    sheet.insertRule('.' + id +
+        '{' + rule + '}',
+        sheet.cssRules.length);
 }
 
 function this_stop__super() {
@@ -131,8 +141,15 @@ var win = window,
     ev_ended = 'ended',
     csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
     easebackrate = 1.70158,
+    class_initializing = FALSE,
+    class_fnTest = /0/.test(function() {
+        0;
+    }) ? /\b_super\b/ : /.*/,
+    animeframeobj,
 
 ev,
+AbstractTask,
+ElementLoad,
 Progress,
 WindowAction,
 ExternalAndroid,
@@ -142,4 +159,16 @@ Tweener,
 WebStorage,
 mb,
 pc,
-$_methods;
+PC_browser,
+$_methods,
+animeframe_check,
+animeframe_len,
+animeframe_animeframe,
+animeframe_cancelframe,
+/* windowload_loaded = FALSE, */
+windowload_loaded,
+windowload_winload,
+deviceshake_Shake,
+deviceshake_convert,
+servermeta_xhr,
+servermeta_isLoaded;

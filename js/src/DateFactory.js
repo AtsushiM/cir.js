@@ -46,7 +46,7 @@
             },
             // a = am || pm
             'a': function(date) {
-                return convert['A'](date).toLowerCase();
+                return str2LowerCase(convert['A'](date));
             },
             // A = AM || PM
             'A': function(date) {

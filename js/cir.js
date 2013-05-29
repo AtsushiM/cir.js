@@ -1,5 +1,5 @@
 // Cool is Right.
-(function() {
+/* (function() { */
 C = {};
 
 function cssCubicBezierFormat(text) {
@@ -21,12 +21,12 @@ function checkCSSAnimTranCheck(prop, event_key) {
             prefix = prop[i].match(regex)[1];
 
             if (prefix) {
-                css_prefix = prefix.toLowerCase();
+                css_prefix = str2LowerCase(prefix);
                 event_key = css_prefix + event_key;
                 css_prefix = '-' + css_prefix + '-';
             }
             else {
-                event_key = event_key.toLowerCase();
+                event_key = str2LowerCase(event_key);
             }
 
             style = append($('head'),
@@ -55,6 +55,10 @@ function jsonStringify(json) {
     return JSON['stringify'](json);
 }
 
+function str2LowerCase(a) {
+    return a['toLowerCase']();
+}
+
 function noIndexOf(str, needle) {
     return str.indexOf(needle) != -1 ? TRUE : FALSE;
 }
@@ -73,6 +77,12 @@ function bindOnProp(that, config) {
             that['on'](temp[1], proxy(that, config[i]));
         }
     }
+}
+
+function sheetAddCSSRule(sheet, id, rule) {
+    sheet.insertRule('.' + id +
+        '{' + rule + '}',
+        sheet.cssRules.length);
 }
 
 function this_stop__super() {
@@ -131,8 +141,15 @@ var win = window,
     ev_ended = 'ended',
     csseaseOutExpo = cssCubicBezierFormat('0.19,1,0.22,1'),
     easebackrate = 1.70158,
+    class_initializing = FALSE,
+    class_fnTest = /0/.test(function() {
+        0;
+    }) ? /\b_super\b/ : /.*/,
+    animeframeobj,
 
 ev,
+AbstractTask,
+ElementLoad,
 Progress,
 WindowAction,
 ExternalAndroid,
@@ -142,7 +159,19 @@ Tweener,
 WebStorage,
 mb,
 pc,
-$_methods;
+PC_browser,
+$_methods,
+animeframe_check,
+animeframe_len,
+animeframe_animeframe,
+animeframe_cancelframe,
+/* windowload_loaded = FALSE, */
+windowload_loaded,
+windowload_winload,
+deviceshake_Shake,
+deviceshake_convert,
+servermeta_xhr,
+servermeta_isLoaded;
 if (!Date['now']) {
     Date['now'] = function() {
         return +new Date;
@@ -661,27 +690,22 @@ C['dom'] = {
     'toElement': toElement,
     'toElements': toElements
 };
-(function() {
-    C['lass'] = function() {};
+C['lass'] = function() {};
 
-    var initializing = FALSE,
-        fnTest = /xyz/.test(function() {
-            xyz;
-        }) ? /\b_super\b/ : /.*/;
-
+/* (function() { */
     C['lass']['extend'] = function(props) {
         var SuperClass = this,
             i;
 
         function Class() {
-            if (!initializing && this['init']) {
+            if (!class_initializing && this['init']) {
                 this['init'].apply(this, arguments);
             }
         }
 
-        initializing = TRUE;
+        class_initializing = TRUE;
         Class.prototype = new SuperClass();
-        initializing = FALSE;
+        class_initializing = FALSE;
 
         Class.prototype['constructor'] = Class;
 
@@ -697,7 +721,7 @@ C['dom'] = {
                 isMethodOverride = (
                     isFunction(prop) &&
                     isFunction(_super) &&
-                    fnTest.test(prop)
+                    class_fnTest.test(prop)
                 );
 
             if (isMethodOverride) {
@@ -723,7 +747,7 @@ C['dom'] = {
 
         return Class;
     };
-}());
+/* }()); */
 
 function classExtend(cls, prop, support) {
     cls = cls || C['lass'];
@@ -1141,9 +1165,7 @@ function addCSSRule(id, css_prefix, duration, eases) {
                 eases[i] + ' 0s 1 normal both;';
     }
 
-    sheet.insertRule('.' + id +
-        '{' + rule + '}',
-        sheet.cssRules.length);
+    sheetAddCSSRule(sheet, id, rule);
 }
 
 That['id'] = 0;
@@ -1159,8 +1181,6 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-    That;
-
 That = C['SSTrans'] =
     classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
@@ -1263,60 +1283,60 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
         rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
     }
 
-    sheet.insertRule('.' + id +
-        '{' + rule + '}',
-        sheet.cssRules.length);
+    sheetAddCSSRule(sheet, id, rule);
 }
 
 That['id'] = 0;
 That['duration'] = 500;
 }());
-var animeframeobj = {
-        'request': function(callback) {
-            return this._animeframe.call(win, callback);
-        },
-        'cancel': function(id) {
-            return this._cancelframe.call(win, id);
-        }
-    };
+animeframeobj = {
+    'request': function(callback) {
+        return this._animeframe.call(win, callback);
+    },
+    'cancel': function(id) {
+        return this._cancelframe.call(win, id);
+    }
+};
 
-(function() {
-    var check = ['webkit', 'moz', 'o', 'ms'],
-        len,
-        _animeframe,
-        _cancelframe;
+/* (function() { */
+    // var animeframe_check = ['webkit', 'moz', 'o', 'ms'],
+    //     animeframe_len,
+    //     animeframe_animeframe,
+    //     animeframe_cancelframe;
+
+    animeframe_check = ['webkit', 'moz', 'o', 'ms'];
 
     if (win['requestAnimationFrame']) {
-        _animeframe = win['requestAnimationFrame'];
-        _cancelframe = win['cancelAnimationFrame'];
+        animeframe_animeframe = win['requestAnimationFrame'];
+        animeframe_cancelframe = win['cancelAnimationFrame'];
     }
     else {
-        for (len = check.length; len--; ) {
-            if (win[check[len] + 'RequestAnimationFrame']) {
-                _animeframe = win[check[len] + 'RequestAnimationFrame'];
-                _cancelframe = win[check[len] + 'CancelAnimationFrame'];
+        for (animeframe_len = animeframe_check.length; animeframe_len--; ) {
+            if (win[animeframe_check[animeframe_len] + 'RequestAnimationFrame']) {
+                animeframe_animeframe = win[animeframe_check[animeframe_len] + 'RequestAnimationFrame'];
+                animeframe_cancelframe = win[animeframe_check[animeframe_len] + 'CancelAnimationFrame'];
                 break;
             }
         }
 
-        if (!_animeframe) {
-            _animeframe = function(callback) {
+        if (!animeframe_animeframe) {
+            animeframe_animeframe = function(callback) {
                 return setTimeout(callback, 1000 / C['AnimeFrame']['fps']);
             };
-            _cancelframe = function(id) {
+            animeframe_cancelframe = function(id) {
                 clearTimeout(id);
             };
         }
     }
 
-    animeframeobj._animeframe = _animeframe;
-    animeframeobj._cancelframe = _cancelframe;
-}());
+    animeframeobj._animeframe = animeframe_animeframe;
+    animeframeobj._cancelframe = animeframe_cancelframe;
+/* }()); */
 
-C['AnimeFrame'] = classExtendBase(animeframeobj);
-C['AnimeFrame']['fps'] = 30;
+animeframeobj = C['AnimeFrame'] = classExtendBase(animeframeobj);
+animeframeobj['fps'] = 30;
 
-C['animeframe'] = new C['AnimeFrame']();
+C['animeframe'] = new animeframeobj();
 Tweener = C['Tweener'] = classExtendObserver({
     'init': function(target, property, option /* varless */, name, prop, that) {
         // var name,
@@ -1662,8 +1682,7 @@ $_methods = C['$'].methods = {
     }
 };
 (function() {
-var methods = $_methods,
-    Animation = C['SSAnime'] || NULLOBJ,
+var Animation = C['SSAnime'] || NULLOBJ,
     csssupport = Animation['support'],
     EASE = NULLOBJ;
 
@@ -1674,14 +1693,14 @@ else if (C['ease']) {
     EASE = C['ease'];
 }
 
-methods['animate'] = function() {
+$_methods['animate'] = function() {
     if (!this._animate) {
         this._animate = [];
     }
 
     return selectorForExe(this, animate, arguments);
-}
-methods['stop'] = function(/* varless */ mine, i) {
+};
+$_methods['stop'] = function(/* varless */ mine, i) {
     mine = this;
 
     if (mine._animate) {
@@ -1696,7 +1715,7 @@ methods['stop'] = function(/* varless */ mine, i) {
     }
 
     return mine;
-}
+};
 
 function animate(el, params, duration, ease, callback) {
     var style = el.style,
@@ -1863,7 +1882,7 @@ function embedSupportCheck(type, suffix) {
         return FALSE;
     }
 
-    var type = type.toLowerCase(),
+    var type = str2LowerCase(type),
         embed = create(type),
         support = [],
         i = 0,
@@ -2178,7 +2197,7 @@ Progress = C['Progress'] = classExtendBase({
         mine._check(vars);
     }
 });
-var AbstractTask = classExtendObserver({
+AbstractTask = classExtendObserver({
     'init': function(config) {
         this['_super']();
 
@@ -2472,7 +2491,7 @@ C['Anvas'] = classExtendBase({
             },
             // a = am || pm
             'a': function(date) {
-                return convert['A'](date).toLowerCase();
+                return str2LowerCase(convert['A'](date));
             },
             // A = AM || PM
             'A': function(date) {
@@ -3070,7 +3089,7 @@ C['FPS'] = classExtendBase({
     }
 });
 // ElementLoad
-var ElementLoad = classExtendObserver({
+ElementLoad = classExtendObserver({
     _tagname: EMPTY,
     _fire_complete: this_fire_complete,
     _fire_progress: this_fire_progress,
@@ -3145,14 +3164,19 @@ C['ScriptLoad'] = classExtend(ElementLoad, {
         append(doc.body, el);
     }
 });
-(function() {
-var loaded = FALSE,
-    winload = function() {
-        loaded = TRUE;
-        off(win, ev['LOAD'], winload);
-    };
+/* (function() { */
+// var windowload_loaded = FALSE,
+//     windowload_winload = function() {
+//         windowload_loaded = TRUE;
+//         off(win, ev['LOAD'], windowload_winload);
+//     };
 
-on(win, ev['LOAD'], winload);
+windowload_winload = function() {
+    windowload_loaded = TRUE;
+    off(win, ev['LOAD'], windowload_winload);
+};
+
+on(win, ev['LOAD'], windowload_winload);
 
 C['WindowLoad'] = classExtendObserver({
     'init': function(config) {
@@ -3167,7 +3191,8 @@ C['WindowLoad'] = classExtendObserver({
     _fire_complete: this_fire_complete,
     _fire_start: this_fire_start,
     'start': function() {
-        var that = this;
+        var that = this,
+            disposeid;
 
         that._fire_start();
 
@@ -3176,18 +3201,18 @@ C['WindowLoad'] = classExtendObserver({
         }
         that._started = TRUE;
 
-        if (loaded) {
+        if (windowload_loaded) {
             that._fire_complete();
         }
         else {
-            var disposeid = that._contract(win, ev['LOAD'], function() {
+            disposeid = that._contract(win, ev['LOAD'], function() {
                 that._uncontract(disposeid);
                 that._fire_complete();
             });
         }
     }
 });
-}());
+/* }()); */
 mb = C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
@@ -3229,49 +3254,45 @@ mb = C['Mobile'] = classExtendBase({
     }
 });
 C['mobile'] = new mb();
-(function() {
-var userAgent = win.navigator.userAgent.toLowerCase(),
-    /* appVersion = win.navigator.appVersion.toLowerCase(), */
-    browser;
+/* var PC_browser; */
 
-if (noIndexOf(userAgent, 'opera')) {
-    browser = 'opera';
+if (checkUserAgent(/opera/i)) {
+    PC_browser = 'opera';
 }
-else if (noIndexOf(userAgent, 'msie')) {
-    browser = 'ie';
+else if (checkUserAgent(/msie/i)) {
+    PC_browser = 'ie';
 }
-else if (noIndexOf(userAgent, 'chrome')) {
-    browser = 'chrome';
+else if (checkUserAgent(/chrome/i)) {
+    PC_browser = 'chrome';
 }
-else if (noIndexOf(userAgent, 'safari')) {
-    browser = 'safari';
+else if (checkUserAgent(/safari/i)) {
+    PC_browser = 'safari';
 }
-else if (noIndexOf(userAgent, 'gecko')) {
-    browser = 'gecko';
+else if (checkUserAgent(/gecko/i)) {
+    PC_browser = 'gecko';
 }
 else {
-    browser = 'ather';
+    PC_browser = 'ather';
 }
 
 pc = C['PC'] = classExtendBase({
-    'isChrome': function(ua) {
-        return browser == 'chrome';
+    'isChrome': function() {
+        return PC_browser == 'chrome';
     },
-    'isSafari': function(ua) {
-        return browser == 'safari';
+    'isSafari': function() {
+        return PC_browser == 'safari';
     },
-    'isGecko': function(ua) {
-        return browser == 'gecko';
+    'isGecko': function() {
+        return PC_browser == 'gecko';
     },
-    'isOpera': function(ua) {
-        return browser == 'opera';
+    'isOpera': function() {
+        return PC_browser == 'opera';
     },
-    'isIE': function(ua) {
-        return browser == 'ie';
+    'isIE': function() {
+        return PC_browser == 'ie';
     }
 });
 C['pc'] = new pc();
-}());
 C['Orientation'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -3500,20 +3521,20 @@ C['DeviceMotion'] = function(config) {
     return WindowAction(config);
 };
 C['DeviceMotion']['support'] = 'ondevicemotion' in win;
-(function() {
-var Shake,
-    convert;
+/* (function() { */
+// var deviceshake_Shake,
+//     deviceshake_convert;
 
 /* if (C['mobile']['isMobile']()) { */
     if (C['DeviceOrientation']['support']) {
-        Shake = C['DeviceOrientation'];
-        convert = function(e) {
+        deviceshake_Shake = C['DeviceOrientation'];
+        deviceshake_convert = function(e) {
             return e;
         };
     }
     else if (C['DeviceMotion']['support']) {
-        Shake = C['DeviceMotion'];
-        convert = function(e) {
+        deviceshake_Shake = C['DeviceMotion'];
+        deviceshake_convert = function(e) {
             return e['rotationRate'];
         };
     }
@@ -3528,7 +3549,7 @@ C['DeviceShake'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
 
-        mine._shaker = new Shake();
+        mine._shaker = new deviceshake_Shake();
         // mine._limit = config['limit'];
         // mine._waittime = config['waittime'];
         // mine._direction = config['direction'];
@@ -3549,7 +3570,7 @@ C['DeviceShake'] = classExtendBase({
         mine._shaker['attach'](wraphandle);
 
         function wraphandle(e) {
-            e = convert(e);
+            e = deviceshake_convert(e);
 
             if (!base_e) {
                 base_e = e;
@@ -3570,9 +3591,9 @@ C['DeviceShake'] = classExtendBase({
     'detach': function() {
         this._shaker['detach']();
     }
-}, Shake ? TRUE : FALSE);
+}, deviceshake_Shake ? TRUE : FALSE);
 
-}());
+/* }()); */
 C['FontImg'] = classExtendBase({
     'init': function(config /* varless */, type) {
         config = config || NULLOBJ;
@@ -3697,9 +3718,9 @@ C['Router'] = classExtendBase({
         }
     }
 });
-(function() {
-var xhr,
-    isLoaded = FALSE;
+/* (function() { */
+// var servermeta_xhr,
+//     servermeta_isLoaded = FALSE;
 
 C['ServerMeta'] = classExtendBase({
     'init': function(config) {
@@ -3707,52 +3728,52 @@ C['ServerMeta'] = classExtendBase({
 
         var callback = config['callback'] || nullFunction;
 
-        if (!xhr) {
-            xhr = getHeader(function() {
-                isLoaded = TRUE;
-                callback(xhr);
+        if (!servermeta_xhr) {
+            servermeta_xhr = servermeta_getHeader(function() {
+                servermeta_isLoaded = TRUE;
+                callback(servermeta_xhr);
             });
         }
         else {
-            callback(xhr);
+            callback(servermeta_xhr);
         }
     },
     'date': function(callback) {
-        return getHeader(function(xhr) {
+        return servermeta_getHeader(function(xhr) {
             callback(xhr.getResponseHeader('Date'));
         });
     },
     'connection': function() {
-        return getRes('Connection');
+        return servermeta_getRes('Connection');
     },
     'contentLength': function() {
-        return getRes('Content-Length');
+        return servermeta_getRes('Content-Length');
     },
     'lastModified': function() {
-        return getRes('Last-Modified');
+        return servermeta_getRes('Last-Modified');
     },
     'server': function() {
-        return getRes('Server');
+        return servermeta_getRes('Server');
     },
     'contentType': function() {
-        return getRes('Content-Type');
+        return servermeta_getRes('Content-Type');
     },
     'acceptRanges': function() {
-        return getRes('Accept-Ranges');
+        return servermeta_getRes('Accept-Ranges');
     },
     'keepAlive': function() {
-        return getRes('Keep-Alive');
+        return servermeta_getRes('Keep-Alive');
     }
 });
 
-function getRes(value) {
-    if (isLoaded) {
-        return xhr.getResponseHeader(value);
+function servermeta_getRes(value) {
+    if (servermeta_isLoaded) {
+        return servermeta_xhr.getResponseHeader(value);
     }
     return FALSE;
 }
 
-function getHeader(callback) {
+function servermeta_getHeader(callback) {
     var xhr = new XMLHttpRequest();
 
     xhr.onload = function() {
@@ -3764,7 +3785,7 @@ function getHeader(callback) {
 
     return xhr;
 }
-}());
+/* }()); */
 C['Surrogate'] = classExtendBase({
     'init': function(config) {
         this._delay = config['delay'];
@@ -4493,4 +4514,4 @@ C['LimitText'] = classExtendBase({
 if ($_methods) {
     $base.prototype = $_methods;
 }
-}());
+/* }()); */

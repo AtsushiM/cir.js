@@ -133,9 +133,7 @@ function addCSSRule(id, css_prefix, duration, eases) {
                 eases[i] + ' 0s 1 normal both;';
     }
 
-    sheet.insertRule('.' + id +
-        '{' + rule + '}',
-        sheet.cssRules.length);
+    sheetAddCSSRule(sheet, id, rule);
 }
 
 That['id'] = 0;

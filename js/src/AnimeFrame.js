@@ -1,46 +1,48 @@
-var animeframeobj = {
-        'request': function(callback) {
-            return this._animeframe.call(win, callback);
-        },
-        'cancel': function(id) {
-            return this._cancelframe.call(win, id);
-        }
-    };
+animeframeobj = {
+    'request': function(callback) {
+        return this._animeframe.call(win, callback);
+    },
+    'cancel': function(id) {
+        return this._cancelframe.call(win, id);
+    }
+};
 
-(function() {
-    var check = ['webkit', 'moz', 'o', 'ms'],
-        len,
-        _animeframe,
-        _cancelframe;
+/* (function() { */
+    // var animeframe_check = ['webkit', 'moz', 'o', 'ms'],
+    //     animeframe_len,
+    //     animeframe_animeframe,
+    //     animeframe_cancelframe;
+
+    animeframe_check = ['webkit', 'moz', 'o', 'ms'];
 
     if (win['requestAnimationFrame']) {
-        _animeframe = win['requestAnimationFrame'];
-        _cancelframe = win['cancelAnimationFrame'];
+        animeframe_animeframe = win['requestAnimationFrame'];
+        animeframe_cancelframe = win['cancelAnimationFrame'];
     }
     else {
-        for (len = check.length; len--; ) {
-            if (win[check[len] + 'RequestAnimationFrame']) {
-                _animeframe = win[check[len] + 'RequestAnimationFrame'];
-                _cancelframe = win[check[len] + 'CancelAnimationFrame'];
+        for (animeframe_len = animeframe_check.length; animeframe_len--; ) {
+            if (win[animeframe_check[animeframe_len] + 'RequestAnimationFrame']) {
+                animeframe_animeframe = win[animeframe_check[animeframe_len] + 'RequestAnimationFrame'];
+                animeframe_cancelframe = win[animeframe_check[animeframe_len] + 'CancelAnimationFrame'];
                 break;
             }
         }
 
-        if (!_animeframe) {
-            _animeframe = function(callback) {
+        if (!animeframe_animeframe) {
+            animeframe_animeframe = function(callback) {
                 return setTimeout(callback, 1000 / C['AnimeFrame']['fps']);
             };
-            _cancelframe = function(id) {
+            animeframe_cancelframe = function(id) {
                 clearTimeout(id);
             };
         }
     }
 
-    animeframeobj._animeframe = _animeframe;
-    animeframeobj._cancelframe = _cancelframe;
-}());
+    animeframeobj._animeframe = animeframe_animeframe;
+    animeframeobj._cancelframe = animeframe_cancelframe;
+/* }()); */
 
-C['AnimeFrame'] = classExtendBase(animeframeobj);
-C['AnimeFrame']['fps'] = 30;
+animeframeobj = C['AnimeFrame'] = classExtendBase(animeframeobj);
+animeframeobj['fps'] = 30;
 
-C['animeframe'] = new C['AnimeFrame']();
+C['animeframe'] = new animeframeobj();

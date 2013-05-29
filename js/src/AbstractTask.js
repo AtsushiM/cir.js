@@ -1,4 +1,4 @@
-var AbstractTask = classExtendObserver({
+AbstractTask = classExtendObserver({
     'init': function(config) {
         this['_super']();
 

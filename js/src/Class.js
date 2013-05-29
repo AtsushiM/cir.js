@@ -1,24 +1,19 @@
-(function() {
-    C['lass'] = function() {};
+C['lass'] = function() {};
 
-    var initializing = FALSE,
-        fnTest = /xyz/.test(function() {
-            xyz;
-        }) ? /\b_super\b/ : /.*/;
-
+/* (function() { */
     C['lass']['extend'] = function(props) {
         var SuperClass = this,
             i;
 
         function Class() {
-            if (!initializing && this['init']) {
+            if (!class_initializing && this['init']) {
                 this['init'].apply(this, arguments);
             }
         }
 
-        initializing = TRUE;
+        class_initializing = TRUE;
         Class.prototype = new SuperClass();
-        initializing = FALSE;
+        class_initializing = FALSE;
 
         Class.prototype['constructor'] = Class;
 
@@ -34,7 +29,7 @@
                 isMethodOverride = (
                     isFunction(prop) &&
                     isFunction(_super) &&
-                    fnTest.test(prop)
+                    class_fnTest.test(prop)
                 );
 
             if (isMethodOverride) {
@@ -60,7 +55,7 @@
 
         return Class;
     };
-}());
+/* }()); */
 
 function classExtend(cls, prop, support) {
     cls = cls || C['lass'];

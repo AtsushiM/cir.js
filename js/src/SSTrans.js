@@ -8,8 +8,6 @@ var ret = checkCSSAnimTranCheck([
     css_prefix = ret.css_prefix,
     event_key = ret.event_key,
     sheet = ret.sheet,
-    That;
-
 That = C['SSTrans'] =
     classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
@@ -112,9 +110,7 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
         rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
     }
 
-    sheet.insertRule('.' + id +
-        '{' + rule + '}',
-        sheet.cssRules.length);
+    sheetAddCSSRule(sheet, id, rule);
 }
 
 That['id'] = 0;

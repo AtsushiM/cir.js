@@ -1,17 +1,17 @@
-(function() {
-var Shake,
-    convert;
+/* (function() { */
+// var deviceshake_Shake,
+//     deviceshake_convert;
 
 /* if (C['mobile']['isMobile']()) { */
     if (C['DeviceOrientation']['support']) {
-        Shake = C['DeviceOrientation'];
-        convert = function(e) {
+        deviceshake_Shake = C['DeviceOrientation'];
+        deviceshake_convert = function(e) {
             return e;
         };
     }
     else if (C['DeviceMotion']['support']) {
-        Shake = C['DeviceMotion'];
-        convert = function(e) {
+        deviceshake_Shake = C['DeviceMotion'];
+        deviceshake_convert = function(e) {
             return e['rotationRate'];
         };
     }
@@ -26,7 +26,7 @@ C['DeviceShake'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
 
-        mine._shaker = new Shake();
+        mine._shaker = new deviceshake_Shake();
         // mine._limit = config['limit'];
         // mine._waittime = config['waittime'];
         // mine._direction = config['direction'];
@@ -47,7 +47,7 @@ C['DeviceShake'] = classExtendBase({
         mine._shaker['attach'](wraphandle);
 
         function wraphandle(e) {
-            e = convert(e);
+            e = deviceshake_convert(e);
 
             if (!base_e) {
                 base_e = e;
@@ -68,6 +68,6 @@ C['DeviceShake'] = classExtendBase({
     'detach': function() {
         this._shaker['detach']();
     }
-}, Shake ? TRUE : FALSE);
+}, deviceshake_Shake ? TRUE : FALSE);
 
-}());
+/* }()); */

@@ -1,43 +1,39 @@
-(function() {
-var userAgent = win.navigator.userAgent.toLowerCase(),
-    /* appVersion = win.navigator.appVersion.toLowerCase(), */
-    browser;
+/* var PC_browser; */
 
-if (noIndexOf(userAgent, 'opera')) {
-    browser = 'opera';
+if (checkUserAgent(/opera/i)) {
+    PC_browser = 'opera';
 }
-else if (noIndexOf(userAgent, 'msie')) {
-    browser = 'ie';
+else if (checkUserAgent(/msie/i)) {
+    PC_browser = 'ie';
 }
-else if (noIndexOf(userAgent, 'chrome')) {
-    browser = 'chrome';
+else if (checkUserAgent(/chrome/i)) {
+    PC_browser = 'chrome';
 }
-else if (noIndexOf(userAgent, 'safari')) {
-    browser = 'safari';
+else if (checkUserAgent(/safari/i)) {
+    PC_browser = 'safari';
 }
-else if (noIndexOf(userAgent, 'gecko')) {
-    browser = 'gecko';
+else if (checkUserAgent(/gecko/i)) {
+    PC_browser = 'gecko';
 }
 else {
-    browser = 'ather';
+    PC_browser = 'ather';
 }
 
 pc = C['PC'] = classExtendBase({
-    'isChrome': function(ua) {
-        return browser == 'chrome';
+    'isChrome': function() {
+        return PC_browser == 'chrome';
     },
-    'isSafari': function(ua) {
-        return browser == 'safari';
+    'isSafari': function() {
+        return PC_browser == 'safari';
     },
-    'isGecko': function(ua) {
-        return browser == 'gecko';
+    'isGecko': function() {
+        return PC_browser == 'gecko';
     },
-    'isOpera': function(ua) {
-        return browser == 'opera';
+    'isOpera': function() {
+        return PC_browser == 'opera';
     },
-    'isIE': function(ua) {
-        return browser == 'ie';
+    'isIE': function() {
+        return PC_browser == 'ie';
     }
 });
 C['pc'] = new pc();
-}());

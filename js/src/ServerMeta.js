@@ -1,6 +1,6 @@
-(function() {
-var xhr,
-    isLoaded = FALSE;
+/* (function() { */
+// var servermeta_xhr,
+//     servermeta_isLoaded = FALSE;
 
 C['ServerMeta'] = classExtendBase({
     'init': function(config) {
@@ -8,52 +8,52 @@ C['ServerMeta'] = classExtendBase({
 
         var callback = config['callback'] || nullFunction;
 
-        if (!xhr) {
-            xhr = getHeader(function() {
-                isLoaded = TRUE;
-                callback(xhr);
+        if (!servermeta_xhr) {
+            servermeta_xhr = servermeta_getHeader(function() {
+                servermeta_isLoaded = TRUE;
+                callback(servermeta_xhr);
             });
         }
         else {
-            callback(xhr);
+            callback(servermeta_xhr);
         }
     },
     'date': function(callback) {
-        return getHeader(function(xhr) {
+        return servermeta_getHeader(function(xhr) {
             callback(xhr.getResponseHeader('Date'));
         });
     },
     'connection': function() {
-        return getRes('Connection');
+        return servermeta_getRes('Connection');
     },
     'contentLength': function() {
-        return getRes('Content-Length');
+        return servermeta_getRes('Content-Length');
     },
     'lastModified': function() {
-        return getRes('Last-Modified');
+        return servermeta_getRes('Last-Modified');
     },
     'server': function() {
-        return getRes('Server');
+        return servermeta_getRes('Server');
     },
     'contentType': function() {
-        return getRes('Content-Type');
+        return servermeta_getRes('Content-Type');
     },
     'acceptRanges': function() {
-        return getRes('Accept-Ranges');
+        return servermeta_getRes('Accept-Ranges');
     },
     'keepAlive': function() {
-        return getRes('Keep-Alive');
+        return servermeta_getRes('Keep-Alive');
     }
 });
 
-function getRes(value) {
-    if (isLoaded) {
-        return xhr.getResponseHeader(value);
+function servermeta_getRes(value) {
+    if (servermeta_isLoaded) {
+        return servermeta_xhr.getResponseHeader(value);
     }
     return FALSE;
 }
 
-function getHeader(callback) {
+function servermeta_getHeader(callback) {
     var xhr = new XMLHttpRequest();
 
     xhr.onload = function() {
@@ -65,4 +65,4 @@ function getHeader(callback) {
 
     return xhr;
 }
-}());
+/* }()); */

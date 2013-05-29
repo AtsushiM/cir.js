@@ -1,6 +1,5 @@
 (function() {
-var methods = $_methods,
-    Animation = C['SSAnime'] || NULLOBJ,
+var Animation = C['SSAnime'] || NULLOBJ,
     csssupport = Animation['support'],
     EASE = NULLOBJ;
 
@@ -11,14 +10,14 @@ else if (C['ease']) {
     EASE = C['ease'];
 }
 
-methods['animate'] = function() {
+$_methods['animate'] = function() {
     if (!this._animate) {
         this._animate = [];
     }
 
     return selectorForExe(this, animate, arguments);
-}
-methods['stop'] = function(/* varless */ mine, i) {
+};
+$_methods['stop'] = function(/* varless */ mine, i) {
     mine = this;
 
     if (mine._animate) {
@@ -33,7 +32,7 @@ methods['stop'] = function(/* varless */ mine, i) {
     }
 
     return mine;
-}
+};
 
 function animate(el, params, duration, ease, callback) {
     var style = el.style,

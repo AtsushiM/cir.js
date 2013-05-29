@@ -18,7 +18,7 @@ function embedSupportCheck(type, suffix) {
         return FALSE;
     }
 
-    var type = type.toLowerCase(),
+    var type = str2LowerCase(type),
         embed = create(type),
         support = [],
         i = 0,
