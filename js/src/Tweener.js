@@ -83,7 +83,9 @@ Tweener = C['Tweener'] = classExtendObserver({
 
         if (items.length) {
             C['animeframe']['request'](function() {
-                that._loop();
+                if (that._loop) {
+                    that._loop();
+                }
             });
 
             return;

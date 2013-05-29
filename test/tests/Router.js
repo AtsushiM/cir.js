@@ -1,10 +1,10 @@
-describe('C.Routeは', function() {
+describe('C.Routerは', function() {
     var c = window.C ? C : Global,
         route;
 
     beforeEach(function() {
         // init
-        route = new c.Route({
+        route = new c.Router({
             /* target: document.body.className, */
             /* target: location.pathname, */
             target: location.hash,
@@ -33,7 +33,7 @@ describe('C.Routeは', function() {
 
     it('targetオプションに対して、actionオプションのキー名で正規表現を行い、当てはまったものを実行する', function() {
         var count = 0;
-        route = new c.Route({
+        route = new c.Router({
             target: 'test',
             action: {
                 'test': function() {
@@ -48,7 +48,7 @@ describe('C.Routeは', function() {
         expect(count).to.be(1);
 
         count = 0;
-        route = new c.Route({
+        route = new c.Router({
             target: 'test',
             action: {
                 'test': function() {
@@ -65,7 +65,7 @@ describe('C.Routeは', function() {
 
     it('noregexオプションで正規表現を使用せずルーティングする', function() {
         var count = 0;
-        route = new c.Route({
+        route = new c.Router({
             target: 'test',
             noregex: true,
             action: {
@@ -88,7 +88,7 @@ describe('C.Routeは', function() {
     it('start()でルーティングを実行する', function() {
         var count = 0;
 
-        route = new c.Route({
+        route = new c.Router({
             target: 'test',
             action: {
                 'test': function() {
@@ -111,7 +111,7 @@ describe('C.Routeは', function() {
     it('fire(action)でactionオプションの対応する関数を実行する', function() {
         var count = 0;
 
-        route = new c.Route({
+        route = new c.Router({
             target: 'sample',
             action: {
                 'test': function() {
@@ -125,5 +125,53 @@ describe('C.Routeは', function() {
         expect(count).to.be(1);
         route.fire('test');
         expect(count).to.be(2);
+    });
+
+    it('hashchangeオプションがtrueの場合、window.hashchangeイベントが発火するたびにfire(location.hash)を実行する', function(done) {
+        var count = 0;
+
+        /* location.hash = ''; */
+
+        route = new c.Router({
+            manual: true,
+            hashchange: true,
+            action: {
+                'test': function() {
+                    count++;
+                }
+            }
+        });
+
+        location.hash = 'test1';
+        location.hash = 'test2';
+        location.hash = 'test3';
+        location.hash = 'test4';
+        location.hash = 'test5';
+
+        setTimeout(function() {
+            expect(count).to.be(5);
+            location.hash = '';
+            done();
+        }, 100);
+    });
+
+    it('hashchangeオプションがtrueでありかつtargetオプションが指定されなかった場合、location.hashをtargetオプションに指定する', function(done) {
+        var count = 0;
+
+        location.hash = '';
+
+        route = new c.Router({
+            hashchange: true,
+            action: {
+                '': function() {
+                    count++;
+                }
+            }
+        });
+
+        setTimeout(function() {
+            expect(count).to.be(1);
+            done();
+        }, 100);
     });
 });

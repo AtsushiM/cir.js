@@ -1402,7 +1402,9 @@ Tweener = C['Tweener'] = classExtendObserver({
 
         if (items.length) {
             C['animeframe']['request'](function() {
-                that._loop();
+                if (that._loop) {
+                    that._loop();
+                }
             });
 
             return;
@@ -3653,25 +3655,35 @@ C['PreRender'] = classExtendObserver({
         }
     }
 });
-C['Route'] = classExtendBase({
+C['Router'] = classExtendBase({
     'init': function(config) {
-        // this._target = config['target'] || EMPTY;
-        // this._noregex = config['noregex'];
-        // this._action = config['action'];
-        this._config = config;
+        var that = this,
+            temp;
+
+        that._config = config;
+
+        if (config['hashchange']) {
+            on(win, ev_hashchange, function() {
+                that['fire'](location.hash);
+            });
+
+            if (!config['target']) {
+                config['target'] = location.hash;
+            }
+        }
 
         if (!config['manual']) {
-            this['start']();
+            that['start']();
         }
     },
     'start': function() {
         this['fire'](this._config['target']);
     },
-    'fire': function(action /* varless */, mine) {
-        mine = this;
+    'fire': function(action /* varless */, that) {
+        that = this;
 
         var i,
-            config = mine._config,
+            config = that._config,
             config_action = config['action'];
 
         if (config['noregex'] && config_action[action]) {
