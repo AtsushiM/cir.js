@@ -97,7 +97,7 @@ describe('C.Ajaxは', function() {
         var called = false;
 
         ajax = new C.Ajax({
-            url: './common/test.xml',
+            url: './index.html',
             sync: true,
             oncomplete: function(d) {
                 called = true;
