@@ -12,6 +12,7 @@ C['Ajax'] = classExtendObserver({
             type = config['type'] || 'GET',
             query = EMPTY,
             xhr = that._xhr = new XMLHttpRequest(),
+            openargs,
             i;
 
         that['_super']();
@@ -55,7 +56,13 @@ C['Ajax'] = classExtendObserver({
 
         this._query = query;
 
-        xhr.open(type, url);
+        openargs = [type, url];
+
+        if (config['sync']) {
+            openargs.push(FALSE);
+        }
+
+        xhr.open.apply(xhr, openargs);
 
         if (type == 'POST') {
             xhr.setRequestHeader('Content-Type',

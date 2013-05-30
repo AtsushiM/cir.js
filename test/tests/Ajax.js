@@ -93,6 +93,20 @@ describe('C.Ajaxは', function() {
         });
     });
 
+    it('syncオプションをtrueにした場合、同期処理となります', function() {
+        var called = false;
+
+        ajax = new C.Ajax({
+            url: './common/test.xml',
+            sync: true,
+            oncomplete: function(d) {
+                called = true;
+            }
+        });
+
+        expect(called).to.be.true;
+    });
+
     it('stop()で非同期通信を停止する', function(done) {
         var data = '';
 
