@@ -1,13 +1,16 @@
-(function() {
-var Animation = C['SSAnime'] || NULLOBJ,
-    csssupport = Animation['support'],
-    EASE = NULLOBJ;
+/* (function() { */
+// var selector_Animation = C['SSAnime'] || NULLOBJ,
+//     selector_csssupport = selector_Animation['support'],
+//     selector_EASE = NULLOBJ;
+selector_Animation = C['SSAnime'] || NULLOBJ,
+selector_csssupport = selector_Animation['support'],
+selector_EASE = NULLOBJ;
 
-if (csssupport && C['cssease']) {
-    EASE = C['cssease'];
+if (selector_csssupport && C['cssease']) {
+    selector_EASE = C['cssease'];
 }
 else if (C['ease']) {
-    EASE = C['ease'];
+    selector_EASE = C['ease'];
 }
 
 $_methods['animate'] = function() {
@@ -15,26 +18,26 @@ $_methods['animate'] = function() {
         this._animate = [];
     }
 
-    return selectorForExe(this, animate, arguments);
+    return selectorForExe(this, selector_animate, arguments);
 };
-$_methods['stop'] = function(/* varless */ mine, i) {
-    mine = this;
+$_methods['stop'] = function(/* varless */ that, i) {
+    that = this;
 
-    if (mine._animate) {
-        /* var i = mine._animate.length; */
-        i = mine._animate.length;
+    if (that._animate) {
+        /* var i = that._animate.length; */
+        i = that._animate.length;
 
         for (; i--;) {
-            mine._animate[i]['stop']();
+            that._animate[i]['stop']();
         }
 
-        mine._animate = NULL;
+        that._animate = NULL;
     }
 
-    return mine;
+    return that;
 };
 
-function animate(el, params, duration, ease, callback) {
+function selector_animate(el, params, duration, ease, callback) {
     var style = el.style,
         anime,
         option;
@@ -49,7 +52,7 @@ function animate(el, params, duration, ease, callback) {
     }
 
     if (ease) {
-        ease = EASE[ease];
+        ease = selector_EASE[ease];
     }
 
     option = {
@@ -58,8 +61,8 @@ function animate(el, params, duration, ease, callback) {
         'oncomplete': callback
     };
 
-    if (csssupport) {
-        anime = new Animation(
+    if (selector_csssupport) {
+        anime = new selector_Animation(
             el,
             params,
             option
@@ -68,7 +71,7 @@ function animate(el, params, duration, ease, callback) {
     else {
         anime = new C['Tweener'](
             el.style,
-            convertTweenerParam(el, params),
+            selector_convertTweenerParam(el, params),
             option
         );
     }
@@ -76,7 +79,7 @@ function animate(el, params, duration, ease, callback) {
     this._animate.push(anime);
 }
 
-function convertTweenerParam(el, params) {
+function selector_convertTweenerParam(el, params) {
     var name,
         styled = computedStyle(el),
         tosplit,
@@ -104,4 +107,4 @@ function convertTweenerParam(el, params) {
 
     return retobj;
 }
-}());
+/* }()); */

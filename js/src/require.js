@@ -1,5 +1,5 @@
 // require
-var required_obj = {};
+/* required_obj = {}; */
 
 C['require'] = function(required, srcpath, callback) {
     var cls = C_require(required),
@@ -46,7 +46,12 @@ function C_require_sync(cls, required, srcpath) {
         'url': srcpath,
         'sync': TRUE,
         'oncomplete': function(ret) {
-            new Function(ret)();
+            /* new Function(ret)(); */
+
+            var script = create('script');
+
+            append(doc_head, script);
+            script.text = ret;
         }
     });
 

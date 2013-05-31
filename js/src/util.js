@@ -61,13 +61,13 @@ function template(templatetxt, replaceobj /* varless */, i, temp) {
         temp = replaceobj[i];
 
         templatetxt = replaceAll(
-            replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp)),
+            replaceAll(templatetxt, '<%= ' + i + ' %>', _escape(temp)),
         '<%- ' + i + ' %>', temp);
     }
 
     return templatetxt;
 }
-function escape(html) {
+function _escape(html) {
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -78,7 +78,7 @@ function escape(html) {
         '<', '&lt;'),
     '>', '&gt;');
 }
-function unescape(html) {
+function _unescape(html) {
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -257,8 +257,8 @@ C['util'] = {
     'override': override,
     'replaceAll': replaceAll,
     'template': template,
-    'escape': escape,
-    'unescape': unescape,
+    'escape': _escape,
+    'unescape': _unescape,
     'windowOpen': windowOpen,
     'typeCast': typeCast,
     'makeQueryString': makeQueryString,

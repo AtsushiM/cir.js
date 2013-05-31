@@ -128,6 +128,7 @@ function this_contract(el, e, handler /* varless */, mine, id) {
 
 var win = window,
     doc = document,
+    doc_head = doc.head || $('head'),
     TRUE = true,
     FALSE = false,
     NULL = null,
@@ -145,6 +146,7 @@ var win = window,
     class_fnTest = /0/.test(function() {
         0;
     }) ? /\b_super\b/ : /.*/,
+    required_obj = {},
     animeframeobj,
 
 ev,
@@ -165,6 +167,9 @@ animeframe_check,
 animeframe_len,
 animeframe_animeframe,
 animeframe_cancelframe,
+selector_Animation,
+selector_csssupport,
+selector_EASE,
 /* windowload_loaded = FALSE, */
 windowload_loaded,
 windowload_winload,

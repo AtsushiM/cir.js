@@ -128,6 +128,7 @@ function this_contract(el, e, handler /* varless */, mine, id) {
 
 var win = window,
     doc = document,
+    doc_head = doc.head || $('head'),
     TRUE = true,
     FALSE = false,
     NULL = null,
@@ -145,6 +146,7 @@ var win = window,
     class_fnTest = /0/.test(function() {
         0;
     }) ? /\b_super\b/ : /.*/,
+    required_obj = {},
     animeframeobj,
 
 ev,
@@ -165,6 +167,9 @@ animeframe_check,
 animeframe_len,
 animeframe_animeframe,
 animeframe_cancelframe,
+selector_Animation,
+selector_csssupport,
+selector_EASE,
 /* windowload_loaded = FALSE, */
 windowload_loaded,
 windowload_winload,
@@ -235,13 +240,13 @@ function template(templatetxt, replaceobj /* varless */, i, temp) {
         temp = replaceobj[i];
 
         templatetxt = replaceAll(
-            replaceAll(templatetxt, '<%= ' + i + ' %>', escape(temp)),
+            replaceAll(templatetxt, '<%= ' + i + ' %>', _escape(temp)),
         '<%- ' + i + ' %>', temp);
     }
 
     return templatetxt;
 }
-function escape(html) {
+function _escape(html) {
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -252,7 +257,7 @@ function escape(html) {
         '<', '&lt;'),
     '>', '&gt;');
 }
-function unescape(html) {
+function _unescape(html) {
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -431,8 +436,8 @@ C['util'] = {
     'override': override,
     'replaceAll': replaceAll,
     'template': template,
-    'escape': escape,
-    'unescape': unescape,
+    'escape': _escape,
+    'unescape': _unescape,
     'windowOpen': windowOpen,
     'typeCast': typeCast,
     'makeQueryString': makeQueryString,
@@ -1681,16 +1686,19 @@ $_methods = C['$'].methods = {
         return selectorForExe(this, remove, arguments);
     }
 };
-(function() {
-var Animation = C['SSAnime'] || NULLOBJ,
-    csssupport = Animation['support'],
-    EASE = NULLOBJ;
+/* (function() { */
+// var selector_Animation = C['SSAnime'] || NULLOBJ,
+//     selector_csssupport = selector_Animation['support'],
+//     selector_EASE = NULLOBJ;
+selector_Animation = C['SSAnime'] || NULLOBJ,
+selector_csssupport = selector_Animation['support'],
+selector_EASE = NULLOBJ;
 
-if (csssupport && C['cssease']) {
-    EASE = C['cssease'];
+if (selector_csssupport && C['cssease']) {
+    selector_EASE = C['cssease'];
 }
 else if (C['ease']) {
-    EASE = C['ease'];
+    selector_EASE = C['ease'];
 }
 
 $_methods['animate'] = function() {
@@ -1698,26 +1706,26 @@ $_methods['animate'] = function() {
         this._animate = [];
     }
 
-    return selectorForExe(this, animate, arguments);
+    return selectorForExe(this, selector_animate, arguments);
 };
-$_methods['stop'] = function(/* varless */ mine, i) {
-    mine = this;
+$_methods['stop'] = function(/* varless */ that, i) {
+    that = this;
 
-    if (mine._animate) {
-        /* var i = mine._animate.length; */
-        i = mine._animate.length;
+    if (that._animate) {
+        /* var i = that._animate.length; */
+        i = that._animate.length;
 
         for (; i--;) {
-            mine._animate[i]['stop']();
+            that._animate[i]['stop']();
         }
 
-        mine._animate = NULL;
+        that._animate = NULL;
     }
 
-    return mine;
+    return that;
 };
 
-function animate(el, params, duration, ease, callback) {
+function selector_animate(el, params, duration, ease, callback) {
     var style = el.style,
         anime,
         option;
@@ -1732,7 +1740,7 @@ function animate(el, params, duration, ease, callback) {
     }
 
     if (ease) {
-        ease = EASE[ease];
+        ease = selector_EASE[ease];
     }
 
     option = {
@@ -1741,8 +1749,8 @@ function animate(el, params, duration, ease, callback) {
         'oncomplete': callback
     };
 
-    if (csssupport) {
-        anime = new Animation(
+    if (selector_csssupport) {
+        anime = new selector_Animation(
             el,
             params,
             option
@@ -1751,7 +1759,7 @@ function animate(el, params, duration, ease, callback) {
     else {
         anime = new C['Tweener'](
             el.style,
-            convertTweenerParam(el, params),
+            selector_convertTweenerParam(el, params),
             option
         );
     }
@@ -1759,7 +1767,7 @@ function animate(el, params, duration, ease, callback) {
     this._animate.push(anime);
 }
 
-function convertTweenerParam(el, params) {
+function selector_convertTweenerParam(el, params) {
     var name,
         styled = computedStyle(el),
         tosplit,
@@ -1787,7 +1795,7 @@ function convertTweenerParam(el, params) {
 
     return retobj;
 }
-}());
+/* }()); */
 C['HashQuery'] = classExtendBase({
     'typeCast': function(str) {
         var caststr = typeCast(str),
@@ -3168,7 +3176,7 @@ C['ImgLoad'] = classExtend(ElementLoad, {
 C['ScriptLoad'] = classExtend(ElementLoad, {
     _tagname: 'script',
     _loadloop: function(el) {
-        append(doc.body, el);
+        append(doc_head, el);
     }
 });
 /* (function() { */
@@ -4378,7 +4386,7 @@ C['LimitText'] = classExtendBase({
     }
 });
 // require
-var required_obj = {};
+/* required_obj = {}; */
 
 C['require'] = function(required, srcpath, callback) {
     var cls = C_require(required),
@@ -4425,7 +4433,12 @@ function C_require_sync(cls, required, srcpath) {
         'url': srcpath,
         'sync': TRUE,
         'oncomplete': function(ret) {
-            new Function(ret)();
+            /* new Function(ret)(); */
+
+            var script = create('script');
+
+            append(doc_head, script);
+            script.text = ret;
         }
     });
 
