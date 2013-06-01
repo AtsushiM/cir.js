@@ -69,8 +69,8 @@ function classExtend(cls, prop, support) {
     return klass;
 }
 function classExtendBase(prop, support) {
-    return classExtend(C['Base'], prop, support);
+    return classExtend(Base, prop, support);
 }
 function classExtendObserver(prop, support) {
-    return classExtend(C['Observer'], prop, support);
+    return classExtend(Observer, prop, support);
 }

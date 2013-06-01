@@ -1,5 +1,4 @@
 // Cool is Right.
-/* (function() { */
 C = {};
 
 function cssCubicBezierFormat(text) {
@@ -126,6 +125,15 @@ function this_contract(el, e, handler /* varless */, mine, id) {
     return id;
 }
 
+function apifirstload(id, src) {
+    if (!$id(id)) {
+        before(create('script', {
+            'id': id,
+            'src': src
+        }), $('script'));
+    }
+}
+
 var win = window,
     doc = document,
     doc_head = doc.head || $('head'),
@@ -149,6 +157,12 @@ var win = window,
     required_obj = {},
     animeframeobj,
 
+Base,
+Observer,
+Audio,
+Sound,
+Video,
+Movie,
 ev,
 AbstractTask,
 ElementLoad,
@@ -159,6 +173,11 @@ ExternalIOS,
 Media,
 Tweener,
 WebStorage,
+HashQuery,
+ScriptLoad,
+DeviceOrientation,
+DeviceMotion,
+Validate,
 mb,
 pc,
 PC_browser,

@@ -1,4 +1,4 @@
-C['Observer'] = classExtendBase({
+Observer = C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
     },

@@ -19,7 +19,7 @@ C['Model'] = classExtendBase({
 
         mine._validate = config['validate'] || mine['validate'] || {};
         mine._store = config['store'] || mine['store'] || new C['DataStore']();
-        mine._observer = new C['Observer']();
+        mine._observer = new Observer();
 
         for (i in defaults) {
             mine['set'](i, defaults[i]);

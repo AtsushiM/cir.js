@@ -1,9 +1,9 @@
-C['Audio'] = function(config) {
+Audio = C['Audio'] = function(config) {
     config['type'] = 'audio';
-    config['suffix'] = C['Audio']['support'];
+    config['suffix'] = Audio['support'];
     return Embed(config);
 };
-C['Audio']['support'] = embedSupportCheck('Audio', [
+Audio['support'] = embedSupportCheck('Audio', [
     ['mp3', 'mpeg'],
     ['wav', 'wav'],
     ['ogg', 'ogg'],

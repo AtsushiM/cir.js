@@ -1,9 +1,9 @@
-C['Video'] = function(config) {
+Video = C['Video'] = function(config) {
     config['type'] = 'video';
-    config['suffix'] = C['Video']['support'];
+    config['suffix'] = Video['support'];
     return Embed(config);
 };
-C['Video']['support'] = embedSupportCheck('Video', [
+Video['support'] = embedSupportCheck('Video', [
     ['webm', 'webm'],
     ['mp4', 'mp4'],
     ['ogv', 'ogg']

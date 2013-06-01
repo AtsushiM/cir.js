@@ -1,14 +1,12 @@
-(function() {
-var ret = checkCSSAnimTranCheck([
+/* (function() { */
+var sstrans_ret = checkCSSAnimTranCheck([
         'transitionProperty',
         'webkitTransitionProperty'
     ], 'Transition'),
-    support = ret.support,
-    prefix = ret.prefix,
-    css_prefix = ret.css_prefix,
-    event_key = ret.event_key,
-    sheet = ret.sheet,
-That = C['SSTrans'] =
+    sstrans_css_prefix = sstrans_ret.css_prefix,
+    sstrans_event_key = sstrans_ret.event_key,
+    sstrans_sheet = sstrans_ret.sheet,
+SSTrans = C['SSTrans'] =
     classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
         that = this;
@@ -19,13 +17,13 @@ That = C['SSTrans'] =
 
         option = option || NULLOBJ;
 
-        That['id']++;
-        that._id = 'cirtrans' + That['id'];
+        SSTrans['id']++;
+        that._id = 'cirtrans' + SSTrans['id'];
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option['duration'] || That['duration'],
+            duration = option['duration'] || SSTrans['duration'],
             // easeOutExpo
             ease = option['ease'] || csseaseOutExpo;
 
@@ -37,7 +35,7 @@ That = C['SSTrans'] =
             transProp.push(i);
         }
 
-        addCSSRule(that._id, css_prefix, duration, ease, transProp);
+        SSTrans_addCSSRule(that._id, sstrans_css_prefix, duration, ease, transProp);
 
         that._el = el;
         that._property = property;
@@ -63,7 +61,7 @@ That = C['SSTrans'] =
             }, 1);
         };
 
-        on(that._el, event_key + 'End', that._endfunc);
+        on(that._el, sstrans_event_key + 'End', that._endfunc);
         on(that._el, 'transitionend', that._endfunc);
         addClass(that._el, that._id);
         css(that._el, that._property);
@@ -71,11 +69,11 @@ That = C['SSTrans'] =
     _stop: function(/* varless */ that) {
         that = this;
 
-        var rule = sheet.cssRules,
+        var rule = sstrans_sheet.cssRules,
             len = rule.length,
             name;
 
-        off(that._el, event_key + 'End', that._endfunc);
+        off(that._el, sstrans_event_key + 'End', that._endfunc);
         off(that._el, 'transitionend', that._endfunc);
         removeClass(that._el, that._id);
 
@@ -84,7 +82,7 @@ That = C['SSTrans'] =
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
             if (name == that._id) {
-                sheet.deleteRule(len);
+                sstrans_sheet.deleteRule(len);
                 break;
             }
         }
@@ -95,9 +93,9 @@ That = C['SSTrans'] =
         this['fire']('stop');
         this._stop();
     }
-}, support);
+}, sstrans_ret.support);
 
-function addCSSRule(id, css_prefix, duration, eases, transProp) {
+function SSTrans_addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
         len = eases.length,
         rule = EMPTY;
@@ -110,9 +108,9 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
         rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
     }
 
-    sheetAddCSSRule(sheet, id, rule);
+    sheetAddCSSRule(sstrans_sheet, id, rule);
 }
 
-That['id'] = 0;
-That['duration'] = 500;
-}());
+SSTrans['id'] = 0;
+SSTrans['duration'] = 500;
+/* }()); */

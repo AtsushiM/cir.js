@@ -1,4 +1,4 @@
-C['HashQuery'] = classExtendBase({
+HashQuery = C['HashQuery'] = classExtendBase({
     'typeCast': function(str) {
         var caststr = typeCast(str),
             matchstr;

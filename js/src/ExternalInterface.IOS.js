@@ -1,4 +1,4 @@
-ExternalIOS = classExtend(C['HashQuery'], {
+ExternalIOS = classExtend(HashQuery, {
     'init': function() {
         this._ios = {};
     },

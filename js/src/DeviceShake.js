@@ -3,14 +3,14 @@
 //     deviceshake_convert;
 
 /* if (C['mobile']['isMobile']()) { */
-    if (C['DeviceOrientation']['support']) {
-        deviceshake_Shake = C['DeviceOrientation'];
+    if (DeviceOrientation['support']) {
+        deviceshake_Shake = DeviceOrientation;
         deviceshake_convert = function(e) {
             return e;
         };
     }
-    else if (C['DeviceMotion']['support']) {
-        deviceshake_Shake = C['DeviceMotion'];
+    else if (DeviceMotion['support']) {
+        deviceshake_Shake = DeviceMotion;
         deviceshake_convert = function(e) {
             return e['rotationRate'];
         };

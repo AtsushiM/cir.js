@@ -13,11 +13,11 @@ Media = classExtendBase({
 
         switch (config['type']) {
             case 'Audio':
-                media = C['Audio'](config);
+                media = Audio(config);
                 break;
             /* case 'Video': */
             default:
-                media = C['Video'](config);
+                media = Video(config);
         }
         mine._el = media;
 

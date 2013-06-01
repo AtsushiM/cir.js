@@ -1,8 +1,8 @@
 /* (function() { */
-// var selector_Animation = C['SSAnime'] || NULLOBJ,
+// var selector_Animation = SSAnime || NULLOBJ,
 //     selector_csssupport = selector_Animation['support'],
 //     selector_EASE = NULLOBJ;
-selector_Animation = C['SSAnime'] || NULLOBJ,
+selector_Animation = SSAnime || NULLOBJ,
 selector_csssupport = selector_Animation['support'],
 selector_EASE = NULLOBJ;
 

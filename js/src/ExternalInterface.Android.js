@@ -1,4 +1,4 @@
-ExternalAndroid = classExtend(C['HashQuery'], {
+ExternalAndroid = classExtend(HashQuery, {
     'init': function(config) {
         // this._android = config['android'];
         // this._externalObj = config['externalObj'];

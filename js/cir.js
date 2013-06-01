@@ -1,5 +1,6 @@
+// cir.js v1.0.0 (c) 2013 Atsushi Mizoue.
+(function(){
 // Cool is Right.
-/* (function() { */
 C = {};
 
 function cssCubicBezierFormat(text) {
@@ -126,6 +127,15 @@ function this_contract(el, e, handler /* varless */, mine, id) {
     return id;
 }
 
+function apifirstload(id, src) {
+    if (!$id(id)) {
+        before(create('script', {
+            'id': id,
+            'src': src
+        }), $('script'));
+    }
+}
+
 var win = window,
     doc = document,
     doc_head = doc.head || $('head'),
@@ -149,6 +159,12 @@ var win = window,
     required_obj = {},
     animeframeobj,
 
+Base,
+Observer,
+Audio,
+Sound,
+Video,
+Movie,
 ev,
 AbstractTask,
 ElementLoad,
@@ -159,6 +175,11 @@ ExternalIOS,
 Media,
 Tweener,
 WebStorage,
+HashQuery,
+ScriptLoad,
+DeviceOrientation,
+DeviceMotion,
+Validate,
 mb,
 pc,
 PC_browser,
@@ -766,12 +787,12 @@ function classExtend(cls, prop, support) {
     return klass;
 }
 function classExtendBase(prop, support) {
-    return classExtend(C['Base'], prop, support);
+    return classExtend(Base, prop, support);
 }
 function classExtendObserver(prop, support) {
-    return classExtend(C['Observer'], prop, support);
+    return classExtend(Observer, prop, support);
 }
-C['Base'] = classExtend(UNDEFINED, {
+Base = C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
     'dispose': function(/* varless */ mine) {
         mine = this;
@@ -805,7 +826,7 @@ C['Base'] = classExtend(UNDEFINED, {
     _uncontract: this_uncontract,
     'uncontract': this_uncontract
 });
-C['Observer'] = classExtendBase({
+Observer = C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
     },
@@ -1035,23 +1056,23 @@ C['ssease'] = {
     'outBack': [cssCubicBezierFormat('0.175,0.885,0.32,1'),cssCubicBezierFormat('0.175,0.885,0.32,1.275')],
     'inOutBack': [cssCubicBezierFormat('0.68,0,0.265,1'),cssCubicBezierFormat('0.68,-0.55,0.265,1.55')]
 };
-(function() {
-var ret = checkCSSAnimTranCheck([
+/* (function() { */
+var ssanime_ret = checkCSSAnimTranCheck([
         'animation',
         'webkitAnimation'
     ], 'Animation'),
-    support = ret.support,
-    prefix = ret.prefix,
-    css_prefix = ret.css_prefix,
-    event_key = ret.event_key,
-    sheet = ret.sheet,
-That = C['SSAnime'] =
+    ssanime_prefix = ssanime_ret.prefix,
+    ssanime_css_prefix = ssanime_ret.css_prefix,
+    ssanime_event_key = ssanime_ret.event_key,
+    ssanime_sheet = ssanime_ret.sheet,
+
+SSAnime = C['SSAnime'] =
 classExtendObserver({
     _off: function() {
         var el = this._el,
             end = this._end;
 
-        off(el, event_key + 'End', end);
+        off(el, ssanime_event_key + 'End', end);
         off(el, 'animationend', end);
     },
     'init': function(el, property, option /* varless */, that) {
@@ -1067,10 +1088,10 @@ classExtendObserver({
 
         that._el = el;
 
-        That['id']++;
-        that._id = 'ciranim' + That['id'];
+        SSAnime['id']++;
+        that._id = 'ciranim' + SSAnime['id'];
 
-        var duration = option['duration'] || That['duration'],
+        var duration = option['duration'] || SSAnime['duration'],
             // easeOutExpo
             ease = option['ease'] || csseaseOutExpo,
             i,
@@ -1091,15 +1112,15 @@ classExtendObserver({
             ';'
         );
 
-        sheet.insertRule(
-            '@' + css_prefix + 'keyframes ' + that._id + '{to' + prop + '}',
-            sheet.cssRules.length);
+        ssanime_sheet.insertRule(
+            '@' + ssanime_css_prefix + 'keyframes ' + that._id + '{to' + prop + '}',
+            ssanime_sheet.cssRules.length);
 
         if (!isArray(ease)) {
             ease = [ease];
         }
 
-        addCSSRule(that._id, css_prefix, duration, ease);
+        SSAnime_addCSSRule(that._id, ssanime_css_prefix, duration, ease);
 
         if (!option['manual']) {
             that['start']();
@@ -1117,26 +1138,26 @@ classExtendObserver({
         that._fire_start();
 
         that._end = endaction;
-        on(el, event_key + 'End', endaction);
+        on(el, ssanime_event_key + 'End', endaction);
         on(el, 'animationend', endaction);
 
         addClass(el, that._id);
 
         function endaction(e) {
-            var rule = sheet.cssRules,
+            var rule = ssanime_sheet.cssRules,
                 len = rule.length,
                 name;
 
             that._off();
 
 
-            if (prefix == 'webkit') {
+            if (ssanime_prefix == 'webkit') {
                 for (; len--;) {
                     name = rule[len].name ||
                         (EMPTY + rule[len].selectorText).split('.')[1];
 
                     if (name == that._id) {
-                        sheet.deleteRule(len);
+                        ssanime_sheet.deleteRule(len);
                     }
                 }
                 removeClass(el, that._id);
@@ -1151,14 +1172,14 @@ classExtendObserver({
 
         this['fire']('stop');
 
-        stopobj[css_prefix + 'animation-play-state'] = 'paused';
+        stopobj[ssanime_css_prefix + 'animation-play-state'] = 'paused';
 
         css(this._el, stopobj);
         this._off();
     }
-}, support);
+}, ssanime_ret.support);
 
-function addCSSRule(id, css_prefix, duration, eases) {
+function SSAnime_addCSSRule(id, css_prefix, duration, eases) {
     var i = 0,
         len = eases.length,
         rule = EMPTY;
@@ -1170,23 +1191,21 @@ function addCSSRule(id, css_prefix, duration, eases) {
                 eases[i] + ' 0s 1 normal both;';
     }
 
-    sheetAddCSSRule(sheet, id, rule);
+    sheetAddCSSRule(ssanime_sheet, id, rule);
 }
 
-That['id'] = 0;
-That['duration'] = 500;
-}());
-(function() {
-var ret = checkCSSAnimTranCheck([
+SSAnime['id'] = 0;
+SSAnime['duration'] = 500;
+/* }()); */
+/* (function() { */
+var sstrans_ret = checkCSSAnimTranCheck([
         'transitionProperty',
         'webkitTransitionProperty'
     ], 'Transition'),
-    support = ret.support,
-    prefix = ret.prefix,
-    css_prefix = ret.css_prefix,
-    event_key = ret.event_key,
-    sheet = ret.sheet,
-That = C['SSTrans'] =
+    sstrans_css_prefix = sstrans_ret.css_prefix,
+    sstrans_event_key = sstrans_ret.event_key,
+    sstrans_sheet = sstrans_ret.sheet,
+SSTrans = C['SSTrans'] =
     classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
         that = this;
@@ -1197,13 +1216,13 @@ That = C['SSTrans'] =
 
         option = option || NULLOBJ;
 
-        That['id']++;
-        that._id = 'cirtrans' + That['id'];
+        SSTrans['id']++;
+        that._id = 'cirtrans' + SSTrans['id'];
 
         var transProp = [],
             animeProp = override({}, property),
             i,
-            duration = option['duration'] || That['duration'],
+            duration = option['duration'] || SSTrans['duration'],
             // easeOutExpo
             ease = option['ease'] || csseaseOutExpo;
 
@@ -1215,7 +1234,7 @@ That = C['SSTrans'] =
             transProp.push(i);
         }
 
-        addCSSRule(that._id, css_prefix, duration, ease, transProp);
+        SSTrans_addCSSRule(that._id, sstrans_css_prefix, duration, ease, transProp);
 
         that._el = el;
         that._property = property;
@@ -1241,7 +1260,7 @@ That = C['SSTrans'] =
             }, 1);
         };
 
-        on(that._el, event_key + 'End', that._endfunc);
+        on(that._el, sstrans_event_key + 'End', that._endfunc);
         on(that._el, 'transitionend', that._endfunc);
         addClass(that._el, that._id);
         css(that._el, that._property);
@@ -1249,11 +1268,11 @@ That = C['SSTrans'] =
     _stop: function(/* varless */ that) {
         that = this;
 
-        var rule = sheet.cssRules,
+        var rule = sstrans_sheet.cssRules,
             len = rule.length,
             name;
 
-        off(that._el, event_key + 'End', that._endfunc);
+        off(that._el, sstrans_event_key + 'End', that._endfunc);
         off(that._el, 'transitionend', that._endfunc);
         removeClass(that._el, that._id);
 
@@ -1262,7 +1281,7 @@ That = C['SSTrans'] =
                 (EMPTY + rule[len].selectorText).split('.')[1];
 
             if (name == that._id) {
-                sheet.deleteRule(len);
+                sstrans_sheet.deleteRule(len);
                 break;
             }
         }
@@ -1273,9 +1292,9 @@ That = C['SSTrans'] =
         this['fire']('stop');
         this._stop();
     }
-}, support);
+}, sstrans_ret.support);
 
-function addCSSRule(id, css_prefix, duration, eases, transProp) {
+function SSTrans_addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
         len = eases.length,
         rule = EMPTY;
@@ -1288,12 +1307,12 @@ function addCSSRule(id, css_prefix, duration, eases, transProp) {
         rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
     }
 
-    sheetAddCSSRule(sheet, id, rule);
+    sheetAddCSSRule(sstrans_sheet, id, rule);
 }
 
-That['id'] = 0;
-That['duration'] = 500;
-}());
+SSTrans['id'] = 0;
+SSTrans['duration'] = 500;
+/* }()); */
 animeframeobj = {
     'request': function(callback) {
         return this._animeframe.call(win, callback);
@@ -1687,10 +1706,10 @@ $_methods = C['$'].methods = {
     }
 };
 /* (function() { */
-// var selector_Animation = C['SSAnime'] || NULLOBJ,
+// var selector_Animation = SSAnime || NULLOBJ,
 //     selector_csssupport = selector_Animation['support'],
 //     selector_EASE = NULLOBJ;
-selector_Animation = C['SSAnime'] || NULLOBJ,
+selector_Animation = SSAnime || NULLOBJ,
 selector_csssupport = selector_Animation['support'],
 selector_EASE = NULLOBJ;
 
@@ -1796,7 +1815,7 @@ function selector_convertTweenerParam(el, params) {
     return retobj;
 }
 /* }()); */
-C['HashQuery'] = classExtendBase({
+HashQuery = C['HashQuery'] = classExtendBase({
     'typeCast': function(str) {
         var caststr = typeCast(str),
             matchstr;
@@ -1922,11 +1941,11 @@ Media = classExtendBase({
 
         switch (config['type']) {
             case 'Audio':
-                media = C['Audio'](config);
+                media = Audio(config);
                 break;
             /* case 'Video': */
             default:
-                media = C['Video'](config);
+                media = Video(config);
         }
         mine._el = media;
 
@@ -1998,37 +2017,37 @@ Media = classExtendBase({
         this['pause']();
     }
 });
-C['Audio'] = function(config) {
+Audio = C['Audio'] = function(config) {
     config['type'] = 'audio';
-    config['suffix'] = C['Audio']['support'];
+    config['suffix'] = Audio['support'];
     return Embed(config);
 };
-C['Audio']['support'] = embedSupportCheck('Audio', [
+Audio['support'] = embedSupportCheck('Audio', [
     ['mp3', 'mpeg'],
     ['wav', 'wav'],
     ['ogg', 'ogg'],
     ['m4a', 'mp4']
 ]);
-C['Sound'] = function(config) {
+Sound = C['Sound'] = function(config) {
     config['type'] = 'Audio';
     return new Media(config);
 };
-C['Sound']['support'] = C['Audio']['support'];
-C['Video'] = function(config) {
+Sound['support'] = Audio['support'];
+Video = C['Video'] = function(config) {
     config['type'] = 'video';
-    config['suffix'] = C['Video']['support'];
+    config['suffix'] = Video['support'];
     return Embed(config);
 };
-C['Video']['support'] = embedSupportCheck('Video', [
+Video['support'] = embedSupportCheck('Video', [
     ['webm', 'webm'],
     ['mp4', 'mp4'],
     ['ogv', 'ogg']
 ]);
-C['Movie'] = function(config) {
+Movie = C['Movie'] = function(config) {
     config['type'] = 'Video';
     return new Media(config);
 };
-C['Movie']['support'] = C['Video']['support'];
+Movie['support'] = Video['support'];
 // Ajax
 C['Ajax'] = classExtendObserver({
     'dispose': function() {
@@ -2458,15 +2477,15 @@ C['Anvas'] = classExtendBase({
         }
     }
 }, !!win['HTMLCanvasElement']);
-(function() {
-    var convert_D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        convert_l = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        convert_F = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        convert_M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        convert = {
+/* (function() { */
+    var datefactory_convert_D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        datefactory_convert_l = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        datefactory_convert_F = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        datefactory_convert_M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datefactory_convert = {
             // d = 01 ~ 31
             'd': function(date) {
-                return digit2(convert['j'](date));
+                return datefactory_digit2(datefactory_convert['j'](date));
             },
             // j = 1 ~ 31
             'j': function(date) {
@@ -2474,23 +2493,23 @@ C['Anvas'] = classExtendBase({
             },
             // D = Mon ~ Sun
             'D': function(date) {
-                return convert_D[date.getDay()];
+                return datefactory_convert_D[date.getDay()];
             },
             // l = Monday ~ Sunday
             'l': function(date) {
-                return convert_l[date.getDay()];
+                return datefactory_convert_l[date.getDay()];
             },
             // F = Full Month
             'F': function(date) {
-                return convert_F[date.getMonth()];
+                return datefactory_convert_F[date.getMonth()];
             },
             // M = Short Month
             'M': function(date) {
-                return convert_M[date.getMonth()];
+                return datefactory_convert_M[date.getMonth()];
             },
             // m = 01 ~ 12
             'm': function(date) {
-                return digit2(convert['n'](date));
+                return datefactory_digit2(datefactory_convert['n'](date));
             },
             // n = 1 ~ 12
             'n': function(date) {
@@ -2502,19 +2521,19 @@ C['Anvas'] = classExtendBase({
             },
             // y = 13
             'y': function(date) {
-                return lower2(convert['Y'](date));
+                return datefactory_lower2(datefactory_convert['Y'](date));
             },
             // a = am || pm
             'a': function(date) {
-                return str2LowerCase(convert['A'](date));
+                return str2LowerCase(datefactory_convert['A'](date));
             },
             // A = AM || PM
             'A': function(date) {
-                return convert['G'](date) < 12 ? 'AM' : 'PM';
+                return datefactory_convert['G'](date) < 12 ? 'AM' : 'PM';
             },
             // g = 1 ~ 12
             'g': function(date) {
-                var hour = convert['G'](date);
+                var hour = datefactory_convert['G'](date);
 
                 if (hour == 12 || hour == 0 || hour == 24) {
                     return 12;
@@ -2528,19 +2547,19 @@ C['Anvas'] = classExtendBase({
             },
             // h = 01 ~ 12
             'h': function(date) {
-                return digit2(convert['g'](date));
+                return datefactory_digit2(datefactory_convert['g'](date));
             },
             // H = 00 ~ 24
             'H': function(date) {
-                return digit2(convert['G'](date));
+                return datefactory_digit2(datefactory_convert['G'](date));
             },
             // i = 00 ~ 59
             'i': function(date) {
-                return digit2(convert['I'](date));
+                return datefactory_digit2(datefactory_convert['I'](date));
             },
             // s = 00 ~ 59
             's': function(date) {
-                return digit2(convert['S'](date));
+                return datefactory_digit2(datefactory_convert['S'](date));
             },
             // I = 0 ~ 59
             'I': function(date) {
@@ -2551,13 +2570,13 @@ C['Anvas'] = classExtendBase({
                 return date.getSeconds();
             }
         },
-        regFormat = /%([djDlFMmnYyaAgGhHisIS])/g;
+        datefactory_regFormat = /%([djDlFMmnYyaAgGhHisIS])/g;
 
-function formatReplace(hit, date) {
-    return convert[hit](date);
+function datefactory_formatReplace(hit, date) {
+    return datefactory_convert[hit](date);
 };
 
-function digit2(num) {
+function datefactory_digit2(num) {
     num = +num;
 
     if (num < 10) {
@@ -2566,7 +2585,7 @@ function digit2(num) {
 
     return EMPTY + num;
 }
-function lower2(num) {
+function datefactory_lower2(num) {
     num = EMPTY + num;
 
     return num.slice(num.length - 2);
@@ -2600,12 +2619,12 @@ C['DateFactory'] = classExtendBase({
     'format': function(format, anydate) {
         anydate = this['make'](anydate);
 
-        return format.replace(regFormat, function(hit, $1) {
-            return formatReplace($1, anydate);
+        return format.replace(datefactory_regFormat, function(hit, $1) {
+            return datefactory_formatReplace($1, anydate);
         });
     }
 });
-}());
+/* }()); */
 C['Rollover'] = classExtendBase({
     'init': function(config /* varless */, mine) {
         mine = this;
@@ -2976,7 +2995,7 @@ C['ExternalInterface'] = function(config) {
 
     return new ExternalIOS();
 };
-ExternalAndroid = classExtend(C['HashQuery'], {
+ExternalAndroid = classExtend(HashQuery, {
     'init': function(config) {
         // this._android = config['android'];
         // this._externalObj = config['externalObj'];
@@ -2997,7 +3016,7 @@ ExternalAndroid = classExtend(C['HashQuery'], {
         delete this._config['externalObj'][name];
     }
 });
-ExternalIOS = classExtend(C['HashQuery'], {
+ExternalIOS = classExtend(HashQuery, {
     'init': function() {
         this._ios = {};
     },
@@ -3033,6 +3052,16 @@ ExternalIOS = classExtend(C['HashQuery'], {
     }
 });
 C['Facebook'] = classExtendBase({
+    _firstload: apifirstload,
+    'includeAPI': function() {
+        if ($id('fb-root')) {
+            append(doc.body, create('div', {
+                id: 'fb-root'
+            }));
+        }
+
+        this._firstload('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
+    },
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +
         'app_id=' + vars['app_id'] + '&' +
@@ -3173,7 +3202,7 @@ ElementLoad = classExtendObserver({
 C['ImgLoad'] = classExtend(ElementLoad, {
     _tagname: 'img'
 });
-C['ScriptLoad'] = classExtend(ElementLoad, {
+ScriptLoad = C['ScriptLoad'] = classExtend(ElementLoad, {
     _tagname: 'script',
     _loadloop: function(el) {
         append(doc_head, el);
@@ -3526,29 +3555,29 @@ WindowAction = classExtendBase({
         this._uncontract(this._attachid);
     }
 });
-C['DeviceOrientation'] = function(config) {
+DeviceOrientation = C['DeviceOrientation'] = function(config) {
     config['e'] = 'deviceorientation';
     return WindowAction(config);
 };
-C['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
-C['DeviceMotion'] = function(config) {
+DeviceOrientation['support'] = 'ondeviceorientation' in win;
+DeviceMotion = C['DeviceMotion'] = function(config) {
     config['e'] = 'devicemotion';
     return WindowAction(config);
 };
-C['DeviceMotion']['support'] = 'ondevicemotion' in win;
+DeviceMotion['support'] = 'ondevicemotion' in win;
 /* (function() { */
 // var deviceshake_Shake,
 //     deviceshake_convert;
 
 /* if (C['mobile']['isMobile']()) { */
-    if (C['DeviceOrientation']['support']) {
-        deviceshake_Shake = C['DeviceOrientation'];
+    if (DeviceOrientation['support']) {
+        deviceshake_Shake = DeviceOrientation;
         deviceshake_convert = function(e) {
             return e;
         };
     }
-    else if (C['DeviceMotion']['support']) {
-        deviceshake_Shake = C['DeviceMotion'];
+    else if (DeviceMotion['support']) {
+        deviceshake_Shake = DeviceMotion;
         deviceshake_convert = function(e) {
             return e['rotationRate'];
         };
@@ -3871,6 +3900,10 @@ C['Throttle'] = classExtendBase({
     }
 });
 C['Twitter'] = classExtendBase({
+    _firstload: apifirstload,
+    'includeAPI': function() {
+        this._firstload('twitter-wjs', '//platform.twitter.com/widgets.js');
+    },
     'shareURL': function(vars) {
         var name = vars['name'],
             hash = vars['hash'];
@@ -3917,7 +3950,7 @@ C['Model'] = classExtendBase({
 
         mine._validate = config['validate'] || mine['validate'] || {};
         mine._store = config['store'] || mine['store'] || new C['DataStore']();
-        mine._observer = new C['Observer']();
+        mine._observer = new Observer();
 
         for (i in defaults) {
             mine['set'](i, defaults[i]);
@@ -4065,7 +4098,7 @@ C['Ollection'] = classExtend(C['Model'], {
             new C['DataStore']({
                 'array': TRUE
             });
-        mine._observer = new C['Observer']();
+        mine._observer = new Observer();
 
         for (i in defaults) {
             mine['set'](i, defaults[i]);
@@ -4123,7 +4156,7 @@ C['Ollection'] = classExtend(C['Model'], {
         }
     }
 });
-C['Validate'] = classExtendBase({
+Validate = C['Validate'] = classExtendBase({
     _check: function(is, key, value, txt) {
         if (is(value)) {
             return TRUE;
@@ -4176,7 +4209,7 @@ C['Validate'] = classExtendBase({
         return this._check(isArray, key, value, 'Array');
     }
 });
-C['validate'] = new C['Validate']();
+C['validate'] = new Validate();
 C['Scroll'] = classExtendBase({
     'dispose': function() {
         this['revival']();
@@ -4408,7 +4441,7 @@ function C_require_async(cls, required, srcpath, callback) {
         return callback(cls);
     }
 
-    new C['ScriptLoad']({
+    new ScriptLoad({
         'srcs': [
             srcpath
         ],
@@ -4501,4 +4534,4 @@ C['namespace'] = function(keyword, arg) {
 if ($_methods) {
     $base.prototype = $_methods;
 }
-/* }()); */
+})();

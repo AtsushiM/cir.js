@@ -1,5 +1,5 @@
-C['DeviceOrientation'] = function(config) {
+DeviceOrientation = C['DeviceOrientation'] = function(config) {
     config['e'] = 'deviceorientation';
     return WindowAction(config);
 };
-C['DeviceOrientation']['support'] = 'ondeviceorientation' in win;
+DeviceOrientation['support'] = 'ondeviceorientation' in win;

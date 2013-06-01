@@ -21,7 +21,7 @@ function C_require_async(cls, required, srcpath, callback) {
         return callback(cls);
     }
 
-    new C['ScriptLoad']({
+    new ScriptLoad({
         'srcs': [
             srcpath
         ],
