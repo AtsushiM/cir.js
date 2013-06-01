@@ -24,9 +24,10 @@ C['WindowLoad'] = classExtendObserver({
     },
     _fire_complete: this_fire_complete,
     _fire_start: this_fire_start,
-    'start': function() {
-        var that = this,
-            disposeid;
+    'start': function(/* varless */that, disposeid) {
+        // var that = this,
+        //     disposeid;
+        that = this;
 
         that._fire_start();
 

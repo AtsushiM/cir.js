@@ -88,10 +88,11 @@ SSTrans = C['SSTrans'] =
         }
     },
     _isStoped: FALSE,
-    'stop': function() {
-        this._isStoped = TRUE;
-        this['fire']('stop');
-        this._stop();
+    'stop': function(that) {
+        that = this;
+        that._isStoped = TRUE;
+        that['fire']('stop');
+        that._stop();
     }
 }, sstrans_ret.support);
 

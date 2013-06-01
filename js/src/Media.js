@@ -1,10 +1,11 @@
 Media = classExtendBase({
     'init': function(config) {
-        var mine = this,
+        var that = this,
             autoplay = config['autoplay'],
             loop = config['loop'],
             media,
             ev_canplay = 'canplay',
+            autoplayid,
             _parent = config['el'] || doc.body;
 
         config['preload'] = 'auto';
@@ -19,27 +20,26 @@ Media = classExtendBase({
             default:
                 media = Video(config);
         }
-        mine._el = media;
+        that._el = media;
 
         if (media) {
             if (autoplay) {
-                var autoplayid;
                 autoplay = function() {
-                    mine._uncontract(autoplayid);
-                    mine['play']();
+                    that._uncontract(autoplayid);
+                    that['play']();
                 };
 
-                autoplayid = mine._contract(media, ev_canplay, autoplay);
+                autoplayid = that._contract(media, ev_canplay, autoplay);
             }
             if (loop) {
-                mine['loop'](TRUE);
+                that['loop'](TRUE);
             }
 
             if (config['oncanplay']) {
-                mine._contract(media, ev_canplay, config['oncanplay']);
+                that._contract(media, ev_canplay, config['oncanplay']);
             }
             if (config['onended']) {
-                mine._contract(media, ev_ended, config['onended']);
+                that._contract(media, ev_ended, config['onended']);
             }
 
             append(_parent, media);
@@ -61,20 +61,20 @@ Media = classExtendBase({
     'setCurrent': function(num) {
         this._el.currentTime = num;
     },
-    'loop': function(bool /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'loop': function(bool /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        if (mine._loopid) {
-            mine._uncontract(mine._loopid);
-            delete mine._loopid;
+        if (that._loopid) {
+            that._uncontract(that._loopid);
+            delete that._loopid;
         }
 
         if (bool) {
-            mine._loopid =
-            mine._contract(mine._el, ev_ended, function() {
-                mine['stop']();
-                mine['play']();
+            that._loopid =
+            that._contract(that._el, ev_ended, function() {
+                that['stop']();
+                that['play']();
             });
         }
     },

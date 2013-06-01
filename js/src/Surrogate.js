@@ -9,17 +9,17 @@ C['Surrogate'] = classExtendBase({
         this['clear']();
         this['_super']();
     },
-    'request': function(arg /* varless */, mine) {
-        mine = this;
+    'request': function(arg /* varless */, that) {
+        that = this;
 
-        mine._args = arg;
-        mine['clear']();
-        mine._waitid = setTimeout(mine['flush'], mine._delay, mine);
+        that._args = arg;
+        that['clear']();
+        that._waitid = setTimeout(that['flush'], that._delay, that);
     },
-    'flush': function(mine) {
-        mine = mine || this;
+    'flush': function(that) {
+        that = that || this;
 
-        mine._callback(mine._args);
+        that._callback(that._args);
     },
     'clear': function() {
         clearTimeout(this._waitid);

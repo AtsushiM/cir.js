@@ -5,15 +5,15 @@ Validate = C['Validate'] = classExtendBase({
         }
         this['displayError'](key, txt);
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
         config = config || {};
 
-        /* mine._level = config['level'] || 'warn'; */
-        mine._level = config['level'];
+        /* that._level = config['level'] || 'warn'; */
+        that._level = config['level'];
 
-        owner(mine, mine, config);
+        owner(that, that, config);
     },
     'displayError': function(key, text) {
         text = 'Validate Error:' + key + ' is ' + text + '.';

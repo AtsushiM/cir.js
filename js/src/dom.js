@@ -162,7 +162,7 @@ function append(el, addel) {
     return el['appendChild'](addel);
 }
 function beforeafter(el, addel, target) {
-    return parent(el).insertBefore(addel, target);
+    return parent(el)['insertBefore'](addel, target);
 }
 function before(el, addel) {
     return beforeafter(el, addel, el);

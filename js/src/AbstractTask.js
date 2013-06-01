@@ -1,23 +1,26 @@
 AbstractTask = classExtendObserver({
-    'init': function(config) {
-        this['_super']();
+    'init': function(config/* varless */, that, queue) {
+        that = this;
+
+        that['_super']();
 
         config = config || NULLOBJ;
 
-        var queue = copyArray(config['queue']) || [],
-            len = queue.length,
-            i, temp;
+        /* var queue = copyArray(config['queue']) || []; */
+        queue = copyArray(config['queue']) || [];
 
-        bindOnProp(this, config);
+        bindOnProp(that, config);
 
-        this['resetQueue'](queue);
-        this._done = proxy(this, this._done);
+        that['resetQueue'](queue);
+        that._done = proxy(that, that._done);
     },
     _fire_start: this_fire_start,
-    'start': function() {
-        this._fire_start();
-        this._paused = FALSE;
-        this._exeQueue();
+    'start': function(/* varless */that) {
+        that = this;
+
+        that._fire_start();
+        that._paused = FALSE;
+        that._exeQueue();
     },
     'restart': function(queue) {
         this['resetQueue'](queue);
@@ -31,20 +34,23 @@ AbstractTask = classExtendObserver({
         this._paused = TRUE;
         this['fire']('pause');
     },
-    'resume': function() {
-        if (this._paused) {
-            this['fire']('resume');
-            this._paused = FALSE;
-            this._exeQueue();
+    'resume': function(/* varles */that) {
+        that = this;
+
+        if (that._paused) {
+            that['fire']('resume');
+            that._paused = FALSE;
+            that._exeQueue();
         }
     },
-    'resetQueue': function(queue) {
+    'resetQueue': function(queue/* varless */, that, i) {
+        that = this;
+
         if (queue) {
-            this._orgqueue = copyArray(queue);
+            that._orgqueue = copyArray(queue);
         }
 
-        var _queue = this._queue = copyArray(this._orgqueue),
-            i;
+        var _queue = that._queue = copyArray(that._orgqueue);
 
         for (i in _queue) {
             if (_queue[i]['resetQueue']) {
@@ -52,7 +58,7 @@ AbstractTask = classExtendObserver({
             }
         }
 
-        this['fire']('reset');
+        that['fire']('reset');
     },
     _noticeChange: function() {
         this['fire']('change', this['getQueue']());
@@ -64,26 +70,32 @@ AbstractTask = classExtendObserver({
     'getQueue': function() {
         return copyArray(this._queue);
     },
-    'addTask': function(task, priority) {
+    'addTask': function(task, priority/* varless */, that) {
+        that = this;
+
         if (
             !isNumber(priority) ||
-            priority > this._queue.length
+            priority > that._queue.length
         ) {
-            priority = this._queue.length;
+            priority = that._queue.length;
         }
 
-        this._queue.splice(priority, 0, task);
+        that._queue.splice(priority, 0, task);
 
-        this._noticeChange();
+        that._noticeChange();
     },
-    'removeTask': function(task) {
-        var i = 0,
-            len = this._queue.length;
+    'removeTask': function(task/* varless */, that, i, len) {
+        that = this;
+
+        // var i = 0,
+        //     len = that._queue.length;
+        i = 0,
+        len = that._queue.length;
 
         for (; i < len; i++ ) {
-            if (this._queue[i] === task) {
-                this._queue.splice(i, 1);
-                this._noticeChange();
+            if (that._queue[i] === task) {
+                that._queue.splice(i, 1);
+                that._noticeChange();
 
                 break;
             }
@@ -95,9 +107,10 @@ AbstractTask = classExtendObserver({
             this._exe();
         }
     },
-    _asyncAction: function(task) {
-        var that = this,
-            org_action;
+    _asyncAction: function(task /* varless */, that) {
+        that = this;
+
+        var org_action;
 
         if (task['one'] && task['start']) {
             task['one']('complete', proxy(that, that._done));

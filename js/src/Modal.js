@@ -1,23 +1,23 @@
 C['Modal'] = classExtendBase({
-    _closeDetach: function(/* varless */ mine) {
-        mine = this;
+    _closeDetach: function(/* varless */ that) {
+        that = this;
 
-        var i = mine._contractid.length;
+        var i = that._contractid.length;
 
         for (; i--;) {
-            mine._uncontract(mine._contractid[i]);
+            that._uncontract(that._contractid[i]);
         }
 
-        mine._contractid = [];
+        that._contractid = [];
     },
-    'init': function(config /* varless */, mine, commoncss) {
-        mine = this;
+    'init': function(config /* varless */, that, commoncss) {
+        that = this;
         config = config || NULLOBJ;
 
-        // mine._html = config['html'];
-        // mine._bgClose = config['bgClose'];
-        // mine._closeSelector = config['closeSelector'];
-        mine._config = config;
+        // that._html = config['html'];
+        // that._bgClose = config['bgClose'];
+        // that._closeSelector = config['closeSelector'];
+        that._config = config;
 
         /* var commoncss = { */
         commoncss = {
@@ -25,102 +25,102 @@ C['Modal'] = classExtendBase({
             'position': 'absolute'
         };
 
-        mine._scroll = new C['Scroll']();
+        that._scroll = new C['Scroll']();
 
-        mine._contractid = [];
+        that._contractid = [];
 
-        mine._bg = create('div', {
+        that._bg = create('div', {
             'class': 'cir-modal-bg'
         });
-        css(mine._bg, override({
+        css(that._bg, override({
             'z-index': '9998',
             'top': 0,
             'left': 0,
             'width': '100%',
             'height': '200%'
         }, commoncss));
-        append(doc.body, mine._bg);
+        append(doc.body, that._bg);
 
-        mine._inner = create('div', {
+        that._inner = create('div', {
             'class': 'cir-modal-content'
         });
-        css(mine._inner, override({
+        css(that._inner, override({
             'z-index': '9999',
             'top': '50%',
             'left': '50%'
         }, commoncss));
-        append(doc.body, mine._inner);
+        append(doc.body, that._inner);
 
         if (!config['manual']) {
-            mine['open']();
+            that['open']();
         }
     },
-    'dispose': function(/* varless */ mine) {
-        mine = this;
+    'dispose': function(/* varless */ that) {
+        that = this;
 
-        mine['close']();
-        remove(mine._bg);
-        remove(mine._inner);
+        that['close']();
+        remove(that._bg);
+        remove(that._inner);
 
-        mine['_super']();
+        that['_super']();
     },
-    'open': function(text /* varless */, mine) {
-        mine = this;
+    'open': function(text /* varless */, that) {
+        that = this;
 
-        mine._scroll['kill']();
-        css(mine._bg, {
+        that._scroll['kill']();
+        css(that._bg, {
             'top': doc.body.scrollTop
         });
 
-        show(mine._bg);
+        show(that._bg);
 
-        mine['inner'](text);
+        that['inner'](text);
     },
-    'close': function(/* varless */ mine) {
-        mine = this;
+    'close': function(/* varless */ that) {
+        that = this;
 
-        mine._closeDetach();
+        that._closeDetach();
 
-        html(mine._inner, EMPTY);
-        hide(mine._inner);
-        hide(mine._bg);
+        html(that._inner, EMPTY);
+        hide(that._inner);
+        hide(that._bg);
 
-        mine._scroll['revival']();
+        that._scroll['revival']();
     },
-    'inner': function(text /* varless */, mine, computed, close, i) {
-        mine = this;
+    'inner': function(text /* varless */, that, computed, close, i) {
+        that = this;
 
         // var computed,
         //     close;
 
-        mine._closeDetach();
+        that._closeDetach();
 
-        text = text || mine._config['html'];
+        text = text || that._config['html'];
 
-        html(mine._inner, text);
-        show(mine._inner);
+        html(that._inner, text);
+        show(that._inner);
 
-        computed = computedStyle(mine._inner);
+        computed = computedStyle(that._inner);
 
-        css(mine._inner, {
+        css(that._inner, {
             'margin-top':
             doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
-        if (mine._config['bgClose']) {
-            mine._contract(mine._bg, ev['CLICK'], proxy(mine, mine['close']));
+        if (that._config['bgClose']) {
+            that._contract(that._bg, ev['CLICK'], proxy(that, that['close']));
         }
 
-        if (mine._config['closeSelector']) {
-            close = $$child(mine._config['closeSelector'], mine._inner),
+        if (that._config['closeSelector']) {
+            close = $$child(that._config['closeSelector'], that._inner),
                 i = close.length;
 
             for (; i--;) {
-                mine._contractid.push(
-                    mine._contract(close[i],
+                that._contractid.push(
+                    that._contract(close[i],
                     ev['CLICK'],
-                    proxy(mine, mine['close']))
+                    proxy(that, that['close']))
                 );
             }
         }

@@ -2,9 +2,9 @@ Observer = C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
     },
-    'on': function(key, func /* varless */, mine, observed) {
-        mine = this;
-        observed = mine._observed;
+    'on': function(key, func /* varless */, that, observed) {
+        that = this;
+        observed = that._observed;
 
         if (!observed[key]) {
             observed[key] = [];
@@ -12,27 +12,29 @@ Observer = C['Observer'] = classExtendBase({
 
         observed[key].push(func);
     },
-    'one': function(key, func /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'one': function(key, func /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        mine['on'](key, wrapfunc);
+        that['on'](key, wrapfunc);
 
         function wrapfunc(vars) {
             func(vars);
-            mine['off'](key, wrapfunc);
+            that['off'](key, wrapfunc);
         }
     },
-    'off': function(key, func /* varless */, mine) {
-        mine = this;
-
-        var observed = mine._observed,
-            target = observed[key],
-            i;
+    'off': function(key, func /* varless */, that, observed, target, i) {
+        // var observed = that._observed,
+        //     target = observed[key],
+        //     i;
+        that = this;
+        observed = that._observed;
 
         if (!func) {
             return delete observed[key];
         }
+
+        target = observed[key];
 
         if (target) {
             for (i = target.length; i--;) {
@@ -50,7 +52,7 @@ Observer = C['Observer'] = classExtendBase({
 
         return FALSE;
     },
-    'fire': function(key, args___) {
+    'fire': function(key) {
         var target = this._observed[key],
             args,
             func,

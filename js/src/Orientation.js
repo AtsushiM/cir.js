@@ -1,70 +1,72 @@
 C['Orientation'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._config = config;
+        that._config = config;
 
-        mine._contractid = [];
+        that._contractid = [];
 
-        mine._portrait = {
+        that._portrait = {
             'portrait': TRUE,
             'landscape': FALSE
         };
-        mine._landscape = {
+        that._landscape = {
             'portrait': FALSE,
             'landscape': TRUE
         };
 
-        mine['attach']();
+        that['attach']();
     },
-    'get': function(/* varless */ mine) {
-        mine = this;
+    'get': function(/* varless */ that) {
+        that = this;
 
         if (isNumber(win.orientation)) {
             if (Math.abs(win.orientation) != 90) {
-                return mine._portrait;
+                return that._portrait;
             }
 
-            return mine._landscape;
+            return that._landscape;
         }
 
         if (
             win.innerWidth < win.innerHeight
         ) {
-            return mine._portrait;
+            return that._portrait;
         }
 
-        return mine._landscape;
+        return that._landscape;
     },
-    'fire': function(/* varless */ mine) {
-        mine = this;
+    'fire': function(/* varless */ that) {
+        that = this;
 
         if (
-            mine['get']()['portrait']
+            that['get']()['portrait']
         ) {
-            return mine._config['portrait']();
+            return that._config['portrait']();
         }
-        mine._config['landscape']();
+        that._config['landscape']();
     },
-    'attach': function(vars /* varless */, mine) {
-        mine = this;
+    'attach': function(vars /* varless */, that, proxyed) {
+        that = this;
 
-        var proxyed = proxy(mine, mine['fire']);
-        mine._contractid.push(
-            mine._contract(win, ev['LOAD'], proxyed),
-            mine._contract(win, ev_orientationchange, proxyed),
-            mine._contract(win, ev['RESIZE'], proxyed)
+        /* var proxyed = proxy(that, that['fire']); */
+        proxyed = proxy(that, that['fire']);
+        that._contractid.push(
+            that._contract(win, ev['LOAD'], proxyed),
+            that._contract(win, ev_orientationchange, proxyed),
+            that._contract(win, ev['RESIZE'], proxyed)
         );
     },
-    'detach': function(/* varless */ mine) {
-        mine = this;
+    'detach': function(/* varless */ that, i) {
+        that = this;
 
-        var i = mine._contractid.length;
+        /* var i = that._contractid.length; */
+        i = that._contractid.length;
 
         for (; i--;) {
-            mine._uncontract(mine._contractid[i]);
+            that._uncontract(that._contractid[i]);
         }
 
-        mine._contractid = [];
+        that._contractid = [];
     }
 }, 'onorientationchange' in win);

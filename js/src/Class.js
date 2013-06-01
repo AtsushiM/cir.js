@@ -1,9 +1,10 @@
-C['lass'] = function() {};
+Class = C['lass'] = function() {};
 
 /* (function() { */
-    C['lass']['extend'] = function(props) {
-        var SuperClass = this,
-            i;
+    Class['extend'] = function(props/* varless */, SuperClass, i) {
+        // var SuperClass = this,
+        //     i;
+        SuperClass = this;
 
         function Class() {
             if (!class_initializing && this['init']) {
@@ -58,7 +59,7 @@ C['lass'] = function() {};
 /* }()); */
 
 function classExtend(cls, prop, support) {
-    cls = cls || C['lass'];
+    cls = cls || Class;
 
     var klass = cls['extend'](prop);
 

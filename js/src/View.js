@@ -1,45 +1,45 @@
 C['View'] = classExtendBase({
-    'init': function(config /* varless */, mine, i) {
-        mine = this;
+    'init': function(config /* varless */, that, i) {
+        that = this;
 
         /* var i; */
 
         if (!config) {
-            config = owner(mine, mine, {});
+            config = owner(that, that, {});
         }
         else {
-            config = owner(mine, config);
+            config = owner(that, config);
         }
 
-        mine['el'] = C['$'](config['el'] || mine['el'] || create('div'));
+        that['el'] = C['$'](config['el'] || that['el'] || create('div'));
 
-        mine['attach']();
+        that['attach']();
         if (config['init']) {
-            mine['init']();
+            that['init']();
         }
     },
     'dispose': function() {
         this['detach']();
         this['_super']();
     },
-    _e: function(methodname /* varless */, mine, i, j, $el, events) {
-        mine = this;
+    _e: function(methodname /* varless */, that, i, j, $el, events) {
+        that = this;
 
         // var i,
         //     j,
         //     $el,
-            events = mine['events'];
+            events = that['events'];
 
         for (i in events) {
             if (i == 'me') {
-                $el = mine['el'];
+                $el = that['el'];
             }
             else {
-                $el = mine['el'].find(i);
+                $el = that['el'].find(i);
             }
 
             for (j in events[i]) {
-                $el[methodname](j, mine[events[i][j]]);
+                $el[methodname](j, that[events[i][j]]);
             }
         }
     },

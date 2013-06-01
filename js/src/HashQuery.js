@@ -1,7 +1,8 @@
 HashQuery = C['HashQuery'] = classExtendBase({
-    'typeCast': function(str) {
-        var caststr = typeCast(str),
-            matchstr;
+    'typeCast': function(str/* varless */, caststr, matchstr) {
+        // var caststr = typeCast(str),
+        //     matchstr;
+        caststr = typeCast(str);
 
         if (str == caststr) {
             matchstr = str.match('^["\'](.*)["\']$');

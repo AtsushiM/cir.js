@@ -1,23 +1,23 @@
 C['Rollover'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
         var cls = config['toggleClass'] || EMPTY,
             over = config['over'] || nullFunction,
             out = config['out'] || nullFunction;
 
-        mine._els = config['els'];
+        that._els = config['els'];
 
-        mine._switchover = function() {
-            addClass(mine, cls);
+        that._switchover = function() {
+            addClass(that, cls);
             over();
         }
-        mine._switchout = function() {
-            removeClass(mine, cls);
+        that._switchout = function() {
+            removeClass(that, cls);
             out();
         }
         if (!config['manual']) {
-            mine['attach']();
+            that['attach']();
         }
     },
     'dispose': function() {
@@ -30,16 +30,16 @@ C['Rollover'] = classExtendBase({
     'detach': function() {
         this._e(off);
     },
-    _e: function(onoff /* varless */, mine, i) {
-        mine = this;
+    _e: function(onoff /* varless */, that, i) {
+        that = this;
 
-        /* var i = mine._els.length; */
-        i = mine._els.length;
+        /* var i = that._els.length; */
+        i = that._els.length;
 
         for (; i--;) {
-            onoff(mine._els[i], ev['SWITCHOVER'], mine._switchover);
-            onoff(mine._els[i], ev['SWITCHOUT'], mine._switchout);
-            onoff(mine._els[i], ev['MOUSEOUT'], mine._switchout);
+            onoff(that._els[i], ev['SWITCHOVER'], that._switchover);
+            onoff(that._els[i], ev['SWITCHOUT'], that._switchout);
+            onoff(that._els[i], ev['MOUSEOUT'], that._switchout);
         }
     }
 });

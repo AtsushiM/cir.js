@@ -37,10 +37,11 @@ $_methods['stop'] = function(/* varless */ that, i) {
     return that;
 };
 
-function selector_animate(el, params, duration, ease, callback) {
-    var style = el.style,
-        anime,
-        option;
+function selector_animate(el, params, duration, ease, callback/* varless */, style, anime, option) {
+    // var style = el.style,
+    //     anime,
+    //     option;
+    style = el.style;
 
     if (isFunction(duration)) {
         callback = duration;

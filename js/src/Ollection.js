@@ -1,33 +1,35 @@
 C['Ollection'] = classExtend(C['Model'], {
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that, i, defaults, events) {
+        that = this;
 
         config = config || NULLOBJ;
 
-        var i,
-            defaults = config['defaults'] || mine['defaults'] || [],
-            events = config['events'] || mine['events'];
+        // var i,
+        //     defaults = config['defaults'] || that['defaults'] || [],
+        //     events = config['events'] || that['events'];
+        defaults = config['defaults'] || that['defaults'] || [],
+        events = config['events'] || that['events'];
 
-        /* mine._validate = config['validate'] || mine['validate'] || {}; */
-        mine._store =
+        /* that._validate = config['validate'] || that['validate'] || {}; */
+        that._store =
             config['store'] ||
-            mine['store'] ||
+            that['store'] ||
             new C['DataStore']({
                 'array': TRUE
             });
-        mine._observer = new Observer();
+        that._observer = new Observer();
 
         for (i in defaults) {
-            mine['set'](i, defaults[i]);
+            that['set'](i, defaults[i]);
         }
         for (i in events) {
-            mine['on'](i, events[i]);
+            that['on'](i, events[i]);
         }
     },
-    'set': function(key, val /* varless */, mine) {
-        mine = this;
+    'set': function(key, val /* varless */, that, i) {
+        that = this;
 
-        var i;
+        /* var i; */
 
         /* if (typeof key !== 'object') { */
         if (!isObject(key)) {
@@ -36,40 +38,44 @@ C['Ollection'] = classExtend(C['Model'], {
             key = i;
         }
 
-        mine._prev = mine._store['get']();
+        that._prev = that._store['get']();
 
         for (i in key) {
             val = key[i];
 
             if (!isNumber(+i)) {
-                return mine._notice('fail', key, val);
+                return that._notice('fail', key, val);
             }
 
-            mine._store['set'](key, val);
-            mine._observer['fire'](ev['CHANGE'], val, +i, mine._store['get']());
+            that._store['set'](key, val);
+            that._observer['fire'](ev['CHANGE'], val, +i, that._store['get']());
         }
     },
-    'add': function(val) {
-        var collectid = this._store['get']().length;
+    'add': function(val/* varless */, collectid) {
+        /* var collectid = this._store['get']().length; */
+        collectid = this._store['get']().length;
 
         this['set'](collectid, val);
 
         return collectid;
     },
-    'each': function(callback) {
-        var i,
-            collection = this['get']();
+    'each': function(callback/* varless */, i, collection) {
+        // var i,
+        //     collection = this['get']();
+        collection = this['get']();
 
         for (i in collection) {
             callback.apply(this, [collection[i], i, collection]);
         }
     },
-    'map': function(callback) {
-        var i,
-            collection = this['get']();
+    'map': function(callback/* varless */, that, i, collection) {
+        that = this;
+        // var i,
+        //     collection = this['get']();
+        collection = that['get']();
 
         for (i in collection) {
-            this['set'](i, callback.apply(this, [collection[i], i, collection]));
+            that['set'](i, callback.apply(that, [collection[i], i, collection]));
         }
     }
 });

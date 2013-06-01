@@ -40,14 +40,14 @@ Tweener = C['Tweener'] = classExtendObserver({
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
     _fire_complete: this_fire_complete,
-    _loop: function() {
+    _loop: function(/* varless */i) {
         var that = this,
             items = Tweener.Items,
             item,
             now = dateNow(),
             time,
             n = items.length,
-            i,
+            /* i, */
             len,
             prop;
 

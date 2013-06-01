@@ -1,7 +1,8 @@
 C['Router'] = classExtendBase({
-    'init': function(config) {
-        var that = this,
-            temp;
+    'init': function(config/* varless */, that, temp) {
+        // var that = this,
+        //     temp;
+        that = this;
 
         that._config = config;
 

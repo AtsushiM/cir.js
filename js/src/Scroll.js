@@ -1,9 +1,11 @@
 C['Scroll'] = classExtendBase({
-    'dispose': function() {
-        this['revival']();
-        clearInterval(this._smoothid);
+    'dispose': function(/* varless */that) {
+        that = this;
 
-        this['_super']();
+        that['revival']();
+        clearInterval(that._smoothid);
+
+        that['_super']();
     },
     'to': scrollTo,
     'toTop': pageTop,
@@ -27,15 +29,15 @@ C['Scroll'] = classExtendBase({
 
         return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
-    'smooth': function(target, callback /* varless */, mine, max) {
-        // var mine = this,
+    'smooth': function(target, callback /* varless */, that, max) {
+        // var that = this,
         //     max;
-        mine = this;
+        that = this;
 
         callback = callback || nullFunction;
 
-        if (!mine._smoothmove) {
-            mine._smoothmove = TRUE;
+        if (!that._smoothmove) {
+            that._smoothmove = TRUE;
 
             if (!isNumber(target)) {
                 target = target.offsetTop;
@@ -46,44 +48,44 @@ C['Scroll'] = classExtendBase({
                 target = max;
             }
 
-            mine._before = mine['scrollY']();
-            mine._smoothid = setInterval(function(/* varless */ position) {
-                /* var position = mine.scrollY(); */
-                position = mine['scrollY']();
+            that._before = that['scrollY']();
+            that._smoothid = setInterval(function(/* varless */ position) {
+                /* var position = that.scrollY(); */
+                position = that['scrollY']();
 
                 position = (target - position) * 0.3 + position;
 
-                if (Math.abs(target - position) < 1 || mine._before == position) {
+                if (Math.abs(target - position) < 1 || that._before == position) {
                     scrollTo(target);
-                    clearInterval(mine._smoothid);
+                    clearInterval(that._smoothid);
                     callback(target);
-                    return delete mine._smoothmove;
+                    return delete that._smoothmove;
                 }
 
-                mine._before = position;
+                that._before = position;
                 scrollTo(position);
             }, 50);
         }
     },
-    'kill': function(/* varless */ mine) {
-        mine = this;
+    'kill': function(/* varless */ that) {
+        that = this;
 
-        if (!mine._killscrollid) {
+        if (!that._killscrollid) {
             css(doc.body, {
                 'overflow': 'hidden'
             });
-            mine._killscrollid = mine._contract(doc, ev['TOUCHMOVE'], eventPrevent);
+            that._killscrollid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
-    'revival': function(/* varless */ mine) {
-        mine = this;
+    'revival': function(/* varless */ that) {
+        that = this;
 
-        if (mine._killscrollid) {
+        if (that._killscrollid) {
             css(doc.body, {
                 'overflow': 'auto'
             });
-            mine._uncontract(mine._killscrollid);
-            delete mine._killscrollid;
+            that._uncontract(that._killscrollid);
+            delete that._killscrollid;
         }
     }
 });

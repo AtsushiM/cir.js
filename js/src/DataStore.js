@@ -13,8 +13,8 @@ C['DataStore'] = classExtendBase({
 
         this['reset']();
     },
-    'set': function(key, val) {
-        var i;
+    'set': function(key, val/* varless */, i) {
+        /* var i; */
 
         /* if (typeof key !== 'object') { */
         if (!isObject(key)) {
@@ -42,13 +42,15 @@ C['DataStore'] = classExtendBase({
 
         return ret;
     },
-    'remove': function(key) {
-        if (isDefined(this._data[key])) {
-            if (!this._array) {
-                delete this._data[key];
+    'remove': function(key/* varless */, that) {
+        that = this;
+
+        if (isDefined(that._data[key])) {
+            if (!that._array) {
+                delete that._data[key];
             }
             else {
-                this.data.splice(key, 1);
+                that.data.splice(key, 1);
             }
         }
     },

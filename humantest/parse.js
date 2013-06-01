@@ -1830,12 +1830,6 @@
                     return n
             }
             console.warn(b);
-Validate Error:test is Object.
-Validate Error:test is Number.
-Validate Error:test is String.
-Validate Error:test is Function.
-Validate Error:test is Boolean.
-Validate Error:test is Array.
             return n
         },isObject: function(a, b) {
             return this.t(Q, a, b, "Object")

@@ -6,18 +6,20 @@ var ssanime_ret = checkCSSAnimTranCheck([
     ssanime_prefix = ssanime_ret.prefix,
     ssanime_css_prefix = ssanime_ret.css_prefix,
     ssanime_event_key = ssanime_ret.event_key,
-    ssanime_sheet = ssanime_ret.sheet,
+    ssanime_sheet = ssanime_ret.sheet;
 
 SSAnime = C['SSAnime'] =
 classExtendObserver({
-    _off: function() {
-        var el = this._el,
-            end = this._end;
+    _off: function(/* varless */el, end) {
+        // var el = this._el,
+        //     end = this._end;
+        el = this._el,
+        end = this._end;
 
         off(el, ssanime_event_key + 'End', end);
         off(el, 'animationend', end);
     },
-    'init': function(el, property, option /* varless */, that) {
+    'init': function(el, property, option /* varless */, that, duration, ease, i, prop) {
         that = this;
 
         that['_super']();
@@ -33,11 +35,15 @@ classExtendObserver({
         SSAnime['id']++;
         that._id = 'ciranim' + SSAnime['id'];
 
-        var duration = option['duration'] || SSAnime['duration'],
-            // easeOutExpo
-            ease = option['ease'] || csseaseOutExpo,
-            i,
-            prop = {};
+        // var duration = option['duration'] || SSAnime['duration'],
+        //     // easeOutExpo
+        //     ease = option['ease'] || csseaseOutExpo,
+        //     i,
+        //     prop = {};
+        duration = option['duration'] || SSAnime['duration'],
+        // easeOutExpo
+        ease = option['ease'] || csseaseOutExpo,
+        prop = {};
 
         for (i in property) {
             prop[i] = property[i];
@@ -109,8 +115,9 @@ classExtendObserver({
             that._fire_complete(e);
         }
     },
-    'stop': function() {
-        var stopobj = {};
+    'stop': function(/* varless */stopobj) {
+        /* var stopobj = {}; */
+        stopobj = {};
 
         this['fire']('stop');
 
@@ -121,10 +128,13 @@ classExtendObserver({
     }
 }, ssanime_ret.support);
 
-function SSAnime_addCSSRule(id, css_prefix, duration, eases) {
-    var i = 0,
-        len = eases.length,
-        rule = EMPTY;
+function SSAnime_addCSSRule(id, css_prefix, duration, eases/* varless */, i, len, rule) {
+    // var i = 0,
+    //     len = eases.length,
+    //     rule = EMPTY;
+    i = 0,
+    len = eases.length,
+    rule = EMPTY;
 
     for (; i < len; i++) {
         rule += css_prefix + 'animation:' +

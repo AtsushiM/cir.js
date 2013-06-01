@@ -1,37 +1,37 @@
 C['Model'] = classExtendBase({
-    _notice: function(eventname, key, val /* varless */, mine) {
-        mine = this;
+    _notice: function(eventname, key, val /* varless */, that) {
+        that = this;
 
-        mine._observer['fire'](eventname, mine._store['get']());
+        that._observer['fire'](eventname, that._store['get']());
 
         if (key) {
-            mine._observer['fire'](eventname + ':' + key, val);
+            that._observer['fire'](eventname + ':' + key, val);
         }
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
         config = config || NULLOBJ;
 
         var i,
-            defaults = config['defaults'] || mine['defaults'] || NULLOBJ,
-            events = config['events'] || mine['events'];
+            defaults = config['defaults'] || that['defaults'] || NULLOBJ,
+            events = config['events'] || that['events'];
 
-        mine._validate = config['validate'] || mine['validate'] || {};
-        mine._store = config['store'] || mine['store'] || new C['DataStore']();
-        mine._observer = new Observer();
+        that._validate = config['validate'] || that['validate'] || {};
+        that._store = config['store'] || that['store'] || new C['DataStore']();
+        that._observer = new Observer();
 
         for (i in defaults) {
-            mine['set'](i, defaults[i]);
+            that['set'](i, defaults[i]);
         }
         for (i in events) {
-            mine['on'](i, events[i]);
+            that['on'](i, events[i]);
         }
     },
-    'set': function(key, val /* varless */, mine) {
-        mine = this;
+    'set': function(key, val /* varless */, that, i) {
+        that = this;
 
-        var i;
+        /* var i; */
 
         /* if (typeof key !== 'object') { */
         if (!isObject(key)) {
@@ -40,23 +40,23 @@ C['Model'] = classExtendBase({
             key = i;
         }
 
-        mine._prev = mine._store['get']();
+        that._prev = that._store['get']();
 
         for (i in key) {
             val = key[i];
 
             if (
-                mine._validate[i] &&
-                !mine._validate[i](i, val)
+                that._validate[i] &&
+                !that._validate[i](i, val)
             ) {
-                return mine._notice('fail', i, val);
+                return that._notice('fail', i, val);
             }
 
-            mine._store['set'](i, val);
-            mine._observer['fire'](ev['CHANGE'] + ':' + i, val);
+            that._store['set'](i, val);
+            that._observer['fire'](ev['CHANGE'] + ':' + i, val);
         }
 
-        mine._observer['fire'](ev['CHANGE'], mine._store['get']());
+        that._observer['fire'](ev['CHANGE'], that._store['get']());
     },
     'prev': function(key) {
         if (!key) {
@@ -67,14 +67,14 @@ C['Model'] = classExtendBase({
     'get': function(key) {
         return this._store['get'](key);
     },
-    'remove': function(key /* varless */, mine) {
-        mine = this;
+    'remove': function(key /* varless */, that) {
+        that = this;
 
         if (key) {
-            var get = mine._store['get'](key),
-                ret = mine._store['remove'](key);
+            var get = that._store['get'](key),
+                ret = that._store['remove'](key);
 
-            mine._notice('remove', key, get);
+            that._notice('remove', key, get);
 
             return ret;
         }

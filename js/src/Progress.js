@@ -2,47 +2,47 @@ Progress = C['Progress'] = classExtendBase({
     _success: 0,
     _miss: 0,
     _progress: 0,
-    _check: function(vars /* varless */, mine, state) {
-        // var mine = this,
+    _check: function(vars /* varless */, that, state) {
+        // var that = this,
         //     state = NULL;
-        mine = this;
+        that = this;
         /* state = NULL; */
 
         if (isDefined(vars)) {
-            mine._args.push(vars);
+            that._args.push(vars);
         }
 
-        mine._progress = mine._success / mine._waits;
-        if (mine._progress > 1) {
-            mine._progress = 1;
+        that._progress = that._success / that._waits;
+        if (that._progress > 1) {
+            that._progress = 1;
         }
-        mine._onprogress(mine._progress);
+        that._onprogress(that._progress);
 
-        if (mine._miss) {
+        if (that._miss) {
             state = new Error('miss');
         }
 
-        if (mine._success == mine._waits || mine._miss) {
-            mine._oncomplete(state, mine._args);
-            mine._oncomplete =
-            mine._onprogress = nullFunction;
+        if (that._success == that._waits || that._miss) {
+            that._oncomplete(state, that._args);
+            that._oncomplete =
+            that._onprogress = nullFunction;
         }
     },
-    'init': function(config /* varless */, mine, waits) {
-        // var mine = this,
+    'init': function(config /* varless */, that, waits) {
+        // var that = this,
         //     waits = config['waits'];
-        mine = this;
+        that = this;
         waits = config['waits'];
 
         if (isArray(waits)) {
             waits = waits.length;
         }
 
-        mine._waits = waits;
-        mine._oncomplete = config['oncomplete'];
-        mine._onprogress = config['onprogress'] || nullFunction;
+        that._waits = waits;
+        that._oncomplete = config['oncomplete'];
+        that._onprogress = config['onprogress'] || nullFunction;
 
-        mine._args = [];
+        that._args = [];
     },
     'getProgress': function() {
         return this._progress;
@@ -57,11 +57,11 @@ Progress = C['Progress'] = classExtendBase({
 
         this._check(vars);
     },
-    'exit': function(vars /* varless */, mine) {
-        mine = this;
+    'exit': function(vars /* varless */, that) {
+        that = this;
 
-        mine._success = mine._waits;
+        that._success = that._waits;
 
-        mine._check(vars);
+        that._check(vars);
     }
 });

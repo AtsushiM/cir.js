@@ -2,19 +2,20 @@ C['DragFlick'] = classExtendBase({
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
     },
-    _amount: function(vars) {
-        var mine = this,
-            startX,
-            startY,
-            dragflg = FALSE;
+    _amount: function(vars/* varless */, that, startX, startY, dragflg) {
+        // var that = this,
+        //     startX,
+        //     startY,
+        //     dragflg = FALSE;
+        that = this;
 
-        mine._contractid.push(
-            mine._contract(vars['el'], ev['SWITCHDOWN'], start),
-            mine._contract(win, ev['SWITCHUP'], end)
+        that._contractid.push(
+            that._contract(vars['el'], ev['SWITCHDOWN'], start),
+            that._contract(win, ev['SWITCHUP'], end)
         );
 
         function start(e) {
-            var changed = mine._t(e);
+            var changed = that._t(e);
 
             startX = changed.pageX;
             startY = changed.pageY;
@@ -25,7 +26,7 @@ C['DragFlick'] = classExtendBase({
         }
         function end(e) {
             if (dragflg) {
-                var changed = mine._t(e),
+                var changed = that._t(e),
                     amount = {
                         'x': changed.pageX - startX,
                         'y': changed.pageY - startY
@@ -77,30 +78,31 @@ C['DragFlick'] = classExtendBase({
             }
         });
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._contractid = [];
-        mine._config = config;
+        that._contractid = [];
+        that._config = config;
 
         config = config || NULLOBJ;
         if (!config['manual']) {
-            mine['attach']();
+            that['attach']();
         }
     },
-    'attach': function() {
-        var mine = this,
-            vars = this._config,
+    'attach': function(/* varless */that, flg) {
+        that = this;
+
+        var vars = this._config,
             el = vars['el'],
             start = vars['start'] || nullFunction,
             move = vars['move'] || nullFunction,
             end = vars['end'] || nullFunction,
-            flg = FALSE,
+            /* flg = FALSE, */
             startX = 0,
             startY = 0;
 
         if (vars['direction']) {
-            mine._direction({
+            that._direction({
                 'el': el,
                 'boundary': vars['boundary'],
                 'callback': vars['direction']
@@ -147,25 +149,25 @@ C['DragFlick'] = classExtendBase({
         });
 
         function eventProxy(el, ev, callback) {
-            mine._contractid.push(
-                mine._contract(el, ev, handler)
+            that._contractid.push(
+                that._contract(el, ev, handler)
             );
 
             function handler(e) {
-                callback(mine._t(e));
+                callback(that._t(e));
             }
         }
     },
-    'detach': function(/* varless */ mine) {
-        mine = this;
+    'detach': function(/* varless */ that) {
+        that = this;
 
-        var ary = mine._contractid,
+        var ary = that._contractid,
             i = ary.length;
 
         for (; i--;) {
-            mine._uncontract(ary[i]);
+            that._uncontract(ary[i]);
         }
 
-        mine._contractid = [];
+        that._contractid = [];
     }
 });

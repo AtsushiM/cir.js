@@ -43,8 +43,9 @@ function typeCast(str /* varless */, matchstr) {
 
     return str;
 }
-function toArray(obj) {
-    var ary = [];
+function toArray(obj/* varless */, ary) {
+    /* var ary = []; */
+    ary = [];
 
     ary.push.apply(ary, obj);
 

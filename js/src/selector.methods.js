@@ -42,13 +42,14 @@ $_methods = C['$'].methods = {
     'off': function() {
         return selectorForExe(this, off, arguments);
     },
-    'delegate': function(clsname, eventname, handler) {
-        var temp;
+    'delegate': function(clsname, eventname, handler/* varless */, that, temp) {
+        that = this;
+        /* var temp; */
 
-        if (!this._delegated) {
-            this._delegated = {};
+        if (!that._delegated) {
+            that._delegated = {};
         }
-        temp = this._delegated;
+        temp = that._delegated;
 
         if (!temp[eventname]) {
             temp[eventname] = {};
@@ -60,7 +61,7 @@ $_methods = C['$'].methods = {
         }
         temp = temp[clsname];
 
-        return selectorForExe(this, function() {
+        return selectorForExe(that, function() {
             var wraphandle = delegate.apply(NULL, arguments);
 
             temp.push([handler, wraphandle]);

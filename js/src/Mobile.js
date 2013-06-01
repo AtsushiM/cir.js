@@ -14,14 +14,14 @@ mb = C['Mobile'] = classExtendBase({
     'isFBAPP': function(ua) {
         return checkUserAgent(/FBAN/, ua);
     },
-    'isMobile': function(/* varless */ mine) {
-        mine = this;
+    'isMobile': function(/* varless */ that) {
+        that = this;
 
         return (
-            mine['isAndroid']() ||
-            mine['isIOS']() ||
-            mine['isWindows']() ||
-            mine['isFBAPP']()
+            that['isAndroid']() ||
+            that['isIOS']() ||
+            that['isWindows']() ||
+            that['isFBAPP']()
         );
     },
     'hideAddress': function() {

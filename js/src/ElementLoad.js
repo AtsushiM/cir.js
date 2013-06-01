@@ -35,10 +35,10 @@ ElementLoad = classExtendObserver({
         }
     },
     _fire_start: this_fire_start,
-    'start': function() {
+    'start': function(/* varless */el) {
         var that = this,
-            el,
             i = 0,
+            /* el, */
             len = that._srcs.length;
 
         that._fire_start();

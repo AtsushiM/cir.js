@@ -10,33 +10,33 @@ C['Throttle'] = classExtendBase({
         this['unlock']();
         this['_super']();
     },
-    'request': function(vars /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'request': function(vars /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        if (mine._locked) {
-            mine._args = vars;
+        if (that._locked) {
+            that._args = vars;
             return;
         }
 
-        mine._callback(vars);
-        mine['lock']();
-        mine._waitid = setTimeout(function() {
-            if (mine._args) {
-                mine._callback(mine._args);
-                mine._args = NULL;
+        that._callback(vars);
+        that['lock']();
+        that._waitid = setTimeout(function() {
+            if (that._args) {
+                that._callback(that._args);
+                that._args = NULL;
             }
 
-            mine['unlock']();
-        }, mine._waittime, mine);
+            that['unlock']();
+        }, that._waittime, that);
     },
     'lock': function() {
         this._locked = TRUE;
     },
-    'unlock': function(mine) {
-        mine = mine || this;
+    'unlock': function(that) {
+        that = that || this;
 
-        mine._locked = FALSE;
-        clearTimeout(mine._waitid);
+        that._locked = FALSE;
+        clearTimeout(that._waitid);
     }
 });

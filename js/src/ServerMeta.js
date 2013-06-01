@@ -3,19 +3,20 @@
 //     servermeta_isLoaded = FALSE;
 
 C['ServerMeta'] = classExtendBase({
-    'init': function(config) {
+    'init': function(config/* varless */, callback) {
         config = config || NULLOBJ;
 
-        var callback = config['callback'] || nullFunction;
+        /* var callback = config['callback'] || nullFunction; */
+        callback = config['callback'] || nullFunction;
 
-        if (!servermeta_xhr) {
+        if (servermeta_xhr) {
+            callback(servermeta_xhr);
+        }
+        else {
             servermeta_xhr = servermeta_getHeader(function() {
                 servermeta_isLoaded = TRUE;
                 callback(servermeta_xhr);
             });
-        }
-        else {
-            callback(servermeta_xhr);
         }
     },
     'date': function(callback) {

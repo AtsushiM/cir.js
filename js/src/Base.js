@@ -1,28 +1,28 @@
 Base = C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
-    'dispose': function(/* varless */ mine) {
-        mine = this;
+    'dispose': function(/* varless */ that, i, temp) {
+        that = this;
 
-        var i = 0,
-            temp = mine._disposestore;
+        /* var temp = that._disposestore; */
+        temp = that._disposestore;
 
         for (i in temp) {
             off.apply(NULL, temp[i]);
         }
 
-        for (i in mine) {
-            temp = mine[i];
+        for (i in that) {
+            temp = that[i];
 
             if (temp && temp['dispose']) {
                 temp['dispose']();
             }
         }
 
-        mine.__proto__ = NULL;
+        that.__proto__ = NULL;
 
-        for (i in mine) {
-            mine[i] = NULL;
-            delete mine[i];
+        for (i in that) {
+            that[i] = NULL;
+            delete that[i];
         }
 
         return NULL;

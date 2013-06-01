@@ -8,11 +8,11 @@ WindowAction = classExtendBase({
         this['attach']();
         /* } */
     },
-    'attach': function(/* varless */ mine) {
-        mine = this;
+    'attach': function(/* varless */ that) {
+        that = this;
 
-        mine['detach']();
-        mine._attachid = mine._contract(win, mine._config['e'], mine._config['callback']);
+        that['detach']();
+        that._attachid = that._contract(win, that._config['e'], that._config['callback']);
     },
     'detach': function() {
         this._uncontract(this._attachid);

@@ -1,4 +1,4 @@
-// cir.js v1.0.0 (c) 2013 Atsushi Mizoue.
+// cir.js v1.0.1 (c) 2013 Atsushi Mizoue.
 (function(){
 // Cool is Right.
 C = {};
@@ -159,6 +159,7 @@ var win = window,
     required_obj = {},
     animeframeobj,
 
+Class,
 Base,
 Observer,
 Audio,
@@ -180,6 +181,7 @@ ScriptLoad,
 DeviceOrientation,
 DeviceMotion,
 Validate,
+SSAnime,
 mb,
 pc,
 PC_browser,
@@ -243,8 +245,9 @@ function typeCast(str /* varless */, matchstr) {
 
     return str;
 }
-function toArray(obj) {
-    var ary = [];
+function toArray(obj/* varless */, ary) {
+    /* var ary = []; */
+    ary = [];
 
     ary.push.apply(ary, obj);
 
@@ -648,7 +651,7 @@ function append(el, addel) {
     return el['appendChild'](addel);
 }
 function beforeafter(el, addel, target) {
-    return parent(el).insertBefore(addel, target);
+    return parent(el)['insertBefore'](addel, target);
 }
 function before(el, addel) {
     return beforeafter(el, addel, el);
@@ -716,12 +719,13 @@ C['dom'] = {
     'toElement': toElement,
     'toElements': toElements
 };
-C['lass'] = function() {};
+Class = C['lass'] = function() {};
 
 /* (function() { */
-    C['lass']['extend'] = function(props) {
-        var SuperClass = this,
-            i;
+    Class['extend'] = function(props/* varless */, SuperClass, i) {
+        // var SuperClass = this,
+        //     i;
+        SuperClass = this;
 
         function Class() {
             if (!class_initializing && this['init']) {
@@ -776,7 +780,7 @@ C['lass'] = function() {};
 /* }()); */
 
 function classExtend(cls, prop, support) {
-    cls = cls || C['lass'];
+    cls = cls || Class;
 
     var klass = cls['extend'](prop);
 
@@ -794,29 +798,29 @@ function classExtendObserver(prop, support) {
 }
 Base = C['Base'] = classExtend(UNDEFINED, {
     _disposecountid: 0,
-    'dispose': function(/* varless */ mine) {
-        mine = this;
+    'dispose': function(/* varless */ that, i, temp) {
+        that = this;
 
-        var i = 0,
-            temp = mine._disposestore;
+        /* var temp = that._disposestore; */
+        temp = that._disposestore;
 
         for (i in temp) {
             off.apply(NULL, temp[i]);
         }
 
-        for (i in mine) {
-            temp = mine[i];
+        for (i in that) {
+            temp = that[i];
 
             if (temp && temp['dispose']) {
                 temp['dispose']();
             }
         }
 
-        mine.__proto__ = NULL;
+        that.__proto__ = NULL;
 
-        for (i in mine) {
-            mine[i] = NULL;
-            delete mine[i];
+        for (i in that) {
+            that[i] = NULL;
+            delete that[i];
         }
 
         return NULL;
@@ -830,9 +834,9 @@ Observer = C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
     },
-    'on': function(key, func /* varless */, mine, observed) {
-        mine = this;
-        observed = mine._observed;
+    'on': function(key, func /* varless */, that, observed) {
+        that = this;
+        observed = that._observed;
 
         if (!observed[key]) {
             observed[key] = [];
@@ -840,27 +844,29 @@ Observer = C['Observer'] = classExtendBase({
 
         observed[key].push(func);
     },
-    'one': function(key, func /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'one': function(key, func /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        mine['on'](key, wrapfunc);
+        that['on'](key, wrapfunc);
 
         function wrapfunc(vars) {
             func(vars);
-            mine['off'](key, wrapfunc);
+            that['off'](key, wrapfunc);
         }
     },
-    'off': function(key, func /* varless */, mine) {
-        mine = this;
-
-        var observed = mine._observed,
-            target = observed[key],
-            i;
+    'off': function(key, func /* varless */, that, observed, target, i) {
+        // var observed = that._observed,
+        //     target = observed[key],
+        //     i;
+        that = this;
+        observed = that._observed;
 
         if (!func) {
             return delete observed[key];
         }
+
+        target = observed[key];
 
         if (target) {
             for (i = target.length; i--;) {
@@ -878,7 +884,7 @@ Observer = C['Observer'] = classExtendBase({
 
         return FALSE;
     },
-    'fire': function(key, args___) {
+    'fire': function(key) {
         var target = this._observed[key],
             args,
             func,
@@ -1064,18 +1070,20 @@ var ssanime_ret = checkCSSAnimTranCheck([
     ssanime_prefix = ssanime_ret.prefix,
     ssanime_css_prefix = ssanime_ret.css_prefix,
     ssanime_event_key = ssanime_ret.event_key,
-    ssanime_sheet = ssanime_ret.sheet,
+    ssanime_sheet = ssanime_ret.sheet;
 
 SSAnime = C['SSAnime'] =
 classExtendObserver({
-    _off: function() {
-        var el = this._el,
-            end = this._end;
+    _off: function(/* varless */el, end) {
+        // var el = this._el,
+        //     end = this._end;
+        el = this._el,
+        end = this._end;
 
         off(el, ssanime_event_key + 'End', end);
         off(el, 'animationend', end);
     },
-    'init': function(el, property, option /* varless */, that) {
+    'init': function(el, property, option /* varless */, that, duration, ease, i, prop) {
         that = this;
 
         that['_super']();
@@ -1091,11 +1099,15 @@ classExtendObserver({
         SSAnime['id']++;
         that._id = 'ciranim' + SSAnime['id'];
 
-        var duration = option['duration'] || SSAnime['duration'],
-            // easeOutExpo
-            ease = option['ease'] || csseaseOutExpo,
-            i,
-            prop = {};
+        // var duration = option['duration'] || SSAnime['duration'],
+        //     // easeOutExpo
+        //     ease = option['ease'] || csseaseOutExpo,
+        //     i,
+        //     prop = {};
+        duration = option['duration'] || SSAnime['duration'],
+        // easeOutExpo
+        ease = option['ease'] || csseaseOutExpo,
+        prop = {};
 
         for (i in property) {
             prop[i] = property[i];
@@ -1167,8 +1179,9 @@ classExtendObserver({
             that._fire_complete(e);
         }
     },
-    'stop': function() {
-        var stopobj = {};
+    'stop': function(/* varless */stopobj) {
+        /* var stopobj = {}; */
+        stopobj = {};
 
         this['fire']('stop');
 
@@ -1179,10 +1192,13 @@ classExtendObserver({
     }
 }, ssanime_ret.support);
 
-function SSAnime_addCSSRule(id, css_prefix, duration, eases) {
-    var i = 0,
-        len = eases.length,
-        rule = EMPTY;
+function SSAnime_addCSSRule(id, css_prefix, duration, eases/* varless */, i, len, rule) {
+    // var i = 0,
+    //     len = eases.length,
+    //     rule = EMPTY;
+    i = 0,
+    len = eases.length,
+    rule = EMPTY;
 
     for (; i < len; i++) {
         rule += css_prefix + 'animation:' +
@@ -1287,10 +1303,11 @@ SSTrans = C['SSTrans'] =
         }
     },
     _isStoped: FALSE,
-    'stop': function() {
-        this._isStoped = TRUE;
-        this['fire']('stop');
-        this._stop();
+    'stop': function(that) {
+        that = this;
+        that._isStoped = TRUE;
+        that['fire']('stop');
+        that._stop();
     }
 }, sstrans_ret.support);
 
@@ -1403,14 +1420,14 @@ Tweener = C['Tweener'] = classExtendObserver({
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
     _fire_complete: this_fire_complete,
-    _loop: function() {
+    _loop: function(/* varless */i) {
         var that = this,
             items = Tweener.Items,
             item,
             now = dateNow(),
             time,
             n = items.length,
-            i,
+            /* i, */
             len,
             prop;
 
@@ -1592,13 +1609,14 @@ $_methods = C['$'].methods = {
     'off': function() {
         return selectorForExe(this, off, arguments);
     },
-    'delegate': function(clsname, eventname, handler) {
-        var temp;
+    'delegate': function(clsname, eventname, handler/* varless */, that, temp) {
+        that = this;
+        /* var temp; */
 
-        if (!this._delegated) {
-            this._delegated = {};
+        if (!that._delegated) {
+            that._delegated = {};
         }
-        temp = this._delegated;
+        temp = that._delegated;
 
         if (!temp[eventname]) {
             temp[eventname] = {};
@@ -1610,7 +1628,7 @@ $_methods = C['$'].methods = {
         }
         temp = temp[clsname];
 
-        return selectorForExe(this, function() {
+        return selectorForExe(that, function() {
             var wraphandle = delegate.apply(NULL, arguments);
 
             temp.push([handler, wraphandle]);
@@ -1744,10 +1762,11 @@ $_methods['stop'] = function(/* varless */ that, i) {
     return that;
 };
 
-function selector_animate(el, params, duration, ease, callback) {
-    var style = el.style,
-        anime,
-        option;
+function selector_animate(el, params, duration, ease, callback/* varless */, style, anime, option) {
+    // var style = el.style,
+    //     anime,
+    //     option;
+    style = el.style;
 
     if (isFunction(duration)) {
         callback = duration;
@@ -1816,9 +1835,10 @@ function selector_convertTweenerParam(el, params) {
 }
 /* }()); */
 HashQuery = C['HashQuery'] = classExtendBase({
-    'typeCast': function(str) {
-        var caststr = typeCast(str),
-            matchstr;
+    'typeCast': function(str/* varless */, caststr, matchstr) {
+        // var caststr = typeCast(str),
+        //     matchstr;
+        caststr = typeCast(str);
 
         if (str == caststr) {
             matchstr = str.match('^["\'](.*)["\']$');
@@ -1928,11 +1948,12 @@ function embedSupportCheck(type, suffix) {
 }
 Media = classExtendBase({
     'init': function(config) {
-        var mine = this,
+        var that = this,
             autoplay = config['autoplay'],
             loop = config['loop'],
             media,
             ev_canplay = 'canplay',
+            autoplayid,
             _parent = config['el'] || doc.body;
 
         config['preload'] = 'auto';
@@ -1947,27 +1968,26 @@ Media = classExtendBase({
             default:
                 media = Video(config);
         }
-        mine._el = media;
+        that._el = media;
 
         if (media) {
             if (autoplay) {
-                var autoplayid;
                 autoplay = function() {
-                    mine._uncontract(autoplayid);
-                    mine['play']();
+                    that._uncontract(autoplayid);
+                    that['play']();
                 };
 
-                autoplayid = mine._contract(media, ev_canplay, autoplay);
+                autoplayid = that._contract(media, ev_canplay, autoplay);
             }
             if (loop) {
-                mine['loop'](TRUE);
+                that['loop'](TRUE);
             }
 
             if (config['oncanplay']) {
-                mine._contract(media, ev_canplay, config['oncanplay']);
+                that._contract(media, ev_canplay, config['oncanplay']);
             }
             if (config['onended']) {
-                mine._contract(media, ev_ended, config['onended']);
+                that._contract(media, ev_ended, config['onended']);
             }
 
             append(_parent, media);
@@ -1989,20 +2009,20 @@ Media = classExtendBase({
     'setCurrent': function(num) {
         this._el.currentTime = num;
     },
-    'loop': function(bool /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'loop': function(bool /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        if (mine._loopid) {
-            mine._uncontract(mine._loopid);
-            delete mine._loopid;
+        if (that._loopid) {
+            that._uncontract(that._loopid);
+            delete that._loopid;
         }
 
         if (bool) {
-            mine._loopid =
-            mine._contract(mine._el, ev_ended, function() {
-                mine['stop']();
-                mine['play']();
+            that._loopid =
+            that._contract(that._el, ev_ended, function() {
+                that['stop']();
+                that['play']();
             });
         }
     },
@@ -2104,7 +2124,7 @@ C['Ajax'] = classExtendObserver({
             query = EMPTY;
         }
 
-        this._query = query;
+        that._query = query;
 
         openargs = [type, url];
 
@@ -2124,13 +2144,17 @@ C['Ajax'] = classExtendObserver({
         }
     },
     _fire_start: this_fire_start,
-    'start': function() {
-        this._fire_start();
-        this._xhr.send(this._query);
+    'start': function(/* varless */that) {
+        that = this;
+
+        that._fire_start();
+        that._xhr.send(that._query);
     },
-    'stop': function() {
-        this._xhr.abort();
-        this['fire']('stop', this._xhr);
+    'stop': function(/* varless */that) {
+        that = this;
+
+        that._xhr.abort();
+        that['fire']('stop', that._xhr);
     },
     _query: function(config) {
         var query = config['query'];
@@ -2168,47 +2192,47 @@ Progress = C['Progress'] = classExtendBase({
     _success: 0,
     _miss: 0,
     _progress: 0,
-    _check: function(vars /* varless */, mine, state) {
-        // var mine = this,
+    _check: function(vars /* varless */, that, state) {
+        // var that = this,
         //     state = NULL;
-        mine = this;
+        that = this;
         /* state = NULL; */
 
         if (isDefined(vars)) {
-            mine._args.push(vars);
+            that._args.push(vars);
         }
 
-        mine._progress = mine._success / mine._waits;
-        if (mine._progress > 1) {
-            mine._progress = 1;
+        that._progress = that._success / that._waits;
+        if (that._progress > 1) {
+            that._progress = 1;
         }
-        mine._onprogress(mine._progress);
+        that._onprogress(that._progress);
 
-        if (mine._miss) {
+        if (that._miss) {
             state = new Error('miss');
         }
 
-        if (mine._success == mine._waits || mine._miss) {
-            mine._oncomplete(state, mine._args);
-            mine._oncomplete =
-            mine._onprogress = nullFunction;
+        if (that._success == that._waits || that._miss) {
+            that._oncomplete(state, that._args);
+            that._oncomplete =
+            that._onprogress = nullFunction;
         }
     },
-    'init': function(config /* varless */, mine, waits) {
-        // var mine = this,
+    'init': function(config /* varless */, that, waits) {
+        // var that = this,
         //     waits = config['waits'];
-        mine = this;
+        that = this;
         waits = config['waits'];
 
         if (isArray(waits)) {
             waits = waits.length;
         }
 
-        mine._waits = waits;
-        mine._oncomplete = config['oncomplete'];
-        mine._onprogress = config['onprogress'] || nullFunction;
+        that._waits = waits;
+        that._oncomplete = config['oncomplete'];
+        that._onprogress = config['onprogress'] || nullFunction;
 
-        mine._args = [];
+        that._args = [];
     },
     'getProgress': function() {
         return this._progress;
@@ -2223,34 +2247,37 @@ Progress = C['Progress'] = classExtendBase({
 
         this._check(vars);
     },
-    'exit': function(vars /* varless */, mine) {
-        mine = this;
+    'exit': function(vars /* varless */, that) {
+        that = this;
 
-        mine._success = mine._waits;
+        that._success = that._waits;
 
-        mine._check(vars);
+        that._check(vars);
     }
 });
 AbstractTask = classExtendObserver({
-    'init': function(config) {
-        this['_super']();
+    'init': function(config/* varless */, that, queue) {
+        that = this;
+
+        that['_super']();
 
         config = config || NULLOBJ;
 
-        var queue = copyArray(config['queue']) || [],
-            len = queue.length,
-            i, temp;
+        /* var queue = copyArray(config['queue']) || []; */
+        queue = copyArray(config['queue']) || [];
 
-        bindOnProp(this, config);
+        bindOnProp(that, config);
 
-        this['resetQueue'](queue);
-        this._done = proxy(this, this._done);
+        that['resetQueue'](queue);
+        that._done = proxy(that, that._done);
     },
     _fire_start: this_fire_start,
-    'start': function() {
-        this._fire_start();
-        this._paused = FALSE;
-        this._exeQueue();
+    'start': function(/* varless */that) {
+        that = this;
+
+        that._fire_start();
+        that._paused = FALSE;
+        that._exeQueue();
     },
     'restart': function(queue) {
         this['resetQueue'](queue);
@@ -2264,20 +2291,23 @@ AbstractTask = classExtendObserver({
         this._paused = TRUE;
         this['fire']('pause');
     },
-    'resume': function() {
-        if (this._paused) {
-            this['fire']('resume');
-            this._paused = FALSE;
-            this._exeQueue();
+    'resume': function(/* varles */that) {
+        that = this;
+
+        if (that._paused) {
+            that['fire']('resume');
+            that._paused = FALSE;
+            that._exeQueue();
         }
     },
-    'resetQueue': function(queue) {
+    'resetQueue': function(queue/* varless */, that, i) {
+        that = this;
+
         if (queue) {
-            this._orgqueue = copyArray(queue);
+            that._orgqueue = copyArray(queue);
         }
 
-        var _queue = this._queue = copyArray(this._orgqueue),
-            i;
+        var _queue = that._queue = copyArray(that._orgqueue);
 
         for (i in _queue) {
             if (_queue[i]['resetQueue']) {
@@ -2285,7 +2315,7 @@ AbstractTask = classExtendObserver({
             }
         }
 
-        this['fire']('reset');
+        that['fire']('reset');
     },
     _noticeChange: function() {
         this['fire']('change', this['getQueue']());
@@ -2297,26 +2327,32 @@ AbstractTask = classExtendObserver({
     'getQueue': function() {
         return copyArray(this._queue);
     },
-    'addTask': function(task, priority) {
+    'addTask': function(task, priority/* varless */, that) {
+        that = this;
+
         if (
             !isNumber(priority) ||
-            priority > this._queue.length
+            priority > that._queue.length
         ) {
-            priority = this._queue.length;
+            priority = that._queue.length;
         }
 
-        this._queue.splice(priority, 0, task);
+        that._queue.splice(priority, 0, task);
 
-        this._noticeChange();
+        that._noticeChange();
     },
-    'removeTask': function(task) {
-        var i = 0,
-            len = this._queue.length;
+    'removeTask': function(task/* varless */, that, i, len) {
+        that = this;
+
+        // var i = 0,
+        //     len = that._queue.length;
+        i = 0,
+        len = that._queue.length;
 
         for (; i < len; i++ ) {
-            if (this._queue[i] === task) {
-                this._queue.splice(i, 1);
-                this._noticeChange();
+            if (that._queue[i] === task) {
+                that._queue.splice(i, 1);
+                that._noticeChange();
 
                 break;
             }
@@ -2328,9 +2364,10 @@ AbstractTask = classExtendObserver({
             this._exe();
         }
     },
-    _asyncAction: function(task) {
-        var that = this,
-            org_action;
+    _asyncAction: function(task /* varless */, that) {
+        that = this;
+
+        var org_action;
 
         if (task['one'] && task['start']) {
             task['one']('complete', proxy(that, that._done));
@@ -2352,44 +2389,50 @@ AbstractTask = classExtendObserver({
 });
 C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
     _fire_complete: this_fire_complete,
-    _exe: function() {
-        if (!this._queue) {
+    _exe: function(/* varless */that) {
+        that = this;
+
+        if (!that._queue) {
             return;
         }
 
-        if (!this._queue.length) {
-            return this._fire_complete();
+        if (!that._queue.length) {
+            return that._fire_complete();
         }
 
-        this._processcount = this._queue.length;
+        that._processcount = that._queue.length;
 
-        while (!this._paused && this._queue && this._queue[0]) {
-            this._asyncAction(this._queue.shift())((this._done));
+        while (!that._paused && that._queue && that._queue[0]) {
+            that._asyncAction(that._queue.shift())((that._done));
         }
     },
     _fire_progress: this_fire_progress,
-    _done: function() {
-        this._fire_progress();
-        this._processcount--;
+    _done: function(/* varless */that) {
+        that = this;
 
-        if (!this._processcount) {
-            this._fire_complete();
+        that._fire_progress();
+        that._processcount--;
+
+        if (!that._processcount) {
+            that._fire_complete();
         }
     }
 });
 C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
     _fire_complete: this_fire_complete,
-    _exe: function() {
-        if (!this._queue || this._paused) {
+    _exe: function(/* varless */that) {
+        that = this;
+
+        if (!that._queue || that._paused) {
             return;
         }
 
-        if (this._queue[0]) {
-            return this._asyncAction(this._queue.shift())((this._done));
+        if (that._queue[0]) {
+            return that._asyncAction(that._queue.shift())((that._done));
         }
 
         /* this['fire']('complete'); */
-        this._fire_complete();
+        that._fire_complete();
     },
     _fire_progress: this_fire_progress,
     _done: function() {
@@ -2626,25 +2669,25 @@ C['DateFactory'] = classExtendBase({
 });
 /* }()); */
 C['Rollover'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
         var cls = config['toggleClass'] || EMPTY,
             over = config['over'] || nullFunction,
             out = config['out'] || nullFunction;
 
-        mine._els = config['els'];
+        that._els = config['els'];
 
-        mine._switchover = function() {
-            addClass(mine, cls);
+        that._switchover = function() {
+            addClass(that, cls);
             over();
         }
-        mine._switchout = function() {
-            removeClass(mine, cls);
+        that._switchout = function() {
+            removeClass(that, cls);
             out();
         }
         if (!config['manual']) {
-            mine['attach']();
+            that['attach']();
         }
     },
     'dispose': function() {
@@ -2657,16 +2700,16 @@ C['Rollover'] = classExtendBase({
     'detach': function() {
         this._e(off);
     },
-    _e: function(onoff /* varless */, mine, i) {
-        mine = this;
+    _e: function(onoff /* varless */, that, i) {
+        that = this;
 
-        /* var i = mine._els.length; */
-        i = mine._els.length;
+        /* var i = that._els.length; */
+        i = that._els.length;
 
         for (; i--;) {
-            onoff(mine._els[i], ev['SWITCHOVER'], mine._switchover);
-            onoff(mine._els[i], ev['SWITCHOUT'], mine._switchout);
-            onoff(mine._els[i], ev['MOUSEOUT'], mine._switchout);
+            onoff(that._els[i], ev['SWITCHOVER'], that._switchover);
+            onoff(that._els[i], ev['SWITCHOUT'], that._switchout);
+            onoff(that._els[i], ev['MOUSEOUT'], that._switchout);
         }
     }
 });
@@ -2685,8 +2728,8 @@ C['DataStore'] = classExtendBase({
 
         this['reset']();
     },
-    'set': function(key, val) {
-        var i;
+    'set': function(key, val/* varless */, i) {
+        /* var i; */
 
         /* if (typeof key !== 'object') { */
         if (!isObject(key)) {
@@ -2714,13 +2757,15 @@ C['DataStore'] = classExtendBase({
 
         return ret;
     },
-    'remove': function(key) {
-        if (isDefined(this._data[key])) {
-            if (!this._array) {
-                delete this._data[key];
+    'remove': function(key/* varless */, that) {
+        that = this;
+
+        if (isDefined(that._data[key])) {
+            if (!that._array) {
+                delete that._data[key];
             }
             else {
-                this.data.splice(key, 1);
+                that.data.splice(key, 1);
             }
         }
     },
@@ -2741,8 +2786,8 @@ WebStorage = classExtendBase({
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
         this._storage = win[config['type'] + 'Storage'];
     },
-    'set': function(key, val) {
-        var i;
+    'set': function(key, val/* varless */, i) {
+        /* var i; */
 
         /* if (typeof key !== 'object') { */
         if (!isObject(key)) {
@@ -2755,23 +2800,23 @@ WebStorage = classExtendBase({
             this._storage.setItem(this._n + i, jsonStringify(key[i]));
         }
     },
-    'get': function(key /* varless */, mine) {
-        mine = this;
+    'get': function(key /* varless */, that) {
+        that = this;
 
         var ret = this._createStore(),
             i,
-            storage = mine._storage;
+            storage = that._storage;
 
         if (key) {
-            return jsonParse(storage.getItem(mine._n + key));
+            return jsonParse(storage.getItem(that._n + key));
         }
 
         for (i in storage) {
-            if (!mine._n) {
+            if (!that._n) {
                 ret[i] = jsonParse(storage[i]);
             }
             else {
-                key = i.split(mine._n)[1];
+                key = i.split(that._n)[1];
                 if (key) {
                     ret[key] = jsonParse(storage[i]);
                 }
@@ -2780,26 +2825,26 @@ WebStorage = classExtendBase({
 
         return ret;
     },
-    'remove': function(key /* varless */, mine) {
-        mine = this;
+    'remove': function(key /* varless */, that) {
+        that = this;
 
-        key = mine._n + key;
+        key = that._n + key;
 
-        if (isDefined(mine._storage.getItem(key))) {
-            mine._storage.removeItem(key);
+        if (isDefined(that._storage.getItem(key))) {
+            that._storage.removeItem(key);
         }
     },
-    'reset': function(/* varless */ mine, i) {
-        mine = this;
+    'reset': function(/* varless */ that, i) {
+        that = this;
 
-        if (!mine._n) {
-            return mine._storage.clear();
+        if (!that._n) {
+            return that._storage.clear();
         }
 
         /* var i; */
 
-        for (i in mine._storage) {
-            mine.remove(i);
+        for (i in that._storage) {
+            that.remove(i);
         }
     }
 });
@@ -2819,19 +2864,20 @@ C['DragFlick'] = classExtendBase({
     _t: function(e) {
         return e.changedTouches ? e.changedTouches[0] : e;
     },
-    _amount: function(vars) {
-        var mine = this,
-            startX,
-            startY,
-            dragflg = FALSE;
+    _amount: function(vars/* varless */, that, startX, startY, dragflg) {
+        // var that = this,
+        //     startX,
+        //     startY,
+        //     dragflg = FALSE;
+        that = this;
 
-        mine._contractid.push(
-            mine._contract(vars['el'], ev['SWITCHDOWN'], start),
-            mine._contract(win, ev['SWITCHUP'], end)
+        that._contractid.push(
+            that._contract(vars['el'], ev['SWITCHDOWN'], start),
+            that._contract(win, ev['SWITCHUP'], end)
         );
 
         function start(e) {
-            var changed = mine._t(e);
+            var changed = that._t(e);
 
             startX = changed.pageX;
             startY = changed.pageY;
@@ -2842,7 +2888,7 @@ C['DragFlick'] = classExtendBase({
         }
         function end(e) {
             if (dragflg) {
-                var changed = mine._t(e),
+                var changed = that._t(e),
                     amount = {
                         'x': changed.pageX - startX,
                         'y': changed.pageY - startY
@@ -2894,30 +2940,31 @@ C['DragFlick'] = classExtendBase({
             }
         });
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._contractid = [];
-        mine._config = config;
+        that._contractid = [];
+        that._config = config;
 
         config = config || NULLOBJ;
         if (!config['manual']) {
-            mine['attach']();
+            that['attach']();
         }
     },
-    'attach': function() {
-        var mine = this,
-            vars = this._config,
+    'attach': function(/* varless */that, flg) {
+        that = this;
+
+        var vars = this._config,
             el = vars['el'],
             start = vars['start'] || nullFunction,
             move = vars['move'] || nullFunction,
             end = vars['end'] || nullFunction,
-            flg = FALSE,
+            /* flg = FALSE, */
             startX = 0,
             startY = 0;
 
         if (vars['direction']) {
-            mine._direction({
+            that._direction({
                 'el': el,
                 'boundary': vars['boundary'],
                 'callback': vars['direction']
@@ -2964,26 +3011,26 @@ C['DragFlick'] = classExtendBase({
         });
 
         function eventProxy(el, ev, callback) {
-            mine._contractid.push(
-                mine._contract(el, ev, handler)
+            that._contractid.push(
+                that._contract(el, ev, handler)
             );
 
             function handler(e) {
-                callback(mine._t(e));
+                callback(that._t(e));
             }
         }
     },
-    'detach': function(/* varless */ mine) {
-        mine = this;
+    'detach': function(/* varless */ that) {
+        that = this;
 
-        var ary = mine._contractid,
+        var ary = that._contractid,
             i = ary.length;
 
         for (; i--;) {
-            mine._uncontract(ary[i]);
+            that._uncontract(ary[i]);
         }
 
-        mine._contractid = [];
+        that._contractid = [];
     }
 });
 C['ExternalInterface'] = function(config) {
@@ -3004,12 +3051,12 @@ ExternalAndroid = classExtend(HashQuery, {
     'call': function(conf) {
         this._config['android'][conf['mode']](this['makeHash'](conf));
     },
-    'addCallback': function(name, func /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'addCallback': function(name, func /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        mine._config['externalObj'][name] = function(vars) {
-            func(mine['parseHash'](vars)['vars']);
+        that._config['externalObj'][name] = function(vars) {
+            func(that['parseHash'](vars)['vars']);
         };
     },
     'removeCallback': function(name) {
@@ -3020,31 +3067,32 @@ ExternalIOS = classExtend(HashQuery, {
     'init': function() {
         this._ios = {};
     },
-    'dispose': function(/* varless */ i) {
+    'dispose': function(/* varless */ that, i) {
+        that = this;
         /* var i; */
 
-        for (i in this._ios) {
-            this['removeCallback'](i);
+        for (i in that._ios) {
+            that['removeCallback'](i);
         }
 
-        this['_super']();
+        that['_super']();
     },
     'call': function(conf) {
         this['setHash'](conf);
     },
-    'addCallback': function(name, func /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'addCallback': function(name, func /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        mine._ios[name] = function(/* varless */ hash) {
-            /* var hash = mine['getHash'](); */
-            hash = mine['getHash']();
+        that._ios[name] = function(/* varless */ hash) {
+            /* var hash = that['getHash'](); */
+            hash = that['getHash']();
 
             if (hash['mode'] == name) {
                 func(hash['vars']);
             }
         };
-        on(win, ev_hashchange, mine._ios[name]);
+        on(win, ev_hashchange, that._ios[name]);
     },
     'removeCallback': function(name) {
         off(win, ev_hashchange, this._ios[name]);
@@ -3079,19 +3127,19 @@ C['FPS'] = classExtendBase({
     _prevtime: 0,
     _nowtime: 0,
     _loopid: 0,
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._criterion =
-        mine._surver = config['criterion'];
-        mine._msecFrame = mine._getFrame(mine._criterion);
-        mine._enterframe = config['enterframe'];
-        // mine._prevtime =
-        // mine._nowtime =
-        // mine._loopid = 0;
+        that._criterion =
+        that._surver = config['criterion'];
+        that._msecFrame = that._getFrame(that._criterion);
+        that._enterframe = config['enterframe'];
+        // that._prevtime =
+        // that._nowtime =
+        // that._loopid = 0;
 
         if (!config['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
@@ -3104,26 +3152,26 @@ C['FPS'] = classExtendBase({
     'getFrameTime': function() {
         return this._msecFrame;
     },
-    'enter': function(/* varless */ mine) {
-        mine = this;
+    'enter': function(/* varless */ that) {
+        that = this;
 
-        mine._enterframe({
-            'criterion': mine._criterion,
-            'surver': mine._surver
+        that._enterframe({
+            'criterion': that._criterion,
+            'surver': that._surver
         });
     },
-    'start': function(/* varless */ mine) {
-        mine = this;
+    'start': function(/* varless */ that) {
+        that = this;
 
-        mine._prevtime = dateNow();
-        mine._loopid = setInterval(mine._loop, mine._msecFrame, mine);
+        that._prevtime = dateNow();
+        that._loopid = setInterval(that._loop, that._msecFrame, that);
     },
-    _loop: function(mine /* varless */, nowtime) {
-        nowtime = mine._nowtime = dateNow();
-        mine._surver = mine._getFrame(nowtime - mine._prevtime);
-        mine._prevtime = nowtime;
+    _loop: function(that /* varless */, nowtime) {
+        nowtime = that._nowtime = dateNow();
+        that._surver = that._getFrame(nowtime - that._prevtime);
+        that._prevtime = nowtime;
 
-        mine['enter']();
+        that['enter']();
     },
     _getFrame: function(time) {
         return Math.round(1000 / time);
@@ -3169,10 +3217,10 @@ ElementLoad = classExtendObserver({
         }
     },
     _fire_start: this_fire_start,
-    'start': function() {
+    'start': function(/* varless */el) {
         var that = this,
-            el,
             i = 0,
+            /* el, */
             len = that._srcs.length;
 
         that._fire_start();
@@ -3234,9 +3282,10 @@ C['WindowLoad'] = classExtendObserver({
     },
     _fire_complete: this_fire_complete,
     _fire_start: this_fire_start,
-    'start': function() {
-        var that = this,
-            disposeid;
+    'start': function(/* varless */that, disposeid) {
+        // var that = this,
+        //     disposeid;
+        that = this;
 
         that._fire_start();
 
@@ -3273,14 +3322,14 @@ mb = C['Mobile'] = classExtendBase({
     'isFBAPP': function(ua) {
         return checkUserAgent(/FBAN/, ua);
     },
-    'isMobile': function(/* varless */ mine) {
-        mine = this;
+    'isMobile': function(/* varless */ that) {
+        that = this;
 
         return (
-            mine['isAndroid']() ||
-            mine['isIOS']() ||
-            mine['isWindows']() ||
-            mine['isFBAPP']()
+            that['isAndroid']() ||
+            that['isIOS']() ||
+            that['isWindows']() ||
+            that['isFBAPP']()
         );
     },
     'hideAddress': function() {
@@ -3338,95 +3387,97 @@ pc = C['PC'] = classExtendBase({
 });
 C['pc'] = new pc();
 C['Orientation'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._config = config;
+        that._config = config;
 
-        mine._contractid = [];
+        that._contractid = [];
 
-        mine._portrait = {
+        that._portrait = {
             'portrait': TRUE,
             'landscape': FALSE
         };
-        mine._landscape = {
+        that._landscape = {
             'portrait': FALSE,
             'landscape': TRUE
         };
 
-        mine['attach']();
+        that['attach']();
     },
-    'get': function(/* varless */ mine) {
-        mine = this;
+    'get': function(/* varless */ that) {
+        that = this;
 
         if (isNumber(win.orientation)) {
             if (Math.abs(win.orientation) != 90) {
-                return mine._portrait;
+                return that._portrait;
             }
 
-            return mine._landscape;
+            return that._landscape;
         }
 
         if (
             win.innerWidth < win.innerHeight
         ) {
-            return mine._portrait;
+            return that._portrait;
         }
 
-        return mine._landscape;
+        return that._landscape;
     },
-    'fire': function(/* varless */ mine) {
-        mine = this;
+    'fire': function(/* varless */ that) {
+        that = this;
 
         if (
-            mine['get']()['portrait']
+            that['get']()['portrait']
         ) {
-            return mine._config['portrait']();
+            return that._config['portrait']();
         }
-        mine._config['landscape']();
+        that._config['landscape']();
     },
-    'attach': function(vars /* varless */, mine) {
-        mine = this;
+    'attach': function(vars /* varless */, that, proxyed) {
+        that = this;
 
-        var proxyed = proxy(mine, mine['fire']);
-        mine._contractid.push(
-            mine._contract(win, ev['LOAD'], proxyed),
-            mine._contract(win, ev_orientationchange, proxyed),
-            mine._contract(win, ev['RESIZE'], proxyed)
+        /* var proxyed = proxy(that, that['fire']); */
+        proxyed = proxy(that, that['fire']);
+        that._contractid.push(
+            that._contract(win, ev['LOAD'], proxyed),
+            that._contract(win, ev_orientationchange, proxyed),
+            that._contract(win, ev['RESIZE'], proxyed)
         );
     },
-    'detach': function(/* varless */ mine) {
-        mine = this;
+    'detach': function(/* varless */ that, i) {
+        that = this;
 
-        var i = mine._contractid.length;
+        /* var i = that._contractid.length; */
+        i = that._contractid.length;
 
         for (; i--;) {
-            mine._uncontract(mine._contractid[i]);
+            that._uncontract(that._contractid[i]);
         }
 
-        mine._contractid = [];
+        that._contractid = [];
     }
 }, 'onorientationchange' in win);
 C['Modal'] = classExtendBase({
-    _closeDetach: function(/* varless */ mine) {
-        mine = this;
+    _closeDetach: function(/* varless */ that) {
+        that = this;
 
-        var i = mine._contractid.length;
+        var i = that._contractid.length;
 
         for (; i--;) {
-            mine._uncontract(mine._contractid[i]);
+            that._uncontract(that._contractid[i]);
         }
 
-        mine._contractid = [];
+        that._contractid = [];
     },
-    'init': function(config /* varless */, mine, commoncss) {
-        mine = this;
+    'init': function(config /* varless */, that, commoncss) {
+        that = this;
         config = config || NULLOBJ;
 
-        // mine._html = config['html'];
-        // mine._bgClose = config['bgClose'];
-        // mine._closeSelector = config['closeSelector'];
-        mine._config = config;
+        // that._html = config['html'];
+        // that._bgClose = config['bgClose'];
+        // that._closeSelector = config['closeSelector'];
+        that._config = config;
 
         /* var commoncss = { */
         commoncss = {
@@ -3434,102 +3485,102 @@ C['Modal'] = classExtendBase({
             'position': 'absolute'
         };
 
-        mine._scroll = new C['Scroll']();
+        that._scroll = new C['Scroll']();
 
-        mine._contractid = [];
+        that._contractid = [];
 
-        mine._bg = create('div', {
+        that._bg = create('div', {
             'class': 'cir-modal-bg'
         });
-        css(mine._bg, override({
+        css(that._bg, override({
             'z-index': '9998',
             'top': 0,
             'left': 0,
             'width': '100%',
             'height': '200%'
         }, commoncss));
-        append(doc.body, mine._bg);
+        append(doc.body, that._bg);
 
-        mine._inner = create('div', {
+        that._inner = create('div', {
             'class': 'cir-modal-content'
         });
-        css(mine._inner, override({
+        css(that._inner, override({
             'z-index': '9999',
             'top': '50%',
             'left': '50%'
         }, commoncss));
-        append(doc.body, mine._inner);
+        append(doc.body, that._inner);
 
         if (!config['manual']) {
-            mine['open']();
+            that['open']();
         }
     },
-    'dispose': function(/* varless */ mine) {
-        mine = this;
+    'dispose': function(/* varless */ that) {
+        that = this;
 
-        mine['close']();
-        remove(mine._bg);
-        remove(mine._inner);
+        that['close']();
+        remove(that._bg);
+        remove(that._inner);
 
-        mine['_super']();
+        that['_super']();
     },
-    'open': function(text /* varless */, mine) {
-        mine = this;
+    'open': function(text /* varless */, that) {
+        that = this;
 
-        mine._scroll['kill']();
-        css(mine._bg, {
+        that._scroll['kill']();
+        css(that._bg, {
             'top': doc.body.scrollTop
         });
 
-        show(mine._bg);
+        show(that._bg);
 
-        mine['inner'](text);
+        that['inner'](text);
     },
-    'close': function(/* varless */ mine) {
-        mine = this;
+    'close': function(/* varless */ that) {
+        that = this;
 
-        mine._closeDetach();
+        that._closeDetach();
 
-        html(mine._inner, EMPTY);
-        hide(mine._inner);
-        hide(mine._bg);
+        html(that._inner, EMPTY);
+        hide(that._inner);
+        hide(that._bg);
 
-        mine._scroll['revival']();
+        that._scroll['revival']();
     },
-    'inner': function(text /* varless */, mine, computed, close, i) {
-        mine = this;
+    'inner': function(text /* varless */, that, computed, close, i) {
+        that = this;
 
         // var computed,
         //     close;
 
-        mine._closeDetach();
+        that._closeDetach();
 
-        text = text || mine._config['html'];
+        text = text || that._config['html'];
 
-        html(mine._inner, text);
-        show(mine._inner);
+        html(that._inner, text);
+        show(that._inner);
 
-        computed = computedStyle(mine._inner);
+        computed = computedStyle(that._inner);
 
-        css(mine._inner, {
+        css(that._inner, {
             'margin-top':
             doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
             'margin-left': -(splitSuffix(computed.width)[2] / 2)
         });
 
-        if (mine._config['bgClose']) {
-            mine._contract(mine._bg, ev['CLICK'], proxy(mine, mine['close']));
+        if (that._config['bgClose']) {
+            that._contract(that._bg, ev['CLICK'], proxy(that, that['close']));
         }
 
-        if (mine._config['closeSelector']) {
-            close = $$child(mine._config['closeSelector'], mine._inner),
+        if (that._config['closeSelector']) {
+            close = $$child(that._config['closeSelector'], that._inner),
                 i = close.length;
 
             for (; i--;) {
-                mine._contractid.push(
-                    mine._contract(close[i],
+                that._contractid.push(
+                    that._contract(close[i],
                     ev['CLICK'],
-                    proxy(mine, mine['close']))
+                    proxy(that, that['close']))
                 );
             }
         }
@@ -3545,11 +3596,11 @@ WindowAction = classExtendBase({
         this['attach']();
         /* } */
     },
-    'attach': function(/* varless */ mine) {
-        mine = this;
+    'attach': function(/* varless */ that) {
+        that = this;
 
-        mine['detach']();
-        mine._attachid = mine._contract(win, mine._config['e'], mine._config['callback']);
+        that['detach']();
+        that._attachid = that._contract(win, that._config['e'], that._config['callback']);
     },
     'detach': function() {
         this._uncontract(this._attachid);
@@ -3590,28 +3641,28 @@ C['DeviceShake'] = classExtendBase({
         'y': 'beta',
         'z': 'alpha'
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._shaker = new deviceshake_Shake();
-        // mine._limit = config['limit'];
-        // mine._waittime = config['waittime'];
-        // mine._direction = config['direction'];
-        // mine._callback = config['callback'];
-        mine._config = config;
+        that._shaker = new deviceshake_Shake();
+        // that._limit = config['limit'];
+        // that._waittime = config['waittime'];
+        // that._direction = config['direction'];
+        // that._callback = config['callback'];
+        that._config = config;
 
         /* if (config['callback'] && config['direction']) { */
-        mine['attach']();
+        that['attach']();
         /* } */
     },
-    'attach': function() {
-        var mine = this,
-            base_e,
-            shaked = FALSE,
-            config = mine._config,
-            direction = mine.convertName[config['direction']];
+    'attach': function(/* varless */that, base_e) {
+        that = this;
 
-        mine._shaker['attach'](wraphandle);
+        var shaked = FALSE,
+            config = that._config,
+            direction = that.convertName[config['direction']];
+
+        that._shaker['attach'](wraphandle);
 
         function wraphandle(e) {
             e = deviceshake_convert(e);
@@ -3685,10 +3736,12 @@ C['PreRender'] = classExtendObserver({
     },
     _fire_complete: this_fire_complete,
     _fire_start: this_fire_start,
-    'start': function() {
-        var i,
-            that = this,
-            prevtime = dateNow();
+    'start': function(/* varless */that, i, prevtime, gettime, difftime) {
+        that = this,
+        // var i,
+        //     that = this,
+        //     prevtime = dateNow();
+        prevtime = dateNow();
 
         that._fire_start();
 
@@ -3697,10 +3750,12 @@ C['PreRender'] = classExtendObserver({
         }
         that._loopid = setInterval(check, that._looptime, that);
 
-        function check() {
-            var gettime = dateNow(),
-                difftime = gettime - prevtime,
-                i;
+        function check(/* varless */) {
+            // var gettime = dateNow(),
+            //     difftime = gettime - prevtime,
+            //     i;
+            gettime = dateNow(),
+            difftime = gettime - prevtime;
 
             prevtime = gettime;
 
@@ -3721,9 +3776,10 @@ C['PreRender'] = classExtendObserver({
     }
 });
 C['Router'] = classExtendBase({
-    'init': function(config) {
-        var that = this,
-            temp;
+    'init': function(config/* varless */, that, temp) {
+        // var that = this,
+        //     temp;
+        that = this;
 
         that._config = config;
 
@@ -3767,19 +3823,20 @@ C['Router'] = classExtendBase({
 //     servermeta_isLoaded = FALSE;
 
 C['ServerMeta'] = classExtendBase({
-    'init': function(config) {
+    'init': function(config/* varless */, callback) {
         config = config || NULLOBJ;
 
-        var callback = config['callback'] || nullFunction;
+        /* var callback = config['callback'] || nullFunction; */
+        callback = config['callback'] || nullFunction;
 
-        if (!servermeta_xhr) {
+        if (servermeta_xhr) {
+            callback(servermeta_xhr);
+        }
+        else {
             servermeta_xhr = servermeta_getHeader(function() {
                 servermeta_isLoaded = TRUE;
                 callback(servermeta_xhr);
             });
-        }
-        else {
-            callback(servermeta_xhr);
         }
     },
     'date': function(callback) {
@@ -3841,17 +3898,17 @@ C['Surrogate'] = classExtendBase({
         this['clear']();
         this['_super']();
     },
-    'request': function(arg /* varless */, mine) {
-        mine = this;
+    'request': function(arg /* varless */, that) {
+        that = this;
 
-        mine._args = arg;
-        mine['clear']();
-        mine._waitid = setTimeout(mine['flush'], mine._delay, mine);
+        that._args = arg;
+        that['clear']();
+        that._waitid = setTimeout(that['flush'], that._delay, that);
     },
-    'flush': function(mine) {
-        mine = mine || this;
+    'flush': function(that) {
+        that = that || this;
 
-        mine._callback(mine._args);
+        that._callback(that._args);
     },
     'clear': function() {
         clearTimeout(this._waitid);
@@ -3869,34 +3926,34 @@ C['Throttle'] = classExtendBase({
         this['unlock']();
         this['_super']();
     },
-    'request': function(vars /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'request': function(vars /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        if (mine._locked) {
-            mine._args = vars;
+        if (that._locked) {
+            that._args = vars;
             return;
         }
 
-        mine._callback(vars);
-        mine['lock']();
-        mine._waitid = setTimeout(function() {
-            if (mine._args) {
-                mine._callback(mine._args);
-                mine._args = NULL;
+        that._callback(vars);
+        that['lock']();
+        that._waitid = setTimeout(function() {
+            if (that._args) {
+                that._callback(that._args);
+                that._args = NULL;
             }
 
-            mine['unlock']();
-        }, mine._waittime, mine);
+            that['unlock']();
+        }, that._waittime, that);
     },
     'lock': function() {
         this._locked = TRUE;
     },
-    'unlock': function(mine) {
-        mine = mine || this;
+    'unlock': function(that) {
+        that = that || this;
 
-        mine._locked = FALSE;
-        clearTimeout(mine._waitid);
+        that._locked = FALSE;
+        clearTimeout(that._waitid);
     }
 });
 C['Twitter'] = classExtendBase({
@@ -3930,39 +3987,39 @@ C['XML'] = classExtendBase({
     }
 });
 C['Model'] = classExtendBase({
-    _notice: function(eventname, key, val /* varless */, mine) {
-        mine = this;
+    _notice: function(eventname, key, val /* varless */, that) {
+        that = this;
 
-        mine._observer['fire'](eventname, mine._store['get']());
+        that._observer['fire'](eventname, that._store['get']());
 
         if (key) {
-            mine._observer['fire'](eventname + ':' + key, val);
+            that._observer['fire'](eventname + ':' + key, val);
         }
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
         config = config || NULLOBJ;
 
         var i,
-            defaults = config['defaults'] || mine['defaults'] || NULLOBJ,
-            events = config['events'] || mine['events'];
+            defaults = config['defaults'] || that['defaults'] || NULLOBJ,
+            events = config['events'] || that['events'];
 
-        mine._validate = config['validate'] || mine['validate'] || {};
-        mine._store = config['store'] || mine['store'] || new C['DataStore']();
-        mine._observer = new Observer();
+        that._validate = config['validate'] || that['validate'] || {};
+        that._store = config['store'] || that['store'] || new C['DataStore']();
+        that._observer = new Observer();
 
         for (i in defaults) {
-            mine['set'](i, defaults[i]);
+            that['set'](i, defaults[i]);
         }
         for (i in events) {
-            mine['on'](i, events[i]);
+            that['on'](i, events[i]);
         }
     },
-    'set': function(key, val /* varless */, mine) {
-        mine = this;
+    'set': function(key, val /* varless */, that, i) {
+        that = this;
 
-        var i;
+        /* var i; */
 
         /* if (typeof key !== 'object') { */
         if (!isObject(key)) {
@@ -3971,23 +4028,23 @@ C['Model'] = classExtendBase({
             key = i;
         }
 
-        mine._prev = mine._store['get']();
+        that._prev = that._store['get']();
 
         for (i in key) {
             val = key[i];
 
             if (
-                mine._validate[i] &&
-                !mine._validate[i](i, val)
+                that._validate[i] &&
+                !that._validate[i](i, val)
             ) {
-                return mine._notice('fail', i, val);
+                return that._notice('fail', i, val);
             }
 
-            mine._store['set'](i, val);
-            mine._observer['fire'](ev['CHANGE'] + ':' + i, val);
+            that._store['set'](i, val);
+            that._observer['fire'](ev['CHANGE'] + ':' + i, val);
         }
 
-        mine._observer['fire'](ev['CHANGE'], mine._store['get']());
+        that._observer['fire'](ev['CHANGE'], that._store['get']());
     },
     'prev': function(key) {
         if (!key) {
@@ -3998,14 +4055,14 @@ C['Model'] = classExtendBase({
     'get': function(key) {
         return this._store['get'](key);
     },
-    'remove': function(key /* varless */, mine) {
-        mine = this;
+    'remove': function(key /* varless */, that) {
+        that = this;
 
         if (key) {
-            var get = mine._store['get'](key),
-                ret = mine._store['remove'](key);
+            var get = that._store['get'](key),
+                ret = that._store['remove'](key);
 
-            mine._notice('remove', key, get);
+            that._notice('remove', key, get);
 
             return ret;
         }
@@ -4030,47 +4087,47 @@ C['Model'] = classExtendBase({
     }
 });
 C['View'] = classExtendBase({
-    'init': function(config /* varless */, mine, i) {
-        mine = this;
+    'init': function(config /* varless */, that, i) {
+        that = this;
 
         /* var i; */
 
         if (!config) {
-            config = owner(mine, mine, {});
+            config = owner(that, that, {});
         }
         else {
-            config = owner(mine, config);
+            config = owner(that, config);
         }
 
-        mine['el'] = C['$'](config['el'] || mine['el'] || create('div'));
+        that['el'] = C['$'](config['el'] || that['el'] || create('div'));
 
-        mine['attach']();
+        that['attach']();
         if (config['init']) {
-            mine['init']();
+            that['init']();
         }
     },
     'dispose': function() {
         this['detach']();
         this['_super']();
     },
-    _e: function(methodname /* varless */, mine, i, j, $el, events) {
-        mine = this;
+    _e: function(methodname /* varless */, that, i, j, $el, events) {
+        that = this;
 
         // var i,
         //     j,
         //     $el,
-            events = mine['events'];
+            events = that['events'];
 
         for (i in events) {
             if (i == 'me') {
-                $el = mine['el'];
+                $el = that['el'];
             }
             else {
-                $el = mine['el'].find(i);
+                $el = that['el'].find(i);
             }
 
             for (j in events[i]) {
-                $el[methodname](j, mine[events[i][j]]);
+                $el[methodname](j, that[events[i][j]]);
             }
         }
     },
@@ -4082,35 +4139,37 @@ C['View'] = classExtendBase({
     }
 });
 C['Ollection'] = classExtend(C['Model'], {
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that, i, defaults, events) {
+        that = this;
 
         config = config || NULLOBJ;
 
-        var i,
-            defaults = config['defaults'] || mine['defaults'] || [],
-            events = config['events'] || mine['events'];
+        // var i,
+        //     defaults = config['defaults'] || that['defaults'] || [],
+        //     events = config['events'] || that['events'];
+        defaults = config['defaults'] || that['defaults'] || [],
+        events = config['events'] || that['events'];
 
-        /* mine._validate = config['validate'] || mine['validate'] || {}; */
-        mine._store =
+        /* that._validate = config['validate'] || that['validate'] || {}; */
+        that._store =
             config['store'] ||
-            mine['store'] ||
+            that['store'] ||
             new C['DataStore']({
                 'array': TRUE
             });
-        mine._observer = new Observer();
+        that._observer = new Observer();
 
         for (i in defaults) {
-            mine['set'](i, defaults[i]);
+            that['set'](i, defaults[i]);
         }
         for (i in events) {
-            mine['on'](i, events[i]);
+            that['on'](i, events[i]);
         }
     },
-    'set': function(key, val /* varless */, mine) {
-        mine = this;
+    'set': function(key, val /* varless */, that, i) {
+        that = this;
 
-        var i;
+        /* var i; */
 
         /* if (typeof key !== 'object') { */
         if (!isObject(key)) {
@@ -4119,40 +4178,44 @@ C['Ollection'] = classExtend(C['Model'], {
             key = i;
         }
 
-        mine._prev = mine._store['get']();
+        that._prev = that._store['get']();
 
         for (i in key) {
             val = key[i];
 
             if (!isNumber(+i)) {
-                return mine._notice('fail', key, val);
+                return that._notice('fail', key, val);
             }
 
-            mine._store['set'](key, val);
-            mine._observer['fire'](ev['CHANGE'], val, +i, mine._store['get']());
+            that._store['set'](key, val);
+            that._observer['fire'](ev['CHANGE'], val, +i, that._store['get']());
         }
     },
-    'add': function(val) {
-        var collectid = this._store['get']().length;
+    'add': function(val/* varless */, collectid) {
+        /* var collectid = this._store['get']().length; */
+        collectid = this._store['get']().length;
 
         this['set'](collectid, val);
 
         return collectid;
     },
-    'each': function(callback) {
-        var i,
-            collection = this['get']();
+    'each': function(callback/* varless */, i, collection) {
+        // var i,
+        //     collection = this['get']();
+        collection = this['get']();
 
         for (i in collection) {
             callback.apply(this, [collection[i], i, collection]);
         }
     },
-    'map': function(callback) {
-        var i,
-            collection = this['get']();
+    'map': function(callback/* varless */, that, i, collection) {
+        that = this;
+        // var i,
+        //     collection = this['get']();
+        collection = that['get']();
 
         for (i in collection) {
-            this['set'](i, callback.apply(this, [collection[i], i, collection]));
+            that['set'](i, callback.apply(that, [collection[i], i, collection]));
         }
     }
 });
@@ -4163,15 +4226,15 @@ Validate = C['Validate'] = classExtendBase({
         }
         this['displayError'](key, txt);
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
         config = config || {};
 
-        /* mine._level = config['level'] || 'warn'; */
-        mine._level = config['level'];
+        /* that._level = config['level'] || 'warn'; */
+        that._level = config['level'];
 
-        owner(mine, mine, config);
+        owner(that, that, config);
     },
     'displayError': function(key, text) {
         text = 'Validate Error:' + key + ' is ' + text + '.';
@@ -4211,11 +4274,13 @@ Validate = C['Validate'] = classExtendBase({
 });
 C['validate'] = new Validate();
 C['Scroll'] = classExtendBase({
-    'dispose': function() {
-        this['revival']();
-        clearInterval(this._smoothid);
+    'dispose': function(/* varless */that) {
+        that = this;
 
-        this['_super']();
+        that['revival']();
+        clearInterval(that._smoothid);
+
+        that['_super']();
     },
     'to': scrollTo,
     'toTop': pageTop,
@@ -4239,15 +4304,15 @@ C['Scroll'] = classExtendBase({
 
         return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
-    'smooth': function(target, callback /* varless */, mine, max) {
-        // var mine = this,
+    'smooth': function(target, callback /* varless */, that, max) {
+        // var that = this,
         //     max;
-        mine = this;
+        that = this;
 
         callback = callback || nullFunction;
 
-        if (!mine._smoothmove) {
-            mine._smoothmove = TRUE;
+        if (!that._smoothmove) {
+            that._smoothmove = TRUE;
 
             if (!isNumber(target)) {
                 target = target.offsetTop;
@@ -4258,89 +4323,94 @@ C['Scroll'] = classExtendBase({
                 target = max;
             }
 
-            mine._before = mine['scrollY']();
-            mine._smoothid = setInterval(function(/* varless */ position) {
-                /* var position = mine.scrollY(); */
-                position = mine['scrollY']();
+            that._before = that['scrollY']();
+            that._smoothid = setInterval(function(/* varless */ position) {
+                /* var position = that.scrollY(); */
+                position = that['scrollY']();
 
                 position = (target - position) * 0.3 + position;
 
-                if (Math.abs(target - position) < 1 || mine._before == position) {
+                if (Math.abs(target - position) < 1 || that._before == position) {
                     scrollTo(target);
-                    clearInterval(mine._smoothid);
+                    clearInterval(that._smoothid);
                     callback(target);
-                    return delete mine._smoothmove;
+                    return delete that._smoothmove;
                 }
 
-                mine._before = position;
+                that._before = position;
                 scrollTo(position);
             }, 50);
         }
     },
-    'kill': function(/* varless */ mine) {
-        mine = this;
+    'kill': function(/* varless */ that) {
+        that = this;
 
-        if (!mine._killscrollid) {
+        if (!that._killscrollid) {
             css(doc.body, {
                 'overflow': 'hidden'
             });
-            mine._killscrollid = mine._contract(doc, ev['TOUCHMOVE'], eventPrevent);
+            that._killscrollid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
-    'revival': function(/* varless */ mine) {
-        mine = this;
+    'revival': function(/* varless */ that) {
+        that = this;
 
-        if (mine._killscrollid) {
+        if (that._killscrollid) {
             css(doc.body, {
                 'overflow': 'auto'
             });
-            mine._uncontract(mine._killscrollid);
-            delete mine._killscrollid;
+            that._uncontract(that._killscrollid);
+            delete that._killscrollid;
         }
     }
 });
 C['LimitText'] = classExtendBase({
     _minfontsize: 8,
-    _copyAppend: function(text) {
-        html(this._copyel, text);
-        append(parent(this._el), this._copyel);
+    _copyAppend: function(text/* varless */, that) {
+        that = this;
+        html(that._copyel, text);
+        append(parent(that._el), that._copyel);
     },
     _copyRemove: function() {
         html(this._copyel, EMPTY);
         remove(this._copyel);
     },
-    'init': function(config) {
-        var el = this._el = config['el'],
+    'init': function(config/* varless */, that) {
+        that = this;
+
+        var el = that._el = config['el'],
             orgcomputed = computedStyle(el),
-            copyel = this._copyel = create(el.tagName, {
+            copyel = that._copyel = create(el.tagName, {
                 'class': attr(el, 'class'),
                 'style': attr(el, 'style')
             }),
-            computed = this._computed = computedStyle(copyel);
+            computed = that._computed = computedStyle(copyel);
 
-        this._width = config['width'];
-        this._height = config['height'];
+        that._width = config['width'];
+        that._height = config['height'];
 
-        this._copyAppend(0);
+        that._copyAppend(0);
 
         if (!isDefined(config['width'])) {
-            this._width = +splitSuffix(computed['width'])[2];
+            that._width = +splitSuffix(computed['width'])[2];
         }
         if (!isDefined(config['height'])) {
-            this._height = +splitSuffix(computed['height'])[2];
+            that._height = +splitSuffix(computed['height'])[2];
         }
 
         css(copyel, {
             'height': 'auto'
         });
 
-        this._fontsize = +splitSuffix(computed['fontSize'])[2];
-        this._copyRemove();
+        that._fontsize = +splitSuffix(computed['fontSize'])[2];
+        that._copyRemove();
     },
-    _limitCheck: function() {
+    _limitCheck: function(/* varless */that) {
+        that = this;
+
         if (
-            +splitSuffix(this._computed['width'])[2] <= this._width &&
-            +splitSuffix(this._computed['height'])[2] <= this._height
+            +splitSuffix(that._computed['width'])[2] <= that._width &&
+            +splitSuffix(that._computed['height'])[2] <= that._height
         ) {
             return TRUE;
         }

@@ -23,28 +23,28 @@ C['DeviceShake'] = classExtendBase({
         'y': 'beta',
         'z': 'alpha'
     },
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._shaker = new deviceshake_Shake();
-        // mine._limit = config['limit'];
-        // mine._waittime = config['waittime'];
-        // mine._direction = config['direction'];
-        // mine._callback = config['callback'];
-        mine._config = config;
+        that._shaker = new deviceshake_Shake();
+        // that._limit = config['limit'];
+        // that._waittime = config['waittime'];
+        // that._direction = config['direction'];
+        // that._callback = config['callback'];
+        that._config = config;
 
         /* if (config['callback'] && config['direction']) { */
-        mine['attach']();
+        that['attach']();
         /* } */
     },
-    'attach': function() {
-        var mine = this,
-            base_e,
-            shaked = FALSE,
-            config = mine._config,
-            direction = mine.convertName[config['direction']];
+    'attach': function(/* varless */that, base_e) {
+        that = this;
 
-        mine._shaker['attach'](wraphandle);
+        var shaked = FALSE,
+            config = that._config,
+            direction = that.convertName[config['direction']];
+
+        that._shaker['attach'](wraphandle);
 
         function wraphandle(e) {
             e = deviceshake_convert(e);

@@ -2,19 +2,19 @@ C['FPS'] = classExtendBase({
     _prevtime: 0,
     _nowtime: 0,
     _loopid: 0,
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._criterion =
-        mine._surver = config['criterion'];
-        mine._msecFrame = mine._getFrame(mine._criterion);
-        mine._enterframe = config['enterframe'];
-        // mine._prevtime =
-        // mine._nowtime =
-        // mine._loopid = 0;
+        that._criterion =
+        that._surver = config['criterion'];
+        that._msecFrame = that._getFrame(that._criterion);
+        that._enterframe = config['enterframe'];
+        // that._prevtime =
+        // that._nowtime =
+        // that._loopid = 0;
 
         if (!config['manual']) {
-            mine['start']();
+            that['start']();
         }
     },
     'dispose': this_stop__super,
@@ -27,26 +27,26 @@ C['FPS'] = classExtendBase({
     'getFrameTime': function() {
         return this._msecFrame;
     },
-    'enter': function(/* varless */ mine) {
-        mine = this;
+    'enter': function(/* varless */ that) {
+        that = this;
 
-        mine._enterframe({
-            'criterion': mine._criterion,
-            'surver': mine._surver
+        that._enterframe({
+            'criterion': that._criterion,
+            'surver': that._surver
         });
     },
-    'start': function(/* varless */ mine) {
-        mine = this;
+    'start': function(/* varless */ that) {
+        that = this;
 
-        mine._prevtime = dateNow();
-        mine._loopid = setInterval(mine._loop, mine._msecFrame, mine);
+        that._prevtime = dateNow();
+        that._loopid = setInterval(that._loop, that._msecFrame, that);
     },
-    _loop: function(mine /* varless */, nowtime) {
-        nowtime = mine._nowtime = dateNow();
-        mine._surver = mine._getFrame(nowtime - mine._prevtime);
-        mine._prevtime = nowtime;
+    _loop: function(that /* varless */, nowtime) {
+        nowtime = that._nowtime = dateNow();
+        that._surver = that._getFrame(nowtime - that._prevtime);
+        that._prevtime = nowtime;
 
-        mine['enter']();
+        that['enter']();
     },
     _getFrame: function(time) {
         return Math.round(1000 / time);

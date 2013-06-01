@@ -54,7 +54,7 @@ C['Ajax'] = classExtendObserver({
             query = EMPTY;
         }
 
-        this._query = query;
+        that._query = query;
 
         openargs = [type, url];
 
@@ -74,13 +74,17 @@ C['Ajax'] = classExtendObserver({
         }
     },
     _fire_start: this_fire_start,
-    'start': function() {
-        this._fire_start();
-        this._xhr.send(this._query);
+    'start': function(/* varless */that) {
+        that = this;
+
+        that._fire_start();
+        that._xhr.send(that._query);
     },
-    'stop': function() {
-        this._xhr.abort();
-        this['fire']('stop', this._xhr);
+    'stop': function(/* varless */that) {
+        that = this;
+
+        that._xhr.abort();
+        that['fire']('stop', that._xhr);
     },
     _query: function(config) {
         var query = config['query'];

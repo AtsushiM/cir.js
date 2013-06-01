@@ -2,31 +2,32 @@ ExternalIOS = classExtend(HashQuery, {
     'init': function() {
         this._ios = {};
     },
-    'dispose': function(/* varless */ i) {
+    'dispose': function(/* varless */ that, i) {
+        that = this;
         /* var i; */
 
-        for (i in this._ios) {
-            this['removeCallback'](i);
+        for (i in that._ios) {
+            that['removeCallback'](i);
         }
 
-        this['_super']();
+        that['_super']();
     },
     'call': function(conf) {
         this['setHash'](conf);
     },
-    'addCallback': function(name, func /* varless */, mine) {
-        /* var mine = this; */
-        mine = this;
+    'addCallback': function(name, func /* varless */, that) {
+        /* var that = this; */
+        that = this;
 
-        mine._ios[name] = function(/* varless */ hash) {
-            /* var hash = mine['getHash'](); */
-            hash = mine['getHash']();
+        that._ios[name] = function(/* varless */ hash) {
+            /* var hash = that['getHash'](); */
+            hash = that['getHash']();
 
             if (hash['mode'] == name) {
                 func(hash['vars']);
             }
         };
-        on(win, ev_hashchange, mine._ios[name]);
+        on(win, ev_hashchange, that._ios[name]);
     },
     'removeCallback': function(name) {
         off(win, ev_hashchange, this._ios[name]);
