@@ -1,4 +1,4 @@
-C['LowPassFilter'] = classExtend(C['Calc'], {
+C['LowPassFilter'] = classExtend(Calc, {
     'init': function(config) {
         config = config || NULLOBJ;
 

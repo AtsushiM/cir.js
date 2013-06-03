@@ -1,4 +1,4 @@
-// cir.js v1.0.1 (c) 2013 Atsushi Mizoue.
+// cir.js v1.1.1 (c) 2013 Atsushi Mizoue.
 (function(){
 // Cool is Right.
 C = {};
@@ -182,6 +182,7 @@ DeviceOrientation,
 DeviceMotion,
 Validate,
 SSAnime,
+Calc,
 mb,
 pc,
 PC_browser,
@@ -4601,7 +4602,7 @@ C['namespace'] = function(keyword, arg) {
 
     return temp;
 }
-C['Calc'] = classExtendBase({
+Calc = C['Calc'] = classExtendBase({
     'init': function(config) {
         config = config || NULLOBJ;
 
@@ -4629,16 +4630,18 @@ C['Calc'] = classExtendBase({
         return this._addfew(this._removefew(num1) - this._removefew(num2));
     },
     /* mul:  */
-    'multiplication': function(num1, num2) {
-        return this._addfew(this._addfew(this._removefew(num1) * this._removefew(num2)));
+    'multiplication': function(num1, num2, that) {
+        that = this;
+
+        return that._addfew(that._addfew(that._removefew(num1) * that._removefew(num2)));
     },
     /* div:  */
     'division': function(num1, num2) {
         return this._removefew(num1) / this._removefew(num2);
     }
 });
-C['calc'] = new C['Calc']();
-C['LowPassFilter'] = classExtend(C['Calc'], {
+C['calc'] = new Calc();
+C['LowPassFilter'] = classExtend(Calc, {
     'init': function(config) {
         config = config || NULLOBJ;
 
