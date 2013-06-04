@@ -114,27 +114,29 @@ function datefactory_lower2(num) {
 
 C['DateFactory'] = classExtendBase({
     'make': function(anydate) {
-        switch (TRUE) {
-            case isString(anydate):
-                anydate = anydate.split(/[T:\-\+\/\s]/);
+        if (isString(anydate)) {
+            anydate = anydate.split(/[T:\-\+\/\s]/);
 
-                // if (anydate.length == 3) {
-                //     anydate.push(0, 0, 0);
-                // }
+            // if (anydate.length == 3) {
+            //     anydate.push(0, 0, 0);
+            // }
 
-                return new Date(
-                    +anydate[0],
-                    anydate[1] - 1,
-                    +anydate[2],
-                    +anydate[3] || 0,
-                    +anydate[4] || 0,
-                    +anydate[5] || 0
-                );
-            case isNumber(anydate):
-                return new Date(anydate);
-            case is('Date', anydate):
-                return anydate;
+            return new Date(
+                +anydate[0],
+                anydate[1] - 1,
+                +anydate[2],
+                +anydate[3] || 0,
+                +anydate[4] || 0,
+                +anydate[5] || 0
+            );
         }
+        if (isNumber(anydate)) {
+            return new Date(anydate);
+        }
+        if (is('Date', anydate)) {
+            return anydate;
+        }
+
         return new Date();
     },
     'format': function(format, anydate) {

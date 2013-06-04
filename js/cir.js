@@ -1938,7 +1938,7 @@ Media = classExtendBase({
         var that = this,
             autoplay = config['autoplay'],
             loop = config['loop'],
-            media,
+            media = Audio,
             ev_canplay = 'canplay',
             autoplayid,
             _parent = config['el'] || doc.body;
@@ -1947,14 +1947,12 @@ Media = classExtendBase({
         config['autoplay'] =
         config['loop'] = FALSE;
 
-        switch (config['type']) {
-            case 'Audio':
-                media = Audio(config);
-                break;
-            /* case 'Video': */
-            default:
-                media = Video(config);
+        if (config['type'] == 'Video') {
+            media = Video;
         }
+
+        media = media(config);
+
         that._el = media;
 
         if (media) {
@@ -2069,8 +2067,7 @@ C['Ajax'] = classExtendObserver({
             type = config['type'] || 'GET',
             query = EMPTY,
             xhr = that._xhr = new XMLHttpRequest(),
-            openargs,
-            i;
+            openargs;
 
         that['_super']();
 
@@ -2354,8 +2351,6 @@ AbstractTask = classExtendObserver({
     _asyncAction: function(task /* varless */, that) {
         that = this;
 
-        var org_action;
-
         if (task['one'] && task['start']) {
             task['one']('complete', proxy(that, that._done));
             return proxy(task, task['start']);
@@ -2365,10 +2360,8 @@ AbstractTask = classExtendObserver({
             return proxy(that, task);
         }
 
-        org_action = task;
-
         return function(done) {
-            org_action.call(that);
+            task.call(that);
             done();
         };
     } //,
@@ -2622,27 +2615,29 @@ function datefactory_lower2(num) {
 
 C['DateFactory'] = classExtendBase({
     'make': function(anydate) {
-        switch (TRUE) {
-            case isString(anydate):
-                anydate = anydate.split(/[T:\-\+\/\s]/);
+        if (isString(anydate)) {
+            anydate = anydate.split(/[T:\-\+\/\s]/);
 
-                // if (anydate.length == 3) {
-                //     anydate.push(0, 0, 0);
-                // }
+            // if (anydate.length == 3) {
+            //     anydate.push(0, 0, 0);
+            // }
 
-                return new Date(
-                    +anydate[0],
-                    anydate[1] - 1,
-                    +anydate[2],
-                    +anydate[3] || 0,
-                    +anydate[4] || 0,
-                    +anydate[5] || 0
-                );
-            case isNumber(anydate):
-                return new Date(anydate);
-            case is('Date', anydate):
-                return anydate;
+            return new Date(
+                +anydate[0],
+                anydate[1] - 1,
+                +anydate[2],
+                +anydate[3] || 0,
+                +anydate[4] || 0,
+                +anydate[5] || 0
+            );
         }
+        if (isNumber(anydate)) {
+            return new Date(anydate);
+        }
+        if (is('Date', anydate)) {
+            return anydate;
+        }
+
         return new Date();
     },
     'format': function(format, anydate) {
@@ -2701,16 +2696,14 @@ C['Rollover'] = classExtendBase({
 });
 C['DataStore'] = classExtendBase({
     _createStore: function() {
-        if (!this._array) {
-            return {};
+        if (this._array) {
+            return [];
         }
 
-        return [];
+        return {};
     },
     'init': function(config) {
-        config = config || NULLOBJ;
-
-        this._array = config['array'] || FALSE,
+        this._array = (config || NULLOBJ)['array'] || FALSE,
 
         this['reset']();
     },
@@ -4227,11 +4220,10 @@ system_temp = C['Validate'] = classExtendBase({
         switch (this.level) {
             case 'log':
                 console.log(text);
+            case 'off':
                 return FALSE;
             case 'error':
                 throw new Error(text);
-            case 'off':
-                return FALSE;
             /* case 'warn': */
             /* default: */
         }

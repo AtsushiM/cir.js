@@ -3,7 +3,7 @@ Media = classExtendBase({
         var that = this,
             autoplay = config['autoplay'],
             loop = config['loop'],
-            media,
+            media = Audio,
             ev_canplay = 'canplay',
             autoplayid,
             _parent = config['el'] || doc.body;
@@ -12,14 +12,12 @@ Media = classExtendBase({
         config['autoplay'] =
         config['loop'] = FALSE;
 
-        switch (config['type']) {
-            case 'Audio':
-                media = Audio(config);
-                break;
-            /* case 'Video': */
-            default:
-                media = Video(config);
+        if (config['type'] == 'Video') {
+            media = Video;
         }
+
+        media = media(config);
+
         that._el = media;
 
         if (media) {

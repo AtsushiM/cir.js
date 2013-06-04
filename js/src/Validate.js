@@ -21,11 +21,10 @@ system_temp = C['Validate'] = classExtendBase({
         switch (this.level) {
             case 'log':
                 console.log(text);
+            case 'off':
                 return FALSE;
             case 'error':
                 throw new Error(text);
-            case 'off':
-                return FALSE;
             /* case 'warn': */
             /* default: */
         }

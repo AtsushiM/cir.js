@@ -1,15 +1,13 @@
 C['DataStore'] = classExtendBase({
     _createStore: function() {
-        if (!this._array) {
-            return {};
+        if (this._array) {
+            return [];
         }
 
-        return [];
+        return {};
     },
     'init': function(config) {
-        config = config || NULLOBJ;
-
-        this._array = config['array'] || FALSE,
+        this._array = (config || NULLOBJ)['array'] || FALSE,
 
         this['reset']();
     },

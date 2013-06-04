@@ -12,8 +12,7 @@ C['Ajax'] = classExtendObserver({
             type = config['type'] || 'GET',
             query = EMPTY,
             xhr = that._xhr = new XMLHttpRequest(),
-            openargs,
-            i;
+            openargs;
 
         that['_super']();
 

@@ -110,8 +110,6 @@ AbstractTask = classExtendObserver({
     _asyncAction: function(task /* varless */, that) {
         that = this;
 
-        var org_action;
-
         if (task['one'] && task['start']) {
             task['one']('complete', proxy(that, that._done));
             return proxy(task, task['start']);
@@ -121,10 +119,8 @@ AbstractTask = classExtendObserver({
             return proxy(that, task);
         }
 
-        org_action = task;
-
         return function(done) {
-            org_action.call(that);
+            task.call(that);
             done();
         };
     } //,
