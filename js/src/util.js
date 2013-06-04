@@ -215,8 +215,8 @@ function binarySearch(arg) {
         arg['end'] || nullFunction
     );
 }
-function _binarySearch(low, high, compare, end) {
-    var middle;
+function _binarySearch(low, high, compare, end /* varless */, middle) {
+    /* var middle; */
 
     while (TRUE) {
         middle = ~~((low + high) / 2);
@@ -224,8 +224,7 @@ function _binarySearch(low, high, compare, end) {
         if (low == middle) {
             return end(middle);
         }
-
-        if (compare(middle)) {
+        else if (compare(middle)) {
             low = middle;
         }
         else {
@@ -234,13 +233,12 @@ function _binarySearch(low, high, compare, end) {
     }
 }
 function hasDeclaredArgument(func) {
-    return func.toString().match(/^\s*function.*\((.+)\)/);
+    return func.toString().match(/^function.*\((.+)\)/);
 }
 function copyArray(ary) {
     if (isArray(ary)) {
         return ary.slice(0);
     }
-
     return ary;
 }
 

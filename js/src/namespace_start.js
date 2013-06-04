@@ -134,7 +134,8 @@ function apifirstload(id, src) {
     }
 }
 
-var win = window,
+var system_temp,
+    win = window,
     doc = document,
     doc_head = doc.head || $('head'),
     TRUE = true,
@@ -155,7 +156,6 @@ var win = window,
         0;
     }) ? /\b_super\b/ : /.*/,
     required_obj = {},
-    animeframeobj,
 
 Class,
 Base,

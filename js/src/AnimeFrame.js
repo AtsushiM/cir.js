@@ -1,4 +1,4 @@
-animeframeobj = {
+system_temp = {
     'request': function(callback) {
         return this._animeframe.call(win, callback);
     },
@@ -38,11 +38,11 @@ animeframeobj = {
         }
     }
 
-    animeframeobj._animeframe = animeframe_animeframe;
-    animeframeobj._cancelframe = animeframe_cancelframe;
+    system_temp._animeframe = animeframe_animeframe;
+    system_temp._cancelframe = animeframe_cancelframe;
 /* }()); */
 
-animeframeobj = C['AnimeFrame'] = classExtendBase(animeframeobj);
-animeframeobj['fps'] = 30;
+system_temp = C['AnimeFrame'] = classExtendBase(system_temp);
+system_temp['fps'] = 30;
 
-C['animeframe'] = new animeframeobj();
+C['animeframe'] = new system_temp();

@@ -136,7 +136,8 @@ function apifirstload(id, src) {
     }
 }
 
-var win = window,
+var system_temp,
+    win = window,
     doc = document,
     doc_head = doc.head || $('head'),
     TRUE = true,
@@ -157,7 +158,6 @@ var win = window,
         0;
     }) ? /\b_super\b/ : /.*/,
     required_obj = {},
-    animeframeobj,
 
 Class,
 Base,
@@ -418,8 +418,8 @@ function binarySearch(arg) {
         arg['end'] || nullFunction
     );
 }
-function _binarySearch(low, high, compare, end) {
-    var middle;
+function _binarySearch(low, high, compare, end /* varless */, middle) {
+    /* var middle; */
 
     while (TRUE) {
         middle = ~~((low + high) / 2);
@@ -427,8 +427,7 @@ function _binarySearch(low, high, compare, end) {
         if (low == middle) {
             return end(middle);
         }
-
-        if (compare(middle)) {
+        else if (compare(middle)) {
             low = middle;
         }
         else {
@@ -437,13 +436,12 @@ function _binarySearch(low, high, compare, end) {
     }
 }
 function hasDeclaredArgument(func) {
-    return func.toString().match(/^\s*function.*\((.+)\)/);
+    return func.toString().match(/^function.*\((.+)\)/);
 }
 function copyArray(ary) {
     if (isArray(ary)) {
         return ary.slice(0);
     }
-
     return ary;
 }
 
@@ -1321,7 +1319,7 @@ function SSTrans_addCSSRule(id, css_prefix, duration, eases, transProp) {
 SSTrans['id'] = 0;
 SSTrans['duration'] = 500;
 /* }()); */
-animeframeobj = {
+system_temp = {
     'request': function(callback) {
         return this._animeframe.call(win, callback);
     },
@@ -1361,14 +1359,14 @@ animeframeobj = {
         }
     }
 
-    animeframeobj._animeframe = animeframe_animeframe;
-    animeframeobj._cancelframe = animeframe_cancelframe;
+    system_temp._animeframe = animeframe_animeframe;
+    system_temp._cancelframe = animeframe_cancelframe;
 /* }()); */
 
-animeframeobj = C['AnimeFrame'] = classExtendBase(animeframeobj);
-animeframeobj['fps'] = 30;
+system_temp = C['AnimeFrame'] = classExtendBase(system_temp);
+system_temp['fps'] = 30;
 
-C['animeframe'] = new animeframeobj();
+C['animeframe'] = new system_temp();
 Tweener = C['Tweener'] = classExtendObserver({
     'init': function(target, property, option /* varless */, name, prop, that) {
         // var name,
@@ -4676,14 +4674,14 @@ var template_matcher = /<%-(.+?)%>|<%=(.+?)%>|<%(.+?)%>|$/g,
         '\r': 'r',
         '\n': 'n',
         '\t': 't'
-    };
-C['template'] = function(templatetxt, replaceobj) {
-    var i,
-        func = "__r+=";
+    },
+template = C['template'] = function(templatetxt, replaceobj /* varless */, i, func) {
+    /* var func = "__r+="; */
+    func = "__r+=";
 
     templatetxt.replace(template_matcher, function(match, escaper, interpolate, evaluate, offset) {
         func += "'" + templatetxt.slice(i, offset)
-        .replace(template_replacereg, function(match) { return '\\' + template_escapes[match]; }) + "' + ";
+        .replace(template_replacereg, function(match) { return '\\' + template_escapes[match]; }) + "'+";
 
         if (escaper) {
             func += "((__t=" + escaper + ")==null?'':C.util.escape(__t))+";
@@ -4698,11 +4696,14 @@ C['template'] = function(templatetxt, replaceobj) {
         return match;
     });
 
-    return new Function('a', 'C', "var __t,__r='';" +
-        'with(a){' + func + "'';" + '}' + "return __r;")(replaceobj || {}, C);
+    // console.log("var __t,__r='';" +
+    //     'with(a){' + func + "''" + '}' + "return __r");
+
+    return new Function('a', "var __t,__r='';" +
+        'with(a){' + func + "''" + '}' + "return __r")(replaceobj || {});
 };
-C['template']['fetch'] = function(id, replaceobj) {
-    return C['template']($id(id).innerHTML, replaceobj);
+template['fetch'] = function(id, replaceobj) {
+    return template(html($id(id)), replaceobj);
 };
 if ($_methods) {
     $base.prototype = $_methods;
