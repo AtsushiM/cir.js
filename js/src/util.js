@@ -55,20 +55,9 @@ function toArray(obj/* varless */, ary) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
-function template(templatetxt, replaceobj /* varless */, i, temp) {
-    /* var i; */
-
-    for (i in replaceobj) {
-        temp = replaceobj[i];
-
-        templatetxt = replaceAll(
-            replaceAll(templatetxt, '<%= ' + i + ' %>', _escape(temp)),
-        '<%- ' + i + ' %>', temp);
-    }
-
-    return templatetxt;
-}
 function _escape(html) {
+    html = '' + html;
+
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -80,6 +69,8 @@ function _escape(html) {
     '>', '&gt;');
 }
 function _unescape(html) {
+    html = '' + html;
+
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -257,7 +248,6 @@ C['util'] = {
     'pageTop': pageTop,
     'override': override,
     'replaceAll': replaceAll,
-    'template': template,
     'escape': _escape,
     'unescape': _unescape,
     'windowOpen': windowOpen,

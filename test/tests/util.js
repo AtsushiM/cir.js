@@ -51,23 +51,6 @@ describe('C.utilは', function() {
         expect(text).to.be('ZBCDEZFGHIZ');
     });
 
-    it('template(templatetxt, replaceobj)はtemplatetxt中の"<%= key %>", "<%- key %>"をreplaceobjの値で置換する', function() {
-        var text = 'before <%= template %> <%= test %> <%- noescape %> after';
-
-        text = util.template(text, {
-            'template': 'Cool is Right.',
-            'test': '<script>alert("lol");</script>',
-            'noescape': '<p>noescape</p>'
-        });
-
-        expect(text).to.be('before Cool is Right. &lt;script&gt;alert(&quot;lol&quot;);&lt;/script&gt; <p>noescape</p> after');
-
-        // text = '<% console.log("test") %>';
-
-        // text = util.template(text);
-        // expect(text).to.be('');
-    });
-
     it('escape(text)でhtml形式のテキストを表示する上で問題になる文字をエスケープする', function() {
         expect(util.escape('"' + "'&<>")).to.be('&quot;&#039;&amp;&lt;&gt;');
     });

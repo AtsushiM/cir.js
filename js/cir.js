@@ -1,4 +1,4 @@
-// cir.js v1.1.1 (c) 2013 Atsushi Mizoue.
+// cir.js v1.2.0 (c) 2013 Atsushi Mizoue.
 (function(){
 // Cool is Right.
 C = {};
@@ -258,20 +258,9 @@ function toArray(obj/* varless */, ary) {
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
-function template(templatetxt, replaceobj /* varless */, i, temp) {
-    /* var i; */
-
-    for (i in replaceobj) {
-        temp = replaceobj[i];
-
-        templatetxt = replaceAll(
-            replaceAll(templatetxt, '<%= ' + i + ' %>', _escape(temp)),
-        '<%- ' + i + ' %>', temp);
-    }
-
-    return templatetxt;
-}
 function _escape(html) {
+    html = '' + html;
+
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -283,6 +272,8 @@ function _escape(html) {
     '>', '&gt;');
 }
 function _unescape(html) {
+    html = '' + html;
+
     return replaceAll(
         replaceAll(
             replaceAll(
@@ -460,7 +451,6 @@ C['util'] = {
     'pageTop': pageTop,
     'override': override,
     'replaceAll': replaceAll,
-    'template': template,
     'escape': _escape,
     'unescape': _unescape,
     'windowOpen': windowOpen,
@@ -863,27 +853,27 @@ Observer = C['Observer'] = classExtendBase({
         that = this;
         observed = that._observed;
 
-        if (!func) {
-            return delete observed[key];
-        }
+        if (func) {
+            target = observed[key];
 
-        target = observed[key];
+            if (target) {
+                for (i = target.length; i--;) {
+                    if (func == target[i]) {
+                        target.splice(i, 1);
 
-        if (target) {
-            for (i = target.length; i--;) {
-                if (func == target[i]) {
-                    target.splice(i, 1);
+                        if (target.length == 0) {
+                            delete observed[key];
+                        }
 
-                    if (target.length == 0) {
-                        delete observed[key];
+                        return TRUE;
                     }
-
-                    return TRUE;
                 }
             }
+
+            return FALSE;
         }
 
-        return FALSE;
+        return delete observed[key];
     },
     'fire': function(key) {
         var target = this._observed[key],
@@ -2396,7 +2386,6 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
         if (!that._queue) {
             return;
         }
-
         if (!that._queue.length) {
             return that._fire_complete();
         }
@@ -2762,11 +2751,11 @@ C['DataStore'] = classExtendBase({
         that = this;
 
         if (isDefined(that._data[key])) {
-            if (!that._array) {
-                delete that._data[key];
+            if (that._array) {
+                that.data.splice(key, 1);
             }
             else {
-                that.data.splice(key, 1);
+                delete that._data[key];
             }
         }
     },
@@ -4184,12 +4173,11 @@ C['Ollection'] = classExtend(C['Model'], {
         for (i in key) {
             val = key[i];
 
-            if (!isNumber(+i)) {
-                return that._notice('fail', key, val);
+            if (isNumber(+i)) {
+                that._store['set'](key, val);
+                that._observer['fire'](ev['CHANGE'], val, +i, that._store['get']());
             }
-
-            that._store['set'](key, val);
-            that._observer['fire'](ev['CHANGE'], val, +i, that._store['get']());
+            return that._notice('fail', key, val);
         }
     },
     'add': function(val/* varless */, collectid) {
@@ -4572,7 +4560,7 @@ function C_require(required) {
     return temp;
 }
 // namespace
-C['namespace'] = function(keyword, arg) {
+C['namespace'] = function(keyword, swap) {
     var keyword_ary = keyword.split('.'),
         i = 0,
         len = keyword_ary.length,
@@ -4592,12 +4580,16 @@ C['namespace'] = function(keyword, arg) {
         temp = temp[keyword_ary[i]] = {};
     }
 
-    if (arg) {
-        override(arg, temp);
+    if (swap) {
+        for (i in temp) {
+            if (!isDefined(swap[i])) {
+                swap[i] = temp[i];
+            }
+        }
 
-        par[keyword_ary[(len - 1)]] = arg;
+        par[keyword_ary[(len - 1)]] = swap;
 
-        temp = arg;
+        temp = swap;
     }
 
     return temp;
@@ -4676,6 +4668,42 @@ C['LowPassFilter'] = classExtend(Calc, {
         return that._before;
     }
 });
+var template_matcher = /<%-(.+?)%>|<%=(.+?)%>|<%(.+?)%>|$/g,
+    template_replacereg = /\\|'|\r|\n|\t/g,
+    template_escapes = {
+        "'": "'",
+        '\\': '\\',
+        '\r': 'r',
+        '\n': 'n',
+        '\t': 't'
+    };
+C['template'] = function(templatetxt, replaceobj) {
+    var i,
+        func = "__r+=";
+
+    templatetxt.replace(template_matcher, function(match, escaper, interpolate, evaluate, offset) {
+        func += "'" + templatetxt.slice(i, offset)
+        .replace(template_replacereg, function(match) { return '\\' + template_escapes[match]; }) + "' + ";
+
+        if (escaper) {
+            func += "((__t=" + escaper + ")==null?'':C.util.escape(__t))+";
+        }
+        else if (interpolate) {
+            func += "((__t=" + interpolate + ")==null?'':__t)+";
+        }
+        else if (evaluate) {
+            func += "'';" + evaluate + ";__r+=";
+        }
+        i= offset + match.length;
+        return match;
+    });
+
+    return new Function('a', 'C', "var __t,__r='';" +
+        'with(a){' + func + "'';" + '}' + "return __r;")(replaceobj || {}, C);
+};
+C['template']['fetch'] = function(id, replaceobj) {
+    return C['template']($id(id).innerHTML, replaceobj);
+};
 if ($_methods) {
     $base.prototype = $_methods;
 }

@@ -1,7 +1,6 @@
 // template
 function template(templatetxt, replaceobj) {
-    var render,
-        matcher = /<%-([\s\S]+?)%>|<%=([\s\S]+?)%>|<%([\s\S]+?)%>|$/g,
+    var matcher = /<%-([\s\S]+?)%>|<%=([\s\S]+?)%>|<%([\s\S]+?)%>|$/g,
         escapes = {
             "'": "'",
             '\\': '\\',
@@ -12,47 +11,38 @@ function template(templatetxt, replaceobj) {
             '\u2029': 'u2029'
         },
         index,
-        source = "__p+='";
+        func = "__r+=";
 
-    templatetxt.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-        source += templatetxt.slice(index, offset)
+    templatetxt.replace(matcher, function(match, escaper, interpolate, evaluate, offset) {
+        func += templatetxt.slice(index, offset)
         .replace(/\\|'|\r|\n|\t|\u2028|\u2029/g, function(match) { return '\\' + escapes[match]; });
 
-        if (escape) {
-            source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+        if (escaper) {
+            func += "((__t=" + escaper + ")==null?'':C.util.escape(__t))+";
         }
         if (interpolate) {
-            source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+            func += "((__t=" + interpolate + ")==null?'':__t)+";
         }
         if (evaluate) {
-            source += "';\n" + evaluate + "\n__p+='";
+            func += "'';" + evaluate + ";__r+=";
         }
         index = offset + match.length;
         return match;
     });
 
-    source += "';\n";
+    func += "'';";
 
-    source = 'with(obj||{}){\n' + source + '}\n';
+    func = 'with(obj){' + func + '}\n';
 
-    source = "var __t,__p='',__j=Array.prototype.join," +
-        "print=function(){__p+=__j.call(arguments,'');};\n" +
-        source + "return __p;\n";
+    func = "var __t,__r='';" +
+        /* "print=function(){__r+=Array.prototype.join.call(arguments,'');};\n" + */
+        func + "return __r;";
 
-    try {
-        render = new Function('obj', 'C', source);
-    } catch (e) {
-        e.source = source;
-        throw e;
-    }
+    func = new Function('obj', 'C', func);
 
-    return render(replaceobj, {});
+    return func(replaceobj, C);
 }
 
-console.log(template('<% if( test ) { %>12345<% } %>', {
-    test: 1
-}));
-
-console.log(_.template('<% if( test ) { %>12345<% } %>', {
-    test: 1
+console.log(template('<%- test %><% if( test ) { %><%= C.util.replaceAll("12345", "123", "456") %><% } %><%= test %>', {
+    test: 'abc'
 }));

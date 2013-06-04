@@ -6,7 +6,6 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
         if (!that._queue) {
             return;
         }
-
         if (!that._queue.length) {
             return that._fire_complete();
         }

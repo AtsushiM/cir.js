@@ -46,11 +46,11 @@ C['DataStore'] = classExtendBase({
         that = this;
 
         if (isDefined(that._data[key])) {
-            if (!that._array) {
-                delete that._data[key];
+            if (that._array) {
+                that.data.splice(key, 1);
             }
             else {
-                that.data.splice(key, 1);
+                delete that._data[key];
             }
         }
     },

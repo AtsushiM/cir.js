@@ -43,12 +43,11 @@ C['Ollection'] = classExtend(C['Model'], {
         for (i in key) {
             val = key[i];
 
-            if (!isNumber(+i)) {
-                return that._notice('fail', key, val);
+            if (isNumber(+i)) {
+                that._store['set'](key, val);
+                that._observer['fire'](ev['CHANGE'], val, +i, that._store['get']());
             }
-
-            that._store['set'](key, val);
-            that._observer['fire'](ev['CHANGE'], val, +i, that._store['get']());
+            return that._notice('fail', key, val);
         }
     },
     'add': function(val/* varless */, collectid) {

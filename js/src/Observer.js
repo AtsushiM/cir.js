@@ -30,27 +30,27 @@ Observer = C['Observer'] = classExtendBase({
         that = this;
         observed = that._observed;
 
-        if (!func) {
-            return delete observed[key];
-        }
+        if (func) {
+            target = observed[key];
 
-        target = observed[key];
+            if (target) {
+                for (i = target.length; i--;) {
+                    if (func == target[i]) {
+                        target.splice(i, 1);
 
-        if (target) {
-            for (i = target.length; i--;) {
-                if (func == target[i]) {
-                    target.splice(i, 1);
+                        if (target.length == 0) {
+                            delete observed[key];
+                        }
 
-                    if (target.length == 0) {
-                        delete observed[key];
+                        return TRUE;
                     }
-
-                    return TRUE;
                 }
             }
+
+            return FALSE;
         }
 
-        return FALSE;
+        return delete observed[key];
     },
     'fire': function(key) {
         var target = this._observed[key],
