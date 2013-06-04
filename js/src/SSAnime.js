@@ -1,12 +1,13 @@
 /* (function() { */
-var ssanime_ret = checkCSSAnimTranCheck([
-        'animation',
-        'webkitAnimation'
-    ], 'Animation'),
-    ssanime_prefix = ssanime_ret.prefix,
-    ssanime_css_prefix = ssanime_ret.css_prefix,
-    ssanime_event_key = ssanime_ret.event_key,
-    ssanime_sheet = ssanime_ret.sheet;
+system_temp = checkCSSAnimTranCheck([
+    'animation',
+    'webkitAnimation'
+], 'Animation');
+
+var ssanime_prefix = system_temp.prefix,
+    ssanime_css_prefix = system_temp.css_prefix,
+    ssanime_event_key = system_temp.event_key,
+    ssanime_sheet = system_temp.sheet;
 
 SSAnime = C['SSAnime'] =
 classExtendObserver({
@@ -126,7 +127,7 @@ classExtendObserver({
         css(this._el, stopobj);
         this._off();
     }
-}, ssanime_ret.support);
+}, system_temp.support);
 
 function SSAnime_addCSSRule(id, css_prefix, duration, eases/* varless */, i, len, rule) {
     // var i = 0,

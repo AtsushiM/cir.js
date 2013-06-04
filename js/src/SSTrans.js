@@ -1,11 +1,12 @@
 /* (function() { */
-var sstrans_ret = checkCSSAnimTranCheck([
-        'transitionProperty',
-        'webkitTransitionProperty'
-    ], 'Transition'),
-    sstrans_css_prefix = sstrans_ret.css_prefix,
-    sstrans_event_key = sstrans_ret.event_key,
-    sstrans_sheet = sstrans_ret.sheet,
+system_temp = checkCSSAnimTranCheck([
+    'transitionProperty',
+    'webkitTransitionProperty'
+], 'Transition');
+
+var sstrans_css_prefix = system_temp.css_prefix,
+    sstrans_event_key = system_temp.event_key,
+    sstrans_sheet = system_temp.sheet,
 SSTrans = C['SSTrans'] =
     classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
@@ -94,7 +95,7 @@ SSTrans = C['SSTrans'] =
         that['fire']('stop');
         that._stop();
     }
-}, sstrans_ret.support);
+}, system_temp.support);
 
 function SSTrans_addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,

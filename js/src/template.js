@@ -6,8 +6,9 @@ var template_matcher = /<%-(.+?)%>|<%=(.+?)%>|<%(.+?)%>|$/g,
         '\r': 'r',
         '\n': 'n',
         '\t': 't'
-    },
-template = C['template'] = function(templatetxt, replaceobj /* varless */, i, func) {
+    };
+
+system_temp = C['template'] = function(templatetxt, replaceobj /* varless */, i, func) {
     /* var func = "__r+="; */
     func = "__r+=";
 
@@ -34,6 +35,6 @@ template = C['template'] = function(templatetxt, replaceobj /* varless */, i, fu
     return new Function('a', "var __t,__r='';" +
         'with(a){' + func + "''" + '}' + "return __r")(replaceobj || {});
 };
-template['fetch'] = function(id, replaceobj) {
+system_temp['fetch'] = function(id, replaceobj) {
     return template(html($id(id)), replaceobj);
 };

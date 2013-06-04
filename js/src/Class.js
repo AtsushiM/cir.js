@@ -58,10 +58,11 @@ Class = C['lass'] = function() {};
     };
 /* }()); */
 
-function classExtend(cls, prop, support) {
+function classExtend(cls, prop, support /* varless */, klass) {
     cls = cls || Class;
 
-    var klass = cls['extend'](prop);
+    /* var klass = cls['extend'](prop); */
+    klass = cls['extend'](prop);
 
     if (isDefined(support)) {
         klass['support'] = support;

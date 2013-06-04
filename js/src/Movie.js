@@ -1,5 +1,5 @@
-Movie = C['Movie'] = function(config) {
+system_temp = C['Movie'] = function(config) {
     config['type'] = 'Video';
     return new Media(config);
 };
-Movie['support'] = Video['support'];
+system_temp['support'] = Video['support'];

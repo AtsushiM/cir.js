@@ -1,11 +1,11 @@
 C['Anvas'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._canvas = config['canvas'];
-        mine._ctx = mine._canvas.getContext('2d');
+        that._canvas = config['canvas'];
+        that._ctx = that._canvas.getContext('2d');
 
-        mine['setSize'](config);
+        that['setSize'](config);
     },
     'setSize': function(vars) {
         if (vars['width']) {
@@ -16,7 +16,7 @@ C['Anvas'] = classExtendBase({
         }
     },
     'pigment': function(vars) {
-        var mine = this,
+        var that = this,
             canv = create('canvas'),
             img = create('img');
 
@@ -25,14 +25,14 @@ C['Anvas'] = classExtendBase({
             canv.height = vars['height'];
             canv.getContext('2d').drawImage(img, 0, 0);
 
-            vars.onload.apply(mine, [canv, img]);
+            vars.onload.apply(that, [canv, img]);
         };
         img.src = vars['src'];
 
         return {'image': canv, 'x': vars.x || 0, 'y': vars.y || 0};
     },
     'pigments': function(vars, callback) {
-        var mine = this,
+        var that = this,
             i,
             count = 0,
             ret = {};
@@ -51,11 +51,11 @@ C['Anvas'] = classExtendBase({
                 count--;
 
                 if (count == 0) {
-                    callback.call(mine, ret);
+                    callback.call(that, ret);
                 }
             };
 
-            ret[i] = mine['pigment'](pig);
+            ret[i] = that['pigment'](pig);
             count++;
         }
 

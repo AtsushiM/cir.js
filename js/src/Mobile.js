@@ -1,4 +1,4 @@
-mb = C['Mobile'] = classExtendBase({
+system_temp = C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -38,4 +38,4 @@ mb = C['Mobile'] = classExtendBase({
         }
     }
 });
-C['mobile'] = new mb();
+C['mobile'] = new system_temp();

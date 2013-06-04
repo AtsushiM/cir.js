@@ -163,9 +163,7 @@ Class,
 Base,
 Observer,
 Audio,
-Sound,
 Video,
-Movie,
 ev,
 AbstractTask,
 ElementLoad,
@@ -180,11 +178,8 @@ HashQuery,
 ScriptLoad,
 DeviceOrientation,
 DeviceMotion,
-Validate,
 SSAnime,
 Calc,
-mb,
-pc,
 PC_browser,
 $_methods,
 animeframe_check,
@@ -768,10 +763,11 @@ Class = C['lass'] = function() {};
     };
 /* }()); */
 
-function classExtend(cls, prop, support) {
+function classExtend(cls, prop, support /* varless */, klass) {
     cls = cls || Class;
 
-    var klass = cls['extend'](prop);
+    /* var klass = cls['extend'](prop); */
+    klass = cls['extend'](prop);
 
     if (isDefined(support)) {
         klass['support'] = support;
@@ -1052,14 +1048,15 @@ C['ssease'] = {
     'inOutBack': [cssCubicBezierFormat('0.68,0,0.265,1'),cssCubicBezierFormat('0.68,-0.55,0.265,1.55')]
 };
 /* (function() { */
-var ssanime_ret = checkCSSAnimTranCheck([
-        'animation',
-        'webkitAnimation'
-    ], 'Animation'),
-    ssanime_prefix = ssanime_ret.prefix,
-    ssanime_css_prefix = ssanime_ret.css_prefix,
-    ssanime_event_key = ssanime_ret.event_key,
-    ssanime_sheet = ssanime_ret.sheet;
+system_temp = checkCSSAnimTranCheck([
+    'animation',
+    'webkitAnimation'
+], 'Animation');
+
+var ssanime_prefix = system_temp.prefix,
+    ssanime_css_prefix = system_temp.css_prefix,
+    ssanime_event_key = system_temp.event_key,
+    ssanime_sheet = system_temp.sheet;
 
 SSAnime = C['SSAnime'] =
 classExtendObserver({
@@ -1179,7 +1176,7 @@ classExtendObserver({
         css(this._el, stopobj);
         this._off();
     }
-}, ssanime_ret.support);
+}, system_temp.support);
 
 function SSAnime_addCSSRule(id, css_prefix, duration, eases/* varless */, i, len, rule) {
     // var i = 0,
@@ -1203,13 +1200,14 @@ SSAnime['id'] = 0;
 SSAnime['duration'] = 500;
 /* }()); */
 /* (function() { */
-var sstrans_ret = checkCSSAnimTranCheck([
-        'transitionProperty',
-        'webkitTransitionProperty'
-    ], 'Transition'),
-    sstrans_css_prefix = sstrans_ret.css_prefix,
-    sstrans_event_key = sstrans_ret.event_key,
-    sstrans_sheet = sstrans_ret.sheet,
+system_temp = checkCSSAnimTranCheck([
+    'transitionProperty',
+    'webkitTransitionProperty'
+], 'Transition');
+
+var sstrans_css_prefix = system_temp.css_prefix,
+    sstrans_event_key = system_temp.event_key,
+    sstrans_sheet = system_temp.sheet,
 SSTrans = C['SSTrans'] =
     classExtendObserver({
     'init': function(el, property, option /* varless */, that) {
@@ -1298,7 +1296,7 @@ SSTrans = C['SSTrans'] =
         that['fire']('stop');
         that._stop();
     }
-}, sstrans_ret.support);
+}, system_temp.support);
 
 function SSTrans_addCSSRule(id, css_prefix, duration, eases, transProp) {
     var i = 0,
@@ -1784,7 +1782,7 @@ function selector_animate(el, params, duration, ease, callback/* varless */, sty
         );
     }
     else {
-        anime = new C['Tweener'](
+        anime = new Tweener(
             el.style,
             selector_convertTweenerParam(el, params),
             option
@@ -2037,11 +2035,11 @@ Audio['support'] = embedSupportCheck('Audio', [
     ['ogg', 'ogg'],
     ['m4a', 'mp4']
 ]);
-Sound = C['Sound'] = function(config) {
+system_temp = C['Sound'] = function(config) {
     config['type'] = 'Audio';
     return new Media(config);
 };
-Sound['support'] = Audio['support'];
+system_temp['support'] = Audio['support'];
 Video = C['Video'] = function(config) {
     config['type'] = 'video';
     config['suffix'] = Video['support'];
@@ -2052,11 +2050,11 @@ Video['support'] = embedSupportCheck('Video', [
     ['mp4', 'mp4'],
     ['ogv', 'ogg']
 ]);
-Movie = C['Movie'] = function(config) {
+system_temp = C['Movie'] = function(config) {
     config['type'] = 'Video';
     return new Media(config);
 };
-Movie['support'] = Video['support'];
+system_temp['support'] = Video['support'];
 // Ajax
 C['Ajax'] = classExtendObserver({
     'dispose': function() {
@@ -2429,13 +2427,13 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
     }
 });
 C['Anvas'] = classExtendBase({
-    'init': function(config /* varless */, mine) {
-        mine = this;
+    'init': function(config /* varless */, that) {
+        that = this;
 
-        mine._canvas = config['canvas'];
-        mine._ctx = mine._canvas.getContext('2d');
+        that._canvas = config['canvas'];
+        that._ctx = that._canvas.getContext('2d');
 
-        mine['setSize'](config);
+        that['setSize'](config);
     },
     'setSize': function(vars) {
         if (vars['width']) {
@@ -2446,7 +2444,7 @@ C['Anvas'] = classExtendBase({
         }
     },
     'pigment': function(vars) {
-        var mine = this,
+        var that = this,
             canv = create('canvas'),
             img = create('img');
 
@@ -2455,14 +2453,14 @@ C['Anvas'] = classExtendBase({
             canv.height = vars['height'];
             canv.getContext('2d').drawImage(img, 0, 0);
 
-            vars.onload.apply(mine, [canv, img]);
+            vars.onload.apply(that, [canv, img]);
         };
         img.src = vars['src'];
 
         return {'image': canv, 'x': vars.x || 0, 'y': vars.y || 0};
     },
     'pigments': function(vars, callback) {
-        var mine = this,
+        var that = this,
             i,
             count = 0,
             ret = {};
@@ -2481,11 +2479,11 @@ C['Anvas'] = classExtendBase({
                 count--;
 
                 if (count == 0) {
-                    callback.call(mine, ret);
+                    callback.call(that, ret);
                 }
             };
 
-            ret[i] = mine['pigment'](pig);
+            ret[i] = that['pigment'](pig);
             count++;
         }
 
@@ -3294,7 +3292,7 @@ C['WindowLoad'] = classExtendObserver({
     }
 });
 /* }()); */
-mb = C['Mobile'] = classExtendBase({
+system_temp = C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -3334,7 +3332,7 @@ mb = C['Mobile'] = classExtendBase({
         }
     }
 });
-C['mobile'] = new mb();
+C['mobile'] = new system_temp();
 /* var PC_browser; */
 
 if (checkUserAgent(/opera/i)) {
@@ -3356,7 +3354,7 @@ else {
     PC_browser = 'ather';
 }
 
-pc = C['PC'] = classExtendBase({
+system_temp = C['PC'] = classExtendBase({
     'isChrome': function() {
         return PC_browser == 'chrome';
     },
@@ -3373,7 +3371,7 @@ pc = C['PC'] = classExtendBase({
         return PC_browser == 'ie';
     }
 });
-C['pc'] = new pc();
+C['pc'] = new system_temp();
 C['Orientation'] = classExtendBase({
     'init': function(config /* varless */, that) {
         that = this;
@@ -4206,7 +4204,7 @@ C['Ollection'] = classExtend(C['Model'], {
         }
     }
 });
-Validate = C['Validate'] = classExtendBase({
+system_temp = C['Validate'] = classExtendBase({
     _check: function(is, key, value, txt) {
         if (is(value)) {
             return TRUE;
@@ -4259,7 +4257,7 @@ Validate = C['Validate'] = classExtendBase({
         return this._check(isArray, key, value, 'Array');
     }
 });
-C['validate'] = new Validate();
+C['validate'] = new system_temp();
 C['Scroll'] = classExtendBase({
     'dispose': function(/* varless */that) {
         that = this;
@@ -4674,8 +4672,9 @@ var template_matcher = /<%-(.+?)%>|<%=(.+?)%>|<%(.+?)%>|$/g,
         '\r': 'r',
         '\n': 'n',
         '\t': 't'
-    },
-template = C['template'] = function(templatetxt, replaceobj /* varless */, i, func) {
+    };
+
+system_temp = C['template'] = function(templatetxt, replaceobj /* varless */, i, func) {
     /* var func = "__r+="; */
     func = "__r+=";
 
@@ -4702,7 +4701,7 @@ template = C['template'] = function(templatetxt, replaceobj /* varless */, i, fu
     return new Function('a', "var __t,__r='';" +
         'with(a){' + func + "''" + '}' + "return __r")(replaceobj || {});
 };
-template['fetch'] = function(id, replaceobj) {
+system_temp['fetch'] = function(id, replaceobj) {
     return template(html($id(id)), replaceobj);
 };
 if ($_methods) {

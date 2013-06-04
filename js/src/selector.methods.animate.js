@@ -70,7 +70,7 @@ function selector_animate(el, params, duration, ease, callback/* varless */, sty
         );
     }
     else {
-        anime = new C['Tweener'](
+        anime = new Tweener(
             el.style,
             selector_convertTweenerParam(el, params),
             option
