@@ -36,4 +36,3 @@ Calc = C['Calc'] = classExtendBase({
         return this._removefew(num1) / this._removefew(num2);
     }
 });
-C['calc'] = new Calc();

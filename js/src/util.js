@@ -31,13 +31,13 @@ function typeCast(str /* varless */, matchstr) {
     if (matchstr.match(/^{.*}$/)) {
         return jsonParse(matchstr);
     }
-    if (matchstr.match(/^[0-9\.]+$/)) {
+    else if (matchstr.match(/^[0-9\.]+$/)) {
         return +matchstr;
     }
-    if (matchstr === 'true') {
+    else if (matchstr === 'true') {
         return TRUE;
     }
-    if (matchstr === 'false') {
+    else if (matchstr === 'false') {
         return FALSE;
     }
 
@@ -56,26 +56,22 @@ function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
 function _escape(html) {
-    html = '' + html;
-
     return replaceAll(
         replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(html, '&', '&amp;'),
+                    replaceAll(EMPTY + html, '&', '&amp;'),
                 '"', '&quot;'),
             "'", '&#039;'),
         '<', '&lt;'),
     '>', '&gt;');
 }
 function _unescape(html) {
-    html = '' + html;
-
     return replaceAll(
         replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(html, '&gt;', '>'),
+                    replaceAll(EMPTY + html, '&gt;', '>'),
                 '&lt;', '<'),
             '&#039;', "'"),
         '&quot;', '"'),
@@ -134,10 +130,8 @@ function parseQueryString(query /* varless */, params, i, p, result) {
     return result;
 }
 function is(key, vars) {
-    if (Object.prototype.toString.call(vars) == '[object ' + key + ']') {
-        return TRUE;
-    }
-    return FALSE;
+    return Object.prototype.toString.call(vars) == '[object ' + key + ']' ?
+               TRUE : FALSE;
 }
 function isObject(vars) {
     return is('Object', vars);
@@ -158,10 +152,7 @@ function isArray(vars) {
     return is('Array', vars);
 }
 function isDefined(vars) {
-    if (vars === UNDEFINED) {
-        return FALSE;
-    }
-    return TRUE;
+    return vars === UNDEFINED ? FALSE : TRUE;
 }
 function isTouchable() {
     return 'ontouchstart' in win;
@@ -180,9 +171,7 @@ function eventStop(e) {
     return FALSE;
 }
 function checkUserAgent(pattern, ua) {
-    ua = ua || navigator.userAgent;
-
-    return !!ua.match(pattern);
+    return !!(ua || navigator.userAgent).match(pattern);
 }
 function proxy(target, func) {
     return function() {
@@ -236,10 +225,7 @@ function hasDeclaredArgument(func) {
     return func.toString().match(/^function.*\((.+)\)/);
 }
 function copyArray(ary) {
-    if (isArray(ary)) {
-        return ary.slice(0);
-    }
-    return ary;
+    return isArray(ary) ? ary.slice(0) : ary;
 }
 
 C['util'] = {

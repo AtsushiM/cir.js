@@ -31,19 +31,18 @@ C['WindowLoad'] = classExtendObserver({
 
         that._fire_start();
 
-        if (that._started) {
-            return;
-        }
-        that._started = TRUE;
+        if (!that._started) {
+            that._started = TRUE;
 
-        if (windowload_loaded) {
-            that._fire_complete();
-        }
-        else {
-            disposeid = that._contract(win, ev['LOAD'], function() {
-                that._uncontract(disposeid);
+            if (windowload_loaded) {
                 that._fire_complete();
-            });
+            }
+            else {
+                disposeid = that._contract(win, ev['LOAD'], function() {
+                    that._uncontract(disposeid);
+                    that._fire_complete();
+                });
+            }
         }
     }
 });

@@ -49,7 +49,7 @@ C['LimitText'] = classExtendBase({
             return TRUE;
         }
 
-        return FALSE;
+        /* return FALSE; */
     },
     'getLimitFontSize': function(text) {
         text = EMPTY + text;

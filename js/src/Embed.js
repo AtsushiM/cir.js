@@ -14,24 +14,21 @@ function Embed(config) {
 /* }; */
 /* C['Embed']['supportcheck'] = embedSupportCheck; */
 function embedSupportCheck(type, suffix) {
-    if (!win['HTML' + type + 'Element']) {
-        return FALSE;
-    }
+    if (win['HTML' + type + 'Element']) {
+        var type = str2LowerCase(type),
+            embed = create(type),
+            support = [],
+            i = 0,
+            len = suffix.length;
 
-    var type = str2LowerCase(type),
-        embed = create(type),
-        support = [],
-        i = 0,
-        len = suffix.length;
+        for (; i < len; i++) {
+            if (embed.canPlayType(type + '/' + suffix[i][1])) {
+                support.push(suffix[i]);
+            }
+        }
 
-    for (; i < len; i++) {
-        if (embed.canPlayType(type + '/' + suffix[i][1])) {
-            support.push(suffix[i]);
+        if (support.length) {
+            return support;
         }
     }
-
-    if (support.length) {
-        return support;
-    }
-    return FALSE;
 }

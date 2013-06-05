@@ -71,15 +71,7 @@ $_methods = C['$'].methods = {
         var temp = this._delegated,
             i;
 
-        if (!temp) {
-            return FALSE;
-        }
-        temp = temp[eventname];
-        if (!temp) {
-            return FALSE;
-        }
-        temp = temp[clsname];
-        if (!temp) {
+        if (!temp || !(temp = temp[eventname]) || !(temp = temp[clsname])) {
             return FALSE;
         }
 

@@ -43,19 +43,17 @@ ElementLoad = classExtendObserver({
 
         that._fire_start();
 
-        if (that._started) {
-            return;
-        }
+        if (!that._started) {
+            that._started = TRUE;
 
-        that._started = TRUE;
+            for (; i < len; i++) {
+                el = create(that._tagname);
+                el.src = that._srcs[i];
 
-        for (; i < len; i++) {
-            el = create(that._tagname);
-            el.src = that._srcs[i];
-
-            that._contractid.push(that._contract(el, ev['LOAD'], countup));
-            that._loadedsrcs.push(el);
-            that._loadloop(el);
+                that._contractid.push(that._contract(el, ev['LOAD'], countup));
+                that._loadedsrcs.push(el);
+                that._loadloop(el);
+            }
         }
 
         function countup() {

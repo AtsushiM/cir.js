@@ -57,10 +57,11 @@ function removeClass(el, cls /* varless */, addedcls, attachcls, i) {
 }
 function toggleClass(el, cls) {
     if (hasClass(el, cls)) {
-        return removeClass(el, cls);
+        removeClass(el, cls);
     }
-
-    addClass(el, cls);
+    else {
+        addClass(el, cls);
+    }
 }
 
 function attr(el, vars, value /* varless */, i) {
@@ -68,19 +69,18 @@ function attr(el, vars, value /* varless */, i) {
 
     if (isObject(vars)) {
         for (i in vars) {
-            if (vars[i]) {
+            if (isDefined(vars[i])) {
                 el.setAttribute(i, vars[i]);
             }
         }
 
         return TRUE;
     }
-
-    if (value || value == EMPTY) {
-        return el.setAttribute(vars, value);
+    else if (!isDefined(value)) {
+        return el.getAttribute(vars);
     }
 
-    return el.getAttribute(vars);
+    el.setAttribute(vars, value);
 }
 function removeAttr(el, key) {
     el.removeAttribute(key);

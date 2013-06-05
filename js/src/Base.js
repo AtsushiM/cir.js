@@ -24,8 +24,6 @@ Base = C['Base'] = classExtend(UNDEFINED, {
             that[i] = NULL;
             delete that[i];
         }
-
-        return NULL;
     },
     _contract: this_contract,
     'contract': this_contract,

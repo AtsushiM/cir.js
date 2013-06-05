@@ -3,7 +3,7 @@ system_temp = {
         return this._animeframe.call(win, callback);
     },
     'cancel': function(id) {
-        return this._cancelframe.call(win, id);
+        this._cancelframe.call(win, id);
     }
 };
 

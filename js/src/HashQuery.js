@@ -43,31 +43,29 @@ HashQuery = C['HashQuery'] = classExtendBase({
             splitVar,
             i;
 
-        if (!hash) {
-            return FALSE;
-        }
+        if (hash) {
+            hash = hash.split('?');
 
-        hash = hash.split('?');
+            mode = hash[0];
 
-        mode = hash[0];
+            if (hash[1]) {
+                vars = {};
+                varsHash = hash[1].split('&');
 
-        if (hash[1]) {
-            vars = {};
-            varsHash = hash[1].split('&');
-
-            // hashをオブジェクトに整形
-            for (i = varsHash.length; i--;) {
-                if (varsHash[i]) {
-                    splitVar = varsHash[i].split('=');
-                    vars[splitVar[0]] = this['typeCast'](splitVar[1]);
+                // hashをオブジェクトに整形
+                for (i = varsHash.length; i--;) {
+                    if (varsHash[i]) {
+                        splitVar = varsHash[i].split('=');
+                        vars[splitVar[0]] = this['typeCast'](splitVar[1]);
+                    }
                 }
             }
-        }
 
-        return {
-            'mode': mode,
-            'vars': vars
-        };
+            return {
+                'mode': mode,
+                'vars': vars
+            };
+        }
     },
     'getHash': function() {
         return this['parseHash'](location.hash);

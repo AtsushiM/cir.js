@@ -1,4 +1,4 @@
-// cir.js v1.2.1 (c) 2013 Atsushi Mizoue.
+// cir.js v1.2.3 (c) 2013 Atsushi Mizoue.
 (function(){
 // Cool is Right.
 C = {};
@@ -229,13 +229,13 @@ function typeCast(str /* varless */, matchstr) {
     if (matchstr.match(/^{.*}$/)) {
         return jsonParse(matchstr);
     }
-    if (matchstr.match(/^[0-9\.]+$/)) {
+    else if (matchstr.match(/^[0-9\.]+$/)) {
         return +matchstr;
     }
-    if (matchstr === 'true') {
+    else if (matchstr === 'true') {
         return TRUE;
     }
-    if (matchstr === 'false') {
+    else if (matchstr === 'false') {
         return FALSE;
     }
 
@@ -254,26 +254,22 @@ function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
 function _escape(html) {
-    html = '' + html;
-
     return replaceAll(
         replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(html, '&', '&amp;'),
+                    replaceAll(EMPTY + html, '&', '&amp;'),
                 '"', '&quot;'),
             "'", '&#039;'),
         '<', '&lt;'),
     '>', '&gt;');
 }
 function _unescape(html) {
-    html = '' + html;
-
     return replaceAll(
         replaceAll(
             replaceAll(
                 replaceAll(
-                    replaceAll(html, '&gt;', '>'),
+                    replaceAll(EMPTY + html, '&gt;', '>'),
                 '&lt;', '<'),
             '&#039;', "'"),
         '&quot;', '"'),
@@ -332,10 +328,8 @@ function parseQueryString(query /* varless */, params, i, p, result) {
     return result;
 }
 function is(key, vars) {
-    if (Object.prototype.toString.call(vars) == '[object ' + key + ']') {
-        return TRUE;
-    }
-    return FALSE;
+    return Object.prototype.toString.call(vars) == '[object ' + key + ']' ?
+               TRUE : FALSE;
 }
 function isObject(vars) {
     return is('Object', vars);
@@ -356,10 +350,7 @@ function isArray(vars) {
     return is('Array', vars);
 }
 function isDefined(vars) {
-    if (vars === UNDEFINED) {
-        return FALSE;
-    }
-    return TRUE;
+    return vars === UNDEFINED ? FALSE : TRUE;
 }
 function isTouchable() {
     return 'ontouchstart' in win;
@@ -378,9 +369,7 @@ function eventStop(e) {
     return FALSE;
 }
 function checkUserAgent(pattern, ua) {
-    ua = ua || navigator.userAgent;
-
-    return !!ua.match(pattern);
+    return !!(ua || navigator.userAgent).match(pattern);
 }
 function proxy(target, func) {
     return function() {
@@ -434,10 +423,7 @@ function hasDeclaredArgument(func) {
     return func.toString().match(/^function.*\((.+)\)/);
 }
 function copyArray(ary) {
-    if (isArray(ary)) {
-        return ary.slice(0);
-    }
-    return ary;
+    return isArray(ary) ? ary.slice(0) : ary;
 }
 
 C['util'] = {
@@ -530,10 +516,11 @@ function removeClass(el, cls /* varless */, addedcls, attachcls, i) {
 }
 function toggleClass(el, cls) {
     if (hasClass(el, cls)) {
-        return removeClass(el, cls);
+        removeClass(el, cls);
     }
-
-    addClass(el, cls);
+    else {
+        addClass(el, cls);
+    }
 }
 
 function attr(el, vars, value /* varless */, i) {
@@ -541,19 +528,18 @@ function attr(el, vars, value /* varless */, i) {
 
     if (isObject(vars)) {
         for (i in vars) {
-            if (vars[i]) {
+            if (isDefined(vars[i])) {
                 el.setAttribute(i, vars[i]);
             }
         }
 
         return TRUE;
     }
-
-    if (value || value == EMPTY) {
-        return el.setAttribute(vars, value);
+    else if (!isDefined(value)) {
+        return el.getAttribute(vars);
     }
 
-    return el.getAttribute(vars);
+    el.setAttribute(vars, value);
 }
 function removeAttr(el, key) {
     el.removeAttribute(key);
@@ -740,14 +726,15 @@ Class = C['lass'] = function() {};
 
             if (isMethodOverride) {
                 Class.prototype[key] = function() {
-                    var ret,
-                        tmp = this['_super'];
+                    var that = this,
+                        ret,
+                        tmp = that['_super'];
 
-                    this['_super'] = _super;
+                    that['_super'] = _super;
 
-                    ret = prop.apply(this, arguments);
+                    ret = prop.apply(that, arguments);
 
-                    this['_super'] = tmp;
+                    that['_super'] = tmp;
 
                     return ret;
                 };
@@ -807,8 +794,6 @@ Base = C['Base'] = classExtend(UNDEFINED, {
             that[i] = NULL;
             delete that[i];
         }
-
-        return NULL;
     },
     _contract: this_contract,
     'contract': this_contract,
@@ -1199,130 +1184,12 @@ function SSAnime_addCSSRule(id, css_prefix, duration, eases/* varless */, i, len
 SSAnime['id'] = 0;
 SSAnime['duration'] = 500;
 /* }()); */
-/* (function() { */
-system_temp = checkCSSAnimTranCheck([
-    'transitionProperty',
-    'webkitTransitionProperty'
-], 'Transition');
-
-var sstrans_css_prefix = system_temp.css_prefix,
-    sstrans_event_key = system_temp.event_key,
-    sstrans_sheet = system_temp.sheet,
-SSTrans = C['SSTrans'] =
-    classExtendObserver({
-    'init': function(el, property, option /* varless */, that) {
-        that = this;
-
-        that['_super']();
-
-        bindOnProp(that, option);
-
-        option = option || NULLOBJ;
-
-        SSTrans['id']++;
-        that._id = 'cirtrans' + SSTrans['id'];
-
-        var transProp = [],
-            animeProp = override({}, property),
-            i,
-            duration = option['duration'] || SSTrans['duration'],
-            // easeOutExpo
-            ease = option['ease'] || csseaseOutExpo;
-
-        if (!isArray(ease)) {
-            ease = [ease];
-        }
-
-        for (i in property) {
-            transProp.push(i);
-        }
-
-        SSTrans_addCSSRule(that._id, sstrans_css_prefix, duration, ease, transProp);
-
-        that._el = el;
-        that._property = property;
-
-        if (!option['manual']) {
-            that['start']();
-        }
-    },
-    'dispose': this_stop__super,
-    _fire_complete: this_fire_complete,
-    _fire_start: this_fire_start,
-    'start': function(/* varless */ that) {
-        that = this;
-
-        that._fire_start();
-
-        that._endfunc = function(e) {
-            that._stop();
-            setTimeout(function() {
-                if (!that._isStoped) {
-                    that._fire_complete(e);
-                }
-            }, 1);
-        };
-
-        on(that._el, sstrans_event_key + 'End', that._endfunc);
-        on(that._el, 'transitionend', that._endfunc);
-        addClass(that._el, that._id);
-        css(that._el, that._property);
-    },
-    _stop: function(/* varless */ that) {
-        that = this;
-
-        var rule = sstrans_sheet.cssRules,
-            len = rule.length,
-            name;
-
-        off(that._el, sstrans_event_key + 'End', that._endfunc);
-        off(that._el, 'transitionend', that._endfunc);
-        removeClass(that._el, that._id);
-
-        for (; len--;) {
-            name = rule[len].name ||
-                (EMPTY + rule[len].selectorText).split('.')[1];
-
-            if (name == that._id) {
-                sstrans_sheet.deleteRule(len);
-                break;
-            }
-        }
-    },
-    _isStoped: FALSE,
-    'stop': function(that) {
-        that = this;
-        that._isStoped = TRUE;
-        that['fire']('stop');
-        that._stop();
-    }
-}, system_temp.support);
-
-function SSTrans_addCSSRule(id, css_prefix, duration, eases, transProp) {
-    var i = 0,
-        len = eases.length,
-        rule = EMPTY;
-
-    rule +=
-        css_prefix + 'transition-property:' + transProp.join(' ') + ';' +
-        css_prefix + 'transition-duration:' + duration + 'ms;';
-
-    for (; i < len; i++) {
-        rule += css_prefix + 'transition-timing-function:' + eases[i] + ';';
-    }
-
-    sheetAddCSSRule(sstrans_sheet, id, rule);
-}
-
-SSTrans['id'] = 0;
-SSTrans['duration'] = 500;
-/* }()); */
 system_temp = {
     'request': function(callback) {
         return this._animeframe.call(win, callback);
     },
     'cancel': function(id) {
-        return this._cancelframe.call(win, id);
+        this._cancelframe.call(win, id);
     }
 };
 
@@ -1625,15 +1492,7 @@ $_methods = C['$'].methods = {
         var temp = this._delegated,
             i;
 
-        if (!temp) {
-            return FALSE;
-        }
-        temp = temp[eventname];
-        if (!temp) {
-            return FALSE;
-        }
-        temp = temp[clsname];
-        if (!temp) {
+        if (!temp || !(temp = temp[eventname]) || !(temp = temp[clsname])) {
             return FALSE;
         }
 
@@ -1866,31 +1725,29 @@ HashQuery = C['HashQuery'] = classExtendBase({
             splitVar,
             i;
 
-        if (!hash) {
-            return FALSE;
-        }
+        if (hash) {
+            hash = hash.split('?');
 
-        hash = hash.split('?');
+            mode = hash[0];
 
-        mode = hash[0];
+            if (hash[1]) {
+                vars = {};
+                varsHash = hash[1].split('&');
 
-        if (hash[1]) {
-            vars = {};
-            varsHash = hash[1].split('&');
-
-            // hashをオブジェクトに整形
-            for (i = varsHash.length; i--;) {
-                if (varsHash[i]) {
-                    splitVar = varsHash[i].split('=');
-                    vars[splitVar[0]] = this['typeCast'](splitVar[1]);
+                // hashをオブジェクトに整形
+                for (i = varsHash.length; i--;) {
+                    if (varsHash[i]) {
+                        splitVar = varsHash[i].split('=');
+                        vars[splitVar[0]] = this['typeCast'](splitVar[1]);
+                    }
                 }
             }
-        }
 
-        return {
-            'mode': mode,
-            'vars': vars
-        };
+            return {
+                'mode': mode,
+                'vars': vars
+            };
+        }
     },
     'getHash': function() {
         return this['parseHash'](location.hash);
@@ -1912,26 +1769,23 @@ function Embed(config) {
 /* }; */
 /* C['Embed']['supportcheck'] = embedSupportCheck; */
 function embedSupportCheck(type, suffix) {
-    if (!win['HTML' + type + 'Element']) {
-        return FALSE;
-    }
+    if (win['HTML' + type + 'Element']) {
+        var type = str2LowerCase(type),
+            embed = create(type),
+            support = [],
+            i = 0,
+            len = suffix.length;
 
-    var type = str2LowerCase(type),
-        embed = create(type),
-        support = [],
-        i = 0,
-        len = suffix.length;
+        for (; i < len; i++) {
+            if (embed.canPlayType(type + '/' + suffix[i][1])) {
+                support.push(suffix[i]);
+            }
+        }
 
-    for (; i < len; i++) {
-        if (embed.canPlayType(type + '/' + suffix[i][1])) {
-            support.push(suffix[i]);
+        if (support.length) {
+            return support;
         }
     }
-
-    if (support.length) {
-        return support;
-    }
-    return FALSE;
 }
 Media = classExtendBase({
     'init': function(config) {
@@ -2085,15 +1939,14 @@ C['Ajax'] = classExtendObserver({
         }
 
         xhr.onreadystatechange = function() {
-            if (xhr.readyState != 4) {
-                return;
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    that['fire']('complete', xhr.responseText, xhr);
+                }
+                else {
+                    that['fire']('error', xhr);
+                }
             }
-
-            if (xhr.status == 200) {
-                return that['fire']('complete', xhr.responseText, xhr);
-            }
-
-            that['fire']('error', xhr);
         };
 
         if (type == 'GET') {
@@ -2372,17 +2225,16 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
     _exe: function(/* varless */that) {
         that = this;
 
-        if (!that._queue) {
-            return;
-        }
-        if (!that._queue.length) {
-            return that._fire_complete();
-        }
+        if (that._queue) {
+            if (!that._queue.length) {
+                return that._fire_complete();
+            }
 
-        that._processcount = that._queue.length;
+            that._processcount = that._queue.length;
 
-        while (!that._paused && that._queue && that._queue[0]) {
-            that._asyncAction(that._queue.shift())((that._done));
+            while (!that._paused && that._queue && that._queue[0]) {
+                that._asyncAction(that._queue.shift())((that._done));
+            }
         }
     },
     _fire_progress: this_fire_progress,
@@ -2402,16 +2254,14 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
     _exe: function(/* varless */that) {
         that = this;
 
-        if (!that._queue || that._paused) {
-            return;
-        }
+        if (that._queue && !that._paused) {
+            if (that._queue[0]) {
+                return that._asyncAction(that._queue.shift())((that._done));
+            }
 
-        if (that._queue[0]) {
-            return that._asyncAction(that._queue.shift())((that._done));
+            /* this['fire']('complete'); */
+            that._fire_complete();
         }
-
-        /* this['fire']('complete'); */
-        that._fire_complete();
     },
     _fire_progress: this_fire_progress,
     _done: function() {
@@ -2558,10 +2408,13 @@ C['Anvas'] = classExtendBase({
                 var hour = datefactory_convert['G'](date);
 
                 if (hour == 12 || hour == 0 || hour == 24) {
-                    return 12;
+                    hour = 12;
+                }
+                else {
+                    hour %= 12;
                 }
 
-                return hour % 12;
+                return hour;
             },
             // G = 0 ~ 24
             'G': function(date) {
@@ -3204,19 +3057,17 @@ ElementLoad = classExtendObserver({
 
         that._fire_start();
 
-        if (that._started) {
-            return;
-        }
+        if (!that._started) {
+            that._started = TRUE;
 
-        that._started = TRUE;
+            for (; i < len; i++) {
+                el = create(that._tagname);
+                el.src = that._srcs[i];
 
-        for (; i < len; i++) {
-            el = create(that._tagname);
-            el.src = that._srcs[i];
-
-            that._contractid.push(that._contract(el, ev['LOAD'], countup));
-            that._loadedsrcs.push(el);
-            that._loadloop(el);
+                that._contractid.push(that._contract(el, ev['LOAD'], countup));
+                that._loadedsrcs.push(el);
+                that._loadloop(el);
+            }
         }
 
         function countup() {
@@ -3268,24 +3119,23 @@ C['WindowLoad'] = classExtendObserver({
 
         that._fire_start();
 
-        if (that._started) {
-            return;
-        }
-        that._started = TRUE;
+        if (!that._started) {
+            that._started = TRUE;
 
-        if (windowload_loaded) {
-            that._fire_complete();
-        }
-        else {
-            disposeid = that._contract(win, ev['LOAD'], function() {
-                that._uncontract(disposeid);
+            if (windowload_loaded) {
                 that._fire_complete();
-            });
+            }
+            else {
+                disposeid = that._contract(win, ev['LOAD'], function() {
+                    that._uncontract(disposeid);
+                    that._fire_complete();
+                });
+            }
         }
     }
 });
 /* }()); */
-system_temp = C['Mobile'] = classExtendBase({
+C['Mobile'] = classExtendBase({
     'getZoom': function() {
         return doc.body.clientWidth / win.innerWidth;
     },
@@ -3325,7 +3175,6 @@ system_temp = C['Mobile'] = classExtendBase({
         }
     }
 });
-C['mobile'] = new system_temp();
 /* var PC_browser; */
 
 if (checkUserAgent(/opera/i)) {
@@ -3347,7 +3196,7 @@ else {
     PC_browser = 'ather';
 }
 
-system_temp = C['PC'] = classExtendBase({
+C['PC'] = classExtendBase({
     'isChrome': function() {
         return PC_browser == 'chrome';
     },
@@ -3364,7 +3213,6 @@ system_temp = C['PC'] = classExtendBase({
         return PC_browser == 'ie';
     }
 });
-C['pc'] = new system_temp();
 C['Orientation'] = classExtendBase({
     'init': function(config /* varless */, that) {
         that = this;
@@ -4197,7 +4045,7 @@ C['Ollection'] = classExtend(C['Model'], {
         }
     }
 });
-system_temp = C['Validate'] = classExtendBase({
+C['Validate'] = classExtendBase({
     _check: function(is, key, value, txt) {
         if (is(value)) {
             return TRUE;
@@ -4249,7 +4097,6 @@ system_temp = C['Validate'] = classExtendBase({
         return this._check(isArray, key, value, 'Array');
     }
 });
-C['validate'] = new system_temp();
 C['Scroll'] = classExtendBase({
     'dispose': function(/* varless */that) {
         that = this;
@@ -4392,7 +4239,7 @@ C['LimitText'] = classExtendBase({
             return TRUE;
         }
 
-        return FALSE;
+        /* return FALSE; */
     },
     'getLimitFontSize': function(text) {
         text = EMPTY + text;
@@ -4620,7 +4467,6 @@ Calc = C['Calc'] = classExtendBase({
         return this._removefew(num1) / this._removefew(num2);
     }
 });
-C['calc'] = new Calc();
 C['LowPassFilter'] = classExtend(Calc, {
     'init': function(config) {
         config = config || NULLOBJ;

@@ -30,15 +30,14 @@ C['Ajax'] = classExtendObserver({
         }
 
         xhr.onreadystatechange = function() {
-            if (xhr.readyState != 4) {
-                return;
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    that['fire']('complete', xhr.responseText, xhr);
+                }
+                else {
+                    that['fire']('error', xhr);
+                }
             }
-
-            if (xhr.status == 200) {
-                return that['fire']('complete', xhr.responseText, xhr);
-            }
-
-            that['fire']('error', xhr);
         };
 
         if (type == 'GET') {

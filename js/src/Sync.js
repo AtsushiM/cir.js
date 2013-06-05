@@ -3,16 +3,14 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
     _exe: function(/* varless */that) {
         that = this;
 
-        if (!that._queue || that._paused) {
-            return;
-        }
+        if (that._queue && !that._paused) {
+            if (that._queue[0]) {
+                return that._asyncAction(that._queue.shift())((that._done));
+            }
 
-        if (that._queue[0]) {
-            return that._asyncAction(that._queue.shift())((that._done));
+            /* this['fire']('complete'); */
+            that._fire_complete();
         }
-
-        /* this['fire']('complete'); */
-        that._fire_complete();
     },
     _fire_progress: this_fire_progress,
     _done: function() {

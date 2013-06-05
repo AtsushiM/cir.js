@@ -1,4 +1,4 @@
-system_temp = C['Validate'] = classExtendBase({
+C['Validate'] = classExtendBase({
     _check: function(is, key, value, txt) {
         if (is(value)) {
             return TRUE;
@@ -50,4 +50,3 @@ system_temp = C['Validate'] = classExtendBase({
         return this._check(isArray, key, value, 'Array');
     }
 });
-C['validate'] = new system_temp();

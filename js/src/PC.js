@@ -19,7 +19,7 @@ else {
     PC_browser = 'ather';
 }
 
-system_temp = C['PC'] = classExtendBase({
+C['PC'] = classExtendBase({
     'isChrome': function() {
         return PC_browser == 'chrome';
     },
@@ -36,4 +36,3 @@ system_temp = C['PC'] = classExtendBase({
         return PC_browser == 'ie';
     }
 });
-C['pc'] = new system_temp();

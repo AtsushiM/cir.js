@@ -35,14 +35,15 @@ Class = C['lass'] = function() {};
 
             if (isMethodOverride) {
                 Class.prototype[key] = function() {
-                    var ret,
-                        tmp = this['_super'];
+                    var that = this,
+                        ret,
+                        tmp = that['_super'];
 
-                    this['_super'] = _super;
+                    that['_super'] = _super;
 
-                    ret = prop.apply(this, arguments);
+                    ret = prop.apply(that, arguments);
 
-                    this['_super'] = tmp;
+                    that['_super'] = tmp;
 
                     return ret;
                 };

@@ -57,10 +57,13 @@
                 var hour = datefactory_convert['G'](date);
 
                 if (hour == 12 || hour == 0 || hour == 24) {
-                    return 12;
+                    hour = 12;
+                }
+                else {
+                    hour %= 12;
                 }
 
-                return hour % 12;
+                return hour;
             },
             // G = 0 ~ 24
             'G': function(date) {
