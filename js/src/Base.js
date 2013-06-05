@@ -1,4 +1,4 @@
-Base = C['Base'] = classExtend(UNDEFINED, {
+Base = C['Base'] = classExtend(NULL, {
     _disposecountid: 0,
     'dispose': function(/* varless */ that, i, temp) {
         that = this;

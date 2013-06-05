@@ -152,7 +152,7 @@ function isArray(vars) {
     return is('Array', vars);
 }
 function isDefined(vars) {
-    return vars === UNDEFINED ? FALSE : TRUE;
+    return vars === void 0 ? FALSE : TRUE;
 }
 function isTouchable() {
     return 'ontouchstart' in win;

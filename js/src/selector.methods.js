@@ -62,22 +62,25 @@ $_methods = C['$'].methods = {
         temp = temp[clsname];
 
         return selectorForExe(that, function() {
-            var wraphandle = delegate.apply(NULL, arguments);
-
-            temp.push([handler, wraphandle]);
+            temp.push([handler, delegate.apply(NULL, arguments)]);
         }, arguments);
     },
     'undelegate': function(clsname, eventname, handler) {
         var temp = this._delegated,
             i;
 
-        if (!temp || !(temp = temp[eventname]) || !(temp = temp[clsname])) {
-            return FALSE;
-        }
+        if (temp && (temp = temp[eventname]) && (temp = temp[clsname])) {
+            i = temp.length;
 
-        i = temp.length;
+            if (!handler) {
+                for (; i--; ) {
+                    this['off'](eventname, temp[i][1]);
+                    temp.splice(i, 1);
+                }
 
-        if (handler) {
+                return TRUE;
+            }
+
             for (; i--; ) {
                 if (temp[i][0] === handler) {
                     this['off'](eventname, temp[i][1]);
@@ -87,17 +90,9 @@ $_methods = C['$'].methods = {
                     return TRUE;
                 }
             }
-
-            return FALSE;
         }
-        else {
-            for (; i--; ) {
-                this['off'](eventname, temp[i][1]);
-                temp.splice(i, 1);
-            }
 
-            return TRUE;
-        }
+        return FALSE;
     },
     'show': function() {
         return selectorForExe(this, show);

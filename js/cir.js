@@ -145,7 +145,6 @@ var system_temp,
     NULL = null,
     EMPTY = '',
     NULLOBJ = {},
-    UNDEFINED = undefined,
     isTouch = isTouchable(),
     ev_hashchange = 'hashchange',
     ev_orientationchange = 'orientationchange',
@@ -350,7 +349,7 @@ function isArray(vars) {
     return is('Array', vars);
 }
 function isDefined(vars) {
-    return vars === UNDEFINED ? FALSE : TRUE;
+    return vars === void 0 ? FALSE : TRUE;
 }
 function isTouchable() {
     return 'ontouchstart' in win;
@@ -768,7 +767,7 @@ function classExtendBase(prop, support) {
 function classExtendObserver(prop, support) {
     return classExtend(Observer, prop, support);
 }
-Base = C['Base'] = classExtend(UNDEFINED, {
+Base = C['Base'] = classExtend(NULL, {
     _disposecountid: 0,
     'dispose': function(/* varless */ that, i, temp) {
         that = this;
@@ -1483,22 +1482,25 @@ $_methods = C['$'].methods = {
         temp = temp[clsname];
 
         return selectorForExe(that, function() {
-            var wraphandle = delegate.apply(NULL, arguments);
-
-            temp.push([handler, wraphandle]);
+            temp.push([handler, delegate.apply(NULL, arguments)]);
         }, arguments);
     },
     'undelegate': function(clsname, eventname, handler) {
         var temp = this._delegated,
             i;
 
-        if (!temp || !(temp = temp[eventname]) || !(temp = temp[clsname])) {
-            return FALSE;
-        }
+        if (temp && (temp = temp[eventname]) && (temp = temp[clsname])) {
+            i = temp.length;
 
-        i = temp.length;
+            if (!handler) {
+                for (; i--; ) {
+                    this['off'](eventname, temp[i][1]);
+                    temp.splice(i, 1);
+                }
 
-        if (handler) {
+                return TRUE;
+            }
+
             for (; i--; ) {
                 if (temp[i][0] === handler) {
                     this['off'](eventname, temp[i][1]);
@@ -1508,17 +1510,9 @@ $_methods = C['$'].methods = {
                     return TRUE;
                 }
             }
-
-            return FALSE;
         }
-        else {
-            for (; i--; ) {
-                this['off'](eventname, temp[i][1]);
-                temp.splice(i, 1);
-            }
 
-            return TRUE;
-        }
+        return FALSE;
     },
     'show': function() {
         return selectorForExe(this, show);
