@@ -1,4 +1,4 @@
-// cir.js v1.2.3 (c) 2013 Atsushi Mizoue.
+// cir.js v1.2.4 (c) 2013 Atsushi Mizoue.
 (function(){
 // Cool is Right.
 C = {};
@@ -424,6 +424,9 @@ function hasDeclaredArgument(func) {
 function copyArray(ary) {
     return isArray(ary) ? ary.slice(0) : ary;
 }
+function copyObject(obj) {
+    return isObject(obj) ? override({}, obj) : obj;
+}
 
 C['util'] = {
     'pageTop': pageTop,
@@ -454,6 +457,7 @@ C['util'] = {
     'binarySearch': binarySearch,
     'toArray': toArray,
     'copyArray': copyArray,
+    'copyObject': copyObject,
     'hasDeclaredArgument': hasDeclaredArgument
 };
 function $(selector) {
@@ -1908,7 +1912,7 @@ C['Ajax'] = classExtendObserver({
         this['_super']();
     },
     'init': function(config) {
-        config = override({}, config);
+        config = copyObject(config);
 
         var that = this,
             url = config['url'],
@@ -3913,12 +3917,7 @@ C['View'] = classExtendBase({
 
         /* var i; */
 
-        if (!config) {
-            config = owner(that, that, {});
-        }
-        else {
-            config = owner(that, config);
-        }
+        config = config ? owner(that, config) : owner(that, that, {});
 
         that['el'] = C['$'](config['el'] || that['el'] || create('div'));
 

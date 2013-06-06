@@ -4,12 +4,7 @@ C['View'] = classExtendBase({
 
         /* var i; */
 
-        if (!config) {
-            config = owner(that, that, {});
-        }
-        else {
-            config = owner(that, config);
-        }
+        config = config ? owner(that, config) : owner(that, that, {});
 
         that['el'] = C['$'](config['el'] || that['el'] || create('div'));
 

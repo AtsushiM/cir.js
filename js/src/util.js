@@ -227,6 +227,9 @@ function hasDeclaredArgument(func) {
 function copyArray(ary) {
     return isArray(ary) ? ary.slice(0) : ary;
 }
+function copyObject(obj) {
+    return isObject(obj) ? override({}, obj) : obj;
+}
 
 C['util'] = {
     'pageTop': pageTop,
@@ -257,5 +260,6 @@ C['util'] = {
     'binarySearch': binarySearch,
     'toArray': toArray,
     'copyArray': copyArray,
+    'copyObject': copyObject,
     'hasDeclaredArgument': hasDeclaredArgument
 };

@@ -193,22 +193,21 @@ describe('C.utilは', function() {
         expect(util.copyArray(ary)).not.to.equal(ary);
     });
 
+    it('copyObject(obj)でobjをシャローコピーする。', function() {
+        var obj = {
+                test1: 1
+            };
+
+        expect(util.copyObject(obj)).to.eql(obj);
+        expect(util.copyObject(obj)).not.to.equal(obj);
+    });
+
     it('hasDeclaredArgument(func)でfuncが宣言済み引数を持つかどうかboolで返す。', function() {
         expect(util.hasDeclaredArgument(function() {})).to.be.false;
         expect(util.hasDeclaredArgument(function(a) {})).to.be.true;
     });
 
     it('proxy(target, func)でthisをtargetにしたfuncを実行する関数を返す', function() {
-        var target = {test: 1},
-            func = function() {
-                return this.test;
-            },
-            proxyfunc = util.proxy(target, func);
-
-        expect(proxyfunc()).to.be(1);
-    });
-
-    it('(target, func)でthisをtargetにしたfuncを実行する関数を返す', function() {
         var target = {test: 1},
             func = function() {
                 return this.test;

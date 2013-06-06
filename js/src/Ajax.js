@@ -5,7 +5,7 @@ C['Ajax'] = classExtendObserver({
         this['_super']();
     },
     'init': function(config) {
-        config = override({}, config);
+        config = copyObject(config);
 
         var that = this,
             url = config['url'],
