@@ -133,14 +133,14 @@ C['DateFactory'] = classExtendBase({
                 +anydate[5] || 0
             );
         }
-        if (isNumber(anydate)) {
-            return new Date(anydate);
-        }
         if (is('Date', anydate)) {
             return anydate;
         }
+        // if (isNumber(anydate)) {
+        //     return new Date(anydate);
+        // }
 
-        return new Date();
+        return new Date(anydate || NULL);
     },
     'format': function(format, anydate) {
         anydate = this['make'](anydate);

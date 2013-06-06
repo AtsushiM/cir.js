@@ -231,10 +231,10 @@ function typeCast(str /* varless */, matchstr) {
     else if (matchstr.match(/^[0-9\.]+$/)) {
         return +matchstr;
     }
-    else if (matchstr === 'true') {
+    else if (matchstr == 'true') {
         return TRUE;
     }
-    else if (matchstr === 'false') {
+    else if (matchstr == 'false') {
         return FALSE;
     }
 
@@ -457,8 +457,8 @@ C['util'] = {
     'binarySearch': binarySearch,
     'toArray': toArray,
     'copyArray': copyArray,
-    'copyObject': copyObject,
-    'hasDeclaredArgument': hasDeclaredArgument
+    'copyObject': copyObject //,
+    /* 'hasDeclaredArgument': hasDeclaredArgument */
 };
 function $(selector) {
     return $child(selector, doc);
@@ -2482,14 +2482,14 @@ C['DateFactory'] = classExtendBase({
                 +anydate[5] || 0
             );
         }
-        if (isNumber(anydate)) {
-            return new Date(anydate);
-        }
         if (is('Date', anydate)) {
             return anydate;
         }
+        // if (isNumber(anydate)) {
+        //     return new Date(anydate);
+        // }
 
-        return new Date();
+        return new Date(anydate || NULL);
     },
     'format': function(format, anydate) {
         anydate = this['make'](anydate);

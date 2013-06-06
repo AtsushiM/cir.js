@@ -34,10 +34,10 @@ function typeCast(str /* varless */, matchstr) {
     else if (matchstr.match(/^[0-9\.]+$/)) {
         return +matchstr;
     }
-    else if (matchstr === 'true') {
+    else if (matchstr == 'true') {
         return TRUE;
     }
-    else if (matchstr === 'false') {
+    else if (matchstr == 'false') {
         return FALSE;
     }
 
@@ -260,6 +260,6 @@ C['util'] = {
     'binarySearch': binarySearch,
     'toArray': toArray,
     'copyArray': copyArray,
-    'copyObject': copyObject,
-    'hasDeclaredArgument': hasDeclaredArgument
+    'copyObject': copyObject //,
+    /* 'hasDeclaredArgument': hasDeclaredArgument */
 };
