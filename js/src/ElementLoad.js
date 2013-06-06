@@ -30,9 +30,7 @@ ElementLoad = classExtendObserver({
 
         bindOnProp(that, config);
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     _fire_start: this_fire_start,
     'start': function(/* varless */el) {

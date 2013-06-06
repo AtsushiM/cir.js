@@ -30,9 +30,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         that._ease = option['ease'] || that.__ease;
         /* that._oncomplete = option['oncomplete']; */
 
-        if (!option['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, option);
     },
     'dispose': this_stop__super,
     // easeOutExpo

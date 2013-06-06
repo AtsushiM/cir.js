@@ -68,15 +68,21 @@ function splitSuffix(value) {
     return (EMPTY + (value || EMPTY)).match(/^(.*?)(-?[0-9\.]+)(.*)$/);
 }
 
-function bindOnProp(that, config) {
-    var i,
-        temp;
+function bindOnProp(that, config /* varless */, i, temp) {
+    // var i,
+    //     temp;
 
     for (i in config) {
         temp = i.match(/^on(.+)$/);
         if (temp) {
             that['on'](temp[1], proxy(that, config[i]));
         }
+    }
+}
+
+function ifManualStart(that, config, method) {
+    if (!config['manual']) {
+        that[method || 'start']();
     }
 }
 
@@ -1108,9 +1114,7 @@ classExtendObserver({
 
         SSAnime_addCSSRule(that._id, ssanime_css_prefix, duration, ease);
 
-        if (!option['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, option);
     },
     'dispose': this_stop__super,
     _fire_complete: this_fire_complete,
@@ -1267,9 +1271,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         that._ease = option['ease'] || that.__ease;
         /* that._oncomplete = option['oncomplete']; */
 
-        if (!option['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, option);
     },
     'dispose': this_stop__super,
     // easeOutExpo
@@ -1974,9 +1976,7 @@ C['Ajax'] = classExtendObserver({
                     'application/x-www-form-urlencoded');
         }
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     _fire_start: this_fire_start,
     'start': function(/* varless */that) {
@@ -2518,9 +2518,7 @@ C['Rollover'] = classExtendBase({
             removeClass(that, cls);
             out();
         }
-        if (!config['manual']) {
-            that['attach']();
-        }
+        ifManualStart(that, config, 'attach');
     },
     'dispose': function() {
         this['detach']();
@@ -2777,9 +2775,7 @@ C['DragFlick'] = classExtendBase({
         that._config = config;
 
         config = config || NULLOBJ;
-        if (!config['manual']) {
-            that['attach']();
-        }
+        ifManualStart(that, config, 'attach');
     },
     'attach': function(/* varless */that, flg) {
         that = this;
@@ -2968,9 +2964,7 @@ C['FPS'] = classExtendBase({
         // that._nowtime =
         // that._loopid = 0;
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     'dispose': this_stop__super,
     'getCriterion': function() {
@@ -3042,9 +3036,7 @@ ElementLoad = classExtendObserver({
 
         bindOnProp(that, config);
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     _fire_start: this_fire_start,
     'start': function(/* varless */el) {
@@ -3104,9 +3096,7 @@ C['WindowLoad'] = classExtendObserver({
 
         bindOnProp(this, config);
 
-        if (!config['manual']) {
-            this['start']();
-        }
+        ifManualStart(this, config);
     },
     _fire_complete: this_fire_complete,
     _fire_start: this_fire_start,
@@ -3336,9 +3326,7 @@ C['Modal'] = classExtendBase({
         }, commoncss));
         append(doc.body, that._inner);
 
-        if (!config['manual']) {
-            that['open']();
-        }
+        ifManualStart(that, config, 'open');
     },
     'dispose': function(/* varless */ that) {
         that = this;
@@ -3551,9 +3539,7 @@ C['PreRender'] = classExtendObserver({
 
         bindOnProp(that, config);
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     'dispose': function() {
         clearInterval(this._loopid);
@@ -3618,9 +3604,7 @@ C['Router'] = classExtendBase({
             }
         }
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     'start': function() {
         this['fire'](this._config['target']);
@@ -3801,8 +3785,7 @@ C['Twitter'] = classExtendBase({
 });
 C['XML'] = classExtendBase({
     'init': function(config) {
-        this._el = create('div');
-        html(this._el, config['data']);
+        html(this._el = create('div'), config['data']);
     },
     '$': function(selector) {
         return $child(selector, this._el);

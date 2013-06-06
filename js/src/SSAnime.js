@@ -71,9 +71,7 @@ classExtendObserver({
 
         SSAnime_addCSSRule(that._id, ssanime_css_prefix, duration, ease);
 
-        if (!option['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, option);
     },
     'dispose': this_stop__super,
     _fire_complete: this_fire_complete,

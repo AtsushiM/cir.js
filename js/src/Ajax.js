@@ -67,9 +67,7 @@ C['Ajax'] = classExtendObserver({
                     'application/x-www-form-urlencoded');
         }
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     _fire_start: this_fire_start,
     'start': function(/* varless */that) {

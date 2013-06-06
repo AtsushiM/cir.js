@@ -85,9 +85,7 @@ C['DragFlick'] = classExtendBase({
         that._config = config;
 
         config = config || NULLOBJ;
-        if (!config['manual']) {
-            that['attach']();
-        }
+        ifManualStart(that, config, 'attach');
     },
     'attach': function(/* varless */that, flg) {
         that = this;

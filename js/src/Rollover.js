@@ -16,9 +16,7 @@ C['Rollover'] = classExtendBase({
             removeClass(that, cls);
             out();
         }
-        if (!config['manual']) {
-            that['attach']();
-        }
+        ifManualStart(that, config, 'attach');
     },
     'dispose': function() {
         this['detach']();

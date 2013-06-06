@@ -18,9 +18,7 @@ C['WindowLoad'] = classExtendObserver({
 
         bindOnProp(this, config);
 
-        if (!config['manual']) {
-            this['start']();
-        }
+        ifManualStart(this, config);
     },
     _fire_complete: this_fire_complete,
     _fire_start: this_fire_start,

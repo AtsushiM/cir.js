@@ -16,9 +16,7 @@ C['Router'] = classExtendBase({
             }
         }
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     'start': function() {
         this['fire'](this._config['target']);

@@ -12,9 +12,7 @@ C['PreRender'] = classExtendObserver({
 
         bindOnProp(that, config);
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     'dispose': function() {
         clearInterval(this._loopid);

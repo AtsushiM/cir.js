@@ -51,9 +51,7 @@ C['Modal'] = classExtendBase({
         }, commoncss));
         append(doc.body, that._inner);
 
-        if (!config['manual']) {
-            that['open']();
-        }
+        ifManualStart(that, config, 'open');
     },
     'dispose': function(/* varless */ that) {
         that = this;

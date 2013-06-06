@@ -13,9 +13,7 @@ C['FPS'] = classExtendBase({
         // that._nowtime =
         // that._loopid = 0;
 
-        if (!config['manual']) {
-            that['start']();
-        }
+        ifManualStart(that, config);
     },
     'dispose': this_stop__super,
     'getCriterion': function() {

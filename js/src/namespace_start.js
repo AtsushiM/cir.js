@@ -66,15 +66,21 @@ function splitSuffix(value) {
     return (EMPTY + (value || EMPTY)).match(/^(.*?)(-?[0-9\.]+)(.*)$/);
 }
 
-function bindOnProp(that, config) {
-    var i,
-        temp;
+function bindOnProp(that, config /* varless */, i, temp) {
+    // var i,
+    //     temp;
 
     for (i in config) {
         temp = i.match(/^on(.+)$/);
         if (temp) {
             that['on'](temp[1], proxy(that, config[i]));
         }
+    }
+}
+
+function ifManualStart(that, config, method) {
+    if (!config['manual']) {
+        that[method || 'start']();
     }
 }
 
