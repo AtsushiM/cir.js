@@ -6,8 +6,8 @@ selector_Animation = SSAnime || NULLOBJ,
 selector_csssupport = selector_Animation['support'],
 selector_EASE = NULLOBJ;
 
-if (selector_csssupport && C['cssease']) {
-    selector_EASE = C['cssease'];
+if (selector_csssupport && C['ssease']) {
+    selector_EASE = C['ssease'];
 }
 else if (C['ease']) {
     selector_EASE = C['ease'];

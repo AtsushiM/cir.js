@@ -1577,8 +1577,8 @@ selector_Animation = SSAnime || NULLOBJ,
 selector_csssupport = selector_Animation['support'],
 selector_EASE = NULLOBJ;
 
-if (selector_csssupport && C['cssease']) {
-    selector_EASE = C['cssease'];
+if (selector_csssupport && C['ssease']) {
+    selector_EASE = C['ssease'];
 }
 else if (C['ease']) {
     selector_EASE = C['ease'];
@@ -2339,9 +2339,9 @@ C['Anvas'] = classExtendBase({
         ctx.clearRect(0, 0, temp.width, temp.height);
 
         for (; i < len; i++) {
-            temp = layer[i];
+            if (temp = layer[i]) {
+                ctx['globalAlpha'] = (typeof temp['alpha'] == 'number' ? temp['alpha'] : 1);
 
-            if (temp) {
                 ctx.drawImage(temp['image'], temp['x'], temp['y']);
             }
         }

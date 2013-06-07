@@ -70,9 +70,9 @@ C['Anvas'] = classExtendBase({
         ctx.clearRect(0, 0, temp.width, temp.height);
 
         for (; i < len; i++) {
-            temp = layer[i];
+            if (temp = layer[i]) {
+                ctx['globalAlpha'] = (typeof temp['alpha'] == 'number' ? temp['alpha'] : 1);
 
-            if (temp) {
                 ctx.drawImage(temp['image'], temp['x'], temp['y']);
             }
         }
