@@ -1,30 +1,19 @@
-C['Ollection'] = classExtend(C['Model'], {
-    'init': function(config /* varless */, that, i, defaults, events) {
+C['Ollection'] = classExtend(Model, {
+    'init': function(config /* varless */, that) {
         that = this;
 
         config = config || NULLOBJ;
 
-        // var i,
-        //     defaults = config['defaults'] || that['defaults'] || [],
-        //     events = config['events'] || that['events'];
-        defaults = config['defaults'] || that['defaults'] || [],
-        events = config['events'] || that['events'];
+        config['defaults'] = config['defaults'] || that['defaults'] || [],
 
-        /* that._validate = config['validate'] || that['validate'] || {}; */
-        that._store =
+        config['store'] =
             config['store'] ||
             that['store'] ||
             new C['DataStore']({
                 'array': TRUE
             });
-        that._observer = new Observer();
 
-        for (i in defaults) {
-            that['set'](i, defaults[i]);
-        }
-        for (i in events) {
-            that['on'](i, events[i]);
-        }
+        that._super(config);
     },
     'set': function(key, val /* varless */, that, i) {
         that = this;
@@ -45,7 +34,7 @@ C['Ollection'] = classExtend(C['Model'], {
 
             if (isNumber(+i)) {
                 that._store['set'](key, val);
-                that._observer['fire'](ev['CHANGE'], val, +i, that._store['get']());
+                that['fire'](ev['CHANGE'], val, +i, that._store['get']());
             }
             return that._notice('fail', key, val);
         }

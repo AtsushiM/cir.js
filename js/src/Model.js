@@ -1,11 +1,11 @@
-C['Model'] = classExtendBase({
+Model = C['Model'] = classExtendObserver({
     _notice: function(eventname, key, val /* varless */, that) {
         that = this;
 
-        that._observer['fire'](eventname, that._store['get']());
+        that['fire'](eventname, that._store['get']());
 
         if (key) {
-            that._observer['fire'](eventname + ':' + key, val);
+            that['fire'](eventname + ':' + key, val);
         }
     },
     'init': function(config /* varless */, that) {
@@ -13,13 +13,14 @@ C['Model'] = classExtendBase({
 
         config = config || NULLOBJ;
 
+        that['_super']();
+
         var i,
             defaults = config['defaults'] || that['defaults'] || NULLOBJ,
             events = config['events'] || that['events'];
 
         that._validate = config['validate'] || that['validate'] || {};
         that._store = config['store'] || that['store'] || new C['DataStore']();
-        that._observer = new Observer();
 
         for (i in defaults) {
             that['set'](i, defaults[i]);
@@ -53,10 +54,10 @@ C['Model'] = classExtendBase({
             }
 
             that._store['set'](i, val);
-            that._observer['fire'](ev['CHANGE'] + ':' + i, val);
+            that['fire'](ev['CHANGE'] + ':' + i, val);
         }
 
-        that._observer['fire'](ev['CHANGE'], that._store['get']());
+        that['fire'](ev['CHANGE'], that._store['get']());
     },
     'prev': function(key) {
         if (!key) {
@@ -87,14 +88,15 @@ C['Model'] = classExtendBase({
     'on': function(key, func /* varless */, proxyfunc) {
         /* var proxyfunc = proxy(this, func); */
         proxyfunc = proxy(this, func);
-        this._observer['on'](key, proxyfunc);
+        this['_super'](key, proxyfunc);
 
         return proxyfunc;
     },
-    'off': function(key, func) {
-        this._observer['off'](key, func);
-    },
-    'fire': function(key, vars) {
-        return this._observer['fire'].apply(this._observer, arguments);
+    'one': function(key, func /* varless */, proxyfunc) {
+        /* var proxyfunc = proxy(this, func); */
+        proxyfunc = proxy(this, func);
+        this['_super'](key, proxyfunc);
+
+        return proxyfunc;
     }
 });

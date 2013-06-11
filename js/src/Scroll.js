@@ -70,22 +70,22 @@ C['Scroll'] = classExtendBase({
     'kill': function(/* varless */ that) {
         that = this;
 
-        if (!that._killscrollid) {
+        if (!that._killid) {
             css(doc.body, {
                 'overflow': 'hidden'
             });
-            that._killscrollid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
+            that._killid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
         }
     },
     'revival': function(/* varless */ that) {
         that = this;
 
-        if (that._killscrollid) {
+        if (that._killid) {
             css(doc.body, {
                 'overflow': 'auto'
             });
-            that._uncontract(that._killscrollid);
-            delete that._killscrollid;
+            that._uncontract(that._killid);
+            delete that._killid;
         }
     }
 });
