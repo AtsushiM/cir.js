@@ -1,4 +1,4 @@
-// cir.js v1.2.7 (c) 2013 Atsushi Mizoue.
+// cir.js v1.2.8 (c) 2013 Atsushi Mizoue.
 (function(){
 // Cool is Right.
 C = {};
@@ -75,7 +75,7 @@ function bindOnProp(that, config /* varless */, i, temp) {
     for (i in config) {
         temp = i.match(/^on(.+)$/);
         if (temp) {
-            that['on'](temp[1], proxy(that, config[i]));
+            that['on'](temp[1], config[i]);
         }
     }
 }
@@ -824,16 +824,17 @@ Observer = C['Observer'] = classExtendBase({
 
         observed[key].push(func);
     },
-    'one': function(key, func /* varless */, that) {
+    'one': function(key, func /* varless */, that, wrap) {
         /* var that = this; */
         that = this;
+        wrap = function(vars) {
+            func.apply(that, vars);
+            that['off'](key, wrap);
+        };
 
-        that['on'](key, wrapfunc);
+        wrap.original = func;
 
-        function wrapfunc(vars) {
-            func(vars);
-            that['off'](key, wrapfunc);
-        }
+        that['on'](key, wrap);
     },
     'off': function(key, func /* varless */, that, observed, target, i) {
         // var observed = that._observed,
@@ -847,7 +848,7 @@ Observer = C['Observer'] = classExtendBase({
 
             if (target) {
                 for (i = target.length; i--;) {
-                    if (func == target[i]) {
+                    if (func == target[i] || func == target[i].original) {
                         target.splice(i, 1);
 
                         if (target.length == 0) {
@@ -877,7 +878,7 @@ Observer = C['Observer'] = classExtendBase({
             for (i = 0, len = target.length; i < len; i++) {
                 func = target[i];
                 if (func) {
-                    func.apply(NULL, args);
+                    func.apply(this, args);
                 }
             }
         }
@@ -2204,7 +2205,7 @@ AbstractTask = classExtendObserver({
         that = this;
 
         if (task['one'] && task['start']) {
-            task['one']('complete', proxy(that, that._done));
+            task['one']('complete', that._done);
             return proxy(task, task['start']);
         }
 
@@ -3881,20 +3882,6 @@ Model = C['Model'] = classExtendObserver({
         ret = this._store['reset']();
 
         this._notice('reset');
-    },
-    'on': function(key, func /* varless */, proxyfunc) {
-        /* var proxyfunc = proxy(this, func); */
-        proxyfunc = proxy(this, func);
-        this['_super'](key, proxyfunc);
-
-        return proxyfunc;
-    },
-    'one': function(key, func /* varless */, proxyfunc) {
-        /* var proxyfunc = proxy(this, func); */
-        proxyfunc = proxy(this, func);
-        this['_super'](key, proxyfunc);
-
-        return proxyfunc;
     }
 });
 C['View'] = classExtendBase({

@@ -50,6 +50,12 @@ describe('C.Observerは', function() {
         observer.fire('one');
 
         expect(count).to.be(1);
+
+        observer.one('one', args.one);
+        observer.off('one', args.one);
+        observer.fire('one');
+
+        expect(count).to.be(1);
     });
 
     it('off()でイベントを削除する', function() {

@@ -73,7 +73,7 @@ function bindOnProp(that, config /* varless */, i, temp) {
     for (i in config) {
         temp = i.match(/^on(.+)$/);
         if (temp) {
-            that['on'](temp[1], proxy(that, config[i]));
+            that['on'](temp[1], config[i]);
         }
     }
 }

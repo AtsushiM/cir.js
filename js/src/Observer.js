@@ -12,16 +12,17 @@ Observer = C['Observer'] = classExtendBase({
 
         observed[key].push(func);
     },
-    'one': function(key, func /* varless */, that) {
+    'one': function(key, func /* varless */, that, wrap) {
         /* var that = this; */
         that = this;
+        wrap = function(vars) {
+            func.apply(that, vars);
+            that['off'](key, wrap);
+        };
 
-        that['on'](key, wrapfunc);
+        wrap.original = func;
 
-        function wrapfunc(vars) {
-            func(vars);
-            that['off'](key, wrapfunc);
-        }
+        that['on'](key, wrap);
     },
     'off': function(key, func /* varless */, that, observed, target, i) {
         // var observed = that._observed,
@@ -35,7 +36,7 @@ Observer = C['Observer'] = classExtendBase({
 
             if (target) {
                 for (i = target.length; i--;) {
-                    if (func == target[i]) {
+                    if (func == target[i] || func == target[i].original) {
                         target.splice(i, 1);
 
                         if (target.length == 0) {
@@ -65,7 +66,7 @@ Observer = C['Observer'] = classExtendBase({
             for (i = 0, len = target.length; i < len; i++) {
                 func = target[i];
                 if (func) {
-                    func.apply(NULL, args);
+                    func.apply(this, args);
                 }
             }
         }

@@ -111,7 +111,7 @@ AbstractTask = classExtendObserver({
         that = this;
 
         if (task['one'] && task['start']) {
-            task['one']('complete', proxy(that, that._done));
+            task['one']('complete', that._done);
             return proxy(task, task['start']);
         }
 

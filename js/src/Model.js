@@ -84,19 +84,5 @@ Model = C['Model'] = classExtendObserver({
         ret = this._store['reset']();
 
         this._notice('reset');
-    },
-    'on': function(key, func /* varless */, proxyfunc) {
-        /* var proxyfunc = proxy(this, func); */
-        proxyfunc = proxy(this, func);
-        this['_super'](key, proxyfunc);
-
-        return proxyfunc;
-    },
-    'one': function(key, func /* varless */, proxyfunc) {
-        /* var proxyfunc = proxy(this, func); */
-        proxyfunc = proxy(this, func);
-        this['_super'](key, proxyfunc);
-
-        return proxyfunc;
     }
 });
