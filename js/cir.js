@@ -1,5 +1,5 @@
-// cir.js v1.2.8 (c) 2013 Atsushi Mizoue.
-(function(){
+// cir.js v1.2.9 (c) 2013 Atsushi Mizoue.
+!function(){
 // Cool is Right.
 C = {};
 
@@ -3946,7 +3946,7 @@ C['Ollection'] = classExtend(Model, {
                 'array': TRUE
             });
 
-        that._super(config);
+        that['_super'](config);
     },
     'set': function(key, val /* varless */, that, i) {
         that = this;
@@ -4518,4 +4518,4 @@ C['BackForwardCache'] = classExtendBase({
 if ($_methods) {
     $base.prototype = $_methods;
 }
-})();
+}();

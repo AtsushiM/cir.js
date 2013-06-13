@@ -13,7 +13,7 @@ C['Ollection'] = classExtend(Model, {
                 'array': TRUE
             });
 
-        that._super(config);
+        that['_super'](config);
     },
     'set': function(key, val /* varless */, that, i) {
         that = this;
