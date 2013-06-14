@@ -6,7 +6,7 @@ C['Facebook'] = classExtendBase({
             }));
         }
 
-        apifirstload('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
+        includeAPI('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
     },
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +

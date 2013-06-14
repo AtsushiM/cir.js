@@ -222,13 +222,23 @@ function _binarySearch(low, high, compare, end /* varless */, middle) {
     }
 }
 function hasDeclaredArgument(func) {
-    return func.toString().match(/^function[^{]*\(([^\)]+)\)/);
+    /* return func.toString().match(/^function[^\(]*\(\s*[^\)\s]/); */
+    return !!(isFunction(func) && func.length);
 }
 function copyArray(ary) {
     return isArray(ary) ? ary.slice(0) : ary;
 }
 function copyObject(obj) {
     return isObject(obj) ? override({}, obj) : obj;
+}
+
+function includeAPI(id, src) {
+    if (!$id(id)) {
+        before(create('script', {
+            'id': id,
+            'src': src
+        }), $('script'));
+    }
 }
 
 C['util'] = {
@@ -260,6 +270,7 @@ C['util'] = {
     'binarySearch': binarySearch,
     'toArray': toArray,
     'copyArray': copyArray,
-    'copyObject': copyObject //,
+    'copyObject': copyObject,
+    'includeAPI': includeAPI
     /* 'hasDeclaredArgument': hasDeclaredArgument */
 };

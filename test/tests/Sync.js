@@ -9,36 +9,6 @@ describe('C.Syncは', function() {
         }
     });
 
-    it('てすと', function(done) {
-        var ret = [];
-        task = new C.Sync({
-            queue: [
-                function() {
-                    console.log(1);
-                    ret.push(1);
-                },
-                function(done) {
-                    ret.push(2);
-                    done();
-                },
-                function() {
-                    ret.push(3);
-                },
-                function(done) {
-                    ret.push(4);
-                    console.log(ret);
-                    done();
-                }
-            ],
-            oncomplete: function() {
-                expect(ret).eql([1, 2, 3, 4]);
-                done();
-            }
-        });
-
-        task.start();
-    });
-
     // it('dispose()でインスタンスを解放する', function() {
     //     task = new C.Sync();
     //     task.dispose();

@@ -1,4 +1,4 @@
-// cir.js v1.3.5 (c) 2013 Atsushi Mizoue.
+// cir.js v1.3.6 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -131,15 +131,6 @@ function this_contract(el, e, handler /* varless */, mine, id) {
     mine._disposestore[id] = [el, e, handler];
 
     return id;
-}
-
-function apifirstload(id, src) {
-    if (!$id(id)) {
-        before(create('script', {
-            'id': id,
-            'src': src
-        }), $('script'));
-    }
 }
 
 var system_temp,
@@ -428,13 +419,23 @@ function _binarySearch(low, high, compare, end /* varless */, middle) {
     }
 }
 function hasDeclaredArgument(func) {
-    return func.toString().match(/^function[^{]*\(([^\)]+)\)/);
+    /* return func.toString().match(/^function[^\(]*\(\s*[^\)\s]/); */
+    return !!(isFunction(func) && func.length);
 }
 function copyArray(ary) {
     return isArray(ary) ? ary.slice(0) : ary;
 }
 function copyObject(obj) {
     return isObject(obj) ? override({}, obj) : obj;
+}
+
+function includeAPI(id, src) {
+    if (!$id(id)) {
+        before(create('script', {
+            'id': id,
+            'src': src
+        }), $('script'));
+    }
 }
 
 C['util'] = {
@@ -466,7 +467,8 @@ C['util'] = {
     'binarySearch': binarySearch,
     'toArray': toArray,
     'copyArray': copyArray,
-    'copyObject': copyObject //,
+    'copyObject': copyObject,
+    'includeAPI': includeAPI
     /* 'hasDeclaredArgument': hasDeclaredArgument */
 };
 function $(selector) {
@@ -2916,7 +2918,7 @@ C['Facebook'] = classExtendBase({
             }));
         }
 
-        apifirstload('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
+        includeAPI('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
     },
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +
@@ -3749,7 +3751,7 @@ C['Throttle'] = classExtendBase({
 });
 C['Twitter'] = classExtendBase({
     'includeAPI': function() {
-        apifirstload('twitter-wjs', '//platform.twitter.com/widgets.js');
+        includeAPI('twitter-wjs', '//platform.twitter.com/widgets.js');
     },
     'shareURL': function(vars) {
         var name = vars['name'],

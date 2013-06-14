@@ -22,32 +22,32 @@ describe('C.Validateは', function() {
     });
 
     it('isObject(key, value)でvalueがObjectの場合true、そうでない場合はconsole.logにエラーを表示する', function() {
-        expect(validate.isObject('test', {})).to.be(true);
-        expect(validate.isObject('test', 1)).to.be(undefined);
+        expect(validate.isObject('test', {})).to.be.true;
+        expect(validate.isObject('test', 1)).to.be.false;
     });
 
     it('isNumber(key, value)でvalueがNumberの場合true、そうでない場合はconsole.logにエラーを表示する', function() {
-        expect(validate.isNumber('test', 1)).to.be(true);
-        expect(validate.isNumber('test', {})).to.be(undefined);
+        expect(validate.isNumber('test', 1)).to.be.true;
+        expect(validate.isNumber('test', {})).to.be.false;
     });
 
     it('isString(key, value)でvalueがStringの場合true、そうでない場合はconsole.logにエラーを表示する', function() {
-        expect(validate.isString('test', '')).to.be(true);
-        expect(validate.isString('test', 1)).to.be(undefined);
+        expect(validate.isString('test', '')).to.be.true;
+        expect(validate.isString('test', 1)).to.be.false;
     });
 
     it('isFunction(key, value)でvalueがFunctionの場合true、そうでない場合はconsole.logにエラーを表示する', function() {
-        expect(validate.isFunction('test', function() {})).to.be(true);
-        expect(validate.isFunction('test', 1)).to.be(undefined);
+        expect(validate.isFunction('test', function() {})).to.be.true;
+        expect(validate.isFunction('test', 1)).to.be.false;
     });
 
     it('isBoolean(key, value)でvalueがBooleanの場合true、そうでない場合はconsole.logにエラーを表示する', function() {
-        expect(validate.isBoolean('test', true)).to.be(true);
-        expect(validate.isBoolean('test', 1)).to.be(undefined);
+        expect(validate.isBoolean('test', true)).to.be.true;
+        expect(validate.isBoolean('test', 1)).to.be.false;
     });
 
     it('isArray(key, value)でvalueがArrayの場合true、そうでない場合はconsole.logにエラーを表示する', function() {
-        expect(validate.isArray('test', [])).to.be(true);
-        expect(validate.isArray('test', 1)).to.be(undefined);
+        expect(validate.isArray('test', [])).to.be.true;
+        expect(validate.isArray('test', 1)).to.be.false;
     });
 });

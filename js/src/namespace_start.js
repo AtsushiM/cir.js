@@ -131,15 +131,6 @@ function this_contract(el, e, handler /* varless */, mine, id) {
     return id;
 }
 
-function apifirstload(id, src) {
-    if (!$id(id)) {
-        before(create('script', {
-            'id': id,
-            'src': src
-        }), $('script'));
-    }
-}
-
 var system_temp,
     win = window,
     doc = document,

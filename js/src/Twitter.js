@@ -1,6 +1,6 @@
 C['Twitter'] = classExtendBase({
     'includeAPI': function() {
-        apifirstload('twitter-wjs', '//platform.twitter.com/widgets.js');
+        includeAPI('twitter-wjs', '//platform.twitter.com/widgets.js');
     },
     'shareURL': function(vars) {
         var name = vars['name'],
