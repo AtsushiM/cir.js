@@ -1,4 +1,4 @@
-// cir.js v1.3.1 (c) 2013 Atsushi Mizoue.
+// cir.js v1.3.5 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -428,7 +428,7 @@ function _binarySearch(low, high, compare, end /* varless */, middle) {
     }
 }
 function hasDeclaredArgument(func) {
-    return func.toString().match(/^function.*\((.+)\)/);
+    return func.toString().match(/^function[^{]*\(([^\)]+)\)/);
 }
 function copyArray(ary) {
     return isArray(ary) ? ary.slice(0) : ary;
