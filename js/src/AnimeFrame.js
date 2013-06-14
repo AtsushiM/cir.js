@@ -1,12 +1,3 @@
-system_temp = {
-    'request': function(callback) {
-        return this._animeframe.call(win, callback);
-    },
-    'cancel': function(id) {
-        this._cancelframe.call(win, id);
-    }
-};
-
 /* (function() { */
     // var animeframe_check = ['webkit', 'moz', 'o', 'ms'],
     //     animeframe_len,
@@ -37,12 +28,20 @@ system_temp = {
             };
         }
     }
-
-    system_temp._animeframe = animeframe_animeframe;
-    system_temp._cancelframe = animeframe_cancelframe;
 /* }()); */
 
-system_temp = C['AnimeFrame'] = classExtendBase(system_temp);
+system_temp = C['AnimeFrame'] = classExtendBase({
+    // _animeframe: animeframe_animeframe,
+    // _cancelframe: animeframe_cancelframe,
+    'request': function(callback) {
+        /* return this._animeframe.call(win, callback); */
+        return animeframe_animeframe.call(win, callback);
+    },
+    'cancel': function(id) {
+        /* this._cancelframe.call(win, id); */
+        animeframe_cancelframe.call(win, id);
+    }
+});
 system_temp['fps'] = 30;
 
 C['animeframe'] = new system_temp();

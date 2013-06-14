@@ -1,5 +1,4 @@
 C['Facebook'] = classExtendBase({
-    _firstload: apifirstload,
     'includeAPI': function() {
         if ($id('fb-root')) {
             append(doc.body, create('div', {
@@ -7,7 +6,7 @@ C['Facebook'] = classExtendBase({
             }));
         }
 
-        this._firstload('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
+        apifirstload('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
     },
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +

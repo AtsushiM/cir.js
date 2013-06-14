@@ -1,6 +1,6 @@
 // ElementLoad
 ElementLoad = classExtendObserver({
-    _tagname: EMPTY,
+    /* _tagname: EMPTY, */
     _fire_complete: this_fire_complete,
     _fire_progress: this_fire_progress,
     'init': function(config /* varless */, that) {

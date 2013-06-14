@@ -3,7 +3,7 @@ C['Validate'] = classExtendBase({
         if (is(value)) {
             return TRUE;
         }
-        this['displayError'](key, txt);
+        return !!this['displayError'](key, txt);
     },
     'init': function(config /* varless */, that) {
         that = this;
@@ -15,21 +15,22 @@ C['Validate'] = classExtendBase({
 
         owner(that, that, config);
     },
-    'displayError': function(key, text) {
+    'displayError': function(key, text /* varless */, level) {
         text = 'Validate Error:' + key + ' is ' + text + '.';
 
-        switch (this.level) {
-            case 'log':
-                console.log(text);
-            case 'off':
-                return FALSE;
-            case 'error':
-                throw new Error(text);
-            /* case 'warn': */
-            /* default: */
+        level = this.level;
+
+        if (level == 'log') {
+            console.log(text);
         }
-                console.warn(text);
-                return FALSE;
+        else if (level == 'error') {
+            throw new Error(text);
+        }
+        else if (level === 'off') {
+        }
+        else {
+            console.warn(text);
+        }
     },
     'isObject': function(key, value) {
         return this._check(isObject, key, value, 'Object');

@@ -9,11 +9,11 @@ C['Rollover'] = classExtendBase({
         that._els = config['els'];
 
         that._switchover = function() {
-            addClass(that, cls);
+            addClass(this, cls);
             over();
         }
         that._switchout = function() {
-            removeClass(that, cls);
+            removeClass(this, cls);
             out();
         }
         ifManualStart(that, config, 'attach');

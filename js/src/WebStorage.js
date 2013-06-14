@@ -1,11 +1,4 @@
 WebStorage = classExtendBase({
-    _createStore: function() {
-        if (!this._array) {
-            return {};
-        }
-
-        return [];
-    },
     'init': function(config) {
         this._array = config['array'] || FALSE;
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
@@ -28,7 +21,7 @@ WebStorage = classExtendBase({
     'get': function(key /* varless */, that) {
         that = this;
 
-        var ret = this._createStore(),
+        var ret = this._array ? [] : {},
             i,
             storage = that._storage;
 

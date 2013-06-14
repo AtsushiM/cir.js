@@ -40,17 +40,16 @@ Tweener = C['Tweener'] = classExtendObserver({
     _fire_complete: this_fire_complete,
     _loop: function(/* varless */i) {
         var that = this,
-            items = Tweener.Items,
             item,
             now = dateNow(),
             time,
-            n = items.length,
+            n = Tweener_Items.length,
             /* i, */
             len,
             prop;
 
         while (n--) {
-            item = items[n];
+            item = Tweener_Items[n];
             /* len = item.property.length; */
             i = item._property.length;
             time = now - item.begin;
@@ -59,7 +58,7 @@ Tweener = C['Tweener'] = classExtendObserver({
                 for (; i--;) {
                     prop = item._property[i];
 
-                    Tweener._setProp(item._target, prop, item._ease(
+                    Tweener_setProp(item._target, prop, item._ease(
                         time,
                         prop['from'],
                         prop.distance,
@@ -71,15 +70,15 @@ Tweener = C['Tweener'] = classExtendObserver({
                 for (; i--;) {
                     prop = item._property[i];
 
-                    Tweener._setProp(item._target, prop, prop['to']);
+                    Tweener_setProp(item._target, prop, prop['to']);
                 }
 
                 item._fire_complete();
-                items.splice(n, 1);
+                Tweener_Items.splice(n, 1);
             }
         }
 
-        if (items.length) {
+        if (Tweener_Items.length) {
             C['animeframe']['request'](function() {
                 if (that._loop) {
                     that._loop();
@@ -100,7 +99,7 @@ Tweener = C['Tweener'] = classExtendObserver({
 
         that.begin = dateNow();
 
-        Tweener.Items.push(that);
+        Tweener_Items.push(that);
         if (!Tweener.timerId) {
             Tweener.timerId = 1;
             C['animeframe']['request'](function() {
@@ -111,7 +110,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         }
     },
     _stop: function() {
-        Tweener.Items = [];
+        Tweener_Items = [];
         C['animeframe']['cancel'](Tweener.timerId);
         Tweener.timerId = NULL;
     },
@@ -120,7 +119,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         this._stop();
     }
 });
-Tweener._setProp = function(target, prop, point) {
+function Tweener_setProp(target, prop, point) {
     if (prop['prefix'] || prop['suffix']) {
         target[prop['name']] = prop['prefix'] + point + prop['suffix'];
     }
@@ -129,5 +128,5 @@ Tweener._setProp = function(target, prop, point) {
     }
 };
 /* Tweener.timerId = NULL; */
-Tweener.Items = [];
+Tweener_Items = [];
 Tweener['duration'] = 500;

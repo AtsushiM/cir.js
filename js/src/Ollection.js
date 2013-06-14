@@ -2,14 +2,14 @@ C['Ollection'] = classExtend(Model, {
     'init': function(config /* varless */, that) {
         that = this;
 
-        config = config || NULLOBJ;
+        config = config || {};
 
         config['defaults'] = config['defaults'] || that['defaults'] || [],
 
         config['store'] =
             config['store'] ||
             that['store'] ||
-            new C['DataStore']({
+            new DataStore({
                 'array': TRUE
             });
 

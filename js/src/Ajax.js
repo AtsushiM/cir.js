@@ -10,7 +10,7 @@ C['Ajax'] = classExtendObserver({
         var that = this,
             url = config['url'],
             type = config['type'] || 'GET',
-            query = EMPTY,
+            query = config['query'] || EMPTY,
             xhr = that._xhr = new XMLHttpRequest(),
             openargs;
 
@@ -23,10 +23,14 @@ C['Ajax'] = classExtendObserver({
         bindOnProp(that, config);
 
         if (!config['cache']) {
-            that._cache(config);
+            if (!query) {
+                query = {};
+            }
+
+            query['cir' + dateNow()] = '0';
         }
-        if (config['query']) {
-            query = that._query(config);
+        if (query && isObject(query)) {
+            query = encodeURI(makeQueryString(query));
         }
 
         xhr.onreadystatechange = function() {
@@ -81,22 +85,6 @@ C['Ajax'] = classExtendObserver({
 
         that._xhr.abort();
         that['fire']('stop', that._xhr);
-    },
-    _query: function(config) {
-        var query = config['query'];
-
-        if (isObject(query)) {
-            query = encodeURI(makeQueryString(query));
-        }
-
-        return query;
-    },
-    _cache: function(config) {
-        if (!config['query']) {
-            config['query'] = {};
-        }
-
-        config['query']['cir' + dateNow()] = '0';
     },
     _json: function(config) {
         var oncomplete = config['oncomplete'],

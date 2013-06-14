@@ -1,4 +1,4 @@
-// cir.js v1.2.9 (c) 2013 Atsushi Mizoue.
+// cir.js v1.3.1 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -167,6 +167,7 @@ var system_temp,
 Class,
 Base,
 Observer,
+DataStore,
 Audio,
 Video,
 ev,
@@ -178,6 +179,7 @@ ExternalAndroid,
 ExternalIOS,
 Media,
 Tweener,
+Tweener_Items,
 WebStorage,
 HashQuery,
 ScriptLoad,
@@ -1193,15 +1195,6 @@ function SSAnime_addCSSRule(id, css_prefix, duration, eases/* varless */, i, len
 SSAnime['id'] = 0;
 SSAnime['duration'] = 500;
 /* }()); */
-system_temp = {
-    'request': function(callback) {
-        return this._animeframe.call(win, callback);
-    },
-    'cancel': function(id) {
-        this._cancelframe.call(win, id);
-    }
-};
-
 /* (function() { */
     // var animeframe_check = ['webkit', 'moz', 'o', 'ms'],
     //     animeframe_len,
@@ -1232,12 +1225,20 @@ system_temp = {
             };
         }
     }
-
-    system_temp._animeframe = animeframe_animeframe;
-    system_temp._cancelframe = animeframe_cancelframe;
 /* }()); */
 
-system_temp = C['AnimeFrame'] = classExtendBase(system_temp);
+system_temp = C['AnimeFrame'] = classExtendBase({
+    // _animeframe: animeframe_animeframe,
+    // _cancelframe: animeframe_cancelframe,
+    'request': function(callback) {
+        /* return this._animeframe.call(win, callback); */
+        return animeframe_animeframe.call(win, callback);
+    },
+    'cancel': function(id) {
+        /* this._cancelframe.call(win, id); */
+        animeframe_cancelframe.call(win, id);
+    }
+});
 system_temp['fps'] = 30;
 
 C['animeframe'] = new system_temp();
@@ -1283,17 +1284,16 @@ Tweener = C['Tweener'] = classExtendObserver({
     _fire_complete: this_fire_complete,
     _loop: function(/* varless */i) {
         var that = this,
-            items = Tweener.Items,
             item,
             now = dateNow(),
             time,
-            n = items.length,
+            n = Tweener_Items.length,
             /* i, */
             len,
             prop;
 
         while (n--) {
-            item = items[n];
+            item = Tweener_Items[n];
             /* len = item.property.length; */
             i = item._property.length;
             time = now - item.begin;
@@ -1302,7 +1302,7 @@ Tweener = C['Tweener'] = classExtendObserver({
                 for (; i--;) {
                     prop = item._property[i];
 
-                    Tweener._setProp(item._target, prop, item._ease(
+                    Tweener_setProp(item._target, prop, item._ease(
                         time,
                         prop['from'],
                         prop.distance,
@@ -1314,15 +1314,15 @@ Tweener = C['Tweener'] = classExtendObserver({
                 for (; i--;) {
                     prop = item._property[i];
 
-                    Tweener._setProp(item._target, prop, prop['to']);
+                    Tweener_setProp(item._target, prop, prop['to']);
                 }
 
                 item._fire_complete();
-                items.splice(n, 1);
+                Tweener_Items.splice(n, 1);
             }
         }
 
-        if (items.length) {
+        if (Tweener_Items.length) {
             C['animeframe']['request'](function() {
                 if (that._loop) {
                     that._loop();
@@ -1343,7 +1343,7 @@ Tweener = C['Tweener'] = classExtendObserver({
 
         that.begin = dateNow();
 
-        Tweener.Items.push(that);
+        Tweener_Items.push(that);
         if (!Tweener.timerId) {
             Tweener.timerId = 1;
             C['animeframe']['request'](function() {
@@ -1354,7 +1354,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         }
     },
     _stop: function() {
-        Tweener.Items = [];
+        Tweener_Items = [];
         C['animeframe']['cancel'](Tweener.timerId);
         Tweener.timerId = NULL;
     },
@@ -1363,7 +1363,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         this._stop();
     }
 });
-Tweener._setProp = function(target, prop, point) {
+function Tweener_setProp(target, prop, point) {
     if (prop['prefix'] || prop['suffix']) {
         target[prop['name']] = prop['prefix'] + point + prop['suffix'];
     }
@@ -1372,7 +1372,7 @@ Tweener._setProp = function(target, prop, point) {
     }
 };
 /* Tweener.timerId = NULL; */
-Tweener.Items = [];
+Tweener_Items = [];
 Tweener['duration'] = 500;
 // var $base = function(){},
 //     checkQuerySelector = /^(.+[\#\.\s\[>:,]|[\[:])/;
@@ -1921,7 +1921,7 @@ C['Ajax'] = classExtendObserver({
         var that = this,
             url = config['url'],
             type = config['type'] || 'GET',
-            query = EMPTY,
+            query = config['query'] || EMPTY,
             xhr = that._xhr = new XMLHttpRequest(),
             openargs;
 
@@ -1934,10 +1934,14 @@ C['Ajax'] = classExtendObserver({
         bindOnProp(that, config);
 
         if (!config['cache']) {
-            that._cache(config);
+            if (!query) {
+                query = {};
+            }
+
+            query['cir' + dateNow()] = '0';
         }
-        if (config['query']) {
-            query = that._query(config);
+        if (query && isObject(query)) {
+            query = encodeURI(makeQueryString(query));
         }
 
         xhr.onreadystatechange = function() {
@@ -1992,22 +1996,6 @@ C['Ajax'] = classExtendObserver({
 
         that._xhr.abort();
         that['fire']('stop', that._xhr);
-    },
-    _query: function(config) {
-        var query = config['query'];
-
-        if (isObject(query)) {
-            query = encodeURI(makeQueryString(query));
-        }
-
-        return query;
-    },
-    _cache: function(config) {
-        if (!config['query']) {
-            config['query'] = {};
-        }
-
-        config['query']['cir' + dateNow()] = '0';
     },
     _json: function(config) {
         var oncomplete = config['oncomplete'],
@@ -2513,11 +2501,11 @@ C['Rollover'] = classExtendBase({
         that._els = config['els'];
 
         that._switchover = function() {
-            addClass(that, cls);
+            addClass(this, cls);
             over();
         }
         that._switchout = function() {
-            removeClass(that, cls);
+            removeClass(this, cls);
             out();
         }
         ifManualStart(that, config, 'attach');
@@ -2545,7 +2533,7 @@ C['Rollover'] = classExtendBase({
         }
     }
 });
-C['DataStore'] = classExtendBase({
+DataStore = C['DataStore'] = classExtendBase({
     _createStore: function() {
         if (this._array) {
             return [];
@@ -2604,13 +2592,6 @@ C['DataStore'] = classExtendBase({
     }
 });
 WebStorage = classExtendBase({
-    _createStore: function() {
-        if (!this._array) {
-            return {};
-        }
-
-        return [];
-    },
     'init': function(config) {
         this._array = config['array'] || FALSE;
         this._n = config['namespace'] ? config['namespace'] + '-' : EMPTY;
@@ -2633,7 +2614,7 @@ WebStorage = classExtendBase({
     'get': function(key /* varless */, that) {
         that = this;
 
-        var ret = this._createStore(),
+        var ret = this._array ? [] : {},
             i,
             storage = that._storage;
 
@@ -2928,7 +2909,6 @@ ExternalIOS = classExtend(HashQuery, {
     }
 });
 C['Facebook'] = classExtendBase({
-    _firstload: apifirstload,
     'includeAPI': function() {
         if ($id('fb-root')) {
             append(doc.body, create('div', {
@@ -2936,7 +2916,7 @@ C['Facebook'] = classExtendBase({
             }));
         }
 
-        this._firstload('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
+        apifirstload('facebook-jssdk', '//connect.facebook.net/ja_JP/all.js#xfbml=1');
     },
     'shareURL': function(vars) {
         return 'https://www.facebook.com/dialog/feed?' +
@@ -3008,7 +2988,7 @@ C['FPS'] = classExtendBase({
 });
 // ElementLoad
 ElementLoad = classExtendObserver({
-    _tagname: EMPTY,
+    /* _tagname: EMPTY, */
     _fire_complete: this_fire_complete,
     _fire_progress: this_fire_progress,
     'init': function(config /* varless */, that) {
@@ -3768,9 +3748,8 @@ C['Throttle'] = classExtendBase({
     }
 });
 C['Twitter'] = classExtendBase({
-    _firstload: apifirstload,
     'includeAPI': function() {
-        this._firstload('twitter-wjs', '//platform.twitter.com/widgets.js');
+        apifirstload('twitter-wjs', '//platform.twitter.com/widgets.js');
     },
     'shareURL': function(vars) {
         var name = vars['name'],
@@ -3935,14 +3914,14 @@ C['Ollection'] = classExtend(Model, {
     'init': function(config /* varless */, that) {
         that = this;
 
-        config = config || NULLOBJ;
+        config = config || {};
 
         config['defaults'] = config['defaults'] || that['defaults'] || [],
 
         config['store'] =
             config['store'] ||
             that['store'] ||
-            new C['DataStore']({
+            new DataStore({
                 'array': TRUE
             });
 
@@ -4005,7 +3984,7 @@ C['Validate'] = classExtendBase({
         if (is(value)) {
             return TRUE;
         }
-        this['displayError'](key, txt);
+        return !!this['displayError'](key, txt);
     },
     'init': function(config /* varless */, that) {
         that = this;
@@ -4017,21 +3996,22 @@ C['Validate'] = classExtendBase({
 
         owner(that, that, config);
     },
-    'displayError': function(key, text) {
+    'displayError': function(key, text /* varless */, level) {
         text = 'Validate Error:' + key + ' is ' + text + '.';
 
-        switch (this.level) {
-            case 'log':
-                console.log(text);
-            case 'off':
-                return FALSE;
-            case 'error':
-                throw new Error(text);
-            /* case 'warn': */
-            /* default: */
+        level = this.level;
+
+        if (level == 'log') {
+            console.log(text);
         }
-                console.warn(text);
-                return FALSE;
+        else if (level == 'error') {
+            throw new Error(text);
+        }
+        else if (level === 'off') {
+        }
+        else {
+            console.warn(text);
+        }
     },
     'isObject': function(key, value) {
         return this._check(isObject, key, value, 'Object');
