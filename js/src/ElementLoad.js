@@ -11,22 +11,6 @@ ElementLoad = classExtendObserver({
         that._srcs = config['srcs'];
         that._loadedsrcs = [];
         that._contractid = [];
-        that._progress = new Progress({
-            'waits': that._srcs,
-            'onprogress': function(progress) {
-                that._fire_progress(progress);
-            },
-            'oncomplete': function() {
-                var i = that._contractid.length;
-
-                for (; i--;) {
-                    that._uncontract(that._contractid[i]);
-                }
-                that._contractid = [];
-
-                that._fire_complete(that._loadedsrcs);
-            }
-        });
 
         bindOnProp(that, config);
 
@@ -36,6 +20,7 @@ ElementLoad = classExtendObserver({
     'start': function(/* varless */el) {
         var that = this,
             i = 0,
+            j = 0,
             /* el, */
             len = that._srcs.length;
 
@@ -55,7 +40,19 @@ ElementLoad = classExtendObserver({
         }
 
         function countup() {
-            that._progress['pass']();
+            j++;
+
+            that._fire_progress(j / i);
+
+            if (i == j) {
+                i = that._contractid.length;
+
+                for (; i--;) {
+                    that._uncontract(that._contractid.pop());
+                }
+
+                that._fire_complete(that._loadedsrcs);
+            }
         }
     },
     _loadloop: nullFunction

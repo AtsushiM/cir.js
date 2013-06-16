@@ -1,4 +1,4 @@
-// cir.js v1.3.6 (c) 2013 Atsushi Mizoue.
+// cir.js v1.4.0 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -164,7 +164,6 @@ Video,
 ev,
 AbstractTask,
 ElementLoad,
-Progress,
 WindowAction,
 ExternalAndroid,
 ExternalIOS,
@@ -2015,73 +2014,6 @@ C['Ajax'] = classExtendObserver({
         }
     }
 });
-Progress = C['Progress'] = classExtendBase({
-    _success: 0,
-    _miss: 0,
-    _progress: 0,
-    _check: function(vars /* varless */, that, state) {
-        // var that = this,
-        //     state = NULL;
-        that = this;
-        /* state = NULL; */
-
-        if (isDefined(vars)) {
-            that._args.push(vars);
-        }
-
-        that._progress = that._success / that._waits;
-        if (that._progress > 1) {
-            that._progress = 1;
-        }
-        that._onprogress(that._progress);
-
-        if (that._miss) {
-            state = new Error('miss');
-        }
-
-        if (that._success == that._waits || that._miss) {
-            that._oncomplete(state, that._args);
-            that._oncomplete =
-            that._onprogress = nullFunction;
-        }
-    },
-    'init': function(config /* varless */, that, waits) {
-        // var that = this,
-        //     waits = config['waits'];
-        that = this;
-        waits = config['waits'];
-
-        if (isArray(waits)) {
-            waits = waits.length;
-        }
-
-        that._waits = waits;
-        that._oncomplete = config['oncomplete'];
-        that._onprogress = config['onprogress'] || nullFunction;
-
-        that._args = [];
-    },
-    'getProgress': function() {
-        return this._progress;
-    },
-    'pass': function(vars) {
-        this._success++;
-
-        this._check(vars);
-    },
-    'miss': function(vars) {
-        this._miss++;
-
-        this._check(vars);
-    },
-    'exit': function(vars /* varless */, that) {
-        that = this;
-
-        that._success = that._waits;
-
-        that._check(vars);
-    }
-});
 AbstractTask = classExtendObserver({
     'init': function(config/* varless */, that, queue) {
         that = this;
@@ -3001,22 +2933,6 @@ ElementLoad = classExtendObserver({
         that._srcs = config['srcs'];
         that._loadedsrcs = [];
         that._contractid = [];
-        that._progress = new Progress({
-            'waits': that._srcs,
-            'onprogress': function(progress) {
-                that._fire_progress(progress);
-            },
-            'oncomplete': function() {
-                var i = that._contractid.length;
-
-                for (; i--;) {
-                    that._uncontract(that._contractid[i]);
-                }
-                that._contractid = [];
-
-                that._fire_complete(that._loadedsrcs);
-            }
-        });
 
         bindOnProp(that, config);
 
@@ -3026,6 +2942,7 @@ ElementLoad = classExtendObserver({
     'start': function(/* varless */el) {
         var that = this,
             i = 0,
+            j = 0,
             /* el, */
             len = that._srcs.length;
 
@@ -3045,7 +2962,19 @@ ElementLoad = classExtendObserver({
         }
 
         function countup() {
-            that._progress['pass']();
+            j++;
+
+            that._fire_progress(j / i);
+
+            if (i == j) {
+                i = that._contractid.length;
+
+                for (; i--;) {
+                    that._uncontract(that._contractid.pop());
+                }
+
+                that._fire_complete(that._loadedsrcs);
+            }
         }
     },
     _loadloop: nullFunction
