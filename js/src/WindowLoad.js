@@ -7,10 +7,10 @@
 
 windowload_winload = function() {
     windowload_loaded = TRUE;
-    off(win, ev['LOAD'], windowload_winload);
+    off(win, 'load', windowload_winload);
 };
 
-on(win, ev['LOAD'], windowload_winload);
+on(win, 'load', windowload_winload);
 
 C['WindowLoad'] = classExtendObserver({
     'init': function(config) {
@@ -20,25 +20,23 @@ C['WindowLoad'] = classExtendObserver({
 
         ifManualStart(this, config);
     },
-    _fire_complete: this_fire_complete,
-    _fire_start: this_fire_start,
     'start': function(/* varless */that, disposeid) {
         // var that = this,
         //     disposeid;
         that = this;
 
-        that._fire_start();
+        fire_start(that);
 
         if (!that._started) {
             that._started = TRUE;
 
             if (windowload_loaded) {
-                that._fire_complete();
+                fire_complete(that);
             }
             else {
-                disposeid = that._contract(win, ev['LOAD'], function() {
+                disposeid = that._contract(win, 'load', function() {
                     that._uncontract(disposeid);
-                    that._fire_complete();
+                    fire_complete(that);
                 });
             }
         }

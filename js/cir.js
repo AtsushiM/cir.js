@@ -1,4 +1,4 @@
-// cir.js v1.4.0 (c) 2013 Atsushi Mizoue.
+// cir.js v1.4.1 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -96,18 +96,6 @@ function this_stop__super() {
     this['stop']();
     this['_super']();
 }
-function this_detach() {
-    this['detach']();
-}
-function this_fire_complete(arg) {
-    this['fire']('complete', arg);
-}
-function this_fire_start() {
-    this['fire']('start');
-}
-function this_fire_progress(arg) {
-    this['fire']('progress', arg);
-}
 function this_uncontract(id) {
     if (id) {
         var temp = this._disposestore,
@@ -118,19 +106,29 @@ function this_uncontract(id) {
         off(arg[0], arg[1], arg[2]);
     }
 }
-function this_contract(el, e, handler /* varless */, mine, id) {
-    mine = this;
+function this_contract(el, e, handler /* varless */, that, id) {
+    that = this;
 
-    if (!mine._disposestore) {
-        mine._disposestore = {};
+    if (!that._disposestore) {
+        that._disposestore = {};
     }
     /* var id = ++this._disposecountid; */
-    id = ++mine._disposecountid;
+    id = ++that._disposecountid;
 
     on(el, e, handler);
-    mine._disposestore[id] = [el, e, handler];
+    that._disposestore[id] = [el, e, handler];
 
     return id;
+}
+
+function fire_complete(that, arg) {
+    that['fire']('complete', arg);
+}
+function fire_start(that) {
+    that['fire']('start');
+}
+function fire_progress(that, arg) {
+    that['fire']('progress', arg);
 }
 
 var system_temp,
@@ -1122,15 +1120,13 @@ classExtendObserver({
         ifManualStart(that, option);
     },
     'dispose': this_stop__super,
-    _fire_complete: this_fire_complete,
-    _fire_start: this_fire_start,
     'start': function(/* varless */ that, el) {
         // var that = this,
         //     el = that._el;
         that = this,
         el = that._el;
 
-        that._fire_start();
+        fire_start(that);
 
         that._end = endaction;
         on(el, ssanime_event_key + 'End', endaction);
@@ -1159,7 +1155,7 @@ classExtendObserver({
 
                 css(el, that.property);
             }
-            that._fire_complete(e);
+            fire_complete(that, e);
         }
     },
     'stop': function(/* varless */stopobj) {
@@ -1282,7 +1278,6 @@ Tweener = C['Tweener'] = classExtendObserver({
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
-    _fire_complete: this_fire_complete,
     _loop: function(/* varless */i) {
         var that = this,
             item,
@@ -1318,7 +1313,7 @@ Tweener = C['Tweener'] = classExtendObserver({
                     Tweener_setProp(item._target, prop, prop['to']);
                 }
 
-                item._fire_complete();
+                fire_complete(item);
                 Tweener_Items.splice(n, 1);
             }
         }
@@ -1335,12 +1330,11 @@ Tweener = C['Tweener'] = classExtendObserver({
 
         that._stop();
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */ that) {
         /* var that = this; */
         that = this;
 
-        that._fire_start();
+        fire_start(that);
 
         that.begin = dateNow();
 
@@ -1912,10 +1906,7 @@ system_temp = C['Movie'] = function(config) {
 system_temp['support'] = Video['support'];
 // Ajax
 C['Ajax'] = classExtendObserver({
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'init': function(config) {
         config = copyObject(config);
 
@@ -1985,11 +1976,10 @@ C['Ajax'] = classExtendObserver({
 
         ifManualStart(that, config);
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */that) {
         that = this;
 
-        that._fire_start();
+        fire_start(that);
         that._xhr.send(that._query);
     },
     'stop': function(/* varless */that) {
@@ -2030,11 +2020,10 @@ AbstractTask = classExtendObserver({
         that['resetQueue'](queue);
         that._done = proxy(that, that._done);
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */that) {
         that = this;
 
-        that._fire_start();
+        fire_start(that);
         that._paused = FALSE;
         that._exeQueue();
     },
@@ -2143,13 +2132,12 @@ AbstractTask = classExtendObserver({
     /* _done: abstraceFunction */
 });
 C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
-    _fire_complete: this_fire_complete,
     _exe: function(/* varless */that) {
         that = this;
 
         if (that._queue) {
             if (!that._queue.length) {
-                return that._fire_complete();
+                return fire_complete(that);
             }
 
             that._processcount = that._queue.length;
@@ -2159,20 +2147,18 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
             }
         }
     },
-    _fire_progress: this_fire_progress,
     _done: function(/* varless */that) {
         that = this;
 
-        that._fire_progress();
+        fire_progress(that);
         that._processcount--;
 
         if (!that._processcount) {
-            that._fire_complete();
+            fire_complete(that);
         }
     }
 });
 C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
-    _fire_complete: this_fire_complete,
     _exe: function(/* varless */that) {
         that = this;
 
@@ -2182,12 +2168,11 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
             }
 
             /* this['fire']('complete'); */
-            that._fire_complete();
+            fire_complete(that);
         }
     },
-    _fire_progress: this_fire_progress,
     _done: function() {
-        this._fire_progress();
+        fire_progress(this);
         this._exe();
     }
 });
@@ -2923,8 +2908,6 @@ C['FPS'] = classExtendBase({
 // ElementLoad
 ElementLoad = classExtendObserver({
     /* _tagname: EMPTY, */
-    _fire_complete: this_fire_complete,
-    _fire_progress: this_fire_progress,
     'init': function(config /* varless */, that) {
         that = this;
 
@@ -2938,7 +2921,6 @@ ElementLoad = classExtendObserver({
 
         ifManualStart(that, config);
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */el) {
         var that = this,
             i = 0,
@@ -2946,7 +2928,7 @@ ElementLoad = classExtendObserver({
             /* el, */
             len = that._srcs.length;
 
-        that._fire_start();
+        fire_start(that);
 
         if (!that._started) {
             that._started = TRUE;
@@ -2964,7 +2946,7 @@ ElementLoad = classExtendObserver({
         function countup() {
             j++;
 
-            that._fire_progress(j / i);
+            fire_progress(that, j / i);
 
             if (i == j) {
                 i = that._contractid.length;
@@ -2973,7 +2955,7 @@ ElementLoad = classExtendObserver({
                     that._uncontract(that._contractid.pop());
                 }
 
-                that._fire_complete(that._loadedsrcs);
+                fire_complete(that, that._loadedsrcs);
             }
         }
     },
@@ -2998,10 +2980,10 @@ ScriptLoad = C['ScriptLoad'] = classExtend(ElementLoad, {
 
 windowload_winload = function() {
     windowload_loaded = TRUE;
-    off(win, ev['LOAD'], windowload_winload);
+    off(win, 'load', windowload_winload);
 };
 
-on(win, ev['LOAD'], windowload_winload);
+on(win, 'load', windowload_winload);
 
 C['WindowLoad'] = classExtendObserver({
     'init': function(config) {
@@ -3011,25 +2993,23 @@ C['WindowLoad'] = classExtendObserver({
 
         ifManualStart(this, config);
     },
-    _fire_complete: this_fire_complete,
-    _fire_start: this_fire_start,
     'start': function(/* varless */that, disposeid) {
         // var that = this,
         //     disposeid;
         that = this;
 
-        that._fire_start();
+        fire_start(that);
 
         if (!that._started) {
             that._started = TRUE;
 
             if (windowload_loaded) {
-                that._fire_complete();
+                fire_complete(that);
             }
             else {
-                disposeid = that._contract(win, ev['LOAD'], function() {
+                disposeid = that._contract(win, 'load', function() {
                     that._uncontract(disposeid);
-                    that._fire_complete();
+                    fire_complete(that);
                 });
             }
         }
@@ -3458,8 +3438,6 @@ C['PreRender'] = classExtendObserver({
         clearInterval(this._loopid);
         this['_super']();
     },
-    _fire_complete: this_fire_complete,
-    _fire_start: this_fire_start,
     'start': function(/* varless */that, i, prevtime, gettime, difftime) {
         that = this,
         // var i,
@@ -3467,7 +3445,7 @@ C['PreRender'] = classExtendObserver({
         //     prevtime = dateNow();
         prevtime = dateNow();
 
-        that._fire_start();
+        fire_start(that);
 
         for (i = that._els.length; i--;) {
             show(that._els[i]);
@@ -3493,7 +3471,7 @@ C['PreRender'] = classExtendObserver({
                         hide(that._els[i]);
                     }
 
-                    that._fire_complete();
+                    fire_complete(that);
                 }
             }
         }

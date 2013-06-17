@@ -14,11 +14,10 @@ AbstractTask = classExtendObserver({
         that['resetQueue'](queue);
         that._done = proxy(that, that._done);
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */that) {
         that = this;
 
-        that._fire_start();
+        fire_start(that);
         that._paused = FALSE;
         that._exeQueue();
     },

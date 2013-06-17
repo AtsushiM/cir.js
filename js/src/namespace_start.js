@@ -94,18 +94,6 @@ function this_stop__super() {
     this['stop']();
     this['_super']();
 }
-function this_detach() {
-    this['detach']();
-}
-function this_fire_complete(arg) {
-    this['fire']('complete', arg);
-}
-function this_fire_start() {
-    this['fire']('start');
-}
-function this_fire_progress(arg) {
-    this['fire']('progress', arg);
-}
 function this_uncontract(id) {
     if (id) {
         var temp = this._disposestore,
@@ -116,19 +104,29 @@ function this_uncontract(id) {
         off(arg[0], arg[1], arg[2]);
     }
 }
-function this_contract(el, e, handler /* varless */, mine, id) {
-    mine = this;
+function this_contract(el, e, handler /* varless */, that, id) {
+    that = this;
 
-    if (!mine._disposestore) {
-        mine._disposestore = {};
+    if (!that._disposestore) {
+        that._disposestore = {};
     }
     /* var id = ++this._disposecountid; */
-    id = ++mine._disposecountid;
+    id = ++that._disposecountid;
 
     on(el, e, handler);
-    mine._disposestore[id] = [el, e, handler];
+    that._disposestore[id] = [el, e, handler];
 
     return id;
+}
+
+function fire_complete(that, arg) {
+    that['fire']('complete', arg);
+}
+function fire_start(that) {
+    that['fire']('start');
+}
+function fire_progress(that, arg) {
+    that['fire']('progress', arg);
 }
 
 var system_temp,

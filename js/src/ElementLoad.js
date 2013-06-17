@@ -1,8 +1,6 @@
 // ElementLoad
 ElementLoad = classExtendObserver({
     /* _tagname: EMPTY, */
-    _fire_complete: this_fire_complete,
-    _fire_progress: this_fire_progress,
     'init': function(config /* varless */, that) {
         that = this;
 
@@ -16,7 +14,6 @@ ElementLoad = classExtendObserver({
 
         ifManualStart(that, config);
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */el) {
         var that = this,
             i = 0,
@@ -24,7 +21,7 @@ ElementLoad = classExtendObserver({
             /* el, */
             len = that._srcs.length;
 
-        that._fire_start();
+        fire_start(that);
 
         if (!that._started) {
             that._started = TRUE;
@@ -42,7 +39,7 @@ ElementLoad = classExtendObserver({
         function countup() {
             j++;
 
-            that._fire_progress(j / i);
+            fire_progress(that, j / i);
 
             if (i == j) {
                 i = that._contractid.length;
@@ -51,7 +48,7 @@ ElementLoad = classExtendObserver({
                     that._uncontract(that._contractid.pop());
                 }
 
-                that._fire_complete(that._loadedsrcs);
+                fire_complete(that, that._loadedsrcs);
             }
         }
     },

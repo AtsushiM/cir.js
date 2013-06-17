@@ -1,11 +1,10 @@
 C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
-    _fire_complete: this_fire_complete,
     _exe: function(/* varless */that) {
         that = this;
 
         if (that._queue) {
             if (!that._queue.length) {
-                return that._fire_complete();
+                return fire_complete(that);
             }
 
             that._processcount = that._queue.length;
@@ -15,15 +14,14 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
             }
         }
     },
-    _fire_progress: this_fire_progress,
     _done: function(/* varless */that) {
         that = this;
 
-        that._fire_progress();
+        fire_progress(that);
         that._processcount--;
 
         if (!that._processcount) {
-            that._fire_complete();
+            fire_complete(that);
         }
     }
 });

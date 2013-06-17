@@ -74,15 +74,13 @@ classExtendObserver({
         ifManualStart(that, option);
     },
     'dispose': this_stop__super,
-    _fire_complete: this_fire_complete,
-    _fire_start: this_fire_start,
     'start': function(/* varless */ that, el) {
         // var that = this,
         //     el = that._el;
         that = this,
         el = that._el;
 
-        that._fire_start();
+        fire_start(that);
 
         that._end = endaction;
         on(el, ssanime_event_key + 'End', endaction);
@@ -111,7 +109,7 @@ classExtendObserver({
 
                 css(el, that.property);
             }
-            that._fire_complete(e);
+            fire_complete(that, e);
         }
     },
     'stop': function(/* varless */stopobj) {

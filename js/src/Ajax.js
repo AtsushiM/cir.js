@@ -1,9 +1,6 @@
 // Ajax
 C['Ajax'] = classExtendObserver({
-    'dispose': function() {
-        this['stop']();
-        this['_super']();
-    },
+    'dispose': this_stop__super,
     'init': function(config) {
         config = copyObject(config);
 
@@ -73,11 +70,10 @@ C['Ajax'] = classExtendObserver({
 
         ifManualStart(that, config);
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */that) {
         that = this;
 
-        that._fire_start();
+        fire_start(that);
         that._xhr.send(that._query);
     },
     'stop': function(/* varless */that) {

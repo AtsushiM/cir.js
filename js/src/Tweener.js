@@ -37,7 +37,6 @@ Tweener = C['Tweener'] = classExtendObserver({
     __ease: function(time, from, dist, duration) {
         return dist * (-Math.pow(2, -10 * time / duration) + 1) + from;
     },
-    _fire_complete: this_fire_complete,
     _loop: function(/* varless */i) {
         var that = this,
             item,
@@ -73,7 +72,7 @@ Tweener = C['Tweener'] = classExtendObserver({
                     Tweener_setProp(item._target, prop, prop['to']);
                 }
 
-                item._fire_complete();
+                fire_complete(item);
                 Tweener_Items.splice(n, 1);
             }
         }
@@ -90,12 +89,11 @@ Tweener = C['Tweener'] = classExtendObserver({
 
         that._stop();
     },
-    _fire_start: this_fire_start,
     'start': function(/* varless */ that) {
         /* var that = this; */
         that = this;
 
-        that._fire_start();
+        fire_start(that);
 
         that.begin = dateNow();
 
