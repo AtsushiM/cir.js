@@ -53,6 +53,10 @@ describe('C.Anvasは', function() {
         expect(pigment.image.nodeName).to.be('CANVAS');
         expect(pigment.x).to.be(0);
         expect(pigment.y).to.be(0);
+        expect(pigment.src).to.be('/test/common/r.png');
+        expect(pigment.width).to.be(100);
+        expect(pigment.height).to.be(100);
+        expect(pigment.onload).to.be.a('function');
     });
 
     it('pigments({name: {src, width, height, onload}})でsrcオプションで指定した画像を表示するcanvas要素を含むオブジェクトを作成する', function(done) {
@@ -102,7 +106,7 @@ describe('C.Anvasは', function() {
     });
 
     it('draw([{image, x, y}])でcanvasに描画する', function(done) {
-        var pigments = brush.pigments({
+        var args = {
                 r: {
                     src: '/test/common/r.png',
                     width: 100,
@@ -129,12 +133,25 @@ describe('C.Anvasは', function() {
                         expect(canvas.getContext).not.to.be(undefined);
                         expect(img.alt).to.be('');
                     }
+                },
+                a: {
+                    test: 'test',
+                    render: function(ctx, instance) {
+                        expect(ctx.drawImage).to.be.a('function');
+                        expect(instance).to.be(brush);
+                        expect(this.test).to.be('test');
+                    },
+                    onload: function(canvas) {
+                        expect(canvas.getContext).not.to.be(undefined);
+                    }
                 }
-            }, function() {
+            },
+            pigments = brush.pigments(args, function() {
                 brush.draw([
                     pigments.r,
                     pigments.g,
-                    pigments.b
+                    pigments.b,
+                    pigments.a
                 ]);
 
                 done();

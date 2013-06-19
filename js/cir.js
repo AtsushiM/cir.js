@@ -1,4 +1,4 @@
-// cir.js v1.4.1 (c) 2013 Atsushi Mizoue.
+// cir.js v1.4.2 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -2196,18 +2196,24 @@ C['Anvas'] = classExtendBase({
     'pigment': function(vars) {
         var that = this,
             canv = create('canvas'),
+            img;
+
+        if (vars['src']) {
             img = create('img');
 
-        img.onload = function() {
-            canv.width = vars['width'];
-            canv.height = vars['height'];
-            canv.getContext('2d').drawImage(img, 0, 0);
+            img.onload = function() {
+                canv.width = vars['width'];
+                canv.height = vars['height'];
+                canv.getContext('2d').drawImage(img, 0, 0);
 
-            vars.onload.apply(that, [canv, img]);
-        };
-        img.src = vars['src'];
+                vars.onload.call(that, canv, img);
+            };
+            img.src = vars['src'];
+            return override(vars, {'image': canv, 'x': vars.x || 0, 'y': vars.y || 0});
+        }
 
-        return {'image': canv, 'x': vars.x || 0, 'y': vars.y || 0};
+        vars.onload.call(that, canv);
+        return override(vars, {'x': vars.x || 0, 'y': vars.y || 0});
     },
     'pigments': function(vars, callback) {
         var that = this,
@@ -2224,8 +2230,8 @@ C['Anvas'] = classExtendBase({
         function pigment(pig) {
             var pigload = pig['onload'] || nullFunction;
 
-            pig.onload = function(canvas, img) {
-                pigload(canvas, img);
+            pig.onload = function() {
+                pigload.apply(pig, arguments);
                 count--;
 
                 if (count == 0) {
@@ -2249,9 +2255,12 @@ C['Anvas'] = classExtendBase({
 
         for (; i < len; i++) {
             if (temp = layer[i]) {
-                ctx['globalAlpha'] = (typeof temp['alpha'] == 'number' ? temp['alpha'] : 1);
-
-                ctx.drawImage(temp['image'], temp['x'], temp['y']);
+                if (temp['render']) {
+                    temp['render'].call(temp, ctx, this);
+                }
+                else {
+                    ctx.drawImage(temp['image'], temp['x'], temp['y']);
+                }
             }
         }
     }
