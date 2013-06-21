@@ -26,7 +26,7 @@ C['View'] = classExtendBase({
             events = that['events'];
 
         for (i in events) {
-            if (i == 'me') {
+            if (i == '&') {
                 $el = that['el'];
             }
             else {

@@ -1,4 +1,4 @@
-// cir.js v1.4.2 (c) 2013 Atsushi Mizoue.
+// cir.js v1.4.3 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -2181,7 +2181,7 @@ C['Anvas'] = classExtendBase({
         that = this;
 
         that._canvas = config['canvas'];
-        that._ctx = that._canvas.getContext('2d');
+        that._ctx = that._canvas.getContext(config['ctxtype'] || '2d');
 
         that['setSize'](config);
     },
@@ -2245,6 +2245,9 @@ C['Anvas'] = classExtendBase({
 
         return ret;
     },
+    'getCtx': function(type) {
+        return this._ctx;
+    },
     'draw': function(layer) {
         var i = 0,
             len = layer.length,
@@ -2263,6 +2266,12 @@ C['Anvas'] = classExtendBase({
                 }
             }
         }
+    },
+    'sandboxCtx': function(func /* varless */, ctx) {
+        ctx = this._ctx;
+        ctx['save']();
+        func.call(this, ctx);
+        ctx['restore']();
     }
 }, !!win['HTMLCanvasElement']);
 /* (function() { */
@@ -3809,7 +3818,7 @@ C['View'] = classExtendBase({
             events = that['events'];
 
         for (i in events) {
-            if (i == 'me') {
+            if (i == '&') {
                 $el = that['el'];
             }
             else {
