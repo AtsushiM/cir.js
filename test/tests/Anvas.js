@@ -105,7 +105,7 @@ describe('C.Anvasは', function() {
         expect(pigments.b.y).to.be(0);
     });
 
-    it('draw([{image, x, y}])でcanvasに描画する', function(done) {
+    it('render([{image, x, y}])でcanvasに描画する', function(done) {
         var args = {
                 r: {
                     src: '/test/common/r.png',
@@ -147,7 +147,7 @@ describe('C.Anvasは', function() {
                 }
             },
             pigments = brush.pigments(args, function() {
-                brush.draw([
+                brush.render([
                     pigments.r,
                     pigments.g,
                     pigments.b,

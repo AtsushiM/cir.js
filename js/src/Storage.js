@@ -1,4 +1,4 @@
-DataStore = C['DataStore'] = classExtendBase({
+Storage = C['Storage'] = classExtendBase({
     _createStore: function() {
         if (this._array) {
             return [];

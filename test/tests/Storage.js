@@ -1,10 +1,10 @@
-describe('C.DataStoreは', function() {
+describe('C.Storageは', function() {
     var c = window.C ? C : Global,
         storage;
 
     beforeEach(function() {
         // init
-        storage = new c.DataStore();
+        storage = new c.Storage();
     });
     afterEach(function() {
         if (storage.dispose) {

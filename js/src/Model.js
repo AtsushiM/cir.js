@@ -20,7 +20,7 @@ Model = C['Model'] = classExtendObserver({
             events = config['events'] || that['events'];
 
         that._validate = config['validate'] || that['validate'] || {};
-        that._store = config['store'] || that['store'] || new C['DataStore']();
+        that._store = config['store'] || that['store'] || new C['Storage']();
 
         for (i in defaults) {
             that['set'](i, defaults[i]);

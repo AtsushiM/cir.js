@@ -1,4 +1,4 @@
-// cir.js v1.4.3 (c) 2013 Atsushi Mizoue.
+// cir.js v1.5.1 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -156,7 +156,7 @@ var system_temp,
 Class,
 Base,
 Observer,
-DataStore,
+Storage,
 Audio,
 Video,
 ev,
@@ -2248,24 +2248,29 @@ C['Anvas'] = classExtendBase({
     'getCtx': function(type) {
         return this._ctx;
     },
-    'draw': function(layer) {
+    'render': function(layer /* varless */, that) {
+        that = this;
+
         var i = 0,
             len = layer.length,
-            ctx = this._ctx,
-            temp = this._canvas;
+            ctx = that._ctx,
+            temp = that._canvas;
 
         ctx.clearRect(0, 0, temp.width, temp.height);
 
         for (; i < len; i++) {
             if (temp = layer[i]) {
                 if (temp['render']) {
-                    temp['render'].call(temp, ctx, this);
+                    temp['render'](ctx, that);
                 }
                 else {
-                    ctx.drawImage(temp['image'], temp['x'], temp['y']);
+                    that['draw'](temp);
                 }
             }
         }
+    },
+    'draw': function(obj) {
+        this._ctx.drawImage(obj['image'], obj['x'], obj['y']);
     },
     'sandboxCtx': function(func /* varless */, ctx) {
         ctx = this._ctx;
@@ -2470,7 +2475,7 @@ C['Rollover'] = classExtendBase({
         }
     }
 });
-DataStore = C['DataStore'] = classExtendBase({
+Storage = C['Storage'] = classExtendBase({
     _createStore: function() {
         if (this._array) {
             return [];
@@ -3724,7 +3729,7 @@ Model = C['Model'] = classExtendObserver({
             events = config['events'] || that['events'];
 
         that._validate = config['validate'] || that['validate'] || {};
-        that._store = config['store'] || that['store'] || new C['DataStore']();
+        that._store = config['store'] || that['store'] || new C['Storage']();
 
         for (i in defaults) {
             that['set'](i, defaults[i]);
@@ -3848,7 +3853,7 @@ C['Ollection'] = classExtend(Model, {
         config['store'] =
             config['store'] ||
             that['store'] ||
-            new DataStore({
+            new Storage({
                 'array': TRUE
             });
 

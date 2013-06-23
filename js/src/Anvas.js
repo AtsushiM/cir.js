@@ -70,24 +70,29 @@ C['Anvas'] = classExtendBase({
     'getCtx': function(type) {
         return this._ctx;
     },
-    'draw': function(layer) {
+    'render': function(layer /* varless */, that) {
+        that = this;
+
         var i = 0,
             len = layer.length,
-            ctx = this._ctx,
-            temp = this._canvas;
+            ctx = that._ctx,
+            temp = that._canvas;
 
         ctx.clearRect(0, 0, temp.width, temp.height);
 
         for (; i < len; i++) {
             if (temp = layer[i]) {
                 if (temp['render']) {
-                    temp['render'].call(temp, ctx, this);
+                    temp['render'](ctx, that);
                 }
                 else {
-                    ctx.drawImage(temp['image'], temp['x'], temp['y']);
+                    that['draw'](temp);
                 }
             }
         }
+    },
+    'draw': function(obj) {
+        this._ctx.drawImage(obj['image'], obj['x'], obj['y']);
     },
     'sandboxCtx': function(func /* varless */, ctx) {
         ctx = this._ctx;

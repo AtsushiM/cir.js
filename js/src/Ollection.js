@@ -9,7 +9,7 @@ C['Ollection'] = classExtend(Model, {
         config['store'] =
             config['store'] ||
             that['store'] ||
-            new DataStore({
+            new Storage({
                 'array': TRUE
             });
 

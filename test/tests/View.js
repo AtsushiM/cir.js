@@ -7,7 +7,7 @@ describe('C.Viewは', function() {
         view = new c.View({
             el: 'body',
             events: {
-                'me': {
+                '&': {
                     'click': 'click'
                 }
             },
