@@ -114,14 +114,22 @@ function off(el, eventname, handler) {
     el.removeEventListener(eventname, handler, FALSE);
 }
 
-function delegate(el, clsname, eventname, handler) {
+function delegate(el, selector, eventname, handler) {
     on(el, eventname, wraphandle);
 
     function wraphandle(e) {
-        var el = e.target;
+        var tar = e.target,
+            $$select = $$child(selector, el),
+            i = $$select.length,
+            temp;
 
-        if (hasClass(el, clsname)) {
-            handler.apply(el, arguments);
+        for (; i--; ) {
+            temp = $$select[i].compareDocumentPosition(tar);
+
+            if (temp == 0 || temp & Node.DOCUMENT_POSITION_CONTAINED_BY) {
+                handler.apply($$select[i], arguments);
+                break;
+            }
         }
     }
 

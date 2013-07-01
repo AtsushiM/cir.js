@@ -33,7 +33,7 @@ C['Modal'] = classExtendBase({
             'class': 'cir-modal-bg'
         });
         css(that._bg, override({
-            'z-index': '9998',
+            'zIndex': '9998',
             'top': 0,
             'left': 0,
             'width': '100%',
@@ -45,7 +45,7 @@ C['Modal'] = classExtendBase({
             'class': 'cir-modal-content'
         });
         css(that._inner, override({
-            'z-index': '9999',
+            'zIndex': '9999',
             'top': '50%',
             'left': '50%'
         }, commoncss));
@@ -101,9 +101,9 @@ C['Modal'] = classExtendBase({
         computed = computedStyle(that._inner);
 
         css(that._inner, {
-            'margin-top':
+            'marginTop':
             doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
-            'margin-left': -(splitSuffix(computed.width)[2] / 2)
+            'marginLeft': -(splitSuffix(computed.width)[2] / 2)
         });
 
         if (that._config['bgClose']) {

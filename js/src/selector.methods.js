@@ -66,7 +66,8 @@ $_methods = C['$'].methods = {
         }, arguments);
     },
     'undelegate': function(clsname, eventname, handler) {
-        var temp = this._delegated,
+        var that = this,
+            temp = that._delegated,
             i;
 
         if (temp && (temp = temp[eventname]) && (temp = temp[clsname])) {
@@ -74,25 +75,25 @@ $_methods = C['$'].methods = {
 
             if (!handler) {
                 for (; i--; ) {
-                    this['off'](eventname, temp[i][1]);
-                    temp.splice(i, 1);
+                    eventoff(eventname, i);
                 }
 
                 return TRUE;
             }
 
             for (; i--; ) {
-                if (temp[i][0] === handler) {
-                    this['off'](eventname, temp[i][1]);
-
-                    temp.splice(i, 1);
+                if (temp[i][0] == handler) {
+                    eventoff(eventname, i);
 
                     return TRUE;
                 }
             }
         }
 
-        return FALSE;
+        function eventoff(eventname, i) {
+            that['off'](eventname, temp[i][1]);
+            temp.splice(i, 1);
+        }
     },
     'show': function() {
         return selectorForExe(this, show);

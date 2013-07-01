@@ -36,5 +36,5 @@ system_temp = C['template'] = function(templatetxt, replaceobj /* varless */, i,
         'with(a){' + func + "''" + '}' + "return __r")(replaceobj || {});
 };
 system_temp['fetch'] = function(id, replaceobj) {
-    return template(html($id(id)), replaceobj);
+    return C['template'](html($id(id)), replaceobj);
 };

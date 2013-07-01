@@ -1,4 +1,4 @@
-// cir.js v1.5.1 (c) 2013 Atsushi Mizoue.
+// cir.js v1.5.5 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -277,13 +277,11 @@ function windowOpen(url, windowname, option /* varless */, i, option_ary) {
     option_ary = [];
 
     for (i in option) {
-        if (isBoolean(option[i])) {
-            if (option[i] === TRUE) {
-                option[i] = 'yes';
-            }
-            else if (option[i] === FALSE) {
-                option[i] = 'no';
-            }
+        if (option[i] === TRUE) {
+            option[i] = 'yes';
+        }
+        else if (option[i] === FALSE) {
+            option[i] = 'no';
         }
         option_ary.push(i + '=' + option[i]);
     }
@@ -584,14 +582,22 @@ function off(el, eventname, handler) {
     el.removeEventListener(eventname, handler, FALSE);
 }
 
-function delegate(el, clsname, eventname, handler) {
+function delegate(el, selector, eventname, handler) {
     on(el, eventname, wraphandle);
 
     function wraphandle(e) {
-        var el = e.target;
+        var tar = e.target,
+            $$select = $$child(selector, el),
+            i = $$select.length,
+            temp;
 
-        if (hasClass(el, clsname)) {
-            handler.apply(el, arguments);
+        for (; i--; ) {
+            temp = $$select[i].compareDocumentPosition(tar);
+
+            if (temp == 0 || temp & Node.DOCUMENT_POSITION_CONTAINED_BY) {
+                handler.apply($$select[i], arguments);
+                break;
+            }
         }
     }
 
@@ -1489,7 +1495,8 @@ $_methods = C['$'].methods = {
         }, arguments);
     },
     'undelegate': function(clsname, eventname, handler) {
-        var temp = this._delegated,
+        var that = this,
+            temp = that._delegated,
             i;
 
         if (temp && (temp = temp[eventname]) && (temp = temp[clsname])) {
@@ -1497,25 +1504,25 @@ $_methods = C['$'].methods = {
 
             if (!handler) {
                 for (; i--; ) {
-                    this['off'](eventname, temp[i][1]);
-                    temp.splice(i, 1);
+                    eventoff(eventname, i);
                 }
 
                 return TRUE;
             }
 
             for (; i--; ) {
-                if (temp[i][0] === handler) {
-                    this['off'](eventname, temp[i][1]);
-
-                    temp.splice(i, 1);
+                if (temp[i][0] == handler) {
+                    eventoff(eventname, i);
 
                     return TRUE;
                 }
             }
         }
 
-        return FALSE;
+        function eventoff(eventname, i) {
+            that['off'](eventname, temp[i][1]);
+            temp.splice(i, 1);
+        }
     },
     'show': function() {
         return selectorForExe(this, show);
@@ -3224,7 +3231,7 @@ C['Modal'] = classExtendBase({
             'class': 'cir-modal-bg'
         });
         css(that._bg, override({
-            'z-index': '9998',
+            'zIndex': '9998',
             'top': 0,
             'left': 0,
             'width': '100%',
@@ -3236,7 +3243,7 @@ C['Modal'] = classExtendBase({
             'class': 'cir-modal-content'
         });
         css(that._inner, override({
-            'z-index': '9999',
+            'zIndex': '9999',
             'top': '50%',
             'left': '50%'
         }, commoncss));
@@ -3292,9 +3299,9 @@ C['Modal'] = classExtendBase({
         computed = computedStyle(that._inner);
 
         css(that._inner, {
-            'margin-top':
+            'marginTop':
             doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
-            'margin-left': -(splitSuffix(computed.width)[2] / 2)
+            'marginLeft': -(splitSuffix(computed.width)[2] / 2)
         });
 
         if (that._config['bgClose']) {
@@ -3939,7 +3946,7 @@ C['Validate'] = classExtendBase({
         else if (level == 'error') {
             throw new Error(text);
         }
-        else if (level === 'off') {
+        else if (level == 'off') {
         }
         else {
             console.warn(text);
@@ -4407,7 +4414,7 @@ system_temp = C['template'] = function(templatetxt, replaceobj /* varless */, i,
         'with(a){' + func + "''" + '}' + "return __r")(replaceobj || {});
 };
 system_temp['fetch'] = function(id, replaceobj) {
-    return template(html($id(id)), replaceobj);
+    return C['template'](html($id(id)), replaceobj);
 };
 // BackForwardCache
 C['BackForwardCache'] = classExtendBase({
@@ -4427,6 +4434,57 @@ C['BackForwardCache'] = classExtendBase({
         }
     }
 });
+// SocketReqRes
+var SocketReqRes =
+C['SocketReqRes'] = classExtendObserver({
+    'init': function(config) {
+        config = copyObject(config);
+
+        var that = this;
+
+        that._request_id = SocketReqRes._id++;
+
+        that._responseFunc = function(id, vars) {
+            if (that._request_id === id) {
+                that['stop']();
+                that['fire']('complete', vars);
+            }
+        };
+
+        that._ev_res = SocketReqRes['responseEvent'];
+        that._ev_req = SocketReqRes['requestEvent'];
+
+        that._socket = config['socket'] || SocketReqRes['socket'] || (SocketReqRes['socket'] = io['connect']());
+
+        delete config['socket'];
+
+        that._socket['on'](that._ev_res, that._responseFunc);
+
+        that['_super']();
+
+        bindOnProp(that, config);
+
+        that._config = config;
+
+        ifManualStart(that, config);
+    },
+    'start': function() {
+        var that = this;
+
+        fire_start(that);
+        that._socket['emit'](that._ev_req, that._request_id, that._config);
+    },
+    'stop': function() {
+        var that = this;
+
+        that['fire']('stop');
+        that._socket['removeListener'](that._ev_res, that._responseFunc);
+    }
+});
+SocketReqRes._id = 0;
+/* SocketReqRes['socket'] = NULL; */
+SocketReqRes['responseEvent'] = 'CIRSocket-Response';
+SocketReqRes['requestEvent'] = 'CIRSocket-Request';
 if ($_methods) {
     $base.prototype = $_methods;
 }

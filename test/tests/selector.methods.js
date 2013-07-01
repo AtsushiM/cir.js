@@ -55,14 +55,14 @@ describe('C.selector.methodsは', function() {
         expect(count).to.be(0);
     });
 
-    it('$(selector).delegate(clsname, eventname, handler)でC.dom.delegateを実行する', function() {
+    it('$(selector).delegate(selector, eventname, handler)でC.dom.delegateを実行する', function() {
         var count = 0,
             func = function() {
                 count++;
             },
             wraphandle;
 
-        wraphandle = selector.delegate('progress', 'click', func);
+        wraphandle = selector.delegate('.progress', 'click', func);
 
         document.body.click();
 

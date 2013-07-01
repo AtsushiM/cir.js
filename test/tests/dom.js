@@ -57,6 +57,16 @@ describe('C.domは', function() {
         dom.off(window, 'load', func);
     });
 
+    it('delegate(element, selector, eventname, handler)でイベントをデリゲートする', function(done) {
+        var delegatefunc = dom.delegate(document, 'body', 'click', function() {
+
+            dom.off(document, 'click', delegatefunc);
+            done();
+        });
+
+        document.body.click();
+    });
+
     it('create(tagname [, attr])でタグを生成する', function() {
         var $div = dom.create('div');
 

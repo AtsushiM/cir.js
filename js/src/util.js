@@ -83,13 +83,11 @@ function windowOpen(url, windowname, option /* varless */, i, option_ary) {
     option_ary = [];
 
     for (i in option) {
-        if (isBoolean(option[i])) {
-            if (option[i] === TRUE) {
-                option[i] = 'yes';
-            }
-            else if (option[i] === FALSE) {
-                option[i] = 'no';
-            }
+        if (option[i] === TRUE) {
+            option[i] = 'yes';
+        }
+        else if (option[i] === FALSE) {
+            option[i] = 'no';
         }
         option_ary.push(i + '=' + option[i]);
     }

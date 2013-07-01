@@ -26,7 +26,7 @@ C['Validate'] = classExtendBase({
         else if (level == 'error') {
             throw new Error(text);
         }
-        else if (level === 'off') {
+        else if (level == 'off') {
         }
         else {
             console.warn(text);
