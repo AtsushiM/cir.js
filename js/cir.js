@@ -1,4 +1,4 @@
-// cir.js v1.5.5 (c) 2013 Atsushi Mizoue.
+// cir.js v1.6.5 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -3196,7 +3196,7 @@ C['Orientation'] = classExtendBase({
         that._contractid = [];
     }
 }, 'onorientationchange' in win);
-C['Modal'] = classExtendBase({
+C['Modal'] = classExtend(C['Scroll'], {
     _closeDetach: function(/* varless */ that) {
         that = this;
 
@@ -3212,6 +3212,8 @@ C['Modal'] = classExtendBase({
         that = this;
         config = config || NULLOBJ;
 
+        that['_super']();
+
         // that._html = config['html'];
         // that._bgClose = config['bgClose'];
         // that._closeSelector = config['closeSelector'];
@@ -3222,8 +3224,6 @@ C['Modal'] = classExtendBase({
             'display': 'none',
             'position': 'absolute'
         };
-
-        that._scroll = new C['Scroll']();
 
         that._contractid = [];
 
@@ -3263,7 +3263,7 @@ C['Modal'] = classExtendBase({
     'open': function(text /* varless */, that) {
         that = this;
 
-        that._scroll['kill']();
+        that['kill']();
         css(that._bg, {
             'top': doc.body.scrollTop
         });
@@ -3281,7 +3281,7 @@ C['Modal'] = classExtendBase({
         hide(that._inner);
         hide(that._bg);
 
-        that._scroll['revival']();
+        that['revival']();
     },
     'inner': function(text /* varless */, that, computed, close, i) {
         that = this;
@@ -3971,7 +3971,10 @@ C['Validate'] = classExtendBase({
         return this._check(isArray, key, value, 'Array');
     }
 });
-C['Scroll'] = classExtendBase({
+C['Scroll'] = classExtendObserver({
+    'init': function() {
+        this['_super']();
+    },
     'dispose': function(/* varless */that) {
         that = this;
 
@@ -4047,16 +4050,20 @@ C['Scroll'] = classExtendBase({
             css(doc.body, {
                 'overflow': 'hidden'
             });
-            that._killid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
+
+            if (isTouchable()) {
+                that._killid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
+            }
         }
     },
     'revival': function(/* varless */ that) {
         that = this;
 
-        if (that._killid) {
-            css(doc.body, {
-                'overflow': 'auto'
-            });
+        css(doc.body, {
+            'overflow': 'auto'
+        });
+
+        if (isTouchable()) {
             that._uncontract(that._killid);
             delete that._killid;
         }
@@ -4485,6 +4492,94 @@ SocketReqRes._id = 0;
 /* SocketReqRes['socket'] = NULL; */
 SocketReqRes['responseEvent'] = 'CIRSocket-Response';
 SocketReqRes['requestEvent'] = 'CIRSocket-Request';
+// forin
+C['Forin'] = classExtendBase({
+    'init': function(anyary) {
+        this.anyary = anyary;
+    },
+    'map': function(func) {
+        var anyary = this.anyary,
+            i,
+            ret = isArray(anyary) ? [] : {};
+
+        for (i in anyary) {
+            ret[i] = func.call(this, anyary[i]);
+        }
+
+        return ret;
+    },
+    'filter': function(func) {
+        var anyary = this.anyary,
+            i,
+            temp,
+            isary = isArray(anyary),
+            ret = isary ? [] : {};
+
+        for (i in anyary) {
+            temp = anyary[i];
+
+            if (func(temp)) {
+                if (isary) {
+                    ret.push(temp);
+                }
+                else {
+                    ret[i] = temp;
+                }
+            }
+        }
+
+        return ret;
+    }
+});
+// Parallax
+C['Parallax'] = classExtend(C['Scroll'], {
+    'dispose': function() {
+        this['detach']();
+        this['_super']();
+    },
+    'init': function(config) {
+        var that = this;
+
+        that['_super']();
+
+        that._beforeY = that['scrollY']();
+
+        that._switcher = config['switcher'];
+
+        bindOnProp(that, config);
+
+        that._attachaction = function() {
+            that._switchanime(that['scrollY']());
+        };
+        ifManualStart(that, config, 'attach');
+    },
+    'attach': function() {
+        C['$'](win)['on']('scroll', this._attachaction);
+    },
+    'detach': function() {
+        C['$'](win)['off']('scroll', this._attachaction);
+    },
+    _switchanime: function(y) {
+        var that = this,
+            beforeY = that._beforeY,
+            temp = that._switcher(y, beforeY),
+            i = 0,
+            len;
+
+        if (isArray(temp)) {
+            len = temp.length;
+
+            for (; i < len; i++) {
+                that['fire'](temp[i], y, beforeY);
+            }
+        }
+        else if (isString(temp)) {
+            that['fire'](temp, y, beforeY);
+        }
+
+        that._beforeY = y;
+    }
+});
 if ($_methods) {
     $base.prototype = $_methods;
 }

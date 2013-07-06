@@ -1,4 +1,4 @@
-C['Modal'] = classExtendBase({
+C['Modal'] = classExtend(C['Scroll'], {
     _closeDetach: function(/* varless */ that) {
         that = this;
 
@@ -14,6 +14,8 @@ C['Modal'] = classExtendBase({
         that = this;
         config = config || NULLOBJ;
 
+        that['_super']();
+
         // that._html = config['html'];
         // that._bgClose = config['bgClose'];
         // that._closeSelector = config['closeSelector'];
@@ -24,8 +26,6 @@ C['Modal'] = classExtendBase({
             'display': 'none',
             'position': 'absolute'
         };
-
-        that._scroll = new C['Scroll']();
 
         that._contractid = [];
 
@@ -65,7 +65,7 @@ C['Modal'] = classExtendBase({
     'open': function(text /* varless */, that) {
         that = this;
 
-        that._scroll['kill']();
+        that['kill']();
         css(that._bg, {
             'top': doc.body.scrollTop
         });
@@ -83,7 +83,7 @@ C['Modal'] = classExtendBase({
         hide(that._inner);
         hide(that._bg);
 
-        that._scroll['revival']();
+        that['revival']();
     },
     'inner': function(text /* varless */, that, computed, close, i) {
         that = this;

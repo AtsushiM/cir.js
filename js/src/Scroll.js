@@ -1,4 +1,7 @@
-C['Scroll'] = classExtendBase({
+C['Scroll'] = classExtendObserver({
+    'init': function() {
+        this['_super']();
+    },
     'dispose': function(/* varless */that) {
         that = this;
 
@@ -74,16 +77,20 @@ C['Scroll'] = classExtendBase({
             css(doc.body, {
                 'overflow': 'hidden'
             });
-            that._killid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
+
+            if (isTouchable()) {
+                that._killid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
+            }
         }
     },
     'revival': function(/* varless */ that) {
         that = this;
 
-        if (that._killid) {
-            css(doc.body, {
-                'overflow': 'auto'
-            });
+        css(doc.body, {
+            'overflow': 'auto'
+        });
+
+        if (isTouchable()) {
             that._uncontract(that._killid);
             delete that._killid;
         }
