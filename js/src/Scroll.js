@@ -18,8 +18,7 @@ C['Scroll'] = classExtendObserver({
     'checkBottom': function(offset) {
         offset = offset || 0;
 
-        var remain = doc.body.scrollHeight -
-                win.innerHeight - doc.body.scrollTop;
+        var remain = this['scrollLimit']() - this['scrollTop']();
 
         if (remain <= offset) {
             return TRUE;
@@ -27,10 +26,27 @@ C['Scroll'] = classExtendObserver({
 
         return FALSE;
     },
-    'scrollY': function(/* varless */ pageYOffset) {
+    'percent': function(vars) {
+        vars = vars || NULLOBJ;
+
+        var low = vars['low'] || 0,
+            high = vars['high'] || this['scrollLimit'](),
+            now = (vars['now'] || this['scrollTop']()) - low,
+            range = high - low;
+
+        if (!range) {
+            range = now;
+        }
+
+        return now / range;
+    },
+    'scrollTop': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
         return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
+    },
+    'scrollLimit': function() {
+        return doc.body.scrollHeight - win.innerHeight;
     },
     'smooth': function(target, callback /* varless */, that, max) {
         // var that = this,
@@ -51,10 +67,10 @@ C['Scroll'] = classExtendObserver({
                 target = max;
             }
 
-            that._before = that['scrollY']();
+            that._before = that['scrollTop']();
             that._smoothid = setInterval(function(/* varless */ position) {
-                /* var position = that.scrollY(); */
-                position = that['scrollY']();
+                /* var position = that.scrollTop(); */
+                position = that['scrollTop']();
 
                 position = (target - position) * 0.3 + position;
 

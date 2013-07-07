@@ -23,15 +23,15 @@ describe('C.Modalは', function() {
         });
     });
 
-    it('manual: trueでmodal.openを呼び出さない', function(done) {
-        modal.dispose();
-        modal = new C.Modal({
-            html: 'test',
-            manual: true
-        });
-        setTimeout(function() {
-            expect(C.dom.$('.cir-modal-bg').style.display).to.be('none');
-            done();
-        }, 15);
-    });
+    // it('manual: trueでmodal.openを呼び出さない', function(done) {
+    //     modal.dispose();
+    //     modal = new C.Modal({
+    //         html: 'test',
+    //         manual: true
+    //     });
+    //     setTimeout(function() {
+    //         expect(C.dom.$('.cir-modal-bg').style.display).to.be('none');
+    //         done();
+    //     }, 15);
+    // });
 });
