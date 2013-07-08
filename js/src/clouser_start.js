@@ -1,2 +1,2 @@
-// cir.js v1.6.6 (c) 2013 Atsushi Mizoue.
+// cir.js v1.6.7 (c) 2013 Atsushi Mizoue.
 !function(){

@@ -9,14 +9,14 @@ C['Parallax'] = classExtend(C['Scroll'], {
 
         that['_super']();
 
-        that._beforeY = that['scrollTop']();
+        that._beforeY = that['getY']();
 
         that._switcher = config['switcher'];
 
         bindOnProp(that, config);
 
         that._attachaction = function() {
-            that._switchanime(that['scrollTop']());
+            that._switchanime(that['getY']());
         };
         ifManualStart(that, config, 'attach');
     },

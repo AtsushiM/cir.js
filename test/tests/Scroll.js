@@ -35,35 +35,35 @@ describe('C.Scrollは', function() {
         expect(0).to.be(0);
     });
 
-    it('scrollTop()で現在のスクロール位置を取得する', function() {
-        expect(scroll.scrollTop()).to.be.a('number');
+    it('getY()で現在のスクロール位置を取得する', function() {
+        expect(scroll.getY()).to.be.a('number');
     });
 
-    it('scrollLimit()でスクロールの限界値を取得する', function() {
-        expect(scroll.scrollLimit()).to.be.a('number');
+    it('getLimit()でスクロールの限界値を取得する', function() {
+        expect(scroll.getLimit()).to.be.a('number');
     });
 
-    it('percent([{low: number, high: number, now: number}])でスクロール位置を0~1で返す', function() {
-        expect(scroll.percent()).to.be.a('number');
-        expect(scroll.percent({
-            low: scroll.scrollLimit()
+    it('getRatio([{low: number, high: number, now: number}])でスクロール位置を0~1で返す', function() {
+        expect(scroll.getRatio()).to.be.a('number');
+        expect(scroll.getRatio({
+            low: scroll.getLimit()
         })).to.be.a('number');
-        expect(scroll.percent({
+        expect(scroll.getRatio({
             high: 0
         })).to.be.a('number');
-        expect(scroll.percent({
+        expect(scroll.getRatio({
             low: 0,
             high: 100,
             now: 50
         })).to.be(0.5);
     });
 
-    it('checkBottom([offset])でスクロール位置が最下部かどうかboolで返す', function() {
-        expect(scroll.checkBottom(0)).to.be.a('boolean');
+    it('isBottom([offset])でスクロール位置が最下部かどうかboolで返す', function() {
+        expect(scroll.isBottom(0)).to.be.a('boolean');
     });
 
-    it('smooth(target)でtargetが数値の場合はその位置へ、elementの場合はelementのoffsetTopへ移動する', function() {
-        scroll.smooth(document.body);
+    it('toSmooth(target)でtargetが数値の場合はその位置へ、elementの場合はelementのoffsetTopへ移動する', function() {
+        scroll.toSmooth(document.body);
         expect(0).to.be(0);
     });
 

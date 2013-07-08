@@ -15,10 +15,10 @@ C['Scroll'] = classExtendObserver({
     'toBottom': function() {
         scrollTo(doc.height);
     },
-    'checkBottom': function(offset) {
+    'isBottom': function(offset) {
         offset = offset || 0;
 
-        var remain = this['scrollLimit']() - this['scrollTop']();
+        var remain = this['getLimit']() - this['getY']();
 
         if (remain <= offset) {
             return TRUE;
@@ -26,12 +26,12 @@ C['Scroll'] = classExtendObserver({
 
         return FALSE;
     },
-    'percent': function(vars) {
+    'getRatio': function(vars) {
         vars = vars || NULLOBJ;
 
         var low = vars['low'] || 0,
-            high = vars['high'] || this['scrollLimit'](),
-            now = (vars['now'] || this['scrollTop']()) - low,
+            high = vars['high'] || this['getLimit'](),
+            now = (vars['now'] || this['getY']()) - low,
             range = high - low;
 
         if (!range) {
@@ -40,15 +40,15 @@ C['Scroll'] = classExtendObserver({
 
         return now / range;
     },
-    'scrollTop': function(/* varless */ pageYOffset) {
+    'getY': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
         return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
-    'scrollLimit': function() {
+    'getLimit': function() {
         return doc.body.scrollHeight - win.innerHeight;
     },
-    'smooth': function(target, callback /* varless */, that, max) {
+    'toSmooth': function(target, callback /* varless */, that, max) {
         // var that = this,
         //     max;
         that = this;
@@ -67,10 +67,10 @@ C['Scroll'] = classExtendObserver({
                 target = max;
             }
 
-            that._before = that['scrollTop']();
+            that._before = that['getY']();
             that._smoothid = setInterval(function(/* varless */ position) {
-                /* var position = that.scrollTop(); */
-                position = that['scrollTop']();
+                /* var position = that.getY(); */
+                position = that['getY']();
 
                 position = (target - position) * 0.3 + position;
 

@@ -1,4 +1,4 @@
-// cir.js v1.6.6 (c) 2013 Atsushi Mizoue.
+// cir.js v1.6.7 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -3063,10 +3063,10 @@ C['Scroll'] = classExtendObserver({
     'toBottom': function() {
         scrollTo(doc.height);
     },
-    'checkBottom': function(offset) {
+    'isBottom': function(offset) {
         offset = offset || 0;
 
-        var remain = this['scrollLimit']() - this['scrollTop']();
+        var remain = this['getLimit']() - this['getY']();
 
         if (remain <= offset) {
             return TRUE;
@@ -3074,12 +3074,12 @@ C['Scroll'] = classExtendObserver({
 
         return FALSE;
     },
-    'percent': function(vars) {
+    'getRatio': function(vars) {
         vars = vars || NULLOBJ;
 
         var low = vars['low'] || 0,
-            high = vars['high'] || this['scrollLimit'](),
-            now = (vars['now'] || this['scrollTop']()) - low,
+            high = vars['high'] || this['getLimit'](),
+            now = (vars['now'] || this['getY']()) - low,
             range = high - low;
 
         if (!range) {
@@ -3088,15 +3088,15 @@ C['Scroll'] = classExtendObserver({
 
         return now / range;
     },
-    'scrollTop': function(/* varless */ pageYOffset) {
+    'getY': function(/* varless */ pageYOffset) {
         pageYOffset = win.pageYOffset;
 
         return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
-    'scrollLimit': function() {
+    'getLimit': function() {
         return doc.body.scrollHeight - win.innerHeight;
     },
-    'smooth': function(target, callback /* varless */, that, max) {
+    'toSmooth': function(target, callback /* varless */, that, max) {
         // var that = this,
         //     max;
         that = this;
@@ -3115,10 +3115,10 @@ C['Scroll'] = classExtendObserver({
                 target = max;
             }
 
-            that._before = that['scrollTop']();
+            that._before = that['getY']();
             that._smoothid = setInterval(function(/* varless */ position) {
-                /* var position = that.scrollTop(); */
-                position = that['scrollTop']();
+                /* var position = that.getY(); */
+                position = that['getY']();
 
                 position = (target - position) * 0.3 + position;
 
@@ -4558,14 +4558,14 @@ C['Parallax'] = classExtend(C['Scroll'], {
 
         that['_super']();
 
-        that._beforeY = that['scrollTop']();
+        that._beforeY = that['getY']();
 
         that._switcher = config['switcher'];
 
         bindOnProp(that, config);
 
         that._attachaction = function() {
-            that._switchanime(that['scrollTop']());
+            that._switchanime(that['getY']());
         };
         ifManualStart(that, config, 'attach');
     },
