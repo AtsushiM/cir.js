@@ -71,8 +71,7 @@ function bindOnProp(that, config /* varless */, i, temp) {
     //     temp;
 
     for (i in config) {
-        temp = i.match(/^on(.+)$/);
-        if (temp) {
+        if (temp = i.match(/^on(.+)$/)) {
             that['on'](temp[1], config[i]);
         }
     }
@@ -94,10 +93,12 @@ function this_stop__super() {
     this['stop']();
     this['_super']();
 }
-function this_uncontract(id) {
+function this_uncontract(id /* varless */, temp, arg) {
     if (id) {
-        var temp = this._disposestore,
-            arg = temp[id];
+        // var temp = this._disposestore,
+        //     arg = temp[id];
+        temp = this._disposestore,
+        arg = temp[id];
 
         delete temp[id];
 

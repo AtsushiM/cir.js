@@ -73,7 +73,7 @@ Tweener = C['Tweener'] = classExtendObserver({
                 }
 
                 fire_complete(item);
-                Tweener_Items.splice(n, 1);
+                deleteArrayKey(Tweener_Items, n);
             }
         }
 

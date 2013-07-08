@@ -239,6 +239,10 @@ function includeAPI(id, src) {
     }
 }
 
+function deleteArrayKey(ary, no) {
+    ary.splice(no, 1);
+}
+
 C['util'] = {
     'pageTop': pageTop,
     'override': override,

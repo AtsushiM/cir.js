@@ -93,7 +93,7 @@ AbstractTask = classExtendObserver({
 
         for (; i < len; i++ ) {
             if (that._queue[i] === task) {
-                that._queue.splice(i, 1);
+                deleteArrayKey(that._queue, i);
                 that._noticeChange();
 
                 break;

@@ -115,4 +115,119 @@ describe('C.Observerは', function() {
 
         observer.fire('test3', 1, 2, 3);
     });
+
+    it('bubble()はfireのエイリアスである', function() {
+        expect(observer.fire).to.be(observer.bubble);
+    });
+
+    it('addChild(instance)はObserverのインスタンスを子供として登録する。', function() {
+        var ret = [],
+            child1 = new C.Observer,
+            child2 = new C.Observer;
+
+        observer.addChild(child1);
+        child1.addChild(child2);
+
+        observer.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(0);
+        });
+        child1.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(1);
+        });
+        child2.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(2);
+        });
+
+        child2.fire('test', 123);
+
+        expect(ret).to.eql([2, 1, 0]);
+    });
+
+    it('capture()は親から子にイベントを伝播する', function() {
+        var ret = [],
+            child1 = new C.Observer,
+            child2 = new C.Observer;
+
+        observer.addChild(child1);
+        child1.addChild(child2);
+
+        observer.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(0);
+        });
+        child1.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(1);
+        });
+        child2.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(2);
+        });
+
+        observer.capture('test', 123);
+
+        expect(ret).to.eql([0, 1, 2]);
+    });
+
+    it('removeChild([instance])は子供を削除する。instanceを省略した場合、すべての子供を削除する。', function() {
+        var ret = [],
+            child1 = new C.Observer,
+            child2 = new C.Observer;
+
+        observer.addChild(child1);
+        child1.addChild(child2);
+
+        observer.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(0);
+        });
+        child1.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(1);
+        });
+        child2.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(2);
+        });
+
+        observer.removeChild(child1);
+
+        child2.fire('test', 123);
+
+        expect(ret).to.eql([2, 1]);
+
+        child1.removeChild();
+        child2.fire('test', 123);
+
+        expect(ret).to.eql([2, 1, 2]);
+    });
+
+    it('only()は親、子にイベントを伝播せず実行する', function() {
+        var ret = [],
+            child1 = new C.Observer,
+            child2 = new C.Observer;
+
+        observer.addChild(child1);
+        child1.addChild(child2);
+
+        observer.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(0);
+        });
+        child1.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(1);
+        });
+        child2.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(2);
+        });
+
+        child2.only('test', 123);
+
+        expect(ret).to.eql([2]);
+    });
 });

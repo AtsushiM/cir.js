@@ -94,7 +94,7 @@ C['Scroll'] = classExtendObserver({
                 'overflow': 'hidden'
             });
 
-            if (isTouchable()) {
+            if (isTouch) {
                 that._killid = that._contract(doc, ev['TOUCHMOVE'], eventPrevent);
             }
         }
@@ -106,7 +106,7 @@ C['Scroll'] = classExtendObserver({
             'overflow': 'auto'
         });
 
-        if (isTouchable()) {
+        if (isTouch) {
             that._uncontract(that._killid);
             delete that._killid;
         }

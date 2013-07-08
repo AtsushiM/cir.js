@@ -63,7 +63,7 @@
                 i = arr.length;
 
             while(i) {
-                arr[--i][0] === fnc && arr.splice(i, 1);
+                arr[--i][0] === fnc && deleteArrayKey(arr, i);
             }
         },
         'one': function (typ, fnc) {

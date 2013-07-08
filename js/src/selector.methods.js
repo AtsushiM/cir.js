@@ -92,7 +92,7 @@ $_methods = C['$'].methods = {
 
         function eventoff(eventname, i) {
             that['off'](eventname, temp[i][1]);
-            temp.splice(i, 1);
+            deleteArrayKey(temp, i);
         }
     },
     'show': function() {

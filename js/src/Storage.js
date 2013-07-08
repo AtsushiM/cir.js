@@ -45,7 +45,7 @@ Storage = C['Storage'] = classExtendBase({
 
         if (isDefined(that._data[key])) {
             if (that._array) {
-                that.data.splice(key, 1);
+                deleteArrayKey(that.data, key);
             }
             else {
                 delete that._data[key];

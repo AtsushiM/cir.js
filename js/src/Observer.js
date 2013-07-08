@@ -1,6 +1,7 @@
 Observer = C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
+        this._childs = [];
     },
     'on': function(key, func /* varless */, that, observed) {
         that = this;
@@ -37,7 +38,7 @@ Observer = C['Observer'] = classExtendBase({
             if (target) {
                 for (i = target.length; i--;) {
                     if (func == target[i] || func == target[i].original) {
-                        target.splice(i, 1);
+                        deleteArrayKey(target, i);
 
                         if (target.length == 0) {
                             delete observed[key];
@@ -53,22 +54,87 @@ Observer = C['Observer'] = classExtendBase({
 
         return delete observed[key];
     },
-    'fire': function(key) {
-        var target = this._observed[key],
-            args,
+    'fire': Observer_bubble,
+    'bubble': Observer_bubble,
+    'capture': function() {
+        var that = this,
+            args = arguments;
+
+        that['only'].apply(that, args);
+        that._childFire.apply(that, args);
+    },
+    'only': function(key) {
+        var target = this._observed[key] || [],
+            args = toArray(arguments).slice(1),
             func,
-            i,
-            len;
+            i = 0,
+            len = target.length;
 
-        if (target) {
-            args = toArray(arguments).slice(1);
+        for (; i < len; i++) {
+            func = target[i];
+            if (func) {
+                func.apply(this, args);
+            }
+        }
+    },
+    _parentFire: function() {
+        var parentObserver = this._parentObserver;
 
-            for (i = 0, len = target.length; i < len; i++) {
-                func = target[i];
-                if (func) {
-                    func.apply(this, args);
+        if (parentObserver) {
+            parentObserver['bubble'].apply(parentObserver, arguments);
+        }
+    },
+    _childFire: function() {
+        var childs = this._childs,
+            i = 0,
+            len = childs.length,
+            temp;
+
+        for (; i < len; i++) {
+            temp = childs[i];
+            temp['capture'].apply(temp, arguments);
+        }
+    },
+    'addChild': function(instance) {
+        if (instance._parentObserver) {
+            instance._parentObserver['removeChild'](instance);
+        }
+
+        instance._parentObserver = this;
+        this._childs.push(instance);
+    },
+    'removeChild': function(instance) {
+        var childs = this._childs,
+            i = childs.length;
+
+        if (instance) {
+            for (; i--; ) {
+                if (childs[i] === instance) {
+                    Observer_removeChildExe(childs, i);
+
+                    return;
                 }
+            }
+        }
+        else {
+            for (; i--; ) {
+                Observer_removeChildExe(childs, i);
             }
         }
     }
 });
+
+function Observer_removeChildExe(childs, i) {
+    delete childs[i]._parentObserver;
+    deleteArrayKey(childs, i);
+}
+function Observer_bubble() {
+    var that = this,
+        args = arguments;
+
+    that['only'].apply(that, args);
+
+    if (that._parentFire) {
+        that._parentFire.apply(that, args);
+    }
+}
