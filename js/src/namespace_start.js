@@ -130,6 +130,12 @@ function fire_progress(that, arg) {
     that['fire']('progress', arg);
 }
 
+function wrap_arg1_remove(func, that) {
+    return function() {
+        return func.apply(that, toArray(arguments).slice(1));
+    };
+}
+
 var system_temp,
     win = window,
     doc = document,

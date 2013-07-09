@@ -1,4 +1,4 @@
-// cir.js v1.7.1 (c) 2013 Atsushi Mizoue.
+// cir.js v1.7.5 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -130,6 +130,12 @@ function fire_start(that) {
 }
 function fire_progress(that, arg) {
     that['fire']('progress', arg);
+}
+
+function wrap_arg1_remove(func, that) {
+    return function() {
+        return func.apply(that, toArray(arguments).slice(1));
+    };
 }
 
 var system_temp,
@@ -884,22 +890,32 @@ Observer = C['Observer'] = classExtendBase({
         var that = this,
             args = arguments;
 
-        that['only'].apply(that, args);
-        that._childFire.apply(that, args);
+        if (FALSE !== that['only'].apply(that, args)) {
+            that._childFire.apply(that, args);
+        }
     },
     'only': function(key) {
-        var target = this._observed[key] || [],
-            args = toArray(arguments).slice(1),
-            func,
-            i = 0,
-            len = target.length;
+        var args = toArray(arguments),
+            e = Observer_event(args),
+            target = this._observed[e['type']] || [],
+            temp,
+            i = target.length;
 
-        for (; i < len; i++) {
-            func = target[i];
-            if (func) {
-                func.apply(this, args);
+        deleteArrayKey(args, 0);
+        args[args.length] = e;
+
+        for (; i--;) {
+            temp = target[i];
+            if (temp) {
+                temp = temp.apply(this, args);
+
+                if (temp === FALSE || e._flgPreventDefault) {
+                    return temp;
+                }
             }
         }
+
+        return e;
     },
     _parentFire: function() {
         var parentObserver = this._parentObserver;
@@ -954,13 +970,36 @@ function Observer_removeChildExe(childs, i) {
 }
 function Observer_bubble() {
     var that = this,
-        args = arguments;
+        args = arguments,
+        temp;
 
-    that['only'].apply(that, args);
+    temp = that['only'].apply(that, args);
 
-    if (that._parentFire) {
+    if (FALSE !== temp && !(temp || NULLOBJ)._flgStopPropagation && that._parentFire) {
         that._parentFire.apply(that, args);
     }
+}
+function Observer_preventDefault() {
+    this._flgPreventDefault = TRUE;
+}
+function Observer_stopPropagation() {
+    this._flgStopPropagation = TRUE;
+}
+function Observer_event(args /* varless */, e) {
+    e = args[0];
+
+    if (isString(e)) {
+        e = {
+            'type': e,
+            'attribute': args,
+            _flgPreventDefault: FALSE,
+            _flgStopPropagation: FALSE,
+            'preventDefault': Observer_preventDefault,
+            'stopPropagation': Observer_stopPropagation
+        };
+    }
+
+    return e;
 }
 ev = C['Event'] = classExtendBase({
     'SWITCHCLICK': isTouch ? 'touchstart' : 'click',

@@ -27,14 +27,14 @@ describe('C.Observerは', function() {
         observer.on('test', dammy);
         observer.on('test', dammy);
         observer.on('test1', function() {
-            count += 2;
+            count += 3;
         });
 
         observer.fire('test');
         expect(count).to.be(2);
 
         observer.fire('test1');
-        expect(count).to.be(4);
+        expect(count).to.be(5);
     });
 
     it('one()で一度のみ発火するイベントを登録する', function() {
@@ -107,7 +107,9 @@ describe('C.Observerは', function() {
         expect(ret1).to.be(2);
         expect(ret2).to.be(3);
 
-        observer.on('test3', function(arg1, arg2, arg3) {
+        observer.on('test3', function(arg1, arg2, arg3, ev) {
+            console.log(arguments);
+            expect(ev).to.be.a('object');
             expect(arg1).to.be(1);
             expect(arg2).to.be(2);
             expect(arg3).to.be(3);
@@ -229,5 +231,47 @@ describe('C.Observerは', function() {
         child2.only('test', 123);
 
         expect(ret).to.eql([2]);
+    });
+
+    it('on(event, func)で登録したfuncの引数の最後に追加して渡される値はeventオブジェクトである。', function() {
+        var ret = [],
+            child1 = new C.Observer,
+            child2 = new C.Observer;
+
+        observer.addChild(child1);
+        child1.addChild(child2);
+
+        observer.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(0);
+        });
+        observer.on('test', function(num, ev) {
+            ev.preventDefault();
+            ret.push(1);
+        });
+        child1.on('test', function(num) {
+            expect(num).to.be(123);
+            ret.push(2);
+        });
+        child2.on('test', function(num, ev) {
+            ev.stopPropagation();
+
+            expect(num).to.be(123);
+            ret.push(3);
+        });
+        child2.on('test', function(num, ev) {
+            ev.stopPropagation();
+
+            expect(num).to.be(123);
+            ret.push(4);
+        });
+
+        child2.fire('test', 123);
+        expect(ret).to.eql([4, 3]);
+
+        ret = [];
+
+        observer.capture('test', 123);
+        expect(ret).to.eql([1, 2, 4, 3]);
     });
 });
