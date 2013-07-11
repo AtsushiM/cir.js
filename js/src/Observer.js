@@ -1,4 +1,4 @@
-Observer = C['Observer'] = classExtendBase({
+Observer = C['Omposite'] = C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
         this._childs = [];
@@ -58,15 +58,21 @@ Observer = C['Observer'] = classExtendBase({
     'bubble': Observer_bubble,
     'capture': function() {
         var that = this,
-            args = arguments;
+            args = arguments,
+            childs = that._childs,
+            i = childs.length,
+            temp;
 
         if (FALSE !== that['only'].apply(that, args)) {
-            that._childFire.apply(that, args);
+            for (; i--;) {
+                temp = childs[i];
+                temp['capture'].apply(temp, args);
+            }
         }
     },
-    'only': function(key) {
+    'only': function() {
         var args = toArray(arguments),
-            e = Observer_event(args),
+            e = Observer_event(this, args),
             target = this._observed[e['type']] || [],
             temp,
             i = target.length;
@@ -86,24 +92,6 @@ Observer = C['Observer'] = classExtendBase({
         }
 
         return e;
-    },
-    _parentFire: function() {
-        var parentObserver = this._parentObserver;
-
-        if (parentObserver) {
-            parentObserver['bubble'].apply(parentObserver, arguments);
-        }
-    },
-    _childFire: function() {
-        var childs = this._childs,
-            i = 0,
-            len = childs.length,
-            temp;
-
-        for (; i < len; i++) {
-            temp = childs[i];
-            temp['capture'].apply(temp, arguments);
-        }
     },
     'addChild': function(instance) {
         if (instance._parentObserver) {
@@ -141,12 +129,15 @@ function Observer_removeChildExe(childs, i) {
 function Observer_bubble() {
     var that = this,
         args = arguments,
-        temp;
+        temp = that['only'].apply(that, args);
 
-    temp = that['only'].apply(that, args);
+    if (FALSE !== temp && !(temp || NULLOBJ)._flgStopPropagation) {
+        /* that._parentFire.apply(that, args); */
+        temp = this._parentObserver;
 
-    if (FALSE !== temp && !(temp || NULLOBJ)._flgStopPropagation && that._parentFire) {
-        that._parentFire.apply(that, args);
+        if (temp) {
+            temp['bubble'].apply(temp, args);
+        }
     }
 }
 function Observer_preventDefault() {
@@ -155,19 +146,22 @@ function Observer_preventDefault() {
 function Observer_stopPropagation() {
     this._flgStopPropagation = TRUE;
 }
-function Observer_event(args /* varless */, e) {
+function Observer_event(that, args /* varless */, e) {
     e = args[0];
 
     if (isString(e)) {
         e = {
             'type': e,
-            'attribute': args,
+            'arguments': args,
             _flgPreventDefault: FALSE,
             _flgStopPropagation: FALSE,
             'preventDefault': Observer_preventDefault,
             'stopPropagation': Observer_stopPropagation
         };
     }
+
+    e['before'] = e['target'];
+    e['target'] = that;
 
     return e;
 }

@@ -1,4 +1,4 @@
-// cir.js v1.7.5 (c) 2013 Atsushi Mizoue.
+// cir.js v1.7.8 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -251,6 +251,23 @@ function toArray(obj/* varless */, ary) {
     ary.push.apply(ary, obj);
 
     return ary;
+}
+
+function inArray(v, ary) {
+    if (ary['indexOf']) {
+        return ary['indexOf'](v);
+    }
+
+    var i = 0,
+        len = ary.length;
+
+    for (; i < len; i++) {
+        if (v === ary[i]) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 function replaceAll(targettext, needle, replacetext) {
@@ -828,7 +845,7 @@ Base = C['Base'] = classExtend(NULL, {
     _uncontract: this_uncontract,
     'uncontract': this_uncontract
 });
-Observer = C['Observer'] = classExtendBase({
+Observer = C['Omposite'] = C['Observer'] = classExtendBase({
     'init': function() {
         this._observed = {};
         this._childs = [];
@@ -888,15 +905,21 @@ Observer = C['Observer'] = classExtendBase({
     'bubble': Observer_bubble,
     'capture': function() {
         var that = this,
-            args = arguments;
+            args = arguments,
+            childs = that._childs,
+            i = childs.length,
+            temp;
 
         if (FALSE !== that['only'].apply(that, args)) {
-            that._childFire.apply(that, args);
+            for (; i--;) {
+                temp = childs[i];
+                temp['capture'].apply(temp, args);
+            }
         }
     },
-    'only': function(key) {
+    'only': function() {
         var args = toArray(arguments),
-            e = Observer_event(args),
+            e = Observer_event(this, args),
             target = this._observed[e['type']] || [],
             temp,
             i = target.length;
@@ -916,24 +939,6 @@ Observer = C['Observer'] = classExtendBase({
         }
 
         return e;
-    },
-    _parentFire: function() {
-        var parentObserver = this._parentObserver;
-
-        if (parentObserver) {
-            parentObserver['bubble'].apply(parentObserver, arguments);
-        }
-    },
-    _childFire: function() {
-        var childs = this._childs,
-            i = 0,
-            len = childs.length,
-            temp;
-
-        for (; i < len; i++) {
-            temp = childs[i];
-            temp['capture'].apply(temp, arguments);
-        }
     },
     'addChild': function(instance) {
         if (instance._parentObserver) {
@@ -971,12 +976,15 @@ function Observer_removeChildExe(childs, i) {
 function Observer_bubble() {
     var that = this,
         args = arguments,
-        temp;
+        temp = that['only'].apply(that, args);
 
-    temp = that['only'].apply(that, args);
+    if (FALSE !== temp && !(temp || NULLOBJ)._flgStopPropagation) {
+        /* that._parentFire.apply(that, args); */
+        temp = this._parentObserver;
 
-    if (FALSE !== temp && !(temp || NULLOBJ)._flgStopPropagation && that._parentFire) {
-        that._parentFire.apply(that, args);
+        if (temp) {
+            temp['bubble'].apply(temp, args);
+        }
     }
 }
 function Observer_preventDefault() {
@@ -985,19 +993,22 @@ function Observer_preventDefault() {
 function Observer_stopPropagation() {
     this._flgStopPropagation = TRUE;
 }
-function Observer_event(args /* varless */, e) {
+function Observer_event(that, args /* varless */, e) {
     e = args[0];
 
     if (isString(e)) {
         e = {
             'type': e,
-            'attribute': args,
+            'arguments': args,
             _flgPreventDefault: FALSE,
             _flgStopPropagation: FALSE,
             'preventDefault': Observer_preventDefault,
             'stopPropagation': Observer_stopPropagation
         };
     }
+
+    e['before'] = e['target'];
+    e['target'] = that;
 
     return e;
 }
@@ -4618,45 +4629,6 @@ SocketReqRes._id = 0;
 /* SocketReqRes['socket'] = NULL; */
 SocketReqRes['responseEvent'] = 'CIRSocket-Response';
 SocketReqRes['requestEvent'] = 'CIRSocket-Request';
-// forin
-C['Forin'] = classExtendBase({
-    'init': function(anyary) {
-        this.anyary = anyary;
-    },
-    'map': function(func) {
-        var anyary = this.anyary,
-            i,
-            ret = isArray(anyary) ? [] : {};
-
-        for (i in anyary) {
-            ret[i] = func.call(this, anyary[i]);
-        }
-
-        return ret;
-    },
-    'filter': function(func) {
-        var anyary = this.anyary,
-            i,
-            temp,
-            isary = isArray(anyary),
-            ret = isary ? [] : {};
-
-        for (i in anyary) {
-            temp = anyary[i];
-
-            if (func(temp)) {
-                if (isary) {
-                    ret.push(temp);
-                }
-                else {
-                    ret[i] = temp;
-                }
-            }
-        }
-
-        return ret;
-    }
-});
 // Parallax
 C['Parallax'] = classExtend(C['Scroll'], {
     'dispose': function() {
@@ -4706,6 +4678,112 @@ C['Parallax'] = classExtend(C['Scroll'], {
         that._beforeY = y;
     }
 });
+// Command + any keydown handle.
+C['Shortcut'] = classExtendObserver({
+    'init': function(config) {
+        var that = this,
+            checker = config['switcher'],
+            keyno = config['keyno'],
+            actions = config['action'],
+            i;
+
+        that._keyno = override({
+            'alt': [18],
+            'ctrl': [17],
+            'shift': [16],
+            'meta': [91, 93]
+        }, keyno);
+
+        that._isDown = {};
+
+        for (i in that._keyno) {
+            that._isDown[i] = false;
+        }
+
+        that._checker = checker;
+
+        override(that, actions);
+
+        C['$'](win)
+            ['on']('keydown', function(e){
+                that._keydown(e.keyCode);
+
+                that._specialUpdate(e);
+                that['check'](e);
+            })
+            ['on']('keyup', function(e){
+                that._keyup(e.keyCode);
+
+                that._specialUpdate(e);
+            });
+    },
+    _specialUpdate: function(e) {
+        var down = this._isDown;
+
+            down['alt'] = e['altKey'];
+            down['ctrl'] = e['ctrlKey'];
+            down['meta'] = e['metaKey'];
+            down['shift'] = e['shiftKey'];
+    },
+    'check': function(e) {
+        var that = this,
+            ret = that._checker(that._isDown);
+
+        if (that[ret]) {
+            that[ret](e);
+        }
+
+        return ret;
+    },
+    'getKeyName': function(keycode) {
+        var keyno = this._keyno,
+            label;
+
+        for (label in keyno) {
+            if (inArray(keycode, keyno[label]) !== -1) {
+                return label;
+            }
+        }
+    },
+    _keyhandle: function(keycode, bool) {
+        var keyno = this._keyno,
+            isDown = this._isDown,
+            label = this['getKeyName'](keycode);
+
+        if (label) {
+            isDown[label] = bool;
+        }
+    },
+    _keydown: function(keycode) {
+        this._keyhandle(keycode, TRUE);
+    },
+    _keyup: function(keycode) {
+        this._keyhandle(keycode, FALSE);
+    }
+});
+
+// new ShortCut({
+//     switcher: function(down) {
+//         if((down.ctrl || down.meta) && down.slash) {
+//             return 'openSearch';
+//         }
+//         if(down.escape_) {
+//             return 'closeSearch';
+//         }
+//     },
+//     keyno: {
+//         slash: [191],
+//         escape_: [27],
+//     },
+//     action: {
+//         closeSearch: function(e) {
+//             console.log('esc');
+//         },
+//         openSearch: function(e) {
+//             console.log('/');
+//         }
+//     }
+// });
 if ($_methods) {
     $base.prototype = $_methods;
 }

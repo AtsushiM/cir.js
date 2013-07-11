@@ -52,6 +52,23 @@ function toArray(obj/* varless */, ary) {
     return ary;
 }
 
+function inArray(v, ary) {
+    if (ary['indexOf']) {
+        return ary['indexOf'](v);
+    }
+
+    var i = 0,
+        len = ary.length;
+
+    for (; i < len; i++) {
+        if (v === ary[i]) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 function replaceAll(targettext, needle, replacetext) {
     return targettext.split(needle).join(replacetext);
 }
