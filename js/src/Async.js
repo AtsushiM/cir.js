@@ -4,7 +4,8 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
 
         if (that._queue) {
             if (!that._queue.length) {
-                return fire_complete(that);
+                fire_complete(that);
+                return fire_nexttask(that);
             }
 
             that._processcount = that._queue.length;
@@ -22,6 +23,7 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
 
         if (!that._processcount) {
             fire_complete(that);
+            fire_nexttask(that);
         }
     }
 });

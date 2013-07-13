@@ -9,6 +9,7 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
 
             /* this['fire']('complete'); */
             fire_complete(that);
+            fire_nexttask(that);
         }
     },
     _done: function() {

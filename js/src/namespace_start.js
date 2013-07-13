@@ -123,6 +123,9 @@ function this_contract(el, e, handler /* varless */, that, id) {
 function fire_complete(that, arg) {
     that['fire']('complete', arg);
 }
+function fire_nexttask(that, arg) {
+    that['fire']('nexttask', arg);
+}
 function fire_start(that) {
     that['fire']('start');
 }
