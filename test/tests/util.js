@@ -172,6 +172,29 @@ describe('C.utilは', function() {
         util.eventStop(dammy);
     });
 
+    it('size(obj)で{w: obj.width, h: obj.height}を返す', function() {
+        var dammy = {
+                width: 123,
+                height: '456'
+            };
+
+        expect(util.size(dammy)).to.eql({
+            w: 123,
+            h: '456'
+        });
+    });
+
+    it('size(obj, w, h)でobjにwidth,heightを設定する', function() {
+        var dammy = {};
+
+        util.size(dammy, 12345, 'auto');
+
+        expect(util.size(dammy)).to.eql({
+            w: 12345,
+            h: 'auto'
+        });
+    });
+
     it('checkUserAgent(pattern)でユーザーエージェントに対してpatternで正規表現を行う', function() {
         expect(util.checkUserAgent('webkit')).not.to.be(undefined);
     });

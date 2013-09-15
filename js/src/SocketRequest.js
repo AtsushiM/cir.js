@@ -11,7 +11,7 @@ C['SocketReqRes'] = classExtendObserver({
         that._responseFunc = function(id, vars) {
             if (that._request_id === id) {
                 that['stop']();
-                that['fire']('complete', vars);
+                fire_complete(that, vars);
             }
         };
 

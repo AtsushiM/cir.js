@@ -337,4 +337,19 @@ describe('C.domは', function() {
         expect(els[2].innerHTML).to.be('<span>C</span>');
         expect(els[2].className).to.be('test');
     });
+
+    it('naturalSize(img_el)で画像サイズを取得する', function(done) {
+        var img = dom.create('img', {
+            src: './common/r.png'
+        });
+
+        img.onload = function() {
+            expect(dom.naturalSize(this)).to.eql({
+                w: 100,
+                h: 100
+            });
+
+            done();
+        };
+    });
 });

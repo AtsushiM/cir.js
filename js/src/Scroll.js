@@ -46,7 +46,7 @@ C['Scroll'] = classExtendObserver({
         return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
     'getLimit': function() {
-        return doc.body.scrollHeight - win.innerHeight;
+        return doc.body.scrollHeight - (win.innerHeight || doc.body.clientHeight);
     },
     'toSmooth': function(target, callback /* varless */, that, max) {
         // var that = this,

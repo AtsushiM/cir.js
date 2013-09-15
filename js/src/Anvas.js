@@ -24,8 +24,7 @@ C['Anvas'] = classExtendBase({
             img = create('img');
 
             img.onload = function() {
-                canv.width = vars['width'];
-                canv.height = vars['height'];
+                size(canv, vars['width'], vars['height']);
                 canv.getContext('2d').drawImage(img, 0, 0);
 
                 vars.onload.call(that, canv, img);

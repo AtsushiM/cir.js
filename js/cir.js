@@ -1,4 +1,4 @@
-// cir.js v1.7.8 (c) 2013 Atsushi Mizoue.
+// cir.js v1.8.1 (c) 2013 Atsushi Mizoue.
 !function(){
 // Cool is Right.
 C = {};
@@ -124,6 +124,9 @@ function this_contract(el, e, handler /* varless */, that, id) {
 
 function fire_complete(that, arg) {
     that['fire']('complete', arg);
+}
+function fire_nexttask(that, arg) {
+    that['fire']('nexttask', arg);
 }
 function fire_start(that) {
     that['fire']('start');
@@ -386,6 +389,19 @@ function eventStop(e) {
     e.stopPropagation();
     return FALSE;
 }
+function size(obj, w, h) {
+    if (!isDefined(w)) {
+        return {
+            'w': obj['width'],
+            'h': obj['height']
+        };
+    }
+    if (!isDefined(h)) {
+        h = w;
+    }
+    obj['width'] = w;
+    obj['height'] = h;
+}
 function checkUserAgent(pattern, ua) {
     return !!(ua || navigator.userAgent).match(pattern);
 }
@@ -484,6 +500,7 @@ C['util'] = {
     'abstraceFunction': abstraceFunction,
     'eventPrevent': eventPrevent,
     'eventStop': eventStop,
+    'size': size,
     'checkUserAgent': checkUserAgent,
     'proxy': proxy,
     'owner': owner,
@@ -700,6 +717,37 @@ function reflow(el) {
     el.offsetTop;
 }
 
+function naturalSize(image) {
+    var run = image.naturalWidth,
+        ret,
+        mem;
+
+    if (isDefined(run)) {
+        ret = {
+            'w': run,
+            'h': image.naturalHeight
+        };
+    }
+    else {
+        run = image.runtimeStyle;
+
+        if (isDefined(run)) {
+            mem = size(run);
+            size(run, 'auto');
+        }
+        else {
+            mem = size(image);
+            removeAttr(image, 'width');
+            removeAttr(image, 'height');
+        }
+
+        ret = size(image);
+        size(image, mem['w'], mem['h']);
+    }
+
+    return ret;
+};
+
 C['dom'] = {
     'win': win,
     'doc': doc,
@@ -732,7 +780,8 @@ C['dom'] = {
     'val': val,
     'reflow': reflow,
     'toElement': toElement,
-    'toElements': toElements
+    'toElements': toElements,
+    'naturalSize': naturalSize
 };
 Class = C['lass'] = function() {};
 
@@ -863,8 +912,8 @@ Observer = C['Omposite'] = C['Observer'] = classExtendBase({
     'one': function(key, func /* varless */, that, wrap) {
         /* var that = this; */
         that = this;
-        wrap = function(vars) {
-            func.apply(that, vars);
+        wrap = function() {
+            func.apply(that, arguments);
             that['off'](key, wrap);
         };
 
@@ -2244,7 +2293,7 @@ AbstractTask = classExtendObserver({
         that = this;
 
         if (task['one'] && task['start']) {
-            task['one']('complete', that._done);
+            task['one']('nexttask', that._done);
             return proxy(task, task['start']);
         }
 
@@ -2265,7 +2314,8 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
 
         if (that._queue) {
             if (!that._queue.length) {
-                return fire_complete(that);
+                fire_complete(that);
+                return fire_nexttask(that);
             }
 
             that._processcount = that._queue.length;
@@ -2283,6 +2333,7 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
 
         if (!that._processcount) {
             fire_complete(that);
+            fire_nexttask(that);
         }
     }
 });
@@ -2297,6 +2348,7 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
 
             /* this['fire']('complete'); */
             fire_complete(that);
+            fire_nexttask(that);
         }
     },
     _done: function() {
@@ -2330,8 +2382,7 @@ C['Anvas'] = classExtendBase({
             img = create('img');
 
             img.onload = function() {
-                canv.width = vars['width'];
-                canv.height = vars['height'];
+                size(canv, vars['width'], vars['height']);
                 canv.getContext('2d').drawImage(img, 0, 0);
 
                 vars.onload.call(that, canv, img);
@@ -3215,7 +3266,7 @@ C['Scroll'] = classExtendObserver({
         return isDefined(pageYOffset) ? pageYOffset : (doc.documentElement || doc.body.parentNode || doc.body).scrollTop;
     },
     'getLimit': function() {
-        return doc.body.scrollHeight - win.innerHeight;
+        return doc.body.scrollHeight - (win.innerHeight || doc.body.clientHeight);
     },
     'toSmooth': function(target, callback /* varless */, that, max) {
         // var that = this,
@@ -4591,7 +4642,7 @@ C['SocketReqRes'] = classExtendObserver({
         that._responseFunc = function(id, vars) {
             if (that._request_id === id) {
                 that['stop']();
-                that['fire']('complete', vars);
+                fire_complete(that, vars);
             }
         };
 
@@ -4678,21 +4729,19 @@ C['Parallax'] = classExtend(C['Scroll'], {
         that._beforeY = y;
     }
 });
-// Command + any keydown handle.
-C['Shortcut'] = classExtendObserver({
+C['OmboKey'] = classExtendObserver({
     'init': function(config) {
         var that = this,
-            checker = config['switcher'],
-            keyno = config['keyno'],
-            actions = config['action'],
             i;
+
+        that['_super']();
 
         that._keyno = override({
             'alt': [18],
             'ctrl': [17],
             'shift': [16],
             'meta': [91, 93]
-        }, keyno);
+        }, config['keyno']);
 
         that._isDown = {};
 
@@ -4700,22 +4749,39 @@ C['Shortcut'] = classExtendObserver({
             that._isDown[i] = false;
         }
 
-        that._checker = checker;
+        that._switcher = config['switcher'];
 
-        override(that, actions);
+        that._el = C['$'](win);
 
-        C['$'](win)
-            ['on']('keydown', function(e){
-                that._keydown(e.keyCode);
+        bindOnProp(that, config);
 
-                that._specialUpdate(e);
-                that['check'](e);
-            })
-            ['on']('keyup', function(e){
-                that._keyup(e.keyCode);
+        ifManualStart(that, config, 'attach');
+    },
+    'attach': function() {
+        var that = this;
 
-                that._specialUpdate(e);
-            });
+        that._bindAttachKeydown = function(e){
+            that._keydown(e.keyCode);
+
+            that._specialUpdate(e);
+            that['check'](e);
+        };
+        that._bindAttachKeyup = function(e){
+            that._keyup(e.keyCode);
+
+            that._specialUpdate(e);
+        };
+
+        that._el
+            ['on']('keydown', that._bindAttachKeydown)
+            ['on']('keyup', that._bindAttachKeyup);
+    },
+    'detach': function() {
+        var that = this;
+
+        that._el
+            ['off']('keydown', that._bindAttachKeydown)
+            ['off']('keyup', that._bindAttachKeyup);
     },
     _specialUpdate: function(e) {
         var down = this._isDown;
@@ -4727,10 +4793,10 @@ C['Shortcut'] = classExtendObserver({
     },
     'check': function(e) {
         var that = this,
-            ret = that._checker(that._isDown);
+            ret = that._switcher(that._isDown, that['getPressCount']());
 
-        if (that[ret]) {
-            that[ret](e);
+        if (ret) {
+            that['fire'](ret, e);
         }
 
         return ret;
@@ -4744,6 +4810,19 @@ C['Shortcut'] = classExtendObserver({
                 return label;
             }
         }
+    },
+    'getPressCount': function() {
+        var down = this._isDown,
+            i,
+            ret = 0;
+
+        for (i in down) {
+            if (down[i]) {
+                ret++;
+            }
+        }
+
+        return ret;
     },
     _keyhandle: function(keycode, bool) {
         var keyno = this._keyno,
@@ -4761,29 +4840,6 @@ C['Shortcut'] = classExtendObserver({
         this._keyhandle(keycode, FALSE);
     }
 });
-
-// new ShortCut({
-//     switcher: function(down) {
-//         if((down.ctrl || down.meta) && down.slash) {
-//             return 'openSearch';
-//         }
-//         if(down.escape_) {
-//             return 'closeSearch';
-//         }
-//     },
-//     keyno: {
-//         slash: [191],
-//         escape_: [27],
-//     },
-//     action: {
-//         closeSearch: function(e) {
-//             console.log('esc');
-//         },
-//         openSearch: function(e) {
-//             console.log('/');
-//         }
-//     }
-// });
 if ($_methods) {
     $base.prototype = $_methods;
 }

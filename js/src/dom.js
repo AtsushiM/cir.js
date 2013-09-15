@@ -204,6 +204,37 @@ function reflow(el) {
     el.offsetTop;
 }
 
+function naturalSize(image) {
+    var run = image.naturalWidth,
+        ret,
+        mem;
+
+    if (isDefined(run)) {
+        ret = {
+            'w': run,
+            'h': image.naturalHeight
+        };
+    }
+    else {
+        run = image.runtimeStyle;
+
+        if (isDefined(run)) {
+            mem = size(run);
+            size(run, 'auto');
+        }
+        else {
+            mem = size(image);
+            removeAttr(image, 'width');
+            removeAttr(image, 'height');
+        }
+
+        ret = size(image);
+        size(image, mem['w'], mem['h']);
+    }
+
+    return ret;
+};
+
 C['dom'] = {
     'win': win,
     'doc': doc,
@@ -236,5 +267,6 @@ C['dom'] = {
     'val': val,
     'reflow': reflow,
     'toElement': toElement,
-    'toElements': toElements
+    'toElements': toElements,
+    'naturalSize': naturalSize
 };
