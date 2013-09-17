@@ -162,6 +162,8 @@ var system_temp,
         0;
     }) ? /\b_super\b/ : /.*/,
     required_obj = {},
+    label_w = 'width',
+    label_h = 'height',
 
 Class,
 Base,
@@ -392,15 +394,15 @@ function eventStop(e) {
 function size(obj, w, h) {
     if (!isDefined(w)) {
         return {
-            'w': obj['width'],
-            'h': obj['height']
+            'w': obj[label_w],
+            'h': obj[label_h]
         };
     }
     if (!isDefined(h)) {
         h = w;
     }
-    obj['width'] = w;
-    obj['height'] = h;
+    obj[label_w] = w;
+    obj[label_h] = h;
 }
 function checkUserAgent(pattern, ua) {
     return !!(ua || navigator.userAgent).match(pattern);
@@ -737,8 +739,8 @@ function naturalSize(image) {
         }
         else {
             mem = size(image);
-            removeAttr(image, 'width');
-            removeAttr(image, 'height');
+            removeAttr(image, label_w);
+            removeAttr(image, label_h);
         }
 
         ret = size(image);
@@ -2366,11 +2368,11 @@ C['Anvas'] = classExtendBase({
         that['setSize'](config);
     },
     'setSize': function(vars) {
-        if (vars['width']) {
-            this._canvas.width = vars['width'];
+        if (vars[label_w]) {
+            this._canvas[label_w] = vars[label_w];
         }
-        if (vars['height']) {
-            this._canvas.height = vars['height'];
+        if (vars[label_h]) {
+            this._canvas[label_h] = vars[label_h];
         }
     },
     'pigment': function(vars) {
@@ -2382,7 +2384,7 @@ C['Anvas'] = classExtendBase({
             img = create('img');
 
             img.onload = function() {
-                size(canv, vars['width'], vars['height']);
+                size(canv, vars[label_w], vars[label_h]);
                 canv.getContext('2d').drawImage(img, 0, 0);
 
                 vars.onload.call(that, canv, img);
@@ -2435,7 +2437,7 @@ C['Anvas'] = classExtendBase({
             ctx = that._ctx,
             temp = that._canvas;
 
-        ctx.clearRect(0, 0, temp.width, temp.height);
+        ctx.clearRect(0, 0, temp[label_w], temp[label_h]);
 
         for (; i < len; i++) {
             if (temp = layer[i]) {
@@ -3233,18 +3235,10 @@ C['Scroll'] = classExtendObserver({
     'to': scrollTo,
     'toTop': pageTop,
     'toBottom': function() {
-        scrollTo(doc.height);
+        scrollTo(doc[label_h]);
     },
     'isBottom': function(offset) {
-        offset = offset || 0;
-
-        var remain = this['getLimit']() - this['getY']();
-
-        if (remain <= offset) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return this['getLimit']() - this['getY']() <= (offset || 0) ? TRUE : FALSE;
     },
     'getRatio': function(vars) {
         vars = vars || NULLOBJ;
@@ -3282,7 +3276,7 @@ C['Scroll'] = classExtendObserver({
                 target = target.offsetTop;
             }
 
-            max = doc.height - win.innerHeight;
+            max = doc[label_h] - win.innerHeight;
             if (target > max) {
                 target = max;
             }
@@ -3586,8 +3580,8 @@ C['Modal'] = classExtend(C['Scroll'], {
 
         css(that._inner, {
             'marginTop':
-            doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
-            'marginLeft': -(splitSuffix(computed.width)[2] / 2)
+            doc.body.scrollTop - splitSuffix(computed[label_h])[2] / 2,
+            'marginLeft': -(splitSuffix(computed[label_w])[2] / 2)
         });
 
         if (that._config['bgClose']) {
@@ -4279,16 +4273,16 @@ C['LimitText'] = classExtendBase({
             }),
             computed = that._computed = computedStyle(copyel);
 
-        that._width = config['width'];
-        that._height = config['height'];
+        that._width = config[label_w];
+        that._height = config[label_h];
 
         that._copyAppend(0);
 
-        if (!isDefined(config['width'])) {
-            that._width = +splitSuffix(computed['width'])[2];
+        if (!isDefined(config[label_w])) {
+            that._width = +splitSuffix(computed[label_w])[2];
         }
-        if (!isDefined(config['height'])) {
-            that._height = +splitSuffix(computed['height'])[2];
+        if (!isDefined(config[label_h])) {
+            that._height = +splitSuffix(computed[label_h])[2];
         }
 
         css(copyel, {
@@ -4302,8 +4296,8 @@ C['LimitText'] = classExtendBase({
         that = this;
 
         if (
-            +splitSuffix(that._computed['width'])[2] <= that._width &&
-            +splitSuffix(that._computed['height'])[2] <= that._height
+            +splitSuffix(that._computed[label_w])[2] <= that._width &&
+            +splitSuffix(that._computed[label_h])[2] <= that._height
         ) {
             return TRUE;
         }

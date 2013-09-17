@@ -20,16 +20,16 @@ C['LimitText'] = classExtendBase({
             }),
             computed = that._computed = computedStyle(copyel);
 
-        that._width = config['width'];
-        that._height = config['height'];
+        that._width = config[label_w];
+        that._height = config[label_h];
 
         that._copyAppend(0);
 
-        if (!isDefined(config['width'])) {
-            that._width = +splitSuffix(computed['width'])[2];
+        if (!isDefined(config[label_w])) {
+            that._width = +splitSuffix(computed[label_w])[2];
         }
-        if (!isDefined(config['height'])) {
-            that._height = +splitSuffix(computed['height'])[2];
+        if (!isDefined(config[label_h])) {
+            that._height = +splitSuffix(computed[label_h])[2];
         }
 
         css(copyel, {
@@ -43,8 +43,8 @@ C['LimitText'] = classExtendBase({
         that = this;
 
         if (
-            +splitSuffix(that._computed['width'])[2] <= that._width &&
-            +splitSuffix(that._computed['height'])[2] <= that._height
+            +splitSuffix(that._computed[label_w])[2] <= that._width &&
+            +splitSuffix(that._computed[label_h])[2] <= that._height
         ) {
             return TRUE;
         }

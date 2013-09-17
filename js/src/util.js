@@ -188,15 +188,15 @@ function eventStop(e) {
 function size(obj, w, h) {
     if (!isDefined(w)) {
         return {
-            'w': obj['width'],
-            'h': obj['height']
+            'w': obj[label_w],
+            'h': obj[label_h]
         };
     }
     if (!isDefined(h)) {
         h = w;
     }
-    obj['width'] = w;
-    obj['height'] = h;
+    obj[label_w] = w;
+    obj[label_h] = h;
 }
 function checkUserAgent(pattern, ua) {
     return !!(ua || navigator.userAgent).match(pattern);

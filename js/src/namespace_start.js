@@ -160,6 +160,8 @@ var system_temp,
         0;
     }) ? /\b_super\b/ : /.*/,
     required_obj = {},
+    label_w = 'width',
+    label_h = 'height',
 
 Class,
 Base,

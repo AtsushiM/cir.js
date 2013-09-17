@@ -8,11 +8,11 @@ C['Anvas'] = classExtendBase({
         that['setSize'](config);
     },
     'setSize': function(vars) {
-        if (vars['width']) {
-            this._canvas.width = vars['width'];
+        if (vars[label_w]) {
+            this._canvas[label_w] = vars[label_w];
         }
-        if (vars['height']) {
-            this._canvas.height = vars['height'];
+        if (vars[label_h]) {
+            this._canvas[label_h] = vars[label_h];
         }
     },
     'pigment': function(vars) {
@@ -24,7 +24,7 @@ C['Anvas'] = classExtendBase({
             img = create('img');
 
             img.onload = function() {
-                size(canv, vars['width'], vars['height']);
+                size(canv, vars[label_w], vars[label_h]);
                 canv.getContext('2d').drawImage(img, 0, 0);
 
                 vars.onload.call(that, canv, img);
@@ -77,7 +77,7 @@ C['Anvas'] = classExtendBase({
             ctx = that._ctx,
             temp = that._canvas;
 
-        ctx.clearRect(0, 0, temp.width, temp.height);
+        ctx.clearRect(0, 0, temp[label_w], temp[label_h]);
 
         for (; i < len; i++) {
             if (temp = layer[i]) {

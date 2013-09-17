@@ -102,8 +102,8 @@ C['Modal'] = classExtend(C['Scroll'], {
 
         css(that._inner, {
             'marginTop':
-            doc.body.scrollTop - splitSuffix(computed.height)[2] / 2,
-            'marginLeft': -(splitSuffix(computed.width)[2] / 2)
+            doc.body.scrollTop - splitSuffix(computed[label_h])[2] / 2,
+            'marginLeft': -(splitSuffix(computed[label_w])[2] / 2)
         });
 
         if (that._config['bgClose']) {

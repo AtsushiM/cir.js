@@ -13,18 +13,10 @@ C['Scroll'] = classExtendObserver({
     'to': scrollTo,
     'toTop': pageTop,
     'toBottom': function() {
-        scrollTo(doc.height);
+        scrollTo(doc[label_h]);
     },
     'isBottom': function(offset) {
-        offset = offset || 0;
-
-        var remain = this['getLimit']() - this['getY']();
-
-        if (remain <= offset) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return this['getLimit']() - this['getY']() <= (offset || 0) ? TRUE : FALSE;
     },
     'getRatio': function(vars) {
         vars = vars || NULLOBJ;
@@ -62,7 +54,7 @@ C['Scroll'] = classExtendObserver({
                 target = target.offsetTop;
             }
 
-            max = doc.height - win.innerHeight;
+            max = doc[label_h] - win.innerHeight;
             if (target > max) {
                 target = max;
             }

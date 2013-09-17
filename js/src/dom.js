@@ -224,8 +224,8 @@ function naturalSize(image) {
         }
         else {
             mem = size(image);
-            removeAttr(image, 'width');
-            removeAttr(image, 'height');
+            removeAttr(image, label_w);
+            removeAttr(image, label_h);
         }
 
         ret = size(image);
