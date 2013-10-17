@@ -36,7 +36,7 @@ C['Orientation'] = classExtendBase({
 
         return that._landscape;
     },
-    'fire': function(/* varless */ that) {
+    'emit': function(/* varless */ that) {
         that = this;
 
         if (
@@ -49,8 +49,8 @@ C['Orientation'] = classExtendBase({
     'attach': function(vars /* varless */, that, proxyed) {
         that = this;
 
-        /* var proxyed = proxy(that, that['fire']); */
-        proxyed = proxy(that, that['fire']);
+        /* var proxyed = proxy(that, that['emit']); */
+        proxyed = proxy(that, that['emit']);
         that._contractid.push(
             that._contract(win, ev['LOAD'], proxyed),
             that._contract(win, ev_orientationchange, proxyed),

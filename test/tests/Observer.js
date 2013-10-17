@@ -30,10 +30,10 @@ describe('C.Observerは', function() {
             count += 3;
         });
 
-        observer.fire('test');
+        observer.emit('test');
         expect(count).to.be(2);
 
-        observer.fire('test1');
+        observer.emit('test1');
         expect(count).to.be(5);
     });
 
@@ -46,14 +46,14 @@ describe('C.Observerは', function() {
             };
 
         observer.one('one', args.one);
-        observer.fire('one');
-        observer.fire('one');
+        observer.emit('one');
+        observer.emit('one');
 
         expect(count).to.be(1);
 
         observer.one('one', args.one);
         observer.off('one', args.one);
-        observer.fire('one');
+        observer.emit('one');
 
         expect(count).to.be(1);
     });
@@ -67,12 +67,12 @@ describe('C.Observerは', function() {
         observer.on('test', dammy1);
         observer.off('test');
 
-        observer.fire('test');
+        observer.emit('test');
 
         expect(count).to.be(0);
     });
 
-    it('fire()でイベントを発火する', function() {
+    it('emit()でイベントを発火する', function() {
         var ret1 = 0,
             dammy1 = function() {
                 ret1++;
@@ -85,24 +85,24 @@ describe('C.Observerは', function() {
         observer.on('test1', dammy1);
         observer.on('test2', dammy2);
 
-        observer.fire('test1');
+        observer.emit('test1');
 
         expect(ret1).to.be(1);
         expect(ret2).to.be(0);
 
-        observer.fire('test2');
+        observer.emit('test2');
 
         expect(ret1).to.be(1);
         expect(ret2).to.be(1);
 
         observer.on('test1', dammy2);
 
-        observer.fire('test1');
+        observer.emit('test1');
 
         expect(ret1).to.be(2);
         expect(ret2).to.be(2);
 
-        observer.fire('test2');
+        observer.emit('test2');
 
         expect(ret1).to.be(2);
         expect(ret2).to.be(3);
@@ -115,11 +115,11 @@ describe('C.Observerは', function() {
             expect(arg3).to.be(3);
         });
 
-        observer.fire('test3', 1, 2, 3);
+        observer.emit('test3', 1, 2, 3);
     });
 
-    it('bubble()はfireのエイリアスである', function() {
-        expect(observer.fire).to.be(observer.bubble);
+    it('bubble()はemitのエイリアスである', function() {
+        expect(observer.emit).to.be(observer.bubble);
     });
 
     it('addChild(instance)はObserverのインスタンスを子供として登録する。', function() {
@@ -143,7 +143,7 @@ describe('C.Observerは', function() {
             ret.push(2);
         });
 
-        child2.fire('test', 123);
+        child2.emit('test', 123);
 
         expect(ret).to.eql([2, 1, 0]);
     });
@@ -197,12 +197,12 @@ describe('C.Observerは', function() {
 
         observer.removeChild(child1);
 
-        child2.fire('test', 123);
+        child2.emit('test', 123);
 
         expect(ret).to.eql([2, 1]);
 
         child1.removeChild();
-        child2.fire('test', 123);
+        child2.emit('test', 123);
 
         expect(ret).to.eql([2, 1, 2]);
     });
@@ -266,7 +266,7 @@ describe('C.Observerは', function() {
             ret.push(4);
         });
 
-        child2.fire('test', 123);
+        child2.emit('test', 123);
         expect(ret).to.eql([4, 3]);
 
         ret = [];

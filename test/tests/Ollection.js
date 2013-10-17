@@ -157,7 +157,7 @@ describe('C.Ollectionは', function() {
             ret = 1;
         });
 
-        collection.fire('change');
+        collection.emit('change');
         expect(ret).to.be(1);
     });
 
@@ -170,11 +170,11 @@ describe('C.Ollectionは', function() {
         var bindfunc = collection.on('change', func);
         collection.off('change', bindfunc);
 
-        collection.fire('change');
+        collection.emit('change');
         expect(ret).to.be(0);
     });
 
-    it('fire(key, value)でイベントを発火する', function() {
+    it('emit(key, value)でイベントを発火する', function() {
         var ret = 0,
             func = function() {
                 ret = 1;
@@ -182,7 +182,7 @@ describe('C.Ollectionは', function() {
 
         collection.on('change', func);
 
-        collection.fire('change');
+        collection.emit('change');
         expect(ret).to.be(1);
     });
 });

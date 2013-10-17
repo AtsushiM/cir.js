@@ -34,7 +34,7 @@ C['Ollection'] = classExtend(Model, {
 
             if (isNumber(+i)) {
                 that._store['set'](key, val);
-                that['fire'](ev['CHANGE'], val, +i, that._store['get']());
+                that['emit'](ev['CHANGE'], val, +i, that._store['get']());
             }
             return that._notice('fail', key, val);
         }

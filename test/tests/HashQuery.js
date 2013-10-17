@@ -44,7 +44,7 @@ describe('C.HashQueryは', function() {
         expect(vars.match('test2=false')).not.to.be(undefined);
         expect(vars.match('test3=' + encDoubleCort + 'aaaaa' + encDoubleCort)).not.to.be(undefined);
         expect(vars.match('test4=999')).not.to.be(undefined);
-        /* expect(vars.match('fire=')).to.be(true); */
+        /* expect(vars.match('emit=')).to.be(true); */
     });
 
     it('setHash({mode: string, contents: {key: val}})でデータをlocation.hashに設定する', function() {
@@ -90,7 +90,7 @@ describe('C.HashQueryは', function() {
             mode: 'test',
             vars: {
                 test1: true //,
-                /* fire: 1 */
+                /* emit: 1 */
             }
         });
 
@@ -113,7 +113,7 @@ describe('C.HashQueryは', function() {
                 test5: {
                     test: 'test'
                 } //,
-                /* fire: 2 */
+                /* emit: 2 */
             }
         });
     });

@@ -80,7 +80,7 @@ classExtendObserver({
         that = this,
         el = that._el;
 
-        fire_start(that);
+        emit_start(that);
 
         that._end = endaction;
         on(el, ssanime_event_key + 'End', endaction);
@@ -109,14 +109,14 @@ classExtendObserver({
 
                 css(el, that.property);
             }
-            fire_complete(that, e);
+            emit_complete(that, e);
         }
     },
     'stop': function(/* varless */stopobj) {
         /* var stopobj = {}; */
         stopobj = {};
 
-        this['fire']('stop');
+        this['emit']('stop');
 
         stopobj[ssanime_css_prefix + 'animation-play-state'] = 'paused';
 

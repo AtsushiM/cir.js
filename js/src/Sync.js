@@ -7,13 +7,13 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
                 return that._asyncAction(that._queue.shift())((that._done));
             }
 
-            /* this['fire']('complete'); */
-            fire_complete(that);
-            fire_nexttask(that);
+            /* this['emit']('complete'); */
+            emit_complete(that);
+            emit_nexttask(that);
         }
     },
     _done: function() {
-        fire_progress(this);
+        emit_progress(this);
         this._exe();
     }
 });

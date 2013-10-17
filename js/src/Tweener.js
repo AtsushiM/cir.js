@@ -72,7 +72,7 @@ Tweener = C['Tweener'] = classExtendObserver({
                     Tweener_setProp(item._target, prop, prop['to']);
                 }
 
-                fire_complete(item);
+                emit_complete(item);
                 deleteArrayKey(Tweener_Items, n);
             }
         }
@@ -93,7 +93,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         /* var that = this; */
         that = this;
 
-        fire_start(that);
+        emit_start(that);
 
         that.begin = dateNow();
 
@@ -113,7 +113,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         Tweener.timerId = NULL;
     },
     'stop': function() {
-        this['fire']('stop');
+        this['emit']('stop');
         this._stop();
     }
 });

@@ -25,18 +25,18 @@ C['WindowLoad'] = classExtendObserver({
         //     disposeid;
         that = this;
 
-        fire_start(that);
+        emit_start(that);
 
         if (!that._started) {
             that._started = TRUE;
 
             if (windowload_loaded) {
-                fire_complete(that);
+                emit_complete(that);
             }
             else {
                 disposeid = that._contract(win, 'load', function() {
                     that._uncontract(disposeid);
-                    fire_complete(that);
+                    emit_complete(that);
                 });
             }
         }

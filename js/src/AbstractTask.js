@@ -17,7 +17,7 @@ AbstractTask = classExtendObserver({
     'start': function(/* varless */that) {
         that = this;
 
-        fire_start(that);
+        emit_start(that);
         that._paused = FALSE;
         that._exeQueue();
     },
@@ -27,17 +27,17 @@ AbstractTask = classExtendObserver({
     },
     'stop': function() {
         this._queue = NULL;
-        this['fire']('stop');
+        this['emit']('stop');
     },
     'pause': function() {
         this._paused = TRUE;
-        this['fire']('pause');
+        this['emit']('pause');
     },
     'resume': function(/* varles */that) {
         that = this;
 
         if (that._paused) {
-            that['fire']('resume');
+            that['emit']('resume');
             that._paused = FALSE;
             that._exeQueue();
         }
@@ -57,10 +57,10 @@ AbstractTask = classExtendObserver({
             }
         }
 
-        that['fire']('reset');
+        that['emit']('reset');
     },
     _noticeChange: function() {
-        this['fire']('change', this['getQueue']());
+        this['emit']('change', this['getQueue']());
     },
     'setQueue': function(queue) {
         this._queue = copyArray(queue);

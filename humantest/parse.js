@@ -49,13 +49,13 @@
         return e
     }
     function t(a, b) {
-        a.fire("complete", b)
+        a.emit("complete", b)
     }
     function u(a) {
-        a.fire("start")
+        a.emit("start")
     }
     function ha(a, b) {
-        a.fire("progress", b)
+        a.emit("progress", b)
     }
     var v, w = window, y = document, ja = y.head || ia("head"), z = !0, A = !1, B = null, m = "", D = {}, E = ka(), la = k("0.19,1,0.22,1"), F = 1.70158, ma = A, na = /0/.test(function() {
         0
@@ -376,7 +376,7 @@
                 return A
             }
             return delete d[a]
-        },fire: function(a) {
+        },emit: function(a) {
             var b = this.oa[a], c, d, e, f;
             if (b) {
                 c = ab(arguments).slice(1);
@@ -506,7 +506,7 @@
             pb(b, a.K)
         },stop: function(a) {
             a = {};
-            this.fire("stop");
+            this.emit("stop");
             a[Pb + "animation-play-state"] = "paused";
             V(this.o, a);
             this.Sa()
@@ -578,7 +578,7 @@
             C.animeframe.cancel(I.xa);
             I.xa = B
         },stop: function() {
-            this.fire("stop");
+            this.emit("stop");
             this.bb()
         }}, g);
     function Sb(a, b, c) {
@@ -830,7 +830,7 @@
             a.cache || (e || (e = {}), e["cir" + J()] = "0");
             e && M(e) && (e = encodeURI(bb(e)));
             f.onreadystatechange = function() {
-                4 == f.readyState && (200 == f.status ? b.fire("complete", f.responseText, f) : b.fire("error", f))
+                4 == f.readyState && (200 == f.status ? b.emit("complete", f.responseText, f) : b.emit("error", f))
             };
             "GET" == d && (c = (-1 != c.indexOf("?") ? z : A) ? c + "&" : c + "?", c += e, e = m);
             b.yb = e;
@@ -847,7 +847,7 @@
         },stop: function(a) {
             a = this;
             a.wa.abort();
-            a.fire("stop", a.wa)
+            a.emit("stop", a.wa)
         },ub: function(a) {
             var b = a.oncomplete, c = a.onerror;
             b && (a.oncomplete = function(a) {
@@ -875,22 +875,22 @@
             this.start()
         },stop: function() {
             this.k = B;
-            this.fire("stop")
+            this.emit("stop")
         },pause: function() {
             this.R = z;
-            this.fire("pause")
+            this.emit("pause")
         },resume: function(a) {
             a = this;
-            a.R && (a.fire("resume"), a.R = A, a.Ga())
+            a.R && (a.emit("resume"), a.R = A, a.Ga())
         },resetQueue: function(a, b, c) {
             b = this;
             a && (b.xb = ib(a));
             a = b.k = ib(b.xb);
             for (c in a)
                 a[c].resetQueue && a[c].resetQueue();
-            b.fire("reset")
+            b.emit("reset")
         },na: function() {
-            this.fire("change",
+            this.emit("change",
             this.getQueue())
         },setQueue: function(a) {
             this.k = ib(a);
@@ -1390,14 +1390,14 @@
         },get: function(a) {
             a = this;
             return N(w.orientation) ? 90 != Math.abs(w.orientation) ? a.Ta : a.La : w.innerWidth < w.innerHeight ? a.Ta : a.La
-        },fire: function(a) {
+        },emit: function(a) {
             a = this;
             if (a.get().portrait)
                 return a.b.portrait();
             a.b.landscape()
         },attach: function(a, b, c) {
             b = this;
-            c = S(b, b.fire);
+            c = S(b, b.emit);
             b.f.push(b.c(w, H.LOAD, c), b.c(w, "orientationchange", c), b.c(w, H.RESIZE, c))
         },detach: function(a, b) {
             a = this;
@@ -1545,12 +1545,12 @@
             b = this;
             b.b = a;
             a.hashchange && (s(w, "hashchange", function() {
-                b.fire(location.hash)
+                b.emit(location.hash)
             }), a.target || (a.target = location.hash));
             p(b, a)
         },start: function() {
-            this.fire(this.b.target)
-        },fire: function(a) {
+            this.emit(this.b.target)
+        },emit: function(a) {
             var b, c = this.b, d = c.action;
             if (c.noregex && d[a])
                 return d[a](a);
@@ -1647,8 +1647,8 @@
         }});
     Ga = C.Model = X(G, {ga: function(a, b, c, d) {
             d = this;
-            d.fire(a, d.p.get());
-            b && d.fire(a + ":" + b, c)
+            d.emit(a, d.p.get());
+            b && d.emit(a + ":" + b, c)
         },init: function(a, b) {
             b = this;
             a = a || D;
@@ -1669,9 +1669,9 @@
                 if (c.gb[d] && !c.gb[d](d, b))
                     return c.ga("fail", d, b);
                 c.p.set(d, b);
-                c.fire(H.CHANGE + ":" + d, b)
+                c.emit(H.CHANGE + ":" + d, b)
             }
-            c.fire(H.CHANGE, c.p.get())
+            c.emit(H.CHANGE, c.p.get())
         },
         prev: function(a) {
             return !a ? this.pa : this.pa[a]
@@ -1719,7 +1719,7 @@
             M(a) || (d = {}, d[a] = b, a = d);
             c.pa = c.p.get();
             for (d in a)
-                return b = a[d], N(+d) && (c.p.set(a, b), c.fire(H.CHANGE, b, +d, c.p.get())), c.ga("fail", a, b)
+                return b = a[d], N(+d) && (c.p.set(a, b), c.emit(H.CHANGE, b, +d, c.p.get())), c.ga("fail", a, b)
         },add: function(a, b) {
             b = this.p.get().length;
             this.set(b, a);
@@ -1934,7 +1934,7 @@
             var b = this;
             b.Wa = mc.K++;
             b.Xa = function(a, d) {
-                b.Wa === a && (b.stop(), b.fire("complete", d))
+                b.Wa === a && (b.stop(), b.emit("complete", d))
             };
             b.Fa = mc.responseEvent;
             b.sb = mc.requestEvent;
@@ -1949,7 +1949,7 @@
             u(this);
             this.ra.emit(this.sb, this.Wa, this.b)
         },stop: function() {
-            this.fire("stop");
+            this.emit("stop");
             this.ra.removeListener(this.Fa, this.Xa)
         }}, g);
     mc.K = 0;
@@ -1989,9 +1989,9 @@
             var b = this.Aa, c = this.Bb(a, b), d = 0, e;
             if (eb(c))
                 for (e = c.length; d < e; d++)
-                    this.fire(c[d], a, b);
+                    this.emit(c[d], a, b);
             else
-                cb(c) && this.fire(c, a, b);
+                cb(c) && this.emit(c, a, b);
             this.Aa = a
         }});
     Ja && (Tb.prototype = Ja);

@@ -33,10 +33,10 @@ C['Ajax'] = classExtendObserver({
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
-                    that['fire']('complete', xhr.responseText, xhr);
+                    that['emit']('complete', xhr.responseText, xhr);
                 }
                 else {
-                    that['fire']('error', xhr);
+                    that['emit']('error', xhr);
                 }
             }
         };
@@ -73,14 +73,14 @@ C['Ajax'] = classExtendObserver({
     'start': function(/* varless */that) {
         that = this;
 
-        fire_start(that);
+        emit_start(that);
         that._xhr.send(that._query);
     },
     'stop': function(/* varless */that) {
         that = this;
 
         that._xhr.abort();
-        that['fire']('stop', that._xhr);
+        that['emit']('stop', that._xhr);
     },
     _json: function(config) {
         var oncomplete = config['oncomplete'],

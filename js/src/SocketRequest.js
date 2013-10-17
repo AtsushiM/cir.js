@@ -11,7 +11,7 @@ C['SocketReqRes'] = classExtendObserver({
         that._responseFunc = function(id, vars) {
             if (that._request_id === id) {
                 that['stop']();
-                fire_complete(that, vars);
+                emit_complete(that, vars);
             }
         };
 
@@ -35,13 +35,13 @@ C['SocketReqRes'] = classExtendObserver({
     'start': function() {
         var that = this;
 
-        fire_start(that);
+        emit_start(that);
         that._socket['emit'](that._ev_req, that._request_id, that._config);
     },
     'stop': function() {
         var that = this;
 
-        that['fire']('stop');
+        that['emit']('stop');
         that._socket['removeListener'](that._ev_res, that._responseFunc);
     }
 });

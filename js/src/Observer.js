@@ -54,7 +54,7 @@ Observer = C['Omposite'] = C['Observer'] = classExtendBase({
 
         return delete observed[key];
     },
-    'fire': Observer_bubble,
+    'emit': Observer_bubble,
     'bubble': Observer_bubble,
     'capture': function() {
         var that = this,

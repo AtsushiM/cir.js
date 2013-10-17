@@ -65,7 +65,7 @@ C['OmboKey'] = classExtendObserver({
             ret = that._switcher(that._isDown, that['getPressCount']());
 
         if (ret) {
-            that['fire'](ret, e);
+            that['emit'](ret, e);
         }
 
         return ret;

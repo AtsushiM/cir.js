@@ -122,17 +122,17 @@ function this_contract(el, e, handler /* varless */, that, id) {
     return id;
 }
 
-function fire_complete(that, arg) {
-    that['fire']('complete', arg);
+function emit_complete(that, arg) {
+    that['emit']('complete', arg);
 }
-function fire_nexttask(that, arg) {
-    that['fire']('nexttask', arg);
+function emit_nexttask(that, arg) {
+    that['emit']('nexttask', arg);
 }
-function fire_start(that) {
-    that['fire']('start');
+function emit_start(that) {
+    that['emit']('start');
 }
-function fire_progress(that, arg) {
-    that['fire']('progress', arg);
+function emit_progress(that, arg) {
+    that['emit']('progress', arg);
 }
 
 function wrap_arg1_remove(func, that) {
@@ -952,7 +952,7 @@ Observer = C['Omposite'] = C['Observer'] = classExtendBase({
 
         return delete observed[key];
     },
-    'fire': Observer_bubble,
+    'emit': Observer_bubble,
     'bubble': Observer_bubble,
     'capture': function() {
         var that = this,
@@ -1304,7 +1304,7 @@ classExtendObserver({
         that = this,
         el = that._el;
 
-        fire_start(that);
+        emit_start(that);
 
         that._end = endaction;
         on(el, ssanime_event_key + 'End', endaction);
@@ -1333,14 +1333,14 @@ classExtendObserver({
 
                 css(el, that.property);
             }
-            fire_complete(that, e);
+            emit_complete(that, e);
         }
     },
     'stop': function(/* varless */stopobj) {
         /* var stopobj = {}; */
         stopobj = {};
 
-        this['fire']('stop');
+        this['emit']('stop');
 
         stopobj[ssanime_css_prefix + 'animation-play-state'] = 'paused';
 
@@ -1491,7 +1491,7 @@ Tweener = C['Tweener'] = classExtendObserver({
                     Tweener_setProp(item._target, prop, prop['to']);
                 }
 
-                fire_complete(item);
+                emit_complete(item);
                 deleteArrayKey(Tweener_Items, n);
             }
         }
@@ -1512,7 +1512,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         /* var that = this; */
         that = this;
 
-        fire_start(that);
+        emit_start(that);
 
         that.begin = dateNow();
 
@@ -1532,7 +1532,7 @@ Tweener = C['Tweener'] = classExtendObserver({
         Tweener.timerId = NULL;
     },
     'stop': function() {
-        this['fire']('stop');
+        this['emit']('stop');
         this._stop();
     }
 });
@@ -2118,10 +2118,10 @@ C['Ajax'] = classExtendObserver({
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
-                    that['fire']('complete', xhr.responseText, xhr);
+                    that['emit']('complete', xhr.responseText, xhr);
                 }
                 else {
-                    that['fire']('error', xhr);
+                    that['emit']('error', xhr);
                 }
             }
         };
@@ -2158,14 +2158,14 @@ C['Ajax'] = classExtendObserver({
     'start': function(/* varless */that) {
         that = this;
 
-        fire_start(that);
+        emit_start(that);
         that._xhr.send(that._query);
     },
     'stop': function(/* varless */that) {
         that = this;
 
         that._xhr.abort();
-        that['fire']('stop', that._xhr);
+        that['emit']('stop', that._xhr);
     },
     _json: function(config) {
         var oncomplete = config['oncomplete'],
@@ -2202,7 +2202,7 @@ AbstractTask = classExtendObserver({
     'start': function(/* varless */that) {
         that = this;
 
-        fire_start(that);
+        emit_start(that);
         that._paused = FALSE;
         that._exeQueue();
     },
@@ -2212,17 +2212,17 @@ AbstractTask = classExtendObserver({
     },
     'stop': function() {
         this._queue = NULL;
-        this['fire']('stop');
+        this['emit']('stop');
     },
     'pause': function() {
         this._paused = TRUE;
-        this['fire']('pause');
+        this['emit']('pause');
     },
     'resume': function(/* varles */that) {
         that = this;
 
         if (that._paused) {
-            that['fire']('resume');
+            that['emit']('resume');
             that._paused = FALSE;
             that._exeQueue();
         }
@@ -2242,10 +2242,10 @@ AbstractTask = classExtendObserver({
             }
         }
 
-        that['fire']('reset');
+        that['emit']('reset');
     },
     _noticeChange: function() {
-        this['fire']('change', this['getQueue']());
+        this['emit']('change', this['getQueue']());
     },
     'setQueue': function(queue) {
         this._queue = copyArray(queue);
@@ -2316,8 +2316,8 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
 
         if (that._queue) {
             if (!that._queue.length) {
-                fire_complete(that);
-                return fire_nexttask(that);
+                emit_complete(that);
+                return emit_nexttask(that);
             }
 
             that._processcount = that._queue.length;
@@ -2330,12 +2330,12 @@ C['Parallel'] = C['Async'] = classExtend(AbstractTask, {
     _done: function(/* varless */that) {
         that = this;
 
-        fire_progress(that);
+        emit_progress(that);
         that._processcount--;
 
         if (!that._processcount) {
-            fire_complete(that);
-            fire_nexttask(that);
+            emit_complete(that);
+            emit_nexttask(that);
         }
     }
 });
@@ -2348,13 +2348,13 @@ C['Serial'] = C['Sync'] = classExtend(AbstractTask, {
                 return that._asyncAction(that._queue.shift())((that._done));
             }
 
-            /* this['fire']('complete'); */
-            fire_complete(that);
-            fire_nexttask(that);
+            /* this['emit']('complete'); */
+            emit_complete(that);
+            emit_nexttask(that);
         }
     },
     _done: function() {
-        fire_progress(this);
+        emit_progress(this);
         this._exe();
     }
 });
@@ -3132,7 +3132,7 @@ ElementLoad = classExtendObserver({
             /* el, */
             len = that._srcs.length;
 
-        fire_start(that);
+        emit_start(that);
 
         if (!that._started) {
             that._started = TRUE;
@@ -3150,7 +3150,7 @@ ElementLoad = classExtendObserver({
         function countup() {
             j++;
 
-            fire_progress(that, j / i);
+            emit_progress(that, j / i);
 
             if (i == j) {
                 i = that._contractid.length;
@@ -3159,7 +3159,7 @@ ElementLoad = classExtendObserver({
                     that._uncontract(that._contractid.pop());
                 }
 
-                fire_complete(that, that._loadedsrcs);
+                emit_complete(that, that._loadedsrcs);
             }
         }
     },
@@ -3202,18 +3202,18 @@ C['WindowLoad'] = classExtendObserver({
         //     disposeid;
         that = this;
 
-        fire_start(that);
+        emit_start(that);
 
         if (!that._started) {
             that._started = TRUE;
 
             if (windowload_loaded) {
-                fire_complete(that);
+                emit_complete(that);
             }
             else {
                 disposeid = that._contract(win, 'load', function() {
                     that._uncontract(disposeid);
-                    fire_complete(that);
+                    emit_complete(that);
                 });
             }
         }
@@ -3442,7 +3442,7 @@ C['Orientation'] = classExtendBase({
 
         return that._landscape;
     },
-    'fire': function(/* varless */ that) {
+    'emit': function(/* varless */ that) {
         that = this;
 
         if (
@@ -3455,8 +3455,8 @@ C['Orientation'] = classExtendBase({
     'attach': function(vars /* varless */, that, proxyed) {
         that = this;
 
-        /* var proxyed = proxy(that, that['fire']); */
-        proxyed = proxy(that, that['fire']);
+        /* var proxyed = proxy(that, that['emit']); */
+        proxyed = proxy(that, that['emit']);
         that._contractid.push(
             that._contract(win, ev['LOAD'], proxyed),
             that._contract(win, ev_orientationchange, proxyed),
@@ -3755,7 +3755,7 @@ C['PreRender'] = classExtendObserver({
         //     prevtime = dateNow();
         prevtime = dateNow();
 
-        fire_start(that);
+        emit_start(that);
 
         for (i = that._els.length; i--;) {
             show(that._els[i]);
@@ -3781,7 +3781,7 @@ C['PreRender'] = classExtendObserver({
                         hide(that._els[i]);
                     }
 
-                    fire_complete(that);
+                    emit_complete(that);
                 }
             }
         }
@@ -3797,7 +3797,7 @@ C['Router'] = classExtendBase({
 
         if (config['hashchange']) {
             on(win, ev_hashchange, function() {
-                that['fire'](location.hash);
+                that['emit'](location.hash);
             });
 
             if (!config['target']) {
@@ -3808,9 +3808,9 @@ C['Router'] = classExtendBase({
         ifManualStart(that, config);
     },
     'start': function() {
-        this['fire'](this._config['target']);
+        this['emit'](this._config['target']);
     },
-    'fire': function(action /* varless */, that) {
+    'emit': function(action /* varless */, that) {
         that = this;
 
         var i,
@@ -3998,10 +3998,10 @@ Model = C['Model'] = classExtendObserver({
     _notice: function(eventname, key, val /* varless */, that) {
         that = this;
 
-        that['fire'](eventname, that._store['get']());
+        that['emit'](eventname, that._store['get']());
 
         if (key) {
-            that['fire'](eventname + ':' + key, val);
+            that['emit'](eventname + ':' + key, val);
         }
     },
     'init': function(config /* varless */, that) {
@@ -4050,10 +4050,10 @@ Model = C['Model'] = classExtendObserver({
             }
 
             that._store['set'](i, val);
-            that['fire'](ev['CHANGE'] + ':' + i, val);
+            that['emit'](ev['CHANGE'] + ':' + i, val);
         }
 
-        that['fire'](ev['CHANGE'], that._store['get']());
+        that['emit'](ev['CHANGE'], that._store['get']());
     },
     'prev': function(key) {
         if (!key) {
@@ -4165,7 +4165,7 @@ C['Ollection'] = classExtend(Model, {
 
             if (isNumber(+i)) {
                 that._store['set'](key, val);
-                that['fire'](ev['CHANGE'], val, +i, that._store['get']());
+                that['emit'](ev['CHANGE'], val, +i, that._store['get']());
             }
             return that._notice('fail', key, val);
         }
@@ -4636,7 +4636,7 @@ C['SocketReqRes'] = classExtendObserver({
         that._responseFunc = function(id, vars) {
             if (that._request_id === id) {
                 that['stop']();
-                fire_complete(that, vars);
+                emit_complete(that, vars);
             }
         };
 
@@ -4660,13 +4660,13 @@ C['SocketReqRes'] = classExtendObserver({
     'start': function() {
         var that = this;
 
-        fire_start(that);
+        emit_start(that);
         that._socket['emit'](that._ev_req, that._request_id, that._config);
     },
     'stop': function() {
         var that = this;
 
-        that['fire']('stop');
+        that['emit']('stop');
         that._socket['removeListener'](that._ev_res, that._responseFunc);
     }
 });
@@ -4713,11 +4713,11 @@ C['Parallax'] = classExtend(C['Scroll'], {
             len = temp.length;
 
             for (; i < len; i++) {
-                that['fire'](temp[i], y, beforeY);
+                that['emit'](temp[i], y, beforeY);
             }
         }
         else if (isString(temp)) {
-            that['fire'](temp, y, beforeY);
+            that['emit'](temp, y, beforeY);
         }
 
         that._beforeY = y;
@@ -4790,7 +4790,7 @@ C['OmboKey'] = classExtendObserver({
             ret = that._switcher(that._isDown, that['getPressCount']());
 
         if (ret) {
-            that['fire'](ret, e);
+            that['emit'](ret, e);
         }
 
         return ret;

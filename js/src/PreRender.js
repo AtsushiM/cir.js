@@ -25,7 +25,7 @@ C['PreRender'] = classExtendObserver({
         //     prevtime = dateNow();
         prevtime = dateNow();
 
-        fire_start(that);
+        emit_start(that);
 
         for (i = that._els.length; i--;) {
             show(that._els[i]);
@@ -51,7 +51,7 @@ C['PreRender'] = classExtendObserver({
                         hide(that._els[i]);
                     }
 
-                    fire_complete(that);
+                    emit_complete(that);
                 }
             }
         }

@@ -21,7 +21,7 @@ ElementLoad = classExtendObserver({
             /* el, */
             len = that._srcs.length;
 
-        fire_start(that);
+        emit_start(that);
 
         if (!that._started) {
             that._started = TRUE;
@@ -39,7 +39,7 @@ ElementLoad = classExtendObserver({
         function countup() {
             j++;
 
-            fire_progress(that, j / i);
+            emit_progress(that, j / i);
 
             if (i == j) {
                 i = that._contractid.length;
@@ -48,7 +48,7 @@ ElementLoad = classExtendObserver({
                     that._uncontract(that._contractid.pop());
                 }
 
-                fire_complete(that, that._loadedsrcs);
+                emit_complete(that, that._loadedsrcs);
             }
         }
     },

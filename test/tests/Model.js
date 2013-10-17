@@ -118,7 +118,7 @@ describe('C.Modelは', function() {
             ret = 1;
         });
 
-        model.fire('change');
+        model.emit('change');
         expect(ret).to.be(1);
     });
 
@@ -131,11 +131,11 @@ describe('C.Modelは', function() {
         var bindfunc = model.on('change', func);
         model.off('change', bindfunc);
 
-        model.fire('change');
+        model.emit('change');
         expect(ret).to.be(0);
     });
 
-    it('fire(key, value)でイベントを発火する', function() {
+    it('emit(key, value)でイベントを発火する', function() {
         var ret = 0,
             func = function() {
                 ret = 1;
@@ -143,7 +143,7 @@ describe('C.Modelは', function() {
 
         model.on('change', func);
 
-        model.fire('change');
+        model.emit('change');
         expect(ret).to.be(1);
     });
 });

@@ -120,17 +120,17 @@ function this_contract(el, e, handler /* varless */, that, id) {
     return id;
 }
 
-function fire_complete(that, arg) {
-    that['fire']('complete', arg);
+function emit_complete(that, arg) {
+    that['emit']('complete', arg);
 }
-function fire_nexttask(that, arg) {
-    that['fire']('nexttask', arg);
+function emit_nexttask(that, arg) {
+    that['emit']('nexttask', arg);
 }
-function fire_start(that) {
-    that['fire']('start');
+function emit_start(that) {
+    that['emit']('start');
 }
-function fire_progress(that, arg) {
-    that['fire']('progress', arg);
+function emit_progress(that, arg) {
+    that['emit']('progress', arg);
 }
 
 function wrap_arg1_remove(func, that) {

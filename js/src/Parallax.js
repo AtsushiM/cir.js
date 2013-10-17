@@ -37,11 +37,11 @@ C['Parallax'] = classExtend(C['Scroll'], {
             len = temp.length;
 
             for (; i < len; i++) {
-                that['fire'](temp[i], y, beforeY);
+                that['emit'](temp[i], y, beforeY);
             }
         }
         else if (isString(temp)) {
-            that['fire'](temp, y, beforeY);
+            that['emit'](temp, y, beforeY);
         }
 
         that._beforeY = y;

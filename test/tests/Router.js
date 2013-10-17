@@ -79,9 +79,9 @@ describe('C.Routerは', function() {
         });
 
         expect(count).to.be(1);
-        route.fire('test');
+        route.emit('test');
         expect(count).to.be(2);
-        route.fire('t.*t');
+        route.emit('t.*t');
         expect(count).to.be(4);
     });
 
@@ -108,7 +108,7 @@ describe('C.Routerは', function() {
         expect(count).to.be(2);
     });
 
-    it('fire(action)でactionオプションの対応する関数を実行する', function() {
+    it('emit(action)でactionオプションの対応する関数を実行する', function() {
         var count = 0;
 
         route = new c.Router({
@@ -121,13 +121,13 @@ describe('C.Routerは', function() {
         });
 
         expect(count).to.be(0);
-        route.fire('test');
+        route.emit('test');
         expect(count).to.be(1);
-        route.fire('test');
+        route.emit('test');
         expect(count).to.be(2);
     });
 
-    it('hashchangeオプションがtrueの場合、window.hashchangeイベントが発火するたびにfire(location.hash)を実行する', function(done) {
+    it('hashchangeオプションがtrueの場合、window.hashchangeイベントが発火するたびにemit(location.hash)を実行する', function(done) {
         var count = 0;
 
         /* location.hash = ''; */

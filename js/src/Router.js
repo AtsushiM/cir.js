@@ -8,7 +8,7 @@ C['Router'] = classExtendBase({
 
         if (config['hashchange']) {
             on(win, ev_hashchange, function() {
-                that['fire'](location.hash);
+                that['emit'](location.hash);
             });
 
             if (!config['target']) {
@@ -19,9 +19,9 @@ C['Router'] = classExtendBase({
         ifManualStart(that, config);
     },
     'start': function() {
-        this['fire'](this._config['target']);
+        this['emit'](this._config['target']);
     },
-    'fire': function(action /* varless */, that) {
+    'emit': function(action /* varless */, that) {
         that = this;
 
         var i,

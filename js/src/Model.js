@@ -2,10 +2,10 @@ Model = C['Model'] = classExtendObserver({
     _notice: function(eventname, key, val /* varless */, that) {
         that = this;
 
-        that['fire'](eventname, that._store['get']());
+        that['emit'](eventname, that._store['get']());
 
         if (key) {
-            that['fire'](eventname + ':' + key, val);
+            that['emit'](eventname + ':' + key, val);
         }
     },
     'init': function(config /* varless */, that) {
@@ -54,10 +54,10 @@ Model = C['Model'] = classExtendObserver({
             }
 
             that._store['set'](i, val);
-            that['fire'](ev['CHANGE'] + ':' + i, val);
+            that['emit'](ev['CHANGE'] + ':' + i, val);
         }
 
-        that['fire'](ev['CHANGE'], that._store['get']());
+        that['emit'](ev['CHANGE'], that._store['get']());
     },
     'prev': function(key) {
         if (!key) {
