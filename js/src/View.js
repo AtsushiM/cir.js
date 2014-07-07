@@ -38,6 +38,10 @@ C['View'] = classExtendBase({
             }
         }
     },
+    'reattach': function() {
+        this['detach']();
+        this['attach']();
+    },
     'attach': function() {
         this._e('on');
     },

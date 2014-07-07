@@ -4093,6 +4093,7 @@ C['View'] = classExtendBase({
         that['el'] = C['$'](config['el'] || that['el'] || create('div'));
 
         that['attach']();
+
         if (config['init']) {
             that['init']();
         }
@@ -4121,6 +4122,10 @@ C['View'] = classExtendBase({
                 $el[methodname](j, that[events[i][j]]);
             }
         }
+    },
+    'reattach': function() {
+        this['detach']();
+        this['attach']();
     },
     'attach': function() {
         this._e('on');
